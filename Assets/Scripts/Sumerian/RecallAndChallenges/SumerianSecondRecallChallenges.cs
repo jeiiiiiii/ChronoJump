@@ -35,6 +35,19 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
     private bool isShowingTigrisAndEuphratesDialogue = false;
     public AudioSource finishAudioSource;
 
+    public SpriteRenderer PlayercharacterRenderer;
+    public SpriteRenderer ChronocharacterRenderer;
+
+    public Sprite PlayerSmile;
+    public Sprite PlayerReflective;
+    public Sprite PlayerCurious;
+    public Sprite PlayerEager;
+    public Sprite PlayerEmbarassed;
+    public Sprite ChronoCheerful;
+    public Sprite ChronoSad;
+    public Sprite ChronoSmile;
+    public Sprite ZulNeutral;
+    public Sprite ZulFriendly;
 
     void Start()
     {
@@ -54,6 +67,11 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
     }
     private DialogueLine[] TigrisAndEuphrates = new DialogueLine[]
     {
+        new DialogueLine
+        {
+            characterName = "PLAYER",
+            line = " Tigris at Euphrates!"
+        },
         new DialogueLine
         {
             characterName = "CHRONO",
@@ -91,6 +109,11 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
             characterName = "CHRONO",
             line = "Hindi sapat ang ulan dito. At ang disyerto ay lalong hindi mapagkakatiwalaan. Tandaan mo , ang mga ilog ang bumuhay sa kabihasnang ito."
         },
+        new DialogueLine
+        {
+            characterName = "CHRONO",
+            line = " Pumiling muli!"
+        },
     };
     private DialogueLine[] ImbakNaUlan = new DialogueLine[]
     {
@@ -102,6 +125,11 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
         {
             characterName = "CHRONO",
             line = "Hindi sapat ang ulan dito. At ang disyerto ay lalong hindi mapagkakatiwalaan. Tandaan mo , ang mga ilog ang bumuhay sa kabihasnang ito."
+        },
+        new DialogueLine
+        {
+            characterName = "CHRONO",
+            line = " Pumiling muli!"
         },
     };
 
@@ -134,7 +162,71 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
     {
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
+        
+    if (dialogueLines == TigrisAndEuphrates)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    ChronocharacterRenderer.sprite = ChronoSmile;
+                    break;
+                case 1:
+                    PlayercharacterRenderer.sprite = PlayerEager;
+                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    break;
+                case 2:
+                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    ChronocharacterRenderer.sprite = ZulFriendly;
+                    break;
+                case 3:
+                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    break;
+                case 4:
+                    PlayercharacterRenderer.sprite = PlayerCurious;
+                    break;
+                case 5:
+                    ChronocharacterRenderer.sprite = ZulNeutral;
+                    break;
+            }
+        }
+        else if (dialogueLines == Disyerto)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    break;
+                case 1:
 
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    break;
+            }
+        }
+        else if (dialogueLines == ImbakNaUlan)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    break;
+                case 1:
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    break;
+            }
+        }
+        else
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ZulNeutral;
+                    break;
+            }
+        }
         // Only set answers for the first question
         if (currentDialogueIndex == 0)
         {

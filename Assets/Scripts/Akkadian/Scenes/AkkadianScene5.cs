@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
 
-public class SumerianScene7 : MonoBehaviour
+public class AkkadianScene5 : MonoBehaviour
 {
     [System.Serializable]
     public struct DialogueLine
@@ -21,33 +21,47 @@ public class SumerianScene7 : MonoBehaviour
     public DialogueLine[] dialogueLines;
 
     public SpriteRenderer PlayercharacterRenderer;
+    public Sprite PlayerReflective;
+    public Sprite PlayerEager;
     public Sprite PlayerSmile;
+    public Sprite SargonNuetral;
+    public Sprite SargonWise;
     public SpriteRenderer ChronocharacterRenderer;
+    public Sprite ChronoThinking;
     public Sprite ChronoSmile;
-
     void Start()
     {
         dialogueLines = new DialogueLine[]
         {
             new DialogueLine
             {
-                characterName = "PLAYER",
-                line = " Parang panaginip... pero ang totoo, ang dami kong natutunan."
-            },
-            new DialogueLine
-            {
-                characterName = "PLAYER",
-                line = " Hindi lang basta luwad... ito'y alaala ng kabihasnang nagbigay daan sa mundo ngayon."
+                characterName = "CHRONO",
+                line = " Matapos bumagsak ang Dinastiyang Ur dahil sa pagsalakay ng mga Amorite at Hurrian, hindi nagtagal ang katahimikan sa Mesopotamia"
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Galing mo! Handa ka na sa susunod na paglalakbay , kapag bukas na ang bagong daan."
+                line = " Sa halip na pagkakaisa, nagtunggalian ang mga lungsod gaya ng Isin at Larsa para sa kapangyarihan sa timog."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Simula pa lang pala ‘yon…"
+                line = " Kaya pala parang paulit-ulit lang. Pagkatapos ng isang pamahalaan, babalik na naman sa tunggalian."
+            },
+            new DialogueLine
+            {
+                characterName = "SARGON I",
+                line = " Walang pinunong perpekto. Ngunit ang aral ay ito: ang pamumuno ay hindi tungkol sa takot kundi sa layunin."
+            },
+            new DialogueLine
+            {
+                characterName = "CHRONO",
+                line = " Ang mga imperyo ay bumabagsak, pero ang alaala ng kanilang ambag tulad ng pagkakabuo ng unang imperyo ay nananatili."
+            },
+            new DialogueLine
+            {
+                characterName = "PLAYER",
+                line = " Hindi ko akalaing si Sargon pala ang nagsimula ng lahat."
             },
         };
 
@@ -64,26 +78,38 @@ public class SumerianScene7 : MonoBehaviour
         switch (currentDialogueIndex)
         {
             case 0:
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                ChronocharacterRenderer.sprite = ChronoThinking;
                 PlayercharacterRenderer.sprite = PlayerSmile;
                 break;
+            case 1:
+                PlayercharacterRenderer.sprite = PlayerReflective;
+                break;
+            case 2:
+                ChronocharacterRenderer.sprite = SargonWise;
+                break;
+            case 3:
+                ChronocharacterRenderer.sprite = ChronoSmile;
+                break;
+            case 4:
+                PlayercharacterRenderer.sprite = PlayerEager;
+                break;
         }
+
     }
-
-
     void ShowNextDialogue()
     {
         currentDialogueIndex++;
 
         if (currentDialogueIndex >= dialogueLines.Length)
         {
-            SceneManager.LoadScene("SumerianQuizTime");
+            SceneManager.LoadScene("AkkadianThirdRecallChallenges");
             nextButton.interactable = false;
             return;
         }
 
         ShowDialogue();
     }
+
     void ShowPreviousDialogue()
     {
         if (currentDialogueIndex > 0)
@@ -92,6 +118,7 @@ public class SumerianScene7 : MonoBehaviour
             ShowDialogue();
         }
     }
+    
     public void Home()
     {
         SceneManager.LoadScene("TitleScreen");

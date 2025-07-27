@@ -35,6 +35,19 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
     private bool isShowingTheocracyDialogue = false;
     public AudioSource finishAudioSource;
 
+    public SpriteRenderer PlayercharacterRenderer;
+    public SpriteRenderer ChronocharacterRenderer;
+
+    public Sprite PlayerSmile;
+    public Sprite PlayerReflective;
+    public Sprite PlayerEager;
+    public Sprite PlayerEmbarassed;
+    public Sprite ChronoCheerful;
+    public Sprite ChronoSad;
+    public Sprite PatesiFormal;
+    public Sprite PatesiWise;
+    public Sprite PatesiDisappointed;
+
 
     void Start()
     {
@@ -91,6 +104,11 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
             characterName = "PATESI NINURTA",
             line = " Ang pamahalaan ay hindi lamang tungkol sa kapangyarihan ng tao, kundi sa pananampalatayang nakaangkla sa aming mga diyos."
         },
+        new DialogueLine
+        {
+            characterName = "PATESI NINURTA",
+            line = " Pumiling muli!"
+        }
     };
     private DialogueLine[] Monarkiya = new DialogueLine[]
     {
@@ -107,6 +125,11 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
         {
             characterName = "PATESI NINURTA",
             line = " Ang pamahalaan ay hindi lamang tungkol sa kapangyarihan ng tao, kundi sa pananampalatayang nakaangkla sa aming mga diyos."
+        },
+        new DialogueLine
+        {
+            characterName = "PATESI NINURTA",
+            line = " Pumiling muli!"
         },
     };
 
@@ -140,6 +163,75 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+    if (dialogueLines == Theocracy)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    ChronocharacterRenderer.sprite = PatesiFormal;
+                    break;
+                case 1:
+                    PlayercharacterRenderer.sprite = PlayerEager;
+                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    break;
+                case 2:
+                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    ChronocharacterRenderer.sprite = PatesiWise;
+                    break;
+                case 3:
+                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    break;
+            }
+        }
+        else if (dialogueLines == Oligarkiya)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    break;
+                case 1:
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    break;
+                case 2:
+                    ChronocharacterRenderer.sprite = PatesiDisappointed;
+                    break;
+                case 3:
+                    ChronocharacterRenderer.sprite = PatesiFormal;
+                    break;
+            }
+        }
+        else if (dialogueLines == Monarkiya)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    break;
+                case 1:
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    break;
+                case 2:
+                    ChronocharacterRenderer.sprite = PatesiDisappointed;
+                    break;
+                case 3:
+                    ChronocharacterRenderer.sprite = PatesiFormal;
+                    break;
+            }
+        }
+        else
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    ChronocharacterRenderer.sprite = PatesiFormal;
+                    break;
+            }
+        }
         // Only set answers for the first question
         if (currentDialogueIndex == 0)
         {

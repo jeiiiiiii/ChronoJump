@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
 
-public class SumerianScene7 : MonoBehaviour
+public class AkkadianScene4 : MonoBehaviour
 {
     [System.Serializable]
     public struct DialogueLine
@@ -21,33 +21,41 @@ public class SumerianScene7 : MonoBehaviour
     public DialogueLine[] dialogueLines;
 
     public SpriteRenderer PlayercharacterRenderer;
+    public Sprite PlayerCurious;
     public Sprite PlayerSmile;
+    public Sprite SargonNuetral;
     public SpriteRenderer ChronocharacterRenderer;
+    public Sprite ChronoThinking;
+    public Sprite ChronoSad;
     public Sprite ChronoSmile;
-
     void Start()
     {
         dialogueLines = new DialogueLine[]
         {
             new DialogueLine
             {
-                characterName = "PLAYER",
-                line = " Parang panaginip... pero ang totoo, ang dami kong natutunan."
+                characterName = "CHRONO",
+                line = " Pagkaraan ng maraming taon, sumunod sa kanya ang apo niyang si Naram-Sin. Mahusay din, ngunit sa kanyang pamumuno, humina ang imperyo."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Hindi lang basta luwad... ito'y alaala ng kabihasnang nagbigay daan sa mundo ngayon."
+                line = " Bakit siya humina? Dahil sa digmaan?"
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Galing mo! Handa ka na sa susunod na paglalakbay , kapag bukas na ang bagong daan."
+                line = " Bumagsak ang imperyo matapos salakayin ng mga Amorite at Hurrian ang Mesopotamia. Sinamantala nila ang paghina ng pamahalaan ng Akkad."
             },
             new DialogueLine
             {
-                characterName = "PLAYER",
-                line = " Simula pa lang pala ‘yon…"
+                characterName = "SARGON I",
+                line = " Isang imperyo, gaano man kalawak, ay maaaring bumagsak kapag hindi ito naipagtanggol nang maayos."
+            },
+            new DialogueLine
+            {
+                characterName = "CHRONO",
+                line = " Pagkatapos ng pagbagsak, panandaliang nabawi ng lungsod ng Ur ang kapangyarihan sa ilalim ng Ikatlong Dinastiya."
             },
         };
 
@@ -64,26 +72,38 @@ public class SumerianScene7 : MonoBehaviour
         switch (currentDialogueIndex)
         {
             case 0:
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                ChronocharacterRenderer.sprite = ChronoSad;
                 PlayercharacterRenderer.sprite = PlayerSmile;
                 break;
+            case 1:
+                PlayercharacterRenderer.sprite = PlayerCurious;
+                break;
+            case 2:
+                ChronocharacterRenderer.sprite = ChronoSad;
+                break;
+            case 3:
+                ChronocharacterRenderer.sprite = SargonNuetral;
+                break;
+            case 4:
+                ChronocharacterRenderer.sprite = ChronoSmile;
+                break;
         }
+
     }
-
-
     void ShowNextDialogue()
     {
         currentDialogueIndex++;
 
         if (currentDialogueIndex >= dialogueLines.Length)
         {
-            SceneManager.LoadScene("SumerianQuizTime");
+            SceneManager.LoadScene("AkkadianSecondRecallChallenges");
             nextButton.interactable = false;
             return;
         }
 
         ShowDialogue();
     }
+
     void ShowPreviousDialogue()
     {
         if (currentDialogueIndex > 0)
@@ -92,6 +112,7 @@ public class SumerianScene7 : MonoBehaviour
             ShowDialogue();
         }
     }
+    
     public void Home()
     {
         SceneManager.LoadScene("TitleScreen");

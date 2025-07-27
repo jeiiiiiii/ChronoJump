@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using TMPro;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class CoordinateSelect : MonoBehaviour
 {
@@ -10,7 +10,7 @@ public class CoordinateSelect : MonoBehaviour
         SceneManager.LoadScene("ChapterSelect");
     }
 
-        public void LoadGameScene()
+    public void LoadSumerian()
     {
         SceneManager.LoadScene("SumerianSceneOne");
     }

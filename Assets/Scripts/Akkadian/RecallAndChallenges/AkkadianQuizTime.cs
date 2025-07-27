@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using static SumerianFifthRecallChallenges;
 
-public class QuizTimeManager : MonoBehaviour
+public class QuizTimeManagerAkkadian : MonoBehaviour
 {
     [System.Serializable]
     public struct DialogueLine
@@ -53,13 +53,13 @@ public class QuizTimeManager : MonoBehaviour
             new Question {
                 questionLine = new DialogueLine {
                     //Q1
-                    question = "Sino ang tinatawag na “patesi” sa lungsod ng Uruk?"
+                    question = "Sino ang kinikilalang tagapagtatag ng kauna-unahang imperyo sa kasaysayan?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = " Pinuno ng mga manggagawa", isCorrect = false },
-                    new Answer { text = "Pinunong-pari na tagapamagitan ng mga diyos at mamamayan", isCorrect = true },
-                    new Answer { text = "Mangangalakal ng lungsod", isCorrect = false },
-                    new Answer { text = "Sundalong tagapagbantay", isCorrect = false }
+                    new Answer { text = "Ur-Nammu", isCorrect = false },
+                    new Answer { text = "Sargon I ", isCorrect = true },
+                    new Answer { text = "Hammurabi", isCorrect = false },
+                    new Answer { text = "Naram-Sin", isCorrect = false }
                 }
             },
             new Question {
@@ -68,106 +68,106 @@ public class QuizTimeManager : MonoBehaviour
                     question = "Ano ang tawag sa sistema ng pamahalaang pinamumunuan ng pinunong-pari sa Sumer?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Monarkiya", isCorrect = false },
-                    new Answer { text = "Demokrasya", isCorrect = false },
-                    new Answer { text = "Theocracy", isCorrect = true },
-                    new Answer { text = "Oligarkiya", isCorrect = false }
+                    new Answer { text = "Akkad", isCorrect = true },
+                    new Answer { text = "Uruk", isCorrect = false },
+                    new Answer { text = "Babylon", isCorrect = false },
+                    new Answer { text = "Larsa", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q3
-                    question = "Ano ang layunin ng mga kanal at irigasyon na ginawa ng mga Sumerian?"
+                    question = "Ano ang naging pangunahing paraan ni Sargon upang pag-isahin ang mga lungsod-estado?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Upang mapabilis ang kalakalan", isCorrect = false },
-                    new Answer { text = "Upang hadlangan ang mga kalaban ", isCorrect = false },
-                    new Answer { text = " Upang gawing paliguan ang mga lungsod", isCorrect = false },
-                    new Answer { text = "Upang pamahalaan ang daloy ng tubig para sa sakahan", isCorrect = true }
+                    new Answer { text = "Diplomasiya", isCorrect = false },
+                    new Answer { text = "Pagtatayo ng templo ", isCorrect = false },
+                    new Answer { text = "Pananampalataya", isCorrect = false },
+                    new Answer { text = "Lakas ng militar at mahusay na pamahalaan", isCorrect = true }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q4
-                    question = "Ang Sumerian script na tinatawag na “cuneiform” ay isinulat gamit ang stylus sa anong uri ng materyal?"
+                    question = "Ano ang sinabi ni Sargon tungkol sa pagpapanatili ng isang malawak na imperyo?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Piraso ng kahoy", isCorrect = false },
-                    new Answer { text = "Papel mula sa papyrus", isCorrect = false },
-                    new Answer { text = "Tabletang luwad (clay tablet)", isCorrect = true },
-                    new Answer { text = "Balat ng hayop", isCorrect = false }
+                    new Answer { text = "Kailangan umasa sa mga diyos", isCorrect = false },
+                    new Answer { text = "Kailangan ng sistemang gumagana kahit wala ang pinuno", isCorrect = true },
+                    new Answer { text = "Magtiwala sa kapalaran", isCorrect = false },
+                    new Answer { text = "Dapat matakot sa hari ang lahat", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q5
-                    question = " Ayon kay Zul, saan nanggagaling ang tubig na ginagamit sa irigasyon ng mga sakahan sa Uruk?"
+                    question = "Ano ang ginawa ni Sargon upang mapanatili ang kaayusan sa imperyo?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Ilog Tigris at Euphrates", isCorrect = true },
-                    new Answer { text = "Disyerto", isCorrect = false },
-                    new Answer { text = "Imbak na ulan ", isCorrect = false },
-                    new Answer { text = " Bukal sa ilalim ng lupa", isCorrect = false }
+                    new Answer { text = "Ipinagbawal ang digmaan", isCorrect = false },
+                    new Answer { text = "Nagtayo ng mga templo", isCorrect = false },
+                    new Answer { text = "Nagtalaga ng mga gobernador sa bawat bahagi ", isCorrect = true },
+                    new Answer { text = "Nagpatupad ng bagong relihiyon", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q6
-                    question = "Ano ang tawag sa sistema ng palitan ng produkto na ginagamit ng mga Sumerian bago pa magkaroon ng salapi?"
+                    question = "Ano ang pangunahing dahilan ng pagbagsak ng Akkadian Empire?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Transaksyon", isCorrect = false },
-                    new Answer { text = "Monopolyo", isCorrect = false },
-                    new Answer { text = "Barter", isCorrect = true },
-                    new Answer { text = "Komersyo", isCorrect = false }
+                    new Answer { text = "Matinding tagtuyot", isCorrect = false },
+                    new Answer { text = "Rebolusyon mula sa loob", isCorrect = false },
+                    new Answer { text = "Pagsalakay ng Amorite at Hurrian", isCorrect = true },
+                    new Answer { text = "Kakulangan sa pagkain", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q7
-                    question = "Ayon kay Enki, bakit mahalaga ang pagsusulat ng mga tala sa clay tablet?"
+                    question = "Sino ang sumunod na pinuno matapos si Sargon at sa ilalim ng pamumuno niya humina ang imperyo?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Para sa pagtatala ng ani, batas, at kasunduan", isCorrect = true },
-                    new Answer { text = "Para sa pagsulat ng tula", isCorrect = false },
-                    new Answer { text = "Para sa panlibang", isCorrect = false },
-                    new Answer { text = "Para sa pagbebenta sa merkado", isCorrect = false }
+                    new Answer { text = "Naram-Sin", isCorrect = true },
+                    new Answer { text = "Ur-Nammu", isCorrect = false },
+                    new Answer { text = "Hammurabi", isCorrect = false },
+                    new Answer { text = "Ishtar", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q8
-                    question = "Sa eksena ng palengke sa Uruk, ano ang layunin ng paggamit ng gulong ayon kay Ishma?"
+                    question = "Ano ang nangyari matapos bumagsak ang Akkadian Empire?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Pang-aliw sa mga bata", isCorrect = false },
-                    new Answer { text = "Palamuti sa templo", isCorrect = false },
-                    new Answer { text = "Para mapabilis ang pagdadala ng produkto at paglalakbay sa lupa", isCorrect = true },
-                    new Answer { text = "Bilang alay sa mga diyos", isCorrect = false }
+                    new Answer { text = "Naibalik ang kapangyarihan ng Akkad", isCorrect = false },
+                    new Answer { text = "Nagsimula ang pamumuno ng mga Greek", isCorrect = false },
+                    new Answer { text = "Panandaliang pagbawi ng Ur at tunggalian ng Isin at Larsa", isCorrect = true },
+                    new Answer { text = "Umusbong agad ang imperyong Babylonia", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q9
-                    question = "Aling imbensyon ng mga Sumerian ang nakatulong sa pag-unlad ng transportasyon sa lupa?"
+                    question = "Ayon kay Sargon, ano ang tunay na layunin ng pamumuno?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Layag", isCorrect = false },
-                    new Answer { text = "Gulong", isCorrect = true },
-                    new Answer { text = "Kompas", isCorrect = false },
-                    new Answer { text = "Kabayo", isCorrect = false }
+                    new Answer { text = "Pagpapayaman", isCorrect = false },
+                    new Answer { text = "Layunin at kaayusan", isCorrect = true },
+                    new Answer { text = "Takot at kapangyarihan", isCorrect = false },
+                    new Answer { text = "Katapatan sa mga diyos", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q10
-                    question = "Alin sa mga sumusunod ang pangunahing layunin ng mga batas ni Ur-Nammu?"
+                    question = "Ano ang natutunang aral mula sa pamumuno ni Sargon ayon kina Chrono at Player?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Patawan ng parusa ang mayayaman", isCorrect = false },
-                    new Answer { text = "Itaguyod ang kapangyarihan ng hari", isCorrect = false },
-                    new Answer { text = "Mapalawak ang teritoryo ng Sume", isCorrect = false },
-                    new Answer { text = "Itaguyod ang katarungan", isCorrect = true }
+                    new Answer { text = "Ang kapangyarihan ay permanente", isCorrect = false },
+                    new Answer { text = "Walang silbi ang pamumuno sa dulo", isCorrect = false },
+                    new Answer { text = "Ang bawat pamahalaan ay malakas magpakailanman", isCorrect = false },
+                    new Answer { text = "Ang alaala ng mga pinuno ay mananatili sa kasaysayan", isCorrect = true }
                 }
             }
         };
@@ -176,6 +176,7 @@ public class QuizTimeManager : MonoBehaviour
 
     void ShowQuestion()
     {
+
         selectedButton = null;
         selectedAnswer = new Answer();
 
@@ -255,6 +256,8 @@ public class QuizTimeManager : MonoBehaviour
 
     void ShowQuizResult()
     {
+        PlayerProgressManager.UnlockCivilization("Babylonian");
+        
         timerText.color = Color.white;
         timerText.gameObject.SetActive(false);
 
@@ -300,7 +303,7 @@ public class QuizTimeManager : MonoBehaviour
         nextButton.onClick.RemoveAllListeners();
         nextButton.onClick.AddListener(() =>
         {
-            SceneManager.LoadScene("TitleScreen");
+            SceneManager.LoadScene("CoordinateSelect");
         });
     }
 

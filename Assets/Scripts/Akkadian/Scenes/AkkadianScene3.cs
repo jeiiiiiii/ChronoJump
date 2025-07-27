@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
 
-public class SumerianScene7 : MonoBehaviour
+public class AkkadianScene3 : MonoBehaviour
 {
     [System.Serializable]
     public struct DialogueLine
@@ -21,33 +21,42 @@ public class SumerianScene7 : MonoBehaviour
     public DialogueLine[] dialogueLines;
 
     public SpriteRenderer PlayercharacterRenderer;
+    public Sprite PlayerCurious;
     public Sprite PlayerSmile;
+    public Sprite PlayerReflective;
+    public Sprite SargonNuetral;
+    public Sprite SargonWise;
+    public Sprite SargonExplaining;
     public SpriteRenderer ChronocharacterRenderer;
-    public Sprite ChronoSmile;
-
+    public Sprite ChronoThinking;
     void Start()
     {
         dialogueLines = new DialogueLine[]
         {
             new DialogueLine
             {
-                characterName = "PLAYER",
-                line = " Parang panaginip... pero ang totoo, ang dami kong natutunan."
+                characterName = "SARGON I",
+                line = " Hindi lang lakas ang sandata ng isang imperyo. Kailangan din ng sistemang gumagalaw kahit ako’y wala."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Hindi lang basta luwad... ito'y alaala ng kabihasnang nagbigay daan sa mundo ngayon."
+                line = " Ibig sabihin… may opisyal, sundalo, tagapamahala?"
+            },
+            new DialogueLine
+            {
+                characterName = "SARGON I",
+                line = " Tama. Nagtalaga ako ng mga gobernador sa bawat bahagi ng imperyo. Lahat ay may tungkulin. Lahat may kaayusan."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Galing mo! Handa ka na sa susunod na paglalakbay , kapag bukas na ang bagong daan."
+                line = " Dahil sa pamahalaang ito, nakontrol ni Sargon ang buong rehiyon mula hilaga hanggang katimugan."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Simula pa lang pala ‘yon…"
+                line = " Pero anong nangyari pagkatapos ni Sargon?"
             },
         };
 
@@ -64,26 +73,38 @@ public class SumerianScene7 : MonoBehaviour
         switch (currentDialogueIndex)
         {
             case 0:
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                ChronocharacterRenderer.sprite = SargonWise;
                 PlayercharacterRenderer.sprite = PlayerSmile;
                 break;
+            case 1:
+                PlayercharacterRenderer.sprite = PlayerCurious;
+                break;
+            case 2:
+                ChronocharacterRenderer.sprite = SargonExplaining;
+                break;
+            case 3:
+                ChronocharacterRenderer.sprite = ChronoThinking;
+                break;
+            case 4:
+                PlayercharacterRenderer.sprite = PlayerReflective;
+                break;
         }
+
     }
-
-
     void ShowNextDialogue()
     {
         currentDialogueIndex++;
 
         if (currentDialogueIndex >= dialogueLines.Length)
         {
-            SceneManager.LoadScene("SumerianQuizTime");
+            SceneManager.LoadScene("AkkadianSceneFour");
             nextButton.interactable = false;
             return;
         }
 
         ShowDialogue();
     }
+
     void ShowPreviousDialogue()
     {
         if (currentDialogueIndex > 0)
@@ -92,6 +113,7 @@ public class SumerianScene7 : MonoBehaviour
             ShowDialogue();
         }
     }
+    
     public void Home()
     {
         SceneManager.LoadScene("TitleScreen");

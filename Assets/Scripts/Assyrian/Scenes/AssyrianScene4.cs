@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
 
-public class SumerianScene7 : MonoBehaviour
+public class AssyrianScene4 : MonoBehaviour
 {
     [System.Serializable]
     public struct DialogueLine
@@ -22,33 +22,40 @@ public class SumerianScene7 : MonoBehaviour
 
     public SpriteRenderer PlayercharacterRenderer;
     public Sprite PlayerSmile;
+    public Sprite PlayerEmbarrassed;
+    public Sprite AshurbanipalSomber;
     public SpriteRenderer ChronocharacterRenderer;
-    public Sprite ChronoSmile;
-
+    public Sprite ChronoThinking;
+    public Sprite ChronoSad;
     void Start()
     {
         dialogueLines = new DialogueLine[]
         {
             new DialogueLine
             {
-                characterName = "PLAYER",
-                line = " Parang panaginip... pero ang totoo, ang dami kong natutunan."
-            },
-            new DialogueLine
-            {
-                characterName = "PLAYER",
-                line = " Hindi lang basta luwad... ito'y alaala ng kabihasnang nagbigay daan sa mundo ngayon."
+                characterName = "CHRONO",
+                line = " Ngunit hindi lahat ng imperyo ay walang hanggan. Noong 612 BCE, ang mga dating kaaway ang Chaldean, Medes, at Persian ay nagkaisa upang gibain ang Assyria."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Galing mo! Handa ka na sa susunod na paglalakbay , kapag bukas na ang bagong daan."
+                line = " Ang pag-aalsa ay pinangunahan ng mga Chaldean na dating sakop ng imperyo, at ngayo’y naghihiganti para sa mga dekadang pang-aabuso."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Simula pa lang pala ‘yon…"
+                line = " Chaldean... Medes... Persian. Mga karaniwang pinaghaharian, ngayo'y magkakampi."
             },
+            new DialogueLine
+            {
+                characterName = "ASHURBANIPAL",
+                line = " Kakaibang ironya. Sa paghahangad kong ipunin ang kaalaman, hindi ko nailigtas ang Nineveh sa apoy."
+            },
+            new DialogueLine
+            {
+                characterName = "CHRONO",
+                line = " Gumuho ang siyudad. Sunog, dugo, at pagbagsak ng isang dating makapangyarihan. Ang takot na ginamit upang maghari ay binalik ng galit na hindi na mapipigil."
+            }
         };
 
         ShowDialogue();
@@ -64,26 +71,34 @@ public class SumerianScene7 : MonoBehaviour
         switch (currentDialogueIndex)
         {
             case 0:
-                ChronocharacterRenderer.sprite = ChronoSmile;
                 PlayercharacterRenderer.sprite = PlayerSmile;
+                ChronocharacterRenderer.sprite = ChronoThinking;
+                break;
+            case 2:
+                PlayercharacterRenderer.sprite = PlayerEmbarrassed;
+                break;
+            case 3:
+                ChronocharacterRenderer.sprite = AshurbanipalSomber;
+                break;
+            case 4:
+                ChronocharacterRenderer.sprite = ChronoSad;
                 break;
         }
     }
-
-
     void ShowNextDialogue()
     {
         currentDialogueIndex++;
 
         if (currentDialogueIndex >= dialogueLines.Length)
         {
-            SceneManager.LoadScene("SumerianQuizTime");
+            SceneManager.LoadScene("AssyrianThirdRecallChallenges");
             nextButton.interactable = false;
             return;
         }
 
         ShowDialogue();
     }
+
     void ShowPreviousDialogue()
     {
         if (currentDialogueIndex > 0)
@@ -92,6 +107,7 @@ public class SumerianScene7 : MonoBehaviour
             ShowDialogue();
         }
     }
+    
     public void Home()
     {
         SceneManager.LoadScene("TitleScreen");

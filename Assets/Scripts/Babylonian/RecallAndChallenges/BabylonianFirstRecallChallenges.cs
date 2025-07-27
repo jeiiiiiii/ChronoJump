@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine.UI;
 using System;
 
-public class SumerianFirstRecallChallenges : MonoBehaviour
+public class BabylonianFirstRecallChallenges : MonoBehaviour
 {
     [System.Serializable]
     public struct DialogueLine
@@ -12,20 +12,6 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
         public string characterName;
         public string line;
     }
-    public SpriteRenderer PlayercharacterRenderer;
-    public SpriteRenderer ChronocharacterRenderer;
-
-    public Sprite PlayerSmile;
-    public Sprite PlayerEager;
-    public Sprite PlayerReflective;
-    public Sprite PlayerEmbarassed;
-    public Sprite ChronoThinking;
-    public Sprite ChronoCheerful;
-    public Sprite ChronoSad;
-    public Sprite ChronoSmile;
-    public Sprite EnkiKind;
-    public Sprite EnkiPokerface;
-    public Sprite EnkiTesting;
 
     [System.Serializable]
     public struct Answer
@@ -44,11 +30,10 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
     private bool hasAnswered = false;
 
     public Image[] heartImages;
-    private bool isShowingBaybayinDialogue = false;
-    private bool isShowingHieroglyphicsDialogue = false;
-    private bool isShowingCuneiformDialogue = false;
+    private bool isShowingSargonDialogue = false;
+    private bool isShowingAshurbanipalDialogue = false;
+    private bool isShowingHammurabiDialogue = false;
     public AudioSource finishAudioSource;
-    
 
 
     void Start()
@@ -64,88 +49,70 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
         {
             new DialogueLine
             {
-                characterName = "ENKI",
-                line = "Ano ang tawag sa uri ng pagsusulat na ito?"
+                characterName = "CHRONO",
+                line = " Sino ang tinaguriang pinakadakilang hari ng Babylonia?"
             },
         };
 
         ShowDialogue();
     }
 
-    private DialogueLine[] CuneiformLines = new DialogueLine[]
+    private DialogueLine[] HammurabiLines = new DialogueLine[]
     {
         new DialogueLine
         {
-            characterName = "CHRONO",
-            line = "Tumpak! Isa kang batang eskriba!"
-        },
-        new DialogueLine
-        {
-            characterName = "ENKI",
-            line = "Marami ngang tagalabas, ngunit bihira ang mabilis matuto."
-        },
-        new DialogueLine
-        {
-            characterName = "ENKI",
-            line = "Kung gayon, nararapat lamang na makita mo kung paano ginamit ang kaalamang ito upang labanan ang isa sa pinakamalaking hamon dito sa aming lupain , ang kakulangan sa ulan."
-        },
-        new DialogueLine
-        {
             characterName = "PLAYER",
-            line = "May sagot kayo sa tuyong lupa?"
+            line = " Hammurabi!"
         },
         new DialogueLine
         {
-            characterName = "CHRONO",
-            line = "Isang tanong ng tubig... at talino."
+            characterName = " CHRONO",
+            line = " Tama. Siya ang bumuo ng Imperyong Babylonia."
         },
         new DialogueLine
         {
-            characterName = "ENKI",
-            line = "Halina’t dalhin ko kayo sa aming mga kanal. Doon niyo makikita kung paano naging masagana ang buhay sa gitna ng disyerto."
+            characterName = " PLAYER",
+            line = " Ang galing… parang ngayon lang ako nakarinig ng hari na gumawa ng mga batas para sa lahat."
         },
+        new DialogueLine
+        {
+            characterName = " CHRONO",
+            line = " Kung gano’n, mas lalo kang mamamangha sa ipapakita ko sa’yo ngayon. Tara, silipin natin mismo ang kanyang ipinagmamalaking mga batas."
+        },
+
     };
-    private DialogueLine[] baybayinLines = new DialogueLine[]
+    private DialogueLine[] SargonLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = "Baybayin...?" },
+            line = " Sargon I?" },
         new DialogueLine
         {
-            characterName = "ENKI",
-            line = "Hmm… maganda rin ‘yan, pero hindi sa panahong ito. Ang Baybayin ay matutuklasan pa lamang sa mga isla ng malayo. Isipin mong mas luma pa rito."
+            characterName = "CHRONO",
+            line = " Si Sargon ay mula sa Akkad. Ibang panahon at lugar iyon."
         },
         new DialogueLine
         {
-            characterName = "ENKI",
-            line = "Ito’y ukit sa luwad, at may hugis pantusok. Subukan mong muli."
-        },
-        new DialogueLine
-        {
-            characterName = "ENKI",
+            characterName = "CHRONO",
             line = "Pumiling muli."
         }
     };
-    private DialogueLine[] HieroglyphicsLines = new DialogueLine[]
+    private DialogueLine[] AshurbanipalLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = "Hieroglyphics...?" },
-        new DialogueLine
-        {
-            characterName = "ENKI",
-            line = "Hmm… maganda rin ‘yan, pero hindi sa panahong ito. Ang Hieroglyphics ay matutuklasan pa lamang sa mga isla ng malayo. Isipin mong mas luma pa rito."
+            line = " Ashurbanipal?"
         },
         new DialogueLine
         {
-            characterName = "ENKI",
-            line = "Ito’y ukit sa luwad, at may hugis pantusok. Subukan mong muli."
+            characterName = "CHRONO",
+            line = " Si Ashurbanipal ay hari ng Assyria, hindi ng Babylonia."
         },
         new DialogueLine
         {
-            characterName = "ENKI",
+            characterName = "CHRONO",
             line = "Pumiling muli."
         }
     };
@@ -154,9 +121,9 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
     {
         answers = new Answer[]
         {
-            new Answer { text = "Baybayin", isCorrect = false },
-            new Answer { text = "Cuneiform", isCorrect = true },
-            new Answer { text = "Hieroglyphics", isCorrect = false },
+            new Answer { text = "Sargon I", isCorrect = false },
+            new Answer { text = "Hammurabi", isCorrect = true },
+            new Answer { text = "Ashurbanipal", isCorrect = false },
         };
 
         for (int i = 0; i < answerButtons.Length; i++)
@@ -180,83 +147,7 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
-    if (dialogueLines == CuneiformLines)
-    {
-        switch (currentDialogueIndex)
-        {
-            case 0:
-                PlayercharacterRenderer.sprite = PlayerSmile;
-                ChronocharacterRenderer.sprite = ChronoCheerful;
-                break;
-            case 1:
-                PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = EnkiKind;
-                break;
-            case 2:
-                ChronocharacterRenderer.sprite = EnkiKind;
-                break;
-            case 3:
-                PlayercharacterRenderer.sprite = PlayerReflective;
-                break;
-            case 4:
-                ChronocharacterRenderer.sprite = ChronoSmile;
-                break;
-            case 5:
-                ChronocharacterRenderer.sprite = EnkiKind;
-                break;
-        }
-    }
-    else if (dialogueLines == baybayinLines)
-    {
-        switch (currentDialogueIndex)
-        {
-            case 0:
-                PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = ChronoThinking;
-                break;
-            case 1:
-                ChronocharacterRenderer.sprite = ChronoSad;
-                PlayercharacterRenderer.sprite = PlayerEmbarassed;
-                break;
-            case 2:
-                ChronocharacterRenderer.sprite = ChronoThinking;
-                break;
-            case 3:
-                ChronocharacterRenderer.sprite = ChronoSad;
-                break;
-        }
-    }
-    else if (dialogueLines == HieroglyphicsLines)
-    {
-        switch (currentDialogueIndex)
-        {
-            case 0:
-                PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = ChronoThinking;
-                break;
-            case 1:
-                ChronocharacterRenderer.sprite = ChronoSad;
-                PlayercharacterRenderer.sprite = PlayerEmbarassed;
-                break;
-            case 2:
-                ChronocharacterRenderer.sprite = ChronoThinking;
-                break;
-            case 3:
-                ChronocharacterRenderer.sprite = ChronoSad;
-                break;
-        }
-    }
-    else
-    {
-        switch (currentDialogueIndex)
-        {
-            case 0:
-                PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = EnkiTesting;
-                break;
-        }
-    }
-        // Only set answers for the first question
+
         if (currentDialogueIndex == 0)
         {
             SetAnswers();
@@ -275,7 +166,7 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
 
-                if (isShowingCuneiformDialogue)
+                if (isShowingHammurabiDialogue)
                 {
                     if (finishAudioSource != null)
                         finishAudioSource.Play();
@@ -320,9 +211,9 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
 
         if (selected.isCorrect)
         {
-            isShowingCuneiformDialogue = true;
+            isShowingHammurabiDialogue = true;
             currentDialogueIndex = 0;
-            dialogueLines = CuneiformLines;
+            dialogueLines = HammurabiLines;
             ShowDialogue();
 
             nextButton.gameObject.SetActive(true);
@@ -340,7 +231,7 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
                     nextButton.onClick.RemoveAllListeners();
                     nextButton.onClick.AddListener(() =>
                     {
-                        SceneManager.LoadScene("SumerianSceneThree");
+                        SceneManager.LoadScene("BabylonianSceneTwo");
                     });
                 }
             });
@@ -352,7 +243,7 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
 
             if (GameState.hearts <= 0)
             {
-                dialogueText.text = "<b>ENKI</b>: Uliting muli. Wala ka nang natitirang puso.";
+                dialogueText.text = "<b>CHRONO</b>: Uliting muli. Wala ka nang natitirang puso.";
                 nextButton.gameObject.SetActive(false);
                 foreach (Button btn in answerButtons)
                     btn.interactable = false;
@@ -360,27 +251,27 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
                 return;
             }
 
-            if (selected.text == "Baybayin")
+            if (selected.text == "Sargon")
             {
-                isShowingBaybayinDialogue = true;
+                isShowingSargonDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = baybayinLines;
+                dialogueLines = SargonLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextBaybayinDialogue);
+                nextButton.onClick.AddListener(ShowNextSargonDialogue);
             }
-            else if (selected.text == "Hieroglyphics")
+            else if (selected.text == "Ashurbanipal")
             {
-                isShowingHieroglyphicsDialogue = true;
+                isShowingAshurbanipalDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = HieroglyphicsLines;
+                dialogueLines = AshurbanipalLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextHieroglyphicsDialogue);
+                nextButton.onClick.AddListener(ShowNextAshurbanipalDialogue);
             }
             else
             {
@@ -394,7 +285,7 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
         }
 
 
-        void ShowNextCuneiformDialogue()
+        void ShowNextHammurabiDialogue()
         {
             currentDialogueIndex++;
 
@@ -403,11 +294,11 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextCuneiformDialogue);
+                nextButton.onClick.AddListener(ShowNextHammurabiDialogue);
             }
         }
 
-        void ShowNextBaybayinDialogue()
+        void ShowNextSargonDialogue()
         {
             currentDialogueIndex++;
 
@@ -416,11 +307,11 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextBaybayinDialogue);
+                nextButton.onClick.AddListener(ShowNextSargonDialogue);
             }
         }
 
-        void ShowNextHieroglyphicsDialogue()
+        void ShowNextAshurbanipalDialogue()
         {
             currentDialogueIndex++;
 
@@ -429,7 +320,7 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextHieroglyphicsDialogue);
+                nextButton.onClick.AddListener(ShowNextAshurbanipalDialogue);
             }
         }
     }
@@ -440,7 +331,7 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
     
     void LoadNextScene()
     {
-        SceneManager.LoadScene("SumerianSceneThree");
+        SceneManager.LoadScene("BabylonianSceneTwo");
     }
 
 }

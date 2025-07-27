@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
 
-public class SumerianScene7 : MonoBehaviour
+public class AssyrianScene5 : MonoBehaviour
 {
     [System.Serializable]
     public struct DialogueLine
@@ -21,10 +21,10 @@ public class SumerianScene7 : MonoBehaviour
     public DialogueLine[] dialogueLines;
 
     public SpriteRenderer PlayercharacterRenderer;
+    public Sprite PlayerReflective;
     public Sprite PlayerSmile;
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoSmile;
-
     void Start()
     {
         dialogueLines = new DialogueLine[]
@@ -32,22 +32,17 @@ public class SumerianScene7 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Parang panaginip... pero ang totoo, ang dami kong natutunan."
-            },
-            new DialogueLine
-            {
-                characterName = "PLAYER",
-                line = " Hindi lang basta luwad... ito'y alaala ng kabihasnang nagbigay daan sa mundo ngayon."
+                line = " Minsan ang kaalaman ay sandata. Ngunit ang takot ay hindi kailanman tumatagal."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Galing mo! Handa ka na sa susunod na paglalakbay , kapag bukas na ang bagong daan."
+                line = " Ang imperyo ay naglalaho, ngunit ang alaala ay nananatili. Handa ka na sa susunod."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Simula pa lang pala ‘yon…"
+                line = " Paalam, Nineveh. Salamat sa aral."
             },
         };
 
@@ -65,25 +60,28 @@ public class SumerianScene7 : MonoBehaviour
         {
             case 0:
                 ChronocharacterRenderer.sprite = ChronoSmile;
+                PlayercharacterRenderer.sprite = PlayerReflective;
+                break;
+            case 2:
                 PlayercharacterRenderer.sprite = PlayerSmile;
                 break;
         }
+
     }
-
-
     void ShowNextDialogue()
     {
         currentDialogueIndex++;
 
         if (currentDialogueIndex >= dialogueLines.Length)
         {
-            SceneManager.LoadScene("SumerianQuizTime");
+            SceneManager.LoadScene("AssyrianQuizTime");
             nextButton.interactable = false;
             return;
         }
 
         ShowDialogue();
     }
+
     void ShowPreviousDialogue()
     {
         if (currentDialogueIndex > 0)
@@ -92,6 +90,7 @@ public class SumerianScene7 : MonoBehaviour
             ShowDialogue();
         }
     }
+    
     public void Home()
     {
         SceneManager.LoadScene("TitleScreen");

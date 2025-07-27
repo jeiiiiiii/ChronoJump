@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine.UI;
 using System;
 
-public class SumerianFifthRecallChallenges : MonoBehaviour
+public class AssyrianFirstRecallChallenges : MonoBehaviour
 {
     [System.Serializable]
     public struct DialogueLine
@@ -30,29 +30,19 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
     private bool hasAnswered = false;
 
     public Image[] heartImages;
-    private bool isShowingParusahanAngLahatDialogue = false;
-    private bool isShowingBigyangPribilehiyoAngMayayamanDialogue = false;
-    private bool isShowingItaguyodAngKatarunganDialogue = false; // true
+    private bool isShowingsiningDialogue = false;
+    private bool isShowingkalabanDialogue = false;
+    private bool isShowingpananakopDialogue = false;
     public AudioSource finishAudioSource;
-
-    public SpriteRenderer PlayercharacterRenderer;
-    public SpriteRenderer ChronocharacterRenderer;
-
-    public Sprite PlayerSmile;
-    public Sprite PlayerReflective;
-    public Sprite PlayerEager;
-    public Sprite PlayerEmbarassed;
-    public Sprite ChronoCheerful;
-    public Sprite ChronoSad;
-    public Sprite ChronoCalculating;
-    public Sprite ChronoSmile;
-    public Sprite EnkiKind;
-
 
 
     void Start()
     {
         nextButton.gameObject.SetActive(false);
+
+        if (GameState.hearts <= 0)
+            GameState.hearts = 3;
+
         UpdateHeartsUI();
 
         dialogueLines = new DialogueLine[]
@@ -60,87 +50,80 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Ano ang pangunahing layunin ng mga batas ni Ur-Nammu?"
+                line = " Ano ang pangunahing paraan na ginamit ni Tiglath-Pileser I upang mapalawak ang imperyong Assyrian?"
             },
         };
 
         ShowDialogue();
     }
-    private DialogueLine[] ItaguyodAngKatarungan = new DialogueLine[]
+
+    private DialogueLine[] pananakopLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Itaguyod ang katarungan..."
+            line = " Ekspedisyong militar at pananakop... ang kanyang paraan ng pagpapalawak."
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Wasto. Ang batas ay hindi dapat panakot, kundi sandigan. At sa Uruk, ang katarungan ay para sa lahat , mayaman man o alipin."
-        },
-        new DialogueLine
-        {
-            characterName = "ENKI",
-            line = " Tagalabas, ang layunin mo ay hindi lamang pagmasdan, kundi matuto. Dalhin mo ito... isang sagisag ng aming kabihasnan. Higit sa luwad at bato, ito’y paalala ng aming aral , ang halaga ng katarungan, pagkakaisa, at kaalaman."
+            line = " Tumpak. Sa kanyang pamumuno, ginamit niya ang disiplina at takot bilang sandata upang kontrolin ang mga ruta ng kalakalan at mga lungsod sa paligid."
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Panahon na upang bumalik. Ngunit tandaan mo , ang simula ng kaalaman ay ang pag-unawa sa pinagmulan. Sa mundong ito, nabuo ang maraming ideya na naging pundasyon ng kinabukasan."
+            line = " Ang kapayapaang itinayo sa takot ay maaaring maging matibay—ngunit bihirang tumagal. Tandaan mo ‘yan habang naglalakbay tayo paatras sa panahon."
         },
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Hindi ko ito malilimutan."
+            line = " Parang hindi tunay na kapayapaan ang sinasabi niya... kundi tahimik na takot."
         },
-        new DialogueLine
-        {
-            characterName = "CHRONO",
-            line = " Hanggang sa muling paglalakbay."
-        },
+
     };
-    private DialogueLine[] ParusahanAngLahat = new DialogueLine[]
+    private DialogueLine[] siningLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = "Parusahan ang lahat...?" },
+            line = " Hmm... baka pagpapalaganap ng sining?" },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Hindi ganoon ang layunin ng batas ni Ur-Nammu. Sa katunayan, pinoprotektahan pa nga nito ang mga mas mahina sa lipunan. Subukang balikan ang sinabi ni Enki... ano raw ang haligi ng kanilang kaayusan?"
+            line = " Hindi ito ang naging pokus ni Tiglath-Pileser. Bagama’t may mga anyo ng sining sa Assyria, ang kanyang pangunahing paraan ng pagpapalawak ay sa pamamagitan ng digmaan, pananakop, at matinding disiplina sa militar."
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Pumiling muli!"
-        },
+            line = "Pumiling muli."
+        }
     };
-    private DialogueLine[] BigyangPribilehiyoAngMayayaman = new DialogueLine[]
+    private DialogueLine[] kalabanLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Bigyang-pribilehiyo ang mayayaman...?" },
-        new DialogueLine
-        {
-            characterName = "CHRONO",
-            line = " Hindi ganoon ang layunin ng batas ni Ur-Nammu. Sa katunayan, pinoprotektahan pa nga nito ang mga mas mahina sa lipunan. Subukang balikan ang sinabi ni Enki... ano raw ang haligi ng kanilang kaayusan?"
+            line = " Siguro... pagpapakumbaba sa harap ng kalaban??"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Pumiling muli!"
+            line = " Hindi. Ang kapayapaan sa ilalim ni Tiglath-Pileser ay hindi hiningi — ito’y kinuha gamit ang lakas at pangamba."
         },
+        new DialogueLine
+        {
+            characterName = "CHRONO",
+            line = "Pumiling muli."
+        }
     };
 
     void SetAnswers()
     {
         answers = new Answer[]
         {
-            new Answer { text = "Itaguyod ang katarungan", isCorrect = true },
-            new Answer { text = "Parusahan ang lahat", isCorrect = false },
-            new Answer { text = "Bigyang-pribilehiyo ang mayayaman", isCorrect = false },
+            new Answer { text = "Pagpapalaganap ng sining", isCorrect = false },
+            new Answer { text = "Ekspedisyong militar at pananakop", isCorrect = true },
+            new Answer { text = "Pagpapakumbaba sa harap ng kalaban", isCorrect = false },
         };
 
         for (int i = 0; i < answerButtons.Length; i++)
@@ -164,71 +147,7 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
-    if (dialogueLines == ItaguyodAngKatarungan)
-        {
-            switch (currentDialogueIndex)
-            {
-                case 0:
-                    PlayercharacterRenderer.sprite = PlayerSmile;
-                    ChronocharacterRenderer.sprite = ChronoSmile;
-                    break;
-                case 1:
-                    PlayercharacterRenderer.sprite = PlayerEager;
-                    ChronocharacterRenderer.sprite = ChronoCheerful;
-                    break;
-                case 2:
-                    PlayercharacterRenderer.sprite = PlayerSmile;
-                    ChronocharacterRenderer.sprite = EnkiKind;
-                    break;
-                case 3:
-                    PlayercharacterRenderer.sprite = PlayerEager;
-                    ChronocharacterRenderer.sprite = ChronoCheerful;
-                    break;
-                case 4:
-                    PlayercharacterRenderer.sprite = PlayerSmile;
-                    break;
-                case 5:
-                    ChronocharacterRenderer.sprite = ChronoSmile;
-                    break;
-            }
-        }
-        else if (dialogueLines == ParusahanAngLahat)
-        {
-            switch (currentDialogueIndex)
-            {
-                case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoSad;
-                    break;
-                case 1:
-                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
-                    break;
-            }
-        }
-        else if (dialogueLines == BigyangPribilehiyoAngMayayaman)
-        {
-            switch (currentDialogueIndex)
-            {
-                case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoSad;
-                    break;
-                case 1:
-                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
-                    break;
-            }
-        }
-        else
-        {
-            switch (currentDialogueIndex)
-            {
-                case 0:
-                    PlayercharacterRenderer.sprite = PlayerSmile;
-                    ChronocharacterRenderer.sprite = ChronoCalculating;
-                    break;
-            }
-        }
-        // Only set answers for the first question
+
         if (currentDialogueIndex == 0)
         {
             SetAnswers();
@@ -241,17 +160,27 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
         }
         else
         {
+
             if (currentDialogueIndex == dialogueLines.Length - 1)
             {
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(() =>
+
+                if (isShowingpananakopDialogue)
                 {
                     if (finishAudioSource != null)
                         finishAudioSource.Play();
                     nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f); // 2 seconds delay, adjust as needed
-                });
+                    Invoke(nameof(LoadNextScene), 2f);
+                }
+                else
+                {
+                    nextButton.onClick.AddListener(() =>
+                    {
+                        currentDialogueIndex = 0;
+                        ShowDialogue();
+                    });
+                }
             }
             else
             {
@@ -277,12 +206,14 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
 
     void OnAnswerSelected(Answer selected)
     {
+        foreach (Button btn in answerButtons)
+            btn.interactable = false;
 
         if (selected.isCorrect)
         {
-            isShowingItaguyodAngKatarunganDialogue = true;
+            isShowingpananakopDialogue = true;
             currentDialogueIndex = 0;
-            dialogueLines = ItaguyodAngKatarungan;
+            dialogueLines = pananakopLines;
             ShowDialogue();
 
             nextButton.gameObject.SetActive(true);
@@ -296,12 +227,11 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
                 }
                 else
                 {
-                    // Show the last line
                     ShowDialogue();
                     nextButton.onClick.RemoveAllListeners();
                     nextButton.onClick.AddListener(() =>
                     {
-                        SceneManager.LoadScene("SumerianSceneSeven");
+                        SceneManager.LoadScene("AssyrianSceneTwo");
                     });
                 }
             });
@@ -313,7 +243,7 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
 
             if (GameState.hearts <= 0)
             {
-                dialogueText.text = "<b>ENKI</b>: Uliting muli. Wala ka nang natitirang puso.";
+                dialogueText.text = "<b>CHRONO</b>: Uliting muli. Wala ka nang natitirang puso.";
                 nextButton.gameObject.SetActive(false);
                 foreach (Button btn in answerButtons)
                     btn.interactable = false;
@@ -321,27 +251,27 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
                 return;
             }
 
-            if (selected.text == "Parusahan ang lahat")
+            if (selected.text == "sining")
             {
-                isShowingParusahanAngLahatDialogue = true;
+                isShowingsiningDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = ParusahanAngLahat;
+                dialogueLines = siningLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextParusahanAngLahatDialogue);
+                nextButton.onClick.AddListener(ShowNextsiningDialogue);
             }
-            else if (selected.text == "Bigyang-pribilehiyo ang mayayaman")
+            else if (selected.text == "kalaban")
             {
-                isShowingBigyangPribilehiyoAngMayayamanDialogue = true;
+                isShowingkalabanDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = BigyangPribilehiyoAngMayayaman;
+                dialogueLines = kalabanLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextBigyangPribilehiyoAngMayayamanDialogue);
+                nextButton.onClick.AddListener(ShowNextkalabanDialogue);
             }
             else
             {
@@ -354,7 +284,8 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
             }
         }
 
-        void ShowNextItaguyodAngKatarunganDialogue()
+
+        void ShowNextpananakopDialogue()
         {
             currentDialogueIndex++;
 
@@ -363,11 +294,11 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextItaguyodAngKatarunganDialogue);
+                nextButton.onClick.AddListener(ShowNextpananakopDialogue);
             }
         }
 
-        void ShowNextParusahanAngLahatDialogue()
+        void ShowNextsiningDialogue()
         {
             currentDialogueIndex++;
 
@@ -376,11 +307,11 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextParusahanAngLahatDialogue);
+                nextButton.onClick.AddListener(ShowNextsiningDialogue);
             }
         }
 
-        void ShowNextBigyangPribilehiyoAngMayayamanDialogue()
+        void ShowNextkalabanDialogue()
         {
             currentDialogueIndex++;
 
@@ -389,7 +320,7 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextBigyangPribilehiyoAngMayayamanDialogue);
+                nextButton.onClick.AddListener(ShowNextkalabanDialogue);
             }
         }
     }
@@ -397,9 +328,10 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
     {
         SceneManager.LoadScene("GameOver");
     }
-
+    
     void LoadNextScene()
     {
-        SceneManager.LoadScene("SumerianSceneSeven");
+        SceneManager.LoadScene("AssyrianSceneTwo");
     }
+
 }

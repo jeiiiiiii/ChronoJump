@@ -98,6 +98,11 @@ public class SumerianScene3 : MonoBehaviour
             },
             new DialogueLine
             {
+                characterName = "ZUL",
+                line = " May mga panahong kailangang isara ang daluyan kapag sobra na ang agos."
+            },
+            new DialogueLine
+            {
                 characterName = "CHRONO",
                 line = " Ang sistemang ito ay tinatawag na irigasyon. Isa ito sa pinakamahalagang ambag ng mga Sumerian sa kabihasnan."
             },
@@ -151,13 +156,13 @@ public class SumerianScene3 : MonoBehaviour
             case 9:
                 ChronocharacterRenderer.sprite = ZulTired;
                 break;
-            case 10:
+            case 11:
                 ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
-            case 11:
+            case 12:
                 ChronocharacterRenderer.sprite = ZulFriendly;
                 break;
-            case 12:
+            case 13:
                 ChronocharacterRenderer.sprite = ZulNeutral;
                 break;
         }

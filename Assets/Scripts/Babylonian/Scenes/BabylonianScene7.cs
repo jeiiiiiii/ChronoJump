@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
 
-public class SumerianScene7 : MonoBehaviour
+public class BabylonianScene7 : MonoBehaviour
 {
     [System.Serializable]
     public struct DialogueLine
@@ -21,8 +21,11 @@ public class SumerianScene7 : MonoBehaviour
     public DialogueLine[] dialogueLines;
 
     public SpriteRenderer PlayercharacterRenderer;
-    public Sprite PlayerSmile;
+    public Sprite PlayerReflective;
+    public Sprite PlayerEager;
     public SpriteRenderer ChronocharacterRenderer;
+    public Sprite ChronoSad;
+    public Sprite ChronoThinking;
     public Sprite ChronoSmile;
 
     void Start()
@@ -32,23 +35,23 @@ public class SumerianScene7 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Parang panaginip... pero ang totoo, ang dami kong natutunan."
+                line = " Napakalayo ng pinanggalingan ng lahat ng ito… mula sa malalaking imperyo, mga hari, at mga kwento ng panitikan."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Hindi lang basta luwad... ito'y alaala ng kabihasnang nagbigay daan sa mundo ngayon."
+                line = " Hindi lang ito tungkol sa kapangyarihan o digmaan... kundi pati ang mga aral at alaala na iniwan nila."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Galing mo! Handa ka na sa susunod na paglalakbay , kapag bukas na ang bagong daan."
+                line = " Handa ka na ba sa susunod na paglalakbay? Marami pang kwento ang naghihintay na matuklasan."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Simula pa lang pala ‘yon…"
-            },
+                line = " Oo, handa na ako."
+            }
         };
 
         ShowDialogue();
@@ -65,11 +68,35 @@ public class SumerianScene7 : MonoBehaviour
         {
             case 0:
                 ChronocharacterRenderer.sprite = ChronoSmile;
-                PlayercharacterRenderer.sprite = PlayerSmile;
+                PlayercharacterRenderer.sprite = PlayerReflective;
+                break;
+            case 1:
+                ChronocharacterRenderer.sprite = ChronoSad;
+                break;
+            case 2:
+                PlayercharacterRenderer.sprite = PlayerReflective;
+                break;
+            case 3:
+                ChronocharacterRenderer.sprite = ChronoThinking;
+                PlayercharacterRenderer.sprite = PlayerEager;
+                break;
+            case 4:
+                ChronocharacterRenderer.sprite = ChronoSad;
+                break;
+            case 5:
+                PlayercharacterRenderer.sprite = PlayerReflective;
+                break;
+            case 6:
+                ChronocharacterRenderer.sprite = ChronoThinking;
+                break;
+            case 7:
+                PlayercharacterRenderer.sprite = PlayerEager;
+                break;
+            case 8:
+                ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
         }
     }
-
 
     void ShowNextDialogue()
     {
@@ -77,7 +104,7 @@ public class SumerianScene7 : MonoBehaviour
 
         if (currentDialogueIndex >= dialogueLines.Length)
         {
-            SceneManager.LoadScene("SumerianQuizTime");
+            SceneManager.LoadScene("BabylonianQuizTime");
             nextButton.interactable = false;
             return;
         }

@@ -34,6 +34,17 @@ public class SumerianFourthRecallChallenges : MonoBehaviour
     private bool isShowingLayagDialogue = false;
     private bool isShowingGulongDialogue = false;
     public AudioSource finishAudioSource;
+    public SpriteRenderer PlayercharacterRenderer;
+    public SpriteRenderer ChronocharacterRenderer;
+
+    public Sprite PlayerSmile;
+    public Sprite PlayerReflective;
+    public Sprite PlayerEager;
+    public Sprite PlayerEmbarassed;
+    public Sprite ChronoCheerful;
+    public Sprite ChronoSad;
+    public Sprite PatesiFormal;
+    public Sprite IshmaSmirking;
 
 
     void Start()
@@ -144,6 +155,73 @@ public class SumerianFourthRecallChallenges : MonoBehaviour
     {
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
+
+    if (dialogueLines == Gulong)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    ChronocharacterRenderer.sprite = PatesiFormal;
+                    break;
+                case 1:
+                    PlayercharacterRenderer.sprite = PlayerEager;
+                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    break;
+                case 2:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    break;
+            }
+        }
+        else if (dialogueLines == Apoy)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    break;
+                case 1:
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    break;
+                case 2:
+                    ChronocharacterRenderer.sprite = IshmaSmirking;
+                    break;
+                case 3:
+                    ChronocharacterRenderer.sprite = PatesiFormal;
+                    break;
+            }
+        }
+        else if (dialogueLines == Layag)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    break;
+                case 1:
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    break;
+                case 2:
+                    ChronocharacterRenderer.sprite = IshmaSmirking;
+                    break;
+                case 3:
+                    ChronocharacterRenderer.sprite = PatesiFormal;
+                    break;
+            }
+        }
+        else
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    ChronocharacterRenderer.sprite = PatesiFormal;
+                    break;
+            }
+        }
 
         // Only set answers for the first question
         if (currentDialogueIndex == 0)
@@ -320,4 +398,5 @@ public class SumerianFourthRecallChallenges : MonoBehaviour
     {
         SceneManager.LoadScene("SumerianSceneSix");
     }
+
 }
