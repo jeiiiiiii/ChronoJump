@@ -48,6 +48,7 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
     public Sprite ChronoSmile;
     public Sprite ZulNeutral;
     public Sprite ZulFriendly;
+    public SpriteRenderer BlurBG;
 
     void Start()
     {
@@ -180,6 +181,17 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
                     ChronocharacterRenderer.sprite = ZulFriendly;
                     break;
                 case 3:
+                    foreach (Button btn in answerButtons)
+                    {
+                        btn.gameObject.SetActive(false);
+                    }
+                    
+                    foreach (Image heart in heartImages)
+                    {
+                        heart.gameObject.SetActive(false);
+                    }
+
+                    BlurBG.gameObject.SetActive(false);
                     ChronocharacterRenderer.sprite = ChronoCheerful;
                     break;
                 case 4:

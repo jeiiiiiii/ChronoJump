@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 62349a0f19351cf44b40be2aa58988a6
+guid: 2879e5d055b520e40a872ad8050acc58
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2349188828893169357
-    second: Map Pin_0
+      213: -7854509778398942226
+    second: button (19)_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Map Pin_0
+      name: button (19)_0
       rect:
         serializedVersion: 2
-        x: 11
-        y: 2
-        width: 27
-        height: 44
+        x: 0
+        y: 0
+        width: 193
+        height: 69
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 339b187e431066fd0800000000000000
-      internalID: -2349188828893169357
+      spriteID: eebe2b5b8fc2ff290800000000000000
+      internalID: -7854509778398942226
       vertices: []
       indices: 
       edges: []

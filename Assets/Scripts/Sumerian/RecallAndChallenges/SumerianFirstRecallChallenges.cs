@@ -14,7 +14,6 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
     }
     public SpriteRenderer PlayercharacterRenderer;
     public SpriteRenderer ChronocharacterRenderer;
-
     public Sprite PlayerSmile;
     public Sprite PlayerEager;
     public Sprite PlayerReflective;
@@ -26,6 +25,7 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
     public Sprite EnkiKind;
     public Sprite EnkiPokerface;
     public Sprite EnkiTesting;
+    public SpriteRenderer BlurBG;
 
     [System.Serializable]
     public struct Answer
@@ -48,7 +48,7 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
     private bool isShowingHieroglyphicsDialogue = false;
     private bool isShowingCuneiformDialogue = false;
     public AudioSource finishAudioSource;
-    
+
 
 
     void Start()
@@ -123,7 +123,7 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
         },
         new DialogueLine
         {
-            characterName = "ENKI",
+            characterName = "CHRONO",
             line = "Pumiling muli."
         }
     };
@@ -145,7 +145,7 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
         },
         new DialogueLine
         {
-            characterName = "ENKI",
+            characterName = "CHRONO",
             line = "Pumiling muli."
         }
     };
@@ -180,82 +180,93 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
-    if (dialogueLines == CuneiformLines)
-    {
-        switch (currentDialogueIndex)
+        if (dialogueLines == CuneiformLines)
         {
-            case 0:
-                PlayercharacterRenderer.sprite = PlayerSmile;
-                ChronocharacterRenderer.sprite = ChronoCheerful;
-                break;
-            case 1:
-                PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = EnkiKind;
-                break;
-            case 2:
-                ChronocharacterRenderer.sprite = EnkiKind;
-                break;
-            case 3:
-                PlayercharacterRenderer.sprite = PlayerReflective;
-                break;
-            case 4:
-                ChronocharacterRenderer.sprite = ChronoSmile;
-                break;
-            case 5:
-                ChronocharacterRenderer.sprite = EnkiKind;
-                break;
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    break;
+                case 1:
+                    PlayercharacterRenderer.sprite = PlayerEager;
+                    ChronocharacterRenderer.sprite = EnkiKind;
+                    break;
+                case 2:
+                    foreach (Button btn in answerButtons)
+                    {
+                        btn.gameObject.SetActive(false);
+                    }
+
+                    foreach (Image heart in heartImages)
+                    {
+                        heart.gameObject.SetActive(false);
+                    }
+                    BlurBG.gameObject.SetActive(false);
+
+                    ChronocharacterRenderer.sprite = EnkiKind;
+                    break;
+                case 3:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    break;
+                case 4:
+                    ChronocharacterRenderer.sprite = ChronoSmile;
+                    break;
+                case 5:
+                    ChronocharacterRenderer.sprite = EnkiKind;
+                    break;
+            }
         }
-    }
-    else if (dialogueLines == baybayinLines)
-    {
-        switch (currentDialogueIndex)
+        else if (dialogueLines == baybayinLines)
         {
-            case 0:
-                PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = ChronoThinking;
-                break;
-            case 1:
-                ChronocharacterRenderer.sprite = ChronoSad;
-                PlayercharacterRenderer.sprite = PlayerEmbarassed;
-                break;
-            case 2:
-                ChronocharacterRenderer.sprite = ChronoThinking;
-                break;
-            case 3:
-                ChronocharacterRenderer.sprite = ChronoSad;
-                break;
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+                case 1:
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    break;
+                case 2:
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+                case 3:
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    break;
+            }
         }
-    }
-    else if (dialogueLines == HieroglyphicsLines)
-    {
-        switch (currentDialogueIndex)
+        else if (dialogueLines == HieroglyphicsLines)
         {
-            case 0:
-                PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = ChronoThinking;
-                break;
-            case 1:
-                ChronocharacterRenderer.sprite = ChronoSad;
-                PlayercharacterRenderer.sprite = PlayerEmbarassed;
-                break;
-            case 2:
-                ChronocharacterRenderer.sprite = ChronoThinking;
-                break;
-            case 3:
-                ChronocharacterRenderer.sprite = ChronoSad;
-                break;
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+                case 1:
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    break;
+                case 2:
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+                case 3:
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    break;
+            }
         }
-    }
-    else
-    {
-        switch (currentDialogueIndex)
+        else
         {
-            case 0:
-                PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = EnkiTesting;
-                break;
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = EnkiTesting;
+                    break;
+            }
         }
-    }
         // Only set answers for the first question
         if (currentDialogueIndex == 0)
         {
@@ -437,10 +448,11 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
     {
         SceneManager.LoadScene("GameOver");
     }
-    
+
     void LoadNextScene()
     {
         SceneManager.LoadScene("SumerianSceneThree");
     }
 
 }
+

@@ -40,6 +40,8 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
     {
         nextButton.gameObject.SetActive(false);
 
+        GameState.ResetHearts();
+
         if (GameState.hearts <= 0)
             GameState.hearts = 3;
 

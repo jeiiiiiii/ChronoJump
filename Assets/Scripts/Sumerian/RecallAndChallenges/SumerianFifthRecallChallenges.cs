@@ -47,9 +47,7 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
     public Sprite ChronoCalculating;
     public Sprite ChronoSmile;
     public Sprite EnkiKind;
-
-
-
+    public SpriteRenderer BlurBG;
     void Start()
     {
         nextButton.gameObject.SetActive(false);
@@ -181,6 +179,16 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
                     ChronocharacterRenderer.sprite = EnkiKind;
                     break;
                 case 3:
+                    foreach (Button btn in answerButtons)
+                    {
+                        btn.gameObject.SetActive(false);
+                    }
+                    
+                    foreach (Image heart in heartImages)
+                    {
+                        heart.gameObject.SetActive(false);
+                    }
+                    BlurBG.gameObject.SetActive(false);
                     PlayercharacterRenderer.sprite = PlayerEager;
                     ChronocharacterRenderer.sprite = ChronoCheerful;
                     break;

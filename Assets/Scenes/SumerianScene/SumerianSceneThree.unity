@@ -2950,7 +2950,7 @@ MonoBehaviour:
   PlayerEager: {fileID: 5428063399545322546, guid: c517d75299d0ddb4cb6eed3374b7a5b3, type: 3}
   PlayerSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}
   PlayerReflective: {fileID: -6828170361931683543, guid: 41872a0e55450ef43b535aba6363171a, type: 3}
-  PlayerEmbarassed: {fileID: 3437058877286111224, guid: e5b77aeb75074ee4e84f8b6bc25159d9, type: 3}
+  PlayerEmbarassed: {fileID: 21300000, guid: f1f43dbd9447c5f468698952cbd6a509, type: 3}
   ChronocharacterRenderer: {fileID: 808504571}
   ChronoCheerful: {fileID: -4788844467492341420, guid: 2d820e03f038071438b5607182311759, type: 3}
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}

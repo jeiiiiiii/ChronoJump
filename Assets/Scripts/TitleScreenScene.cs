@@ -13,6 +13,9 @@ public class TitleScreen : MonoBehaviour
     {
         SceneManager.LoadScene("Settings");
     }
+    public void LoadGame()
+    {
+        SceneManager.LoadScene("SaveAndLoadScene");
+    }
 }
-
 

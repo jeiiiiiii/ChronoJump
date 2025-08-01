@@ -129,7 +129,6 @@ GameObject:
   m_Component:
   - component: {fileID: 81652814}
   - component: {fileID: 81652817}
-  - component: {fileID: 81652816}
   - component: {fileID: 81652815}
   m_Layer: 5
   m_Name: PlayerIm
@@ -212,36 +211,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &81652816
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 81652813}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 8123101406905451763, guid: 734d8c2d7e359c645bbd87a33a7b5a78, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!222 &81652817
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -735,10 +704,9 @@ GameObject:
   m_Component:
   - component: {fileID: 355097130}
   - component: {fileID: 355097133}
-  - component: {fileID: 355097132}
   - component: {fileID: 355097131}
   m_Layer: 5
-  m_Name: EnkiIM
+  m_Name: ChronoIM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -818,36 +786,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &355097132
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 355097129}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 6016236163410619972, guid: 81b06107ea1750c45a97ecab9fadb06c, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!222 &355097133
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2166,6 +2104,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d51a59dcdcbba8444a6dead9bbaf5056, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayercharacterRenderer: {fileID: 81652815}
+  ChronocharacterRenderer: {fileID: 355097131}
+  PlayerSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}
+  PlayerEager: {fileID: 5428063399545322546, guid: c517d75299d0ddb4cb6eed3374b7a5b3, type: 3}
+  PlayerReflective: {fileID: -6828170361931683543, guid: 41872a0e55450ef43b535aba6363171a, type: 3}
+  PlayerEmbarassed: {fileID: 21300000, guid: f1f43dbd9447c5f468698952cbd6a509, type: 3}
+  ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
+  ChronoCheerful: {fileID: -4788844467492341420, guid: 2d820e03f038071438b5607182311759, type: 3}
+  ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
+  ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
+  EnkiKind: {fileID: -6720390084276533358, guid: d288c2e22971dcc47a6edbd96b9f8b8c, type: 3}
+  EnkiPokerface: {fileID: 1077576088502714225, guid: bab085adb23a3e04eb12e22f8d36cec8, type: 3}
+  EnkiTesting: {fileID: -9032671620723716314, guid: 5ea8c885caa4aee46bd8617016edca1e, type: 3}
+  BlurBG: {fileID: 1061096143}
   answerButtons:
   - {fileID: 1190545336}
   - {fileID: 1418622348}
@@ -2328,7 +2280,7 @@ MonoBehaviour:
         m_MethodName: PlayOneShot
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 8300000, guid: 26b45d268af62af41a19dc4fd396eed7, type: 3}
+          m_ObjectArgument: {fileID: 8300000, guid: 7d02d40721397cb4f817683d18b0b90b, type: 3}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0

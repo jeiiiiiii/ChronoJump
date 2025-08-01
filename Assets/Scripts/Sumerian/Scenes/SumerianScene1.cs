@@ -113,7 +113,6 @@ public class SumerianScene1 : MonoBehaviour
                 line = " Ihanda mo ang isip mo. Hindi lang ito basta pagsusulat, ito ang puso ng kabihasnan."
             },
         };
-
         ShowDialogue();
         nextButton.onClick.AddListener(ShowNextDialogue);
         backButton.onClick.AddListener(ShowPreviousDialogue);
@@ -206,11 +205,20 @@ public class SumerianScene1 : MonoBehaviour
             ShowDialogue();
         }
     }
-    
+
     public void Home()
     {
         SceneManager.LoadScene("TitleScreen");
     }
+    
+    public void SaveAndLoad()
+    {
+        PlayerPrefs.SetInt("SumerianSceneOne_DialogueIndex", currentDialogueIndex);
+        PlayerPrefs.SetString("LastScene", "SumerianSceneOne");
+        PlayerPrefs.Save();
+        SceneManager.LoadScene("SaveAndLoadScene");
+    }
+
 }
 
 

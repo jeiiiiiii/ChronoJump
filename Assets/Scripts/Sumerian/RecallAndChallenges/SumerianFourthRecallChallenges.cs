@@ -45,6 +45,7 @@ public class SumerianFourthRecallChallenges : MonoBehaviour
     public Sprite ChronoSad;
     public Sprite PatesiFormal;
     public Sprite IshmaSmirking;
+    public SpriteRenderer BlurBG;
 
 
     void Start()
@@ -169,6 +170,16 @@ public class SumerianFourthRecallChallenges : MonoBehaviour
                     ChronocharacterRenderer.sprite = ChronoCheerful;
                     break;
                 case 2:
+                    foreach (Button btn in answerButtons)
+                    {
+                        btn.gameObject.SetActive(false);
+                    }
+                    
+                    foreach (Image heart in heartImages)
+                    {
+                        heart.gameObject.SetActive(false);
+                    }
+                    BlurBG.gameObject.SetActive(false);
                     PlayercharacterRenderer.sprite = PlayerReflective;
                     ChronocharacterRenderer.sprite = ChronoCheerful;
                     break;
@@ -283,7 +294,7 @@ public class SumerianFourthRecallChallenges : MonoBehaviour
 
             nextButton.gameObject.SetActive(true);
             nextButton.onClick.RemoveAllListeners();
-            nextButton.onClick.AddListener(() =>
+            nextButton.onClick.AddListener(() => 
             {
                 currentDialogueIndex++;
                 if (currentDialogueIndex < dialogueLines.Length - 1)

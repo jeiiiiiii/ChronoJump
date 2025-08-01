@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 734d8c2d7e359c645bbd87a33a7b5a78
+guid: 5b3c1b3f56c1caf41b636d7d679b3ba1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8123101406905451763
-    second: Chibi 1 1_0
+      213: -5725365691040230417
+    second: button (18)_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 1
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Chibi 1 1_0
+      name: button (18)_0
       rect:
         serializedVersion: 2
-        x: 31
+        x: 0
         y: 0
-        width: 347
-        height: 406
+        width: 183
+        height: 60
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3f4431901bd0bb070800000000000000
-      internalID: 8123101406905451763
+      spriteID: fe396500d3a6b80b0800000000000000
+      internalID: -5725365691040230417
       vertices: []
       indices: 
       edges: []
@@ -147,8 +147,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      Chibi 1 1_0: 8123101406905451763
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

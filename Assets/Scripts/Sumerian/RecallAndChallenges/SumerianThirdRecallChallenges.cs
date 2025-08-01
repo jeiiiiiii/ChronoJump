@@ -47,6 +47,7 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
     public Sprite PatesiFormal;
     public Sprite PatesiWise;
     public Sprite PatesiDisappointed;
+    public SpriteRenderer BlurBG;
 
 
     void Start()
@@ -176,6 +177,16 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
                     ChronocharacterRenderer.sprite = ChronoCheerful;
                     break;
                 case 2:
+                    foreach (Button btn in answerButtons)
+                    {
+                        btn.gameObject.SetActive(false);
+                    }
+                    
+                    foreach (Image heart in heartImages)
+                    {
+                        heart.gameObject.SetActive(false);
+                    }
+                    BlurBG.gameObject.SetActive(false);
                     PlayercharacterRenderer.sprite = PlayerSmile;
                     ChronocharacterRenderer.sprite = PatesiWise;
                     break;

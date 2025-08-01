@@ -816,7 +816,7 @@ MonoBehaviour:
   PlayerEager: {fileID: 5428063399545322546, guid: c517d75299d0ddb4cb6eed3374b7a5b3, type: 3}
   PlayerSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}
   PlayerReflective: {fileID: -6828170361931683543, guid: 41872a0e55450ef43b535aba6363171a, type: 3}
-  PlayerEmbarassed: {fileID: 3437058877286111224, guid: e5b77aeb75074ee4e84f8b6bc25159d9, type: 3}
+  PlayerEmbarassed: {fileID: 21300000, guid: f1f43dbd9447c5f468698952cbd6a509, type: 3}
   EnkicharacterRenderer: {fileID: 1214540431}
   EnkiKind: {fileID: -6720390084276533358, guid: d288c2e22971dcc47a6edbd96b9f8b8c, type: 3}
   EnkiPokerface: {fileID: 1077576088502714225, guid: bab085adb23a3e04eb12e22f8d36cec8, type: 3}
