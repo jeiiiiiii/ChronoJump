@@ -1,0 +1,169 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 0
+    path: Assets/Scenes/SampleScene.unity
+    guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/TitleScreen.unity
+    guid: 6c4d358ed1cf4984982211abad124d23
+  - enabled: 1
+    path: Assets/Scenes/ChapterSelect.unity
+    guid: 7bdfaea50b88af94583a088591e57bbe
+  - enabled: 1
+    path: Assets/Scenes/Settings.unity
+    guid: d39246d7dbe0e5946a2c8c617a39f9a3
+  - enabled: 1
+    path: Assets/Scenes/CoordinateSelect.unity
+    guid: a5430632016fe0a47ba3d39ccfb9222e
+  - enabled: 1
+    path: Assets/Scenes/SumerianScene/SumerianSceneOne.unity
+    guid: 1a5fe0d85161a2b4c9b5852afbffc0a2
+  - enabled: 1
+    path: Assets/Scenes/SumerianScene/SumerianSceneTwo.unity
+    guid: 919d2295bbcb2764a9d5ab618096e18b
+  - enabled: 1
+    path: Assets/Scenes/SumerianScene/SumerianSceneThree.unity
+    guid: 74f4379392fd0744fb6355dd286791b1
+  - enabled: 1
+    path: Assets/Scenes/SumerianScene/SumerianSceneFour.unity
+    guid: cf634cae625df1040bb8c1c01727e851
+  - enabled: 1
+    path: Assets/Scenes/SumerianScene/SumerianSceneFive.unity
+    guid: a26ea92d3fd183440855cafefccf4d16
+  - enabled: 1
+    path: Assets/Scenes/SumerianScene/SumerianSceneSix.unity
+    guid: 669351d5463c0f54a933ea4fb23bff55
+  - enabled: 1
+    path: Assets/Scenes/SumerianScene/SumerianSceneSeven.unity
+    guid: 76360d8ff1699724795482e39031cd4a
+  - enabled: 1
+    path: Assets/Scenes/SumerianRecallChallenges/SumerianFirstRecallChallenges.unity
+    guid: 12e3036037018b04fa1cd2b550e177c7
+  - enabled: 1
+    path: Assets/Scenes/SumerianRecallChallenges/SumerianSecondRecallChallenges.unity
+    guid: fe2c1de1f292ddf48859f994070e5c0a
+  - enabled: 1
+    path: Assets/Scenes/SumerianRecallChallenges/SumerianThirdRecallChallenges.unity
+    guid: 1ccc39015d5f5a74191f8f2d7e235b65
+  - enabled: 1
+    path: Assets/Scenes/SumerianRecallChallenges/SumerianFourthRecallChallenges.unity
+    guid: 5dee1d30258ecec41bb377e8a0c89e99
+  - enabled: 1
+    path: Assets/Scenes/SumerianRecallChallenges/SumerianFifthRecallChallenges.unity
+    guid: 9862e847036f4104b9d94dcb55ea1b66
+  - enabled: 1
+    path: Assets/Scenes/SumerianRecallChallenges/SumerianQuizTime.unity
+    guid: eae8000fb9dc4f2418b4bdae92ead091
+  - enabled: 1
+    path: Assets/Scenes/SumerianRecallChallenges/GameOver.unity
+    guid: 760369228f53575459d0452a6732a383
+  - enabled: 1
+    path: Assets/Scenes/AkkadianScene/AkkadianSceneOne.unity
+    guid: 4be67aabe31b2664fb0782cd07af4cc9
+  - enabled: 1
+    path: Assets/Scenes/AkkadianScene/AkkadianSceneTwo.unity
+    guid: 5f864e962a794e8499f4bdbb2ba5e980
+  - enabled: 1
+    path: Assets/Scenes/AkkadianScene/AkkadianSceneThree.unity
+    guid: cbaa7fcce7a7130469530c75613c53d5
+  - enabled: 1
+    path: Assets/Scenes/AkkadianScene/AkkadianSceneFour.unity
+    guid: c2e721a0a4fd00846ae1ddedae0a12e7
+  - enabled: 1
+    path: Assets/Scenes/AkkadianScene/AkkadianSceneFive.unity
+    guid: c1dd9a5abdfbddc40be9a4fc56cb77ee
+  - enabled: 1
+    path: Assets/Scenes/AkkadianScene/AkkadianSceneSix.unity
+    guid: 2156b44048ca71c40a86e0b7ec00e126
+  - enabled: 1
+    path: Assets/Scenes/AkkadianRecallChallenges/AkkadianFirstRecallChallenges.unity
+    guid: ce5563544c14c0e47b8e329786a18af0
+  - enabled: 1
+    path: Assets/Scenes/AkkadianRecallChallenges/AkkadianSecondRecallChallenges.unity
+    guid: c1c9a555624d3ec468afbd6d8fb3a92f
+  - enabled: 1
+    path: Assets/Scenes/AkkadianRecallChallenges/AkkadianThirdRecallChallenges.unity
+    guid: 806a1fcd2b4be7742ab17ae5b7a8f6c9
+  - enabled: 1
+    path: Assets/Scenes/AkkadianRecallChallenges/AkkadianQuizTime.unity
+    guid: 95bbf2f1d0e14434fb06b6160bb136ca
+  - enabled: 1
+    path: Assets/Scenes/AkkadianRecallChallenges/GameOver.unity
+    guid: b02e92e7886af404d8805f10d1b9858a
+  - enabled: 1
+    path: Assets/Scenes/BabylonianScene/BabylonianSceneOne.unity
+    guid: a5444a08e2bd18245a19d9af7bcf6fd5
+  - enabled: 1
+    path: Assets/Scenes/BabylonianScene/BabylonianSceneTwo.unity
+    guid: 6b0ac7e8b92de264fb8dbb31aa32bff3
+  - enabled: 1
+    path: Assets/Scenes/BabylonianScene/BabylonianSceneThree.unity
+    guid: d957368c044dee34ea48fbb39fd406f3
+  - enabled: 1
+    path: Assets/Scenes/BabylonianScene/BabylonianSceneFour.unity
+    guid: 4309676146b890f40a61f5891f424e2e
+  - enabled: 1
+    path: Assets/Scenes/BabylonianScene/BabylonianSceneFive.unity
+    guid: a4a2e53de349f924daaf560c6276aecc
+  - enabled: 1
+    path: Assets/Scenes/BabylonianScene/BabylonianSceneSix.unity
+    guid: 76ad2397d8a2ade43a21cd697f9f5aef
+  - enabled: 1
+    path: Assets/Scenes/BabylonianScene/BabylonianSceneSeven.unity
+    guid: bd6a741a973591c4e8774bffb8ca4702
+  - enabled: 1
+    path: Assets/Scenes/BabylonianRecallChallenges/BabylonianFirstRecallChallenges.unity
+    guid: 20fb8261b17bada4fb0ee5baefe9485e
+  - enabled: 1
+    path: Assets/Scenes/BabylonianRecallChallenges/BabylonianSecondRecallChallenges.unity
+    guid: 3642dd4a9889cc443ad49a09addafebd
+  - enabled: 1
+    path: Assets/Scenes/BabylonianRecallChallenges/BabylonianThirdRecallChallenges.unity
+    guid: 1b4657b7d82117b438b0bfc41748314f
+  - enabled: 1
+    path: Assets/Scenes/BabylonianRecallChallenges/BabylonianFourthRecallChallenges.unity
+    guid: 0ba9b83e0e6fd524191aadc62c742598
+  - enabled: 1
+    path: Assets/Scenes/BabylonianRecallChallenges/BabylonianQuizTime.unity
+    guid: 16b4624754796754299fdbb376da2767
+  - enabled: 1
+    path: Assets/Scenes/BabylonianRecallChallenges/GameOver.unity
+    guid: 908e0cd058698214781d14e611f015cf
+  - enabled: 1
+    path: Assets/Scenes/AssyrianScene/AssyrianSceneOne.unity
+    guid: 9f75e3bb1e9867f40a940e1a8c28c121
+  - enabled: 1
+    path: Assets/Scenes/AssyrianScene/AssyrianSceneTwo.unity
+    guid: 0bc2aa0374b916c4c9296407501a654b
+  - enabled: 1
+    path: Assets/Scenes/AssyrianScene/AssyrianSceneThree.unity
+    guid: c4b07b3331bd3af43b6fa7a42a8a6da5
+  - enabled: 1
+    path: Assets/Scenes/AssyrianScene/AssyrianSceneFour.unity
+    guid: 98c1e9a6cd586924495413446df528ae
+  - enabled: 1
+    path: Assets/Scenes/AssyrianScene/AssyrianSceneFive.unity
+    guid: a583864e11434a94f9930070cac46fa8
+  - enabled: 1
+    path: Assets/Scenes/AssyrianRecallChallenges/AssyrianFirstRecallChallenges.unity
+    guid: 0770be74248a07f449747cbd1e6d95c9
+  - enabled: 1
+    path: Assets/Scenes/AssyrianRecallChallenges/AssyrianSecondRecallChallenges.unity
+    guid: 983c2ea89f1032c489a296836b8254c0
+  - enabled: 1
+    path: Assets/Scenes/AssyrianRecallChallenges/AssyrianThirdRecallChallenges.unity
+    guid: ab4ac6301ae373a439408e5225f7bec3
+  - enabled: 1
+    path: Assets/Scenes/AssyrianRecallChallenges/AssyrianQuizTime.unity
+    guid: f14ca075008136d4a9b630095bc47f66
+  - enabled: 1
+    path: Assets/Scenes/AssyrianRecallChallenges/GameOver.unity
+    guid: 2d63f6f95e20d654584e04ea002527e9
+  m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_UseUCBPForAssetBundles: 0
