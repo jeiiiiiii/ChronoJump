@@ -35,11 +35,24 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
     private bool isShowingpananakopDialogue = false;
     public AudioSource finishAudioSource;
 
+    public SpriteRenderer PlayercharacterRenderer;
+    public SpriteRenderer ChronocharacterRenderer;
+
+    public Sprite PlayerSmile;
+    public Sprite PlayerEager;
+    public Sprite PlayerReflective;
+    public Sprite PlayerEmbarassed;
+
+    public Sprite ChronoThinking;
+    public Sprite ChronoCheerful;
+    public Sprite ChronoSad;
+    public Sprite ChronoSmile;
+    public SpriteRenderer BlurBG;
 
     void Start()
     {
         nextButton.gameObject.SetActive(false);
-        
+
         GameState.ResetHearts();
 
         if (GameState.hearts <= 0)
@@ -81,7 +94,6 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
             characterName = "PLAYER",
             line = " Parang hindi tunay na kapayapaan ang sinasabi niya... kundi tahimik na takot."
         },
-
     };
     private DialogueLine[] siningLines = new DialogueLine[]
     {
@@ -149,6 +161,82 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+        if (dialogueLines == pananakopLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerEager;
+                    ChronocharacterRenderer.sprite = ChronoSmile;
+                    break;
+                case 1:
+                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    break;
+                case 2:
+                    foreach (Button btn in answerButtons)
+                    {
+                        btn.gameObject.SetActive(false);
+                    }
+                    
+                    foreach (Image heart in heartImages)
+                    {
+                        heart.gameObject.SetActive(false);
+                    }
+                    BlurBG.gameObject.SetActive(false);
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+                case 3:
+                    ChronocharacterRenderer.sprite = ChronoSmile;
+                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    break;
+            }
+        }
+        else if (dialogueLines == siningLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+                case 1:
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    break;
+                case 2:
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    break;
+            }
+        }
+        else if (dialogueLines == kalabanLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+                case 1:
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    break;
+                case 2:
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    break;
+            }
+        }
+        else
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+            }
+        }
 
         if (currentDialogueIndex == 0)
         {
@@ -162,7 +250,6 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
         }
         else
         {
-
             if (currentDialogueIndex == dialogueLines.Length - 1)
             {
                 nextButton.gameObject.SetActive(true);
@@ -198,6 +285,7 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
 
         hasAnswered = false;
     }
+
     void UpdateHeartsUI()
     {
         for (int i = 0; i < heartImages.Length; i++)
@@ -253,7 +341,7 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
                 return;
             }
 
-            if (selected.text == "sining")
+            if (selected.text == "Pagpapalaganap ng sining")
             {
                 isShowingsiningDialogue = true;
                 currentDialogueIndex = 0;
@@ -264,7 +352,7 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
                 nextButton.onClick.RemoveAllListeners();
                 nextButton.onClick.AddListener(ShowNextsiningDialogue);
             }
-            else if (selected.text == "kalaban")
+            else if (selected.text == "Pagpapakumbaba sa harap ng kalaban")
             {
                 isShowingkalabanDialogue = true;
                 currentDialogueIndex = 0;
@@ -278,36 +366,19 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
             else
             {
                 foreach (Button btn in answerButtons)
-                {
                     btn.interactable = true;
-                }
+
                 nextButton.gameObject.SetActive(false);
                 hasAnswered = false;
-            }
-        }
-
-
-        void ShowNextpananakopDialogue()
-        {
-            currentDialogueIndex++;
-
-            if (currentDialogueIndex <= dialogueLines.Length - 1)
-            {
-                ShowDialogue();
-                nextButton.gameObject.SetActive(true);
-                nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextpananakopDialogue);
             }
         }
 
         void ShowNextsiningDialogue()
         {
             currentDialogueIndex++;
-
             if (currentDialogueIndex <= dialogueLines.Length - 1)
             {
                 ShowDialogue();
-                nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
                 nextButton.onClick.AddListener(ShowNextsiningDialogue);
             }
@@ -316,24 +387,22 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
         void ShowNextkalabanDialogue()
         {
             currentDialogueIndex++;
-
             if (currentDialogueIndex <= dialogueLines.Length - 1)
             {
                 ShowDialogue();
-                nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
                 nextButton.onClick.AddListener(ShowNextkalabanDialogue);
             }
         }
     }
+
     void LoadGameOverScene()
     {
         SceneManager.LoadScene("GameOver");
     }
-    
+
     void LoadNextScene()
     {
         SceneManager.LoadScene("AssyrianSceneTwo");
     }
-
 }

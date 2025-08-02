@@ -13,6 +13,18 @@ public class AkkadianSecondRecallChallenges : MonoBehaviour
         public string line;
     }
 
+    public SpriteRenderer PlayercharacterRenderer;
+    public SpriteRenderer ChronocharacterRenderer;
+    public Sprite PlayerSmile;
+    public Sprite PlayerEager;
+    public Sprite PlayerReflective;
+    public Sprite PlayerEmbarassed;
+    public Sprite ChronoThinking;
+    public Sprite ChronoCheerful;
+    public Sprite ChronoSad;
+    public Sprite ChronoSmile;
+    public SpriteRenderer BlurBG;
+
     [System.Serializable]
     public struct Answer
     {
@@ -34,7 +46,6 @@ public class AkkadianSecondRecallChallenges : MonoBehaviour
     private bool isShowingpanloobDialogue = false;
     private bool isShowingHurrianDialogue = false;
     public AudioSource finishAudioSource;
-
 
     void Start()
     {
@@ -66,7 +77,7 @@ public class AkkadianSecondRecallChallenges : MonoBehaviour
         },
         new DialogueLine
         {
-            characterName = " CHRONO",
+            characterName = "CHRONO",
             line = " Tumpak. Sa panahong mahina ang pamahalaan, sinamantala ito ng mga dayuhang mananakop."
         },
 
@@ -75,24 +86,24 @@ public class AkkadianSecondRecallChallenges : MonoBehaviour
     {
         new DialogueLine
         {
-            characterName = "PLAYER",
-            line = "Walang matibay na tala tungkol sa tagtuyot bilang pangunahing dahilan." },
+            characterName = "CHRONO",
+            line = " Walang matibay na tala tungkol sa tagtuyot bilang pangunahing dahilan." },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = "Pumiling muli."
+            line = " Pumiling muli."
         }
     };
     private DialogueLine[] panloobLines = new DialogueLine[]
     {
         new DialogueLine
         {
-            characterName = "PLAYER",
-            line = "May mga kahinaan sa pamahalaan, pero ang panlabas na pagsalakay ang naging mitsa ng tuluyang pagbagsak" },
+            characterName = "CHRONO",
+            line = " May mga kahinaan sa pamahalaan, pero ang panlabas na pagsalakay ang naging mitsa ng tuluyang pagbagsak" },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = "Pumiling muli."
+            line = " Pumiling muli."
         }
     };
 
@@ -126,6 +137,68 @@ public class AkkadianSecondRecallChallenges : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+        if (dialogueLines == HurrianLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    break;
+                case 1:
+                    foreach (Button btn in answerButtons)
+                    {
+                        btn.gameObject.SetActive(false);
+                    }
+                    
+                    foreach (Image heart in heartImages)
+                    {
+                        heart.gameObject.SetActive(false);
+                    }
+                    BlurBG.gameObject.SetActive(false);
+                    PlayercharacterRenderer.sprite = PlayerEager;
+                    ChronocharacterRenderer.sprite = ChronoSmile;
+                    break;
+            }
+        }
+        else if (dialogueLines == tagtuyotLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    break;
+                case 1:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+            }
+        }
+        else if (dialogueLines == panloobLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    break;
+                case 1:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+            }
+        }
+        else
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+            }
+        }
 
         if (currentDialogueIndex == 0)
         {
@@ -139,7 +212,6 @@ public class AkkadianSecondRecallChallenges : MonoBehaviour
         }
         else
         {
-
             if (currentDialogueIndex == dialogueLines.Length - 1)
             {
                 nextButton.gameObject.SetActive(true);
@@ -230,7 +302,7 @@ public class AkkadianSecondRecallChallenges : MonoBehaviour
                 return;
             }
 
-            if (selected.text == "tagtuyot")
+            if (selected.text.Contains("tagtuyot"))
             {
                 isShowingtagtuyotDialogue = true;
                 currentDialogueIndex = 0;
@@ -241,7 +313,7 @@ public class AkkadianSecondRecallChallenges : MonoBehaviour
                 nextButton.onClick.RemoveAllListeners();
                 nextButton.onClick.AddListener(ShowNexttagtuyotDialogue);
             }
-            else if (selected.text == "panloob")
+            else if (selected.text.Contains("panloob"))
             {
                 isShowingpanloobDialogue = true;
                 currentDialogueIndex = 0;

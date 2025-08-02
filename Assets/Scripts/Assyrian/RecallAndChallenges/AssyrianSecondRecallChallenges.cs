@@ -35,6 +35,19 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
     private bool isShowingAshurbanipalDialogue = false;
     public AudioSource finishAudioSource;
 
+    public SpriteRenderer PlayercharacterRenderer;
+    public SpriteRenderer ChronocharacterRenderer;
+
+    public Sprite PlayerSmile;
+    public Sprite PlayerEager;
+    public Sprite PlayerReflective;
+    public Sprite PlayerEmbarassed;
+
+    public Sprite ChronoThinking;
+    public Sprite ChronoCheerful;
+    public Sprite ChronoSad;
+    public Sprite ChronoSmile;
+    public SpriteRenderer BlurBG;
 
     void Start()
     {
@@ -79,14 +92,15 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
             characterName = "PLAYER",
             line = " Mas matatag pa pala ang kaalaman kaysa sa espada."
         },
-
     };
+
     private DialogueLine[] HammurabiLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Ano... si Hammurabi ba?" },
+            line = " Ano... si Hammurabi ba?"
+        },
         new DialogueLine
         {
             characterName = "CHRONO",
@@ -97,14 +111,15 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
             characterName = "CHRONO",
             line = "Pumiling muli."
         },
-
     };
+
     private DialogueLine[] NebuchadnezzarLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Si Nebuchadnezzar... siguro?" },
+            line = " Si Nebuchadnezzar... siguro?"
+        },
         new DialogueLine
         {
             characterName = "CHRONO",
@@ -147,6 +162,81 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+        if (dialogueLines == AshurbanipalLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerEager;
+                    ChronocharacterRenderer.sprite = ChronoSmile;
+                    break;
+                case 1:
+                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    break;
+                case 2:
+                    foreach (Button btn in answerButtons)
+                    {
+                        btn.gameObject.SetActive(false);
+                    }
+                    
+                    foreach (Image heart in heartImages)
+                    {
+                        heart.gameObject.SetActive(false);
+                    }
+                    BlurBG.gameObject.SetActive(false);
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+                case 3:
+                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    break;
+            }
+        }
+        else if (dialogueLines == HammurabiLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+                case 1:
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    break;
+                case 2:
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    break;
+            }
+        }
+        else if (dialogueLines == NebuchadnezzarLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+                case 1:
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    break;
+                case 2:
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    break;
+            }
+        }
+        else
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+            }
+        }
 
         if (currentDialogueIndex == 0)
         {
@@ -160,7 +250,6 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
         }
         else
         {
-
             if (currentDialogueIndex == dialogueLines.Length - 1)
             {
                 nextButton.gameObject.SetActive(true);
@@ -196,6 +285,7 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
 
         hasAnswered = false;
     }
+
     void UpdateHeartsUI()
     {
         for (int i = 0; i < heartImages.Length; i++)
@@ -273,39 +363,14 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
                 nextButton.onClick.RemoveAllListeners();
                 nextButton.onClick.AddListener(ShowNextNebuchadnezzarDialogue);
             }
-            else
-            {
-                foreach (Button btn in answerButtons)
-                {
-                    btn.interactable = true;
-                }
-                nextButton.gameObject.SetActive(false);
-                hasAnswered = false;
-            }
-        }
-
-
-        void ShowNextAshurbanipalDialogue()
-        {
-            currentDialogueIndex++;
-
-            if (currentDialogueIndex <= dialogueLines.Length - 1)
-            {
-                ShowDialogue();
-                nextButton.gameObject.SetActive(true);
-                nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextAshurbanipalDialogue);
-            }
         }
 
         void ShowNextHammurabiDialogue()
         {
             currentDialogueIndex++;
-
             if (currentDialogueIndex <= dialogueLines.Length - 1)
             {
                 ShowDialogue();
-                nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
                 nextButton.onClick.AddListener(ShowNextHammurabiDialogue);
             }
@@ -314,24 +379,22 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
         void ShowNextNebuchadnezzarDialogue()
         {
             currentDialogueIndex++;
-
             if (currentDialogueIndex <= dialogueLines.Length - 1)
             {
                 ShowDialogue();
-                nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
                 nextButton.onClick.AddListener(ShowNextNebuchadnezzarDialogue);
             }
         }
     }
+
     void LoadGameOverScene()
     {
         SceneManager.LoadScene("GameOver");
     }
-    
+
     void LoadNextScene()
     {
         SceneManager.LoadScene("AssyrianSceneThree");
     }
-
 }

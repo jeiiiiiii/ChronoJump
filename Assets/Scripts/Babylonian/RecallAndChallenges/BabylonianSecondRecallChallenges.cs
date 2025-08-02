@@ -35,6 +35,19 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
     private bool isShowingKodigoDialogue = false;
     public AudioSource finishAudioSource;
 
+    public SpriteRenderer PlayercharacterRenderer;
+    public SpriteRenderer ChronocharacterRenderer;
+
+    public Sprite PlayerSmile;
+    public Sprite PlayerEager;
+    public Sprite PlayerReflective;
+    public Sprite PlayerEmbarassed;
+
+    public Sprite ChronoThinking;
+    public Sprite ChronoCheerful;
+    public Sprite ChronoSad;
+    public Sprite ChronoSmile;
+    public SpriteRenderer BlurBG;
 
     void Start()
     {
@@ -79,32 +92,32 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
             characterName = "CHRONO",
             line = " Napansin mo rin? Tara, silipin natin ang susunod na yugto sa kanyang pamumuno."
         },
-
     };
     private DialogueLine[] KatarunganLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = "Kodigo ng Katarungan ni Hammurabi?" },
-        new DialogueLine
-        {
-            characterName = "CHRONO",
-            line = "Malapit na, pero hindi iyan ang tamang tawag."
+            line = " Kodigo ng Katarungan ni Hammurabi?"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = "Pumiling muli."
+            line = " Malapit na, pero hindi iyan ang tamang tawag."
         },
-
+        new DialogueLine
+        {
+            characterName = "CHRONO",
+            line = " Pumiling muli."
+        },
     };
     private DialogueLine[] KalakalanLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = "Batas sa Kalakalan ni Hammurabi?" },
+            line = "Batas sa Kalakalan ni Hammurabi?"
+        },
         new DialogueLine
         {
             characterName = "CHRONO",
@@ -147,6 +160,83 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+        if (dialogueLines == KodigoLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerEager;
+                    ChronocharacterRenderer.sprite = ChronoSmile;
+                    break;
+                case 1:
+                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    break;
+                case 2:
+                    foreach (Button btn in answerButtons)
+                    {
+                        btn.gameObject.SetActive(false);
+                    }
+                    
+                    foreach (Image heart in heartImages)
+                    {
+                        heart.gameObject.SetActive(false);
+                    }
+                    BlurBG.gameObject.SetActive(false);
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    break;
+                case 3:
+                    ChronocharacterRenderer.sprite = ChronoSmile;
+                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    break;
+            }
+        }
+        else if (dialogueLines == KatarunganLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+                case 1:
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    break;
+                case 2:
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    break;
+            }
+        }
+        else if (dialogueLines == KalakalanLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+                case 1:
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    break;
+                case 2:
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    break;
+            }
+        }
+        else
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+            }
+        }
 
         if (currentDialogueIndex == 0)
         {
@@ -160,7 +250,6 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
         }
         else
         {
-
             if (currentDialogueIndex == dialogueLines.Length - 1)
             {
                 nextButton.gameObject.SetActive(true);
@@ -196,6 +285,7 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
 
         hasAnswered = false;
     }
+
     void UpdateHeartsUI()
     {
         for (int i = 0; i < heartImages.Length; i++)
@@ -251,7 +341,7 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
                 return;
             }
 
-            if (selected.text == "Katarungan")
+            if (selected.text == "Kodigo ng Katarungan ni Hammurabi")
             {
                 isShowingKatarunganDialogue = true;
                 currentDialogueIndex = 0;
@@ -262,7 +352,7 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
                 nextButton.onClick.RemoveAllListeners();
                 nextButton.onClick.AddListener(ShowNextKatarunganDialogue);
             }
-            else if (selected.text == "Kalakalan")
+            else if (selected.text == "Batas sa Kalakalan ni Hammurabi")
             {
                 isShowingKalakalanDialogue = true;
                 currentDialogueIndex = 0;
@@ -276,36 +366,19 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
             else
             {
                 foreach (Button btn in answerButtons)
-                {
                     btn.interactable = true;
-                }
+
                 nextButton.gameObject.SetActive(false);
                 hasAnswered = false;
-            }
-        }
-
-
-        void ShowNextKodigoDialogue()
-        {
-            currentDialogueIndex++;
-
-            if (currentDialogueIndex <= dialogueLines.Length - 1)
-            {
-                ShowDialogue();
-                nextButton.gameObject.SetActive(true);
-                nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextKodigoDialogue);
             }
         }
 
         void ShowNextKatarunganDialogue()
         {
             currentDialogueIndex++;
-
             if (currentDialogueIndex <= dialogueLines.Length - 1)
             {
                 ShowDialogue();
-                nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
                 nextButton.onClick.AddListener(ShowNextKatarunganDialogue);
             }
@@ -314,24 +387,21 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
         void ShowNextKalakalanDialogue()
         {
             currentDialogueIndex++;
-
             if (currentDialogueIndex <= dialogueLines.Length - 1)
             {
                 ShowDialogue();
-                nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
                 nextButton.onClick.AddListener(ShowNextKalakalanDialogue);
             }
         }
     }
+
     void LoadGameOverScene()
     {
         SceneManager.LoadScene("GameOver");
     }
-    
     void LoadNextScene()
     {
-        SceneManager.LoadScene("BabylonianSceneThree");
+    SceneManager.LoadScene("BabylonianSceneThree");
     }
-
 }

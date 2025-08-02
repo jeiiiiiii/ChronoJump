@@ -13,6 +13,20 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
         public string line;
     }
 
+    public SpriteRenderer PlayercharacterRenderer;
+    public SpriteRenderer ChronocharacterRenderer;
+    public Sprite PlayerSmile;
+    public Sprite PlayerEager;
+    public Sprite PlayerReflective;
+    public Sprite PlayerEmbarassed;
+    public Sprite ChronoThinking;
+    public Sprite ChronoCheerful;
+    public Sprite ChronoSad;
+    public Sprite ChronoSmile;
+    public Sprite SargonProud;
+    public Sprite SargonThinking;
+    public SpriteRenderer BlurBG;
+
     [System.Serializable]
     public struct Answer
     {
@@ -34,7 +48,6 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
     private bool isShowingHammurabiDialogue = false;
     private bool isShowingSargonDialogue = false;
     public AudioSource finishAudioSource;
-
 
     void Start()
     {
@@ -68,22 +81,22 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
         },
         new DialogueLine
         {
-            characterName = " CHRONO",
+            characterName = "CHRONO",
             line = " Tama! Siya ang simula ng konsepto ng imperyo."
         },
         new DialogueLine
         {
-            characterName = " PLAYER",
+            characterName = "PLAYER",
             line = " Parang hindi biro ang ginawa ni Sargon… Pero paano niya napanatili ang gano’n kalawak na imperyo?"
         },
         new DialogueLine
         {
-            characterName = " CHRONO",
+            characterName = "CHRONO",
             line = " Pero ang pagtatag ng imperyo ay simula pa lang… Ibang hamon ang pagpapanatili nito."
         },
         new DialogueLine
         {
-            characterName = " CHRONO",
+            characterName = "CHRONO",
             line = " Halina't silipin natin kung paano pinalawak ni Sargon ang kanyang pamumuno mula hilaga hanggang katimugan..."
         },
 
@@ -93,11 +106,11 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = "Si Ur-Nammu ay naging pinuno sa Ur pero mas huli siya. Isipin mo kung sino ang unang nagbuklod sa mga lungsod." },
+            line = " Si Ur-Nammu ay naging pinuno sa Ur pero mas huli siya. Isipin mo kung sino ang unang nagbuklod sa mga lungsod." },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = "Pumiling muli."
+            line = " Pumiling muli."
         }
     };
     private DialogueLine[] HammurabiLines = new DialogueLine[]
@@ -105,11 +118,11 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = "Si Hammurabi ay sikat sa kanyang mga batas pero ibang panahon at imperyo na iyon. Baka masyado tayong umabante." },
+            line = " Si Hammurabi ay sikat sa kanyang mga batas pero ibang panahon at imperyo na iyon. Baka masyado tayong umabante." },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = "Pumiling muli."
+            line = " Pumiling muli."
         }
     };
 
@@ -143,6 +156,79 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+        if (dialogueLines == SargonLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    break;
+                case 1:
+                    PlayercharacterRenderer.sprite = PlayerEager;
+                    ChronocharacterRenderer.sprite = SargonProud;
+                    break;
+                case 2:
+                    foreach (Button btn in answerButtons)
+                    {
+                        btn.gameObject.SetActive(false);
+                    }
+                    
+                    foreach (Image heart in heartImages)
+                    {
+                        heart.gameObject.SetActive(false);
+                    }
+                    BlurBG.gameObject.SetActive(false);
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = SargonThinking;
+                    break;
+                case 3:
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+                case 4:
+                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    ChronocharacterRenderer.sprite = ChronoSmile;
+                    break;
+            }
+        }
+        else if (dialogueLines == UrNammuLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    break;
+                case 1:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+            }
+        }
+        else if (dialogueLines == HammurabiLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    break;
+                case 1:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+            }
+        }
+        else
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+            }
+        }
 
         if (currentDialogueIndex == 0)
         {
@@ -156,7 +242,6 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
         }
         else
         {
-
             if (currentDialogueIndex == dialogueLines.Length - 1)
             {
                 nextButton.gameObject.SetActive(true);
@@ -280,20 +365,6 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
             }
         }
 
-
-        void ShowNextSargonDialogue()
-        {
-            currentDialogueIndex++;
-
-            if (currentDialogueIndex <= dialogueLines.Length - 1)
-            {
-                ShowDialogue();
-                nextButton.gameObject.SetActive(true);
-                nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextSargonDialogue);
-            }
-        }
-
         void ShowNextUrNammuDialogue()
         {
             currentDialogueIndex++;
@@ -324,10 +395,9 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
     {
         SceneManager.LoadScene("GameOver");
     }
-    
+
     void LoadNextScene()
     {
         SceneManager.LoadScene("AkkadianSceneThree");
     }
-
 }

@@ -35,6 +35,19 @@ public class BabylonianFirstRecallChallenges : MonoBehaviour
     private bool isShowingHammurabiDialogue = false;
     public AudioSource finishAudioSource;
 
+    public SpriteRenderer PlayercharacterRenderer;
+    public SpriteRenderer ChronocharacterRenderer;
+
+    public Sprite PlayerSmile;
+    public Sprite PlayerEager;
+    public Sprite PlayerReflective;
+    public Sprite PlayerEmbarassed;
+
+    public Sprite ChronoThinking;
+    public Sprite ChronoCheerful;
+    public Sprite ChronoSad;
+    public Sprite ChronoSmile;
+    public SpriteRenderer BlurBG;
 
     void Start()
     {
@@ -68,27 +81,27 @@ public class BabylonianFirstRecallChallenges : MonoBehaviour
         },
         new DialogueLine
         {
-            characterName = " CHRONO",
+            characterName = "CHRONO",
             line = " Tama. Siya ang bumuo ng Imperyong Babylonia."
         },
         new DialogueLine
         {
-            characterName = " PLAYER",
+            characterName = "PLAYER",
             line = " Ang galing… parang ngayon lang ako nakarinig ng hari na gumawa ng mga batas para sa lahat."
         },
         new DialogueLine
         {
-            characterName = " CHRONO",
+            characterName = "CHRONO",
             line = " Kung gano’n, mas lalo kang mamamangha sa ipapakita ko sa’yo ngayon. Tara, silipin natin mismo ang kanyang ipinagmamalaking mga batas."
         },
-
     };
     private DialogueLine[] SargonLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Sargon I?" },
+            line = " Sargon I?"
+        },
         new DialogueLine
         {
             characterName = "CHRONO",
@@ -149,6 +162,83 @@ public class BabylonianFirstRecallChallenges : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+        if (dialogueLines == HammurabiLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerEager;
+                    ChronocharacterRenderer.sprite = ChronoSmile;
+                    break;
+                case 1:
+                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    break;
+                case 2:
+                    foreach (Button btn in answerButtons)
+                    {
+                        btn.gameObject.SetActive(false);
+                    }
+                    
+                    foreach (Image heart in heartImages)
+                    {
+                        heart.gameObject.SetActive(false);
+                    }
+                    BlurBG.gameObject.SetActive(false);
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    break;
+                case 3:
+                    ChronocharacterRenderer.sprite = ChronoSmile;
+                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    break;
+            }
+        }
+        else if (dialogueLines == SargonLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+                case 1:
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    break;
+                case 2:
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    break;
+            }
+        }
+        else if (dialogueLines == AshurbanipalLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+                case 1:
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    break;
+                case 2:
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    break;
+            }
+        }
+        else
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+            }
+        }
 
         if (currentDialogueIndex == 0)
         {
@@ -162,7 +252,6 @@ public class BabylonianFirstRecallChallenges : MonoBehaviour
         }
         else
         {
-
             if (currentDialogueIndex == dialogueLines.Length - 1)
             {
                 nextButton.gameObject.SetActive(true);
@@ -198,6 +287,7 @@ public class BabylonianFirstRecallChallenges : MonoBehaviour
 
         hasAnswered = false;
     }
+
     void UpdateHeartsUI()
     {
         for (int i = 0; i < heartImages.Length; i++)
@@ -253,7 +343,7 @@ public class BabylonianFirstRecallChallenges : MonoBehaviour
                 return;
             }
 
-            if (selected.text == "Sargon")
+            if (selected.text == "Sargon I")
             {
                 isShowingSargonDialogue = true;
                 currentDialogueIndex = 0;
@@ -278,36 +368,19 @@ public class BabylonianFirstRecallChallenges : MonoBehaviour
             else
             {
                 foreach (Button btn in answerButtons)
-                {
                     btn.interactable = true;
-                }
+
                 nextButton.gameObject.SetActive(false);
                 hasAnswered = false;
-            }
-        }
-
-
-        void ShowNextHammurabiDialogue()
-        {
-            currentDialogueIndex++;
-
-            if (currentDialogueIndex <= dialogueLines.Length - 1)
-            {
-                ShowDialogue();
-                nextButton.gameObject.SetActive(true);
-                nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextHammurabiDialogue);
             }
         }
 
         void ShowNextSargonDialogue()
         {
             currentDialogueIndex++;
-
             if (currentDialogueIndex <= dialogueLines.Length - 1)
             {
                 ShowDialogue();
-                nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
                 nextButton.onClick.AddListener(ShowNextSargonDialogue);
             }
@@ -316,24 +389,22 @@ public class BabylonianFirstRecallChallenges : MonoBehaviour
         void ShowNextAshurbanipalDialogue()
         {
             currentDialogueIndex++;
-
             if (currentDialogueIndex <= dialogueLines.Length - 1)
             {
                 ShowDialogue();
-                nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
                 nextButton.onClick.AddListener(ShowNextAshurbanipalDialogue);
             }
         }
     }
+
     void LoadGameOverScene()
     {
         SceneManager.LoadScene("GameOver");
     }
-    
+
     void LoadNextScene()
     {
         SceneManager.LoadScene("BabylonianSceneTwo");
     }
-
-}
+}    

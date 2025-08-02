@@ -35,6 +35,19 @@ public class BabylonianThirdRecallChallenges : MonoBehaviour
     private bool isShowingGilgameshDialogue = false;
     public AudioSource finishAudioSource;
 
+    public SpriteRenderer PlayercharacterRenderer;
+    public SpriteRenderer ChronocharacterRenderer;
+
+    public Sprite PlayerSmile;
+    public Sprite PlayerEager;
+    public Sprite PlayerReflective;
+    public Sprite PlayerEmbarassed;
+
+    public Sprite ChronoThinking;
+    public Sprite ChronoCheerful;
+    public Sprite ChronoSad;
+    public Sprite ChronoSmile;
+    public SpriteRenderer BlurBG;
 
     void Start()
     {
@@ -84,7 +97,6 @@ public class BabylonianThirdRecallChallenges : MonoBehaviour
             characterName = "CHRONO",
             line = " Halika. Oras na para makita mo kung paano nila pinarangalan ang mga diyos na nagbibigay liwanag sa kanilang buhay."
         },
-
     };
     private DialogueLine[] UrukLines = new DialogueLine[]
     {
@@ -109,7 +121,8 @@ public class BabylonianThirdRecallChallenges : MonoBehaviour
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = "Aklat ni Hammurabi?" },
+            line = "Aklat ni Hammurabi?"
+        },
         new DialogueLine
         {
             characterName = "CHRONO",
@@ -152,6 +165,87 @@ public class BabylonianThirdRecallChallenges : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+        if (dialogueLines == GilgameshLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerEager;
+                    ChronocharacterRenderer.sprite = ChronoSmile;
+                    break;
+                case 1:
+                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    break;
+                case 2:
+                    foreach (Button btn in answerButtons)
+                    {
+                        btn.gameObject.SetActive(false);
+                    }
+                    
+                    foreach (Image heart in heartImages)
+                    {
+                        heart.gameObject.SetActive(false);
+                    }
+                    BlurBG.gameObject.SetActive(false);
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    break;
+                case 3:
+                    ChronocharacterRenderer.sprite = ChronoSmile;
+                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    break;
+                case 4:
+                    ChronocharacterRenderer.sprite = ChronoSmile;
+                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    break;
+            }
+        }
+        else if (dialogueLines == UrukLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+                case 1:
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    break;
+                case 2:
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    break;
+            }
+        }
+        else if (dialogueLines == AklatLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+                case 1:
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    break;
+                case 2:
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    break;
+            }
+        }
+        else
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+            }
+        }
 
         if (currentDialogueIndex == 0)
         {
@@ -165,7 +259,6 @@ public class BabylonianThirdRecallChallenges : MonoBehaviour
         }
         else
         {
-
             if (currentDialogueIndex == dialogueLines.Length - 1)
             {
                 nextButton.gameObject.SetActive(true);
@@ -201,6 +294,7 @@ public class BabylonianThirdRecallChallenges : MonoBehaviour
 
         hasAnswered = false;
     }
+
     void UpdateHeartsUI()
     {
         for (int i = 0; i < heartImages.Length; i++)
@@ -256,7 +350,7 @@ public class BabylonianThirdRecallChallenges : MonoBehaviour
                 return;
             }
 
-            if (selected.text == "Uruk")
+            if (selected.text == "Awit ng Uruk")
             {
                 isShowingUrukDialogue = true;
                 currentDialogueIndex = 0;
@@ -267,7 +361,7 @@ public class BabylonianThirdRecallChallenges : MonoBehaviour
                 nextButton.onClick.RemoveAllListeners();
                 nextButton.onClick.AddListener(ShowNextUrukDialogue);
             }
-            else if (selected.text == "Aklat")
+            else if (selected.text == "Aklat ni Hammurabi")
             {
                 isShowingAklatDialogue = true;
                 currentDialogueIndex = 0;
@@ -281,36 +375,19 @@ public class BabylonianThirdRecallChallenges : MonoBehaviour
             else
             {
                 foreach (Button btn in answerButtons)
-                {
                     btn.interactable = true;
-                }
+
                 nextButton.gameObject.SetActive(false);
                 hasAnswered = false;
-            }
-        }
-
-
-        void ShowNextGilgameshDialogue()
-        {
-            currentDialogueIndex++;
-
-            if (currentDialogueIndex <= dialogueLines.Length - 1)
-            {
-                ShowDialogue();
-                nextButton.gameObject.SetActive(true);
-                nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextGilgameshDialogue);
             }
         }
 
         void ShowNextUrukDialogue()
         {
             currentDialogueIndex++;
-
             if (currentDialogueIndex <= dialogueLines.Length - 1)
             {
                 ShowDialogue();
-                nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
                 nextButton.onClick.AddListener(ShowNextUrukDialogue);
             }
@@ -319,24 +396,22 @@ public class BabylonianThirdRecallChallenges : MonoBehaviour
         void ShowNextAklatDialogue()
         {
             currentDialogueIndex++;
-
             if (currentDialogueIndex <= dialogueLines.Length - 1)
             {
                 ShowDialogue();
-                nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
                 nextButton.onClick.AddListener(ShowNextAklatDialogue);
             }
         }
     }
+
     void LoadGameOverScene()
     {
         SceneManager.LoadScene("GameOver");
     }
-    
+
     void LoadNextScene()
     {
         SceneManager.LoadScene("BabylonianSceneFive");
     }
-
 }

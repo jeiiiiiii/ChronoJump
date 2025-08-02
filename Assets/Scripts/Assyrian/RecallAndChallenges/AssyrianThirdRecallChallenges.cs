@@ -35,6 +35,19 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
     private bool isShowingPersianDialogue = false;
     public AudioSource finishAudioSource;
 
+    public SpriteRenderer PlayercharacterRenderer;
+    public SpriteRenderer ChronocharacterRenderer;
+
+    public Sprite PlayerSmile;
+    public Sprite PlayerEager;
+    public Sprite PlayerReflective;
+    public Sprite PlayerEmbarassed;
+
+    public Sprite ChronoThinking;
+    public Sprite ChronoCheerful;
+    public Sprite ChronoSad;
+    public Sprite ChronoSmile;
+    public SpriteRenderer BlurBG;
 
     void Start()
     {
@@ -84,8 +97,8 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
             characterName = "CHRONO",
             line = " Pero huwag kang mag-alala... marami pa tayong kwento sa hinaharap."
         },
-
     };
+
     private DialogueLine[] EgyptianLines = new DialogueLine[]
     {
         new DialogueLine
@@ -104,12 +117,14 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
             line = "Pumiling muli."
         }
     };
+
     private DialogueLine[] RomansLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Ah… Babylonians, Greeks, at Romans?" },
+            line = " Ah… Babylonians, Greeks, at Romans?"
+        },
         new DialogueLine
         {
             characterName = "CHRONO",
@@ -152,6 +167,85 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+        if (dialogueLines == PersianLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerEager;
+                    ChronocharacterRenderer.sprite = ChronoSmile;
+                    break;
+                case 1:
+                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    break;
+                case 2:
+                    foreach (Button btn in answerButtons)
+                    {
+                        btn.gameObject.SetActive(false);
+                    }
+                    
+                    foreach (Image heart in heartImages)
+                    {
+                        heart.gameObject.SetActive(false);
+                    }
+                    BlurBG.gameObject.SetActive(false);
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+                case 3:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    break;
+                case 4:
+                    ChronocharacterRenderer.sprite = ChronoSmile;
+                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    break;
+            }
+        }
+        else if (dialogueLines == EgyptianLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+                case 1:
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    break;
+                case 2:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+            }
+        }
+        else if (dialogueLines == RomansLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+                case 1:
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    break;
+                case 2:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+            }
+        }
+        else 
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+            }
+        }
 
         if (currentDialogueIndex == 0)
         {
@@ -165,7 +259,6 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
         }
         else
         {
-
             if (currentDialogueIndex == dialogueLines.Length - 1)
             {
                 nextButton.gameObject.SetActive(true);
@@ -201,6 +294,7 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
 
         hasAnswered = false;
     }
+
     void UpdateHeartsUI()
     {
         for (int i = 0; i < heartImages.Length; i++)
@@ -256,7 +350,7 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
                 return;
             }
 
-            if (selected.text == "Egyptian")
+            if (selected.text == "Sumerian, Akkadian, Egyptian")
             {
                 isShowingEgyptianDialogue = true;
                 currentDialogueIndex = 0;
@@ -267,7 +361,7 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
                 nextButton.onClick.RemoveAllListeners();
                 nextButton.onClick.AddListener(ShowNextEgyptianDialogue);
             }
-            else if (selected.text == "Romans")
+            else if (selected.text == "Babylonians, Greeks, Romans")
             {
                 isShowingRomansDialogue = true;
                 currentDialogueIndex = 0;
@@ -289,11 +383,9 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
             }
         }
 
-
         void ShowNextPersianDialogue()
         {
             currentDialogueIndex++;
-
             if (currentDialogueIndex <= dialogueLines.Length - 1)
             {
                 ShowDialogue();
@@ -306,7 +398,6 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
         void ShowNextEgyptianDialogue()
         {
             currentDialogueIndex++;
-
             if (currentDialogueIndex <= dialogueLines.Length - 1)
             {
                 ShowDialogue();
@@ -319,24 +410,22 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
         void ShowNextRomansDialogue()
         {
             currentDialogueIndex++;
-
             if (currentDialogueIndex <= dialogueLines.Length - 1)
             {
                 ShowDialogue();
-                nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
                 nextButton.onClick.AddListener(ShowNextRomansDialogue);
             }
         }
     }
+
     void LoadGameOverScene()
     {
         SceneManager.LoadScene("GameOver");
     }
-    
+
     void LoadNextScene()
     {
         SceneManager.LoadScene("AssyrianSceneFive");
     }
-
 }

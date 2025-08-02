@@ -13,6 +13,19 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
         public string line;
     }
 
+    public SpriteRenderer PlayercharacterRenderer;
+    public SpriteRenderer ChronocharacterRenderer;
+
+    public Sprite PlayerSmile;
+    public Sprite PlayerEager;
+    public Sprite PlayerReflective;
+    public Sprite PlayerEmbarassed;
+    public Sprite ChronoThinking;
+    public Sprite ChronoCheerful;
+    public Sprite ChronoSad;
+    public Sprite ChronoSmile;
+    public SpriteRenderer BlurBG;
+
     [System.Serializable]
     public struct Answer
     {
@@ -34,7 +47,6 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
     private bool isShowingEmpireDialogue = false;
     private bool isShowingrehiyonDialogue = false;
     public AudioSource finishAudioSource;
-
 
     void Start()
     {
@@ -66,38 +78,41 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
         },
         new DialogueLine
         {
-            characterName = " PLAYER",
+            characterName = "PLAYER",
             line = " Sana ganoon din ang pamumuno sa panahon namin. May layunin, hindi lang kapangyarihan."
         },
         new DialogueLine
         {
-            characterName = " CHRONO",
+            characterName = "CHRONO",
             line = " Panahon nang bumalik, ngunit dalhin mo ang aral. Hindi lahat ng bayani ay isinilang sa palasyo."
         },
-
     };
+
     private DialogueLine[] BabyloniaLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = "Hindi pa ito ang panahon ng Babylonia. Iba pang mga lungsod-estado ang namayani noon sa Mesopotamia." },
+            line = " Hindi pa ito ang panahon ng Babylonia. Iba pang mga lungsod-estado ang namayani noon sa Mesopotamia."
+        },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = "Pumiling muli."
+            line = " Pumiling muli."
         }
     };
+
     private DialogueLine[] EmpireLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = "Hindi naibalik ang Akkadian Empire. Natapos na ang panahon nito." },
+            line = " Hindi naibalik ang Akkadian Empire. Natapos na ang panahon nito."
+        },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = "Pumiling muli."
+            line = " Pumiling muli."
         }
     };
 
@@ -113,7 +128,6 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
         for (int i = 0; i < answerButtons.Length; i++)
         {
             int index = i;
-
             TMP_Text buttonText = answerButtons[i].GetComponentInChildren<TMP_Text>();
             if (buttonText != null) buttonText.text = answers[i].text;
 
@@ -131,6 +145,72 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+        if (dialogueLines == rehiyonLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerEager;
+                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    break;
+                case 1:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+                case 2:
+                    foreach (Button btn in answerButtons)
+                    {
+                        btn.gameObject.SetActive(false);
+                    }
+                    
+                    foreach (Image heart in heartImages)
+                    {
+                        heart.gameObject.SetActive(false);
+                    }
+                    BlurBG.gameObject.SetActive(false);
+                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    ChronocharacterRenderer.sprite = ChronoSmile;
+                    break;
+            }
+        }
+        else if (dialogueLines == BabyloniaLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    break;
+                case 1:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+            }
+        }
+        else if (dialogueLines == EmpireLines)
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    ChronocharacterRenderer.sprite = ChronoSad;
+                    break;
+                case 1:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+            }
+        }
+        else
+        {
+            switch (currentDialogueIndex)
+            {
+                case 0:
+                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    break;
+            }
+        }
 
         if (currentDialogueIndex == 0)
         {
@@ -144,7 +224,6 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
         }
         else
         {
-
             if (currentDialogueIndex == dialogueLines.Length - 1)
             {
                 nextButton.gameObject.SetActive(true);
@@ -180,6 +259,7 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
 
         hasAnswered = false;
     }
+
     void UpdateHeartsUI()
     {
         for (int i = 0; i < heartImages.Length; i++)
@@ -235,7 +315,7 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
                 return;
             }
 
-            if (selected.text == "Babylonia")
+            if (selected.text.Contains("Babylonia"))
             {
                 isShowingBabyloniaDialogue = true;
                 currentDialogueIndex = 0;
@@ -246,7 +326,7 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
                 nextButton.onClick.RemoveAllListeners();
                 nextButton.onClick.AddListener(ShowNextBabyloniaDialogue);
             }
-            else if (selected.text == "Empire")
+            else if (selected.text.Contains("Empire"))
             {
                 isShowingEmpireDialogue = true;
                 currentDialogueIndex = 0;
@@ -268,24 +348,9 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
             }
         }
 
-
-        void ShowNextrehiyonDialogue()
-        {
-            currentDialogueIndex++;
-
-            if (currentDialogueIndex <= dialogueLines.Length - 1)
-            {
-                ShowDialogue();
-                nextButton.gameObject.SetActive(true);
-                nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextrehiyonDialogue);
-            }
-        }
-
         void ShowNextBabyloniaDialogue()
         {
             currentDialogueIndex++;
-
             if (currentDialogueIndex <= dialogueLines.Length - 1)
             {
                 ShowDialogue();
@@ -298,7 +363,6 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
         void ShowNextEmpireDialogue()
         {
             currentDialogueIndex++;
-
             if (currentDialogueIndex <= dialogueLines.Length - 1)
             {
                 ShowDialogue();
@@ -308,14 +372,14 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
             }
         }
     }
+
     void LoadGameOverScene()
     {
         SceneManager.LoadScene("GameOver");
     }
-    
+
     void LoadNextScene()
     {
         SceneManager.LoadScene("AkkadianSceneSix");
     }
-
 }
