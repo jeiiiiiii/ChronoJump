@@ -48,6 +48,7 @@ public class QuizTimeManagerAkkadian : MonoBehaviour
 
     void Start()
     {
+        GameState.ResetScore();
         quizQuestions = new Question[]
         {
             new Question {

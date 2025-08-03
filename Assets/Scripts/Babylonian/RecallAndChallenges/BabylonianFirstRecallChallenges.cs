@@ -169,6 +169,10 @@ public class BabylonianFirstRecallChallenges : MonoBehaviour
                 case 0:
                     PlayercharacterRenderer.sprite = PlayerEager;
                     ChronocharacterRenderer.sprite = ChronoSmile;
+                    foreach (Button btn in answerButtons)
+                    {
+                        btn.interactable = false;
+                    }
                     break;
                 case 1:
                     ChronocharacterRenderer.sprite = ChronoCheerful;
@@ -245,7 +249,7 @@ public class BabylonianFirstRecallChallenges : MonoBehaviour
             SetAnswers();
             foreach (Button btn in answerButtons)
             {
-                btn.interactable = true;
+                btn.interactable = !(dialogueLines == HammurabiLines && currentDialogueIndex == 0);
                 btn.gameObject.SetActive(true);
             }
             nextButton.gameObject.SetActive(false);

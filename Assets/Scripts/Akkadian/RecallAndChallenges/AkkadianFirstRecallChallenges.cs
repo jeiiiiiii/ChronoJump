@@ -163,6 +163,10 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
                 case 0:
                     PlayercharacterRenderer.sprite = PlayerSmile;
                     ChronocharacterRenderer.sprite = ChronoCheerful;
+                    foreach (Button btn in answerButtons)
+                    {
+                        btn.interactable = false;
+                    }
                     break;
                 case 1:
                     PlayercharacterRenderer.sprite = PlayerEager;
@@ -235,7 +239,7 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
             SetAnswers();
             foreach (Button btn in answerButtons)
             {
-                btn.interactable = true;
+                btn.interactable = !(dialogueLines == SargonLines && currentDialogueIndex == 0);
                 btn.gameObject.SetActive(true);
             }
             nextButton.gameObject.SetActive(false);

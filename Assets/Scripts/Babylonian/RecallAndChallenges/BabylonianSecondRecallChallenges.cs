@@ -167,6 +167,10 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
                 case 0:
                     PlayercharacterRenderer.sprite = PlayerEager;
                     ChronocharacterRenderer.sprite = ChronoSmile;
+                    foreach (Button btn in answerButtons)
+                    {
+                        btn.interactable = false;
+                    }
                     break;
                 case 1:
                     ChronocharacterRenderer.sprite = ChronoCheerful;
@@ -243,7 +247,7 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
             SetAnswers();
             foreach (Button btn in answerButtons)
             {
-                btn.interactable = true;
+                btn.interactable = !(dialogueLines == KodigoLines && currentDialogueIndex == 0);
                 btn.gameObject.SetActive(true);
             }
             nextButton.gameObject.SetActive(false);

@@ -174,6 +174,10 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
                 case 0:
                     PlayercharacterRenderer.sprite = PlayerEager;
                     ChronocharacterRenderer.sprite = ChronoSmile;
+                    foreach (Button btn in answerButtons)
+                    {
+                        btn.interactable = false;
+                    }
                     break;
                 case 1:
                     ChronocharacterRenderer.sprite = ChronoCheerful;
@@ -252,7 +256,7 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
             SetAnswers();
             foreach (Button btn in answerButtons)
             {
-                btn.interactable = true;
+                btn.interactable = !(dialogueLines == PersianLines && currentDialogueIndex == 0);
                 btn.gameObject.SetActive(true);
             }
             nextButton.gameObject.SetActive(false);

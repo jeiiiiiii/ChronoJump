@@ -187,6 +187,11 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
                 case 0:
                     PlayercharacterRenderer.sprite = PlayerSmile;
                     ChronocharacterRenderer.sprite = ChronoCheerful;
+
+                    foreach (Button btn in answerButtons)
+                    {
+                        btn.interactable = false;
+                    }
                     break;
                 case 1:
                     PlayercharacterRenderer.sprite = PlayerEager;
@@ -273,7 +278,8 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
             SetAnswers();
             foreach (Button btn in answerButtons)
             {
-                btn.interactable = true;
+                // Only enable if NOT in CuneiformLines case 0
+                btn.interactable = !(dialogueLines == CuneiformLines && currentDialogueIndex == 0);
                 btn.gameObject.SetActive(true);
             }
             nextButton.gameObject.SetActive(false);

@@ -164,6 +164,10 @@ public class SumerianFourthRecallChallenges : MonoBehaviour
                 case 0:
                     PlayercharacterRenderer.sprite = PlayerSmile;
                     ChronocharacterRenderer.sprite = PatesiFormal;
+                    foreach (Button btn in answerButtons)
+                    {
+                        btn.interactable = false;
+                    }
                     break;
                 case 1:
                     PlayercharacterRenderer.sprite = PlayerEager;
@@ -240,7 +244,7 @@ public class SumerianFourthRecallChallenges : MonoBehaviour
             SetAnswers();
             foreach (Button btn in answerButtons)
             {
-                btn.interactable = true;
+                btn.interactable = !(dialogueLines == Gulong && currentDialogueIndex == 0);
                 btn.gameObject.SetActive(true);
             }
             nextButton.gameObject.SetActive(false);

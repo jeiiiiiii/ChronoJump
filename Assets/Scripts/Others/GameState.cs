@@ -6,4 +6,8 @@ public static class GameState
     {
         hearts = 3;
     }
+    public static void ResetScore()
+    {
+        score = 0;
+    }
 }

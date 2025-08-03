@@ -48,6 +48,7 @@ public class QuizTimeManagerBabylonian : MonoBehaviour
 
     void Start()
     {
+        GameState.ResetScore();
         quizQuestions = new Question[]
         {
             new Question {
@@ -101,7 +102,7 @@ public class QuizTimeManagerBabylonian : MonoBehaviour
             new Question {
                 questionLine = new DialogueLine {
                     //Q5
-                    question = " Ayon kay Zul, saan nanggagaling ang tubig na ginagamit sa irigasyon ng mga sakahan sa Uruk?"
+                    question = " Alin sa mga sumusunod ang kilalang akdang pampanitikan mula sa panahong Babylonia?"
                 },
                 answers = new Answer[] {
                     new Answer { text = "Aklat ni Hammurabi", isCorrect = false },
@@ -149,7 +150,7 @@ public class QuizTimeManagerBabylonian : MonoBehaviour
             new Question {
                 questionLine = new DialogueLine {
                     //Q9
-                    question = "Aling imbensyon ng mga Sumerian ang nakatulong sa pag-unlad ng transportasyon sa lupa?"
+                    question = "Ano ang layunin ng mga panitikang tulad ng Epikong Gilgamesh at Enuma Elish?"
                 },
                 answers = new Answer[] {
                     new Answer { text = "Mag-ulat ng kasaysayan", isCorrect = false },
