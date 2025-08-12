@@ -1,10 +1,22 @@
 fileFormatVersion: 2
-guid: f472da016536db442b0dbcde1bc3b15e
+guid: 9fd32024ddb9581459fbb57c8685ad33
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6119208952322513465
-    second: fifthStudProgressIcon_0
+      213: 527953631270165849
+    second: backButton_0
+  - first:
+      213: -7715037564853632802
+    second: backButton_1
+  - first:
+      213: -4245450953237359329
+    second: backButton_2
+  - first:
+      213: -1961991155019203795
+    second: backButton_3
+  - first:
+      213: 4504867054329965993
+    second: backButton_4
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +112,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: fifthStudProgressIcon_0
+      name: backButton_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 43
-        height: 44
+        y: 14
+        width: 55
+        height: 26
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +127,96 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 93ad2950f1ccbe450800000000000000
-      internalID: 6119208952322513465
+      spriteID: 95d5cb9c70ba35700800000000000000
+      internalID: 527953631270165849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: backButton_1
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 19
+        width: 22
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed0ca16f53eaee490800000000000000
+      internalID: -7715037564853632802
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: backButton_2
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 18
+        width: 18
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f1591f4f9d02515c0800000000000000
+      internalID: -4245450953237359329
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: backButton_3
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 18
+        width: 19
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2b3f98807b95c4e0800000000000000
+      internalID: -1961991155019203795
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: backButton_4
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 19
+        width: 21
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ada2b5d7b0848e30800000000000000
+      internalID: 4504867054329965993
       vertices: []
       indices: 
       edges: []
@@ -135,7 +235,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      fifthStudProgressIcon_0: 6119208952322513465
+      backButton_0: 527953631270165849
+      backButton_1: -7715037564853632802
+      backButton_2: -4245450953237359329
+      backButton_3: -1961991155019203795
+      backButton_4: 4504867054329965993
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

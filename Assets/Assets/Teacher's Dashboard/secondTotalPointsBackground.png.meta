@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: f472da016536db442b0dbcde1bc3b15e
+guid: d36e5e24b4cbc9f4ab2b20b20906db8a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6119208952322513465
-    second: fifthStudProgressIcon_0
+      213: -1559940509511860350
+    second: secondTotalPointsBackground_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: fifthStudProgressIcon_0
+      name: secondTotalPointsBackground_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 43
-        height: 44
+        width: 66
+        height: 33
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 93ad2950f1ccbe450800000000000000
-      internalID: 6119208952322513465
+      spriteID: 28fbdcb1f5af95ae0800000000000000
+      internalID: -1559940509511860350
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -134,8 +134,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      fifthStudProgressIcon_0: 6119208952322513465
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
