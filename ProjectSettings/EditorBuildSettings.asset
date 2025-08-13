@@ -164,6 +164,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/AssyrianRecallChallenges/GameOver.unity
     guid: 2d63f6f95e20d654584e04ea002527e9
+  - enabled: 1
+    path: Assets/Scenes/Login.unity
+    guid: 7116ad32dc2216a43b4b4a7234f27775
+  - enabled: 1
+    path: Assets/Scenes/Register.unity
+    guid: 269e4f3470c69244eb860dc038e99021
+  - enabled: 1
+    path: Assets/Scenes/TeacherDashboard.unity
+    guid: d95f7f5b706b40b4298c59133fd9d860
+  - enabled: 1
+    path: Assets/Scenes/LandingPage.unity
+    guid: 992ab1e475830d34791aafd3d9bf20d3
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

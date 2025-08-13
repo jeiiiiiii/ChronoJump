@@ -1,95 +1,102 @@
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 using UnityEngine.SceneManagement;
-using Firebase.Auth;
-using Firebase.Extensions;
-using Firebase.Firestore;
+using UnityEngine.UI;
 
 public class LoginManager : MonoBehaviour
 {
     [Header("UI References")]
-    public InputField emailField;
-    public InputField passwordField;
-    public Button loginButton;
-    public Button registerButton;
-    public Text feedbackText;
-
-    private FirebaseAuth auth;
-    private FirebaseFirestore db;
-
-    void Start()
-    {
-        auth = FirebaseAuth.DefaultInstance;
-        db = FirebaseFirestore.DefaultInstance;
-
-        loginButton.onClick.AddListener(OnLoginButtonClicked);
-        registerButton.onClick.AddListener(OnRegisterButtonClicked);
-    }
-
-    private void OnLoginButtonClicked()
-    {
-        string email = emailField.text.Trim();
-        string password = passwordField.text;
-
-        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
-        {
-            feedbackText.text = "Please enter both email and password.";
-            return;
-        }
-
-        feedbackText.text = "Logging in...";
-
-        auth.SignInWithEmailAndPasswordAsync(email, password)
-            .ContinueWithOnMainThread(task =>
-            {
-                if (task.IsCanceled)
-                {
-                    feedbackText.text = "Login canceled.";
-                    return;
-                }
-                if (task.IsFaulted)
-                {
-                    feedbackText.text = "Login failed: " + task.Exception.GetBaseException().Message;
-                    return;
-                }
-
-                FirebaseUser user = task.Result.User;
-                feedbackText.text = "Checking role...";
-
-                // Fetch the user's role from Firestore
-                DocumentReference docRef = db.Collection("userAccounts").Document(user.UserId);
-                docRef.GetSnapshotAsync().ContinueWithOnMainThread(roleTask =>
-                {
-                    if (roleTask.IsFaulted || !roleTask.Result.Exists)
-                    {
-                        feedbackText.text = "User role not found.";
-                        return;
-                    }
-
-                    string role = roleTask.Result.GetValue<string>("role");
-
-                    // Redirect based on role
-                    switch (role)
-                    {
-                        case "Admin":
-                            SceneManager.LoadScene("AdminScene");
-                            break;
-                        case "Teacher":
-                            SceneManager.LoadScene("TeacherDashboard");
-                            break;
-                        case "Student":
-                            SceneManager.LoadScene("TitleScreen");
-                            break;
-                        default:
-                            feedbackText.text = "Unknown role.";
-                            break;
-                    }
-                });
-            });
-    }
-
-    private void OnRegisterButtonClicked()
+    public TMP_InputField emailField;
+    public TMP_InputField passwordField;
+    public TextMeshProUGUI feedbackText;
+    public Toggle isTeacherToggle;
+    public GameObject errorMessagePanel;
+    public Button backButton;
+    public void RegisterButtonClicked()
     {
         SceneManager.LoadScene("Register");
     }
+
+    public void LoginButtonClicked()
+    {
+        string email = emailField.text.Trim();
+        string password = passwordField.text.Trim();
+
+        if (!email.Contains("@") || !email.Contains("."))
+        {
+            errorMessagePanel.SetActive(true);
+            feedbackText.text = "Please enter a valid email address.";
+            return;
+        } else if (string.IsNullOrEmpty(email))
+        {
+            errorMessagePanel.SetActive(true);
+            feedbackText.text = "Email cannot be empty.";
+            return;
+        } else if (string.IsNullOrEmpty(password))
+        {
+            errorMessagePanel.SetActive(true);
+            feedbackText.text = "Password cannot be empty.";
+            return;
+        } else if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+        {
+            errorMessagePanel.SetActive(true);
+            feedbackText.text = "Please enter both email and password.";
+            return;
+        }
+        feedbackText.text = "Logging in...";
+
+        FirebaseManager.Instance.SignIn(email, password, (success, message) =>
+        {
+            if (!success)
+            {
+                errorMessagePanel.SetActive(true);
+                feedbackText.text = message;
+                return;
+            }
+            FirebaseManager.Instance.GetUserData(userData =>
+            {
+                MainThreadDispatcher.Enqueue(() =>
+                {
+                    if (userData == null)
+                    {
+                        errorMessagePanel.SetActive(true);
+                        feedbackText.text = "No user data found.";
+                        return;
+                    }
+
+                    bool isTeacher = userData.role.ToLower() == "teacher";
+
+                    if (isTeacherToggle.isOn && isTeacher)
+                    {
+                        feedbackText.text = message;
+                        SceneManager.LoadScene("TeacherDashboard");
+                    }
+                    else if (!isTeacherToggle.isOn && !isTeacher)
+                    {
+                        feedbackText.text = message;
+                        SceneManager.LoadScene("TitleScreen");
+                    }
+                    else if (isTeacherToggle.isOn && !isTeacher)
+                    {
+                        errorMessagePanel.SetActive(true);
+                        feedbackText.text = "Role mismatch: Please uncheck the Educator toggle.";
+                    }
+                    else
+                    {
+                        errorMessagePanel.SetActive(true);
+                        feedbackText.text = "Role mismatch: Please check the Educator toggle.";
+                    }
+                });
+            });
+        });
+    }
+
+    public void BackButtonClicked()
+    {
+        errorMessagePanel.SetActive(false);
+        feedbackText.text = string.Empty;
+    }
 }
+
+
+

@@ -4,21 +4,20 @@ using System;
 public class UserAccountModel
 {
     public string userID { get; set; }
-    public string username { get; set; }
-    public string passwordHash { get; set; }
-    public string role { get; set; }
+    public DateTime createdAt { get; set; }
+    public string displayName { get; set; }
     public string email { get; set; }
-    public string createdAt { get; set; }
+    public string role { get; set; }
+
 
     public UserAccountModel() { }
 
-    public UserAccountModel(string userID, string username, string passwordHash, string role, string email, string createdAt)
+    public UserAccountModel(string userID, DateTime createdAt, string role, string displayName, string email)
     {
         this.userID = userID;
-        this.username = username;
-        this.passwordHash = passwordHash;
-        this.role = role;
-        this.email = email;
         this.createdAt = createdAt;
+        this.displayName = displayName;
+        this.email = email;
+        this.role = role;
     }
 }
