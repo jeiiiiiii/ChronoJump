@@ -24,6 +24,13 @@ public class RegisterManager : MonoBehaviour
         SceneManager.LoadScene("Login");
     }
 
+    public void BackButtonClicked()
+    {
+        SceneManager.LoadScene("LandingPage");
+        errorMessagePanel.SetActive(false);
+        feedbackText.text = string.Empty;
+    }
+    
     public void RegisterButtonClicked()
     {
         string email = emailField.text.Trim();
@@ -55,7 +62,8 @@ public class RegisterManager : MonoBehaviour
             errorMessagePanel.SetActive(true);
             feedbackText.text = "Password cannot be empty.";
             return;
-        } else if (!PatternManager.IsValidPassword(password))
+        }
+        else if (!PatternManager.IsValidPassword(password))
         {
             errorMessagePanel.SetActive(true);
             feedbackText.text = "Password must be 8-32 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.";

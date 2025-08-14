@@ -17,6 +17,13 @@ public class LoginManager : MonoBehaviour
         SceneManager.LoadScene("Register");
     }
 
+    public void BackButtonClicked()
+    {
+        SceneManager.LoadScene("LandingPage");
+        errorMessagePanel.SetActive(false);
+        feedbackText.text = string.Empty;
+    }
+    
     public void LoginButtonClicked()
     {
         string email = emailField.text.Trim();
@@ -27,28 +34,31 @@ public class LoginManager : MonoBehaviour
             errorMessagePanel.SetActive(true);
             feedbackText.text = "Please enter a valid email address.";
             return;
-        } else if (string.IsNullOrEmpty(email))
+        }
+        else if (string.IsNullOrEmpty(email))
         {
             errorMessagePanel.SetActive(true);
             feedbackText.text = "Email cannot be empty.";
             return;
-        } else if (string.IsNullOrEmpty(password))
+        }
+        else if (string.IsNullOrEmpty(password))
         {
             errorMessagePanel.SetActive(true);
             feedbackText.text = "Password cannot be empty.";
             return;
-        } else if (!PatternManager.IsValidPassword(password))
+        }
+        else if (!PatternManager.IsValidPassword(password))
         {
             errorMessagePanel.SetActive(true);
             feedbackText.text = "Password must be 8-32 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.";
             return;
         }
         else if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
-                {
-                    errorMessagePanel.SetActive(true);
-                    feedbackText.text = "Please enter both email and password.";
-                    return;
-                }
+        {
+            errorMessagePanel.SetActive(true);
+            feedbackText.text = "Please enter both email and password.";
+            return;
+        }
         feedbackText.text = "Logging in...";
 
         FirebaseManager.Instance.SignIn(email, password, (success, message) =>

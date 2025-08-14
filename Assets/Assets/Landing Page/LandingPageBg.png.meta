@@ -3,8 +3,8 @@ guid: 7fefcb4f402858b45b4e88e337a8741d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1792069859691651657
-    second: LandingPageBg_0
+      213: -7313217925845825364
+    second: LandingPageBG_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: LandingPageBg_0
+      name: LandingPageBG_0
       rect:
         serializedVersion: 2
         x: 0
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7bd156815f94127e0800000000000000
-      internalID: -1792069859691651657
+      spriteID: ca8c0f42b0b328a90800000000000000
+      internalID: -7313217925845825364
       vertices: []
       indices: 
       edges: []
