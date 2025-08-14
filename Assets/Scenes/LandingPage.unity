@@ -811,7 +811,7 @@ GameObject:
   - component: {fileID: 934855620}
   - component: {fileID: 934855619}
   m_Layer: 0
-  m_Name: MainThreadHandler
+  m_Name: UnityDispatcher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

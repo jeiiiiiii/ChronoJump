@@ -22,7 +22,7 @@ public class LoginManager : MonoBehaviour
         string email = emailField.text.Trim();
         string password = passwordField.text.Trim();
 
-        if (!email.Contains("@") || !email.Contains("."))
+        if (!PatternManager.IsValidEmail(email))
         {
             errorMessagePanel.SetActive(true);
             feedbackText.text = "Please enter a valid email address.";
@@ -37,12 +37,18 @@ public class LoginManager : MonoBehaviour
             errorMessagePanel.SetActive(true);
             feedbackText.text = "Password cannot be empty.";
             return;
-        } else if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+        } else if (!PatternManager.IsValidPassword(password))
         {
             errorMessagePanel.SetActive(true);
-            feedbackText.text = "Please enter both email and password.";
+            feedbackText.text = "Password must be 8-32 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.";
             return;
         }
+        else if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+                {
+                    errorMessagePanel.SetActive(true);
+                    feedbackText.text = "Please enter both email and password.";
+                    return;
+                }
         feedbackText.text = "Logging in...";
 
         FirebaseManager.Instance.SignIn(email, password, (success, message) =>
@@ -55,7 +61,7 @@ public class LoginManager : MonoBehaviour
             }
             FirebaseManager.Instance.GetUserData(userData =>
             {
-                MainThreadDispatcher.Enqueue(() =>
+                UnityDispatcher.RunOnMainThread(() =>
                 {
                     if (userData == null)
                     {
@@ -68,11 +74,13 @@ public class LoginManager : MonoBehaviour
 
                     if (isTeacherToggle.isOn && isTeacher)
                     {
+                        Debug.Log($"User {userData.displayName} logged in as teacher.");
                         feedbackText.text = message;
-                        SceneManager.LoadScene("TeacherDashboard");
+                        SceneManager.LoadScene("TitleScreen");
                     }
                     else if (!isTeacherToggle.isOn && !isTeacher)
                     {
+                        Debug.Log($"User {userData.displayName} logged in as student.");
                         feedbackText.text = message;
                         SceneManager.LoadScene("TitleScreen");
                     }
@@ -91,7 +99,7 @@ public class LoginManager : MonoBehaviour
         });
     }
 
-    public void BackButtonClicked()
+    public void ErrorBackButtonClicked()
     {
         errorMessagePanel.SetActive(false);
         feedbackText.text = string.Empty;

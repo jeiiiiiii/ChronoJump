@@ -4,6 +4,7 @@ using Firebase.Firestore;
 using Firebase.Extensions;
 using System;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class FirebaseManager : MonoBehaviour
 {
@@ -66,8 +67,92 @@ public class FirebaseManager : MonoBehaviour
 
             var authResult = task.Result;
             FirebaseUser user = authResult.User;
-            Debug.Log($"User signed in successfully: {user.Email}");
             callback(true, "Login successful");
+        });
+    }
+
+    public void SignUp(string email, string password, string displayName, bool isTeacher, Action<bool, string> callback)
+    {
+        Auth.CreateUserWithEmailAndPasswordAsync(email, password).ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCanceled)
+            {
+                Debug.LogError("SignUp was canceled.");
+                callback(false, "SignUp was canceled.");
+                return;
+            }
+
+            if (task.IsFaulted)
+            {
+                string errorMessage = "Unknown error eccurred. Please try again.";
+
+                foreach (var inner in task.Exception.Flatten().InnerExceptions)
+                {
+                    if (inner is FirebaseException firebaseEx)
+                    {
+                        var errorCode = (AuthError)firebaseEx.ErrorCode;
+                        switch (errorCode)
+                        {
+                            case AuthError.EmailAlreadyInUse:
+                                errorMessage = "This email is already in use.";
+                                break;
+                            case AuthError.InvalidEmail:
+                                errorMessage = "The email address is badly formatted.";
+                                break;
+                            case AuthError.WeakPassword:
+                                errorMessage = "The password is too weak.";
+                                break;
+                            default:
+                                errorMessage = firebaseEx.Message;
+                                break;
+                        }
+                    }
+                }
+
+                Debug.LogError("SignUp failed: " + task.Exception);
+                callback(false, errorMessage);
+                return;
+            }
+
+            var authResult = task.Result;
+            FirebaseUser user = authResult.User;
+
+            UserProfile profile = new UserProfile
+            {
+                DisplayName = displayName,
+            };
+            user.UpdateUserProfileAsync(profile).ContinueWithOnMainThread(updateTask =>
+            {
+                if (updateTask.IsCanceled || updateTask.IsFaulted)
+                {
+                    Debug.LogError("Failed to update user profile: " + updateTask.Exception);
+                    callback(false, "Failed to update user profile. Please try again.");
+                    return;
+                }
+                Debug.Log($"User {displayName} registered successfully with email: {email}");
+
+                DocumentReference docRef = DB.Collection("userAccounts").Document(user.UserId);
+                var userData = new
+                {
+                    displayName = user.DisplayName,
+                    email = user.Email,
+                    role = isTeacher ? "teacher" : "student"
+                };
+                Debug.Log($"Saving user data for {displayName}...");
+
+                docRef.SetAsync(userData).ContinueWithOnMainThread(setTask =>
+                {
+                    if (setTask.IsCanceled || setTask.IsFaulted)
+                    {
+                        Debug.LogError("Failed to save user data: " + setTask.Exception);
+                        callback(false, "Failed to save user data. Please try again.");
+                        return;
+                    }
+
+                    Debug.Log($"User data for {displayName} saved successfully.");
+                    callback(true, "Registration successful");
+                });
+            });
         });
     }
 
@@ -80,9 +165,11 @@ public class FirebaseManager : MonoBehaviour
             return;
         }
 
+        
         DocumentReference docRef = DB.Collection("userAccounts").Document(CurrentUser.UserId);
-        docRef.GetSnapshotAsync().ContinueWith(task =>
+        docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
+            
             if (task.IsCanceled || task.IsFaulted)
             {
                 Debug.LogError("Failed to get user data: " + task.Exception);
@@ -95,10 +182,9 @@ public class FirebaseManager : MonoBehaviour
             {
                 UserAccountModel userData = new UserAccountModel();
                 userData.userID = snapshot.Id;
-                userData.createdAt = snapshot.GetValue<DateTime>("createdAt");
-                userData.displayName = snapshot.GetValue<string>("displayName");       
-                userData.email = snapshot.GetValue<string>("email"); 
-                userData.role = snapshot.GetValue<string>("role"); 
+                userData.displayName = snapshot.GetValue<string>("displayName");
+                userData.email = snapshot.GetValue<string>("email");
+                userData.role = snapshot.GetValue<string>("role");
                 callback(userData);
             }
             else

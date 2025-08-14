@@ -2,15 +2,23 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-public class MainThreadDispatcher : MonoBehaviour
+public class UnityDispatcher : MonoBehaviour
 {
     private static readonly Queue<Action> _executionQueue = new Queue<Action>();
+    private static UnityDispatcher instance;
 
     private void Awake()
     {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
         DontDestroyOnLoad(gameObject);
+        
     }
-    public static void Enqueue(Action action)
+    public static void RunOnMainThread(Action action)
     {
         lock (_executionQueue)
         {
