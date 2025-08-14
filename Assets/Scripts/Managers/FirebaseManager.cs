@@ -4,7 +4,6 @@ using Firebase.Firestore;
 using Firebase.Extensions;
 using System;
 using UnityEngine;
-using System.Collections.Generic;
 
 public class FirebaseManager : MonoBehaviour
 {
@@ -46,6 +45,7 @@ public class FirebaseManager : MonoBehaviour
     }
 
     public FirebaseUser CurrentUser => Auth.CurrentUser;
+    public UserAccountModel CurrentUserData { get; private set; }
 
     public void SignIn(string email, string password, Action<bool, string> callback)
     {
