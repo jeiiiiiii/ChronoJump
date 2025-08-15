@@ -168,6 +168,15 @@ EditorBuildSettings:
     path: Assets/Scenes/Login.unity
     guid: 7116ad32dc2216a43b4b4a7234f27775
   - enabled: 1
+    path: Assets/Scenes/Classroom.unity
+    guid: 7657af1b132b491449b714d87b93a744
+  - enabled: 1
+    path: Assets/Scenes/CreatorMode.unity
+    guid: 0feb7545b17636046b63c4be3abcf733
+  - enabled: 1
+    path: Assets/Scenes/SaveAndLoad.unity
+    guid: 607dca98a2814e14496abbec404c1cf0
+  - enabled: 1
     path: Assets/Scenes/Register.unity
     guid: 269e4f3470c69244eb860dc038e99021
   - enabled: 1
