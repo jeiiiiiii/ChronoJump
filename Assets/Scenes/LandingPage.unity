@@ -676,8 +676,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: EXIT
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 04d8fa5ccb9bf4b4b9ed6b73071af0ef, type: 2}
-  m_sharedMaterial: {fileID: 3873622676898468374, guid: 04d8fa5ccb9bf4b4b9ed6b73071af0ef, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a9ac6f365935a6d4b96bed112242cebe, type: 2}
+  m_sharedMaterial: {fileID: 1179036257592287434, guid: a9ac6f365935a6d4b96bed112242cebe, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1112,8 +1112,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: LOG IN
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: ebc45d8cfd92bda418afe0359bd24d34, type: 2}
-  m_sharedMaterial: {fileID: -697335396114948115, guid: ebc45d8cfd92bda418afe0359bd24d34, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a9ac6f365935a6d4b96bed112242cebe, type: 2}
+  m_sharedMaterial: {fileID: 1179036257592287434, guid: a9ac6f365935a6d4b96bed112242cebe, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1540,8 +1540,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: SIGN UP
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: ebc45d8cfd92bda418afe0359bd24d34, type: 2}
-  m_sharedMaterial: {fileID: -697335396114948115, guid: ebc45d8cfd92bda418afe0359bd24d34, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a9ac6f365935a6d4b96bed112242cebe, type: 2}
+  m_sharedMaterial: {fileID: 1179036257592287434, guid: a9ac6f365935a6d4b96bed112242cebe, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
