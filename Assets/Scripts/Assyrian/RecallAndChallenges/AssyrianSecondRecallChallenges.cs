@@ -48,9 +48,39 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
     public Sprite ChronoSad;
     public Sprite ChronoSmile;
     public SpriteRenderer BlurBG;
+    public Button ArtifactImageButton;
+    public Button ArtifactUseButton;
+    public Button ArtifactButton;
+
+    private bool artifactPowerActivated = false;
 
     void Start()
     {
+        if (PlayerAchievementManager.IsAchievementUnlocked("Stone"))
+        {
+            if (ArtifactImageButton != null)
+            {
+                ArtifactImageButton.onClick.AddListener(() =>
+                {
+                    ArtifactUseButton.gameObject.SetActive(!ArtifactUseButton.gameObject.activeInHierarchy);
+                    ArtifactImageButton.gameObject.SetActive(false);
+                });
+            }
+            
+            if (ArtifactUseButton != null)
+            {
+                ArtifactUseButton.onClick.AddListener(UseArtifactButton);
+            }
+        }
+        else
+        {
+            if (ArtifactImageButton != null)
+            {
+                ArtifactImageButton.gameObject.SetActive(false);
+            }
+            Debug.Log("Achievement 'Stone' is not unlocked yet. Button functionality disabled.");
+        }
+        
         nextButton.gameObject.SetActive(false);
 
         if (GameState.hearts <= 0)
@@ -332,6 +362,7 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
         }
         else
         {
+
             GameState.hearts--;
             UpdateHeartsUI();
 
@@ -390,6 +421,23 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
                 nextButton.onClick.AddListener(ShowNextNebuchadnezzarDialogue);
             }
         }
+    }
+
+    public void UseArtifactButton()
+    {
+        ArtifactButton.onClick.AddListener(() =>
+        {
+            // Make sure this key matches exactly
+            PlayerPrefs.SetInt("UsePowerArtifactUsed", 1);
+            PlayerPrefs.Save();
+            
+            GameState.hearts++;
+            UpdateHeartsUI();
+
+            ArtifactButton.gameObject.SetActive(false);
+            ArtifactImageButton.gameObject.SetActive(false);
+
+        });
     }
 
     void LoadGameOverScene()

@@ -15,6 +15,7 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
 
     public SpriteRenderer PlayercharacterRenderer;
     public SpriteRenderer ChronocharacterRenderer;
+    public GameObject AchievementUnlockedRenderer;
 
     public Sprite PlayerSmile;
     public Sprite PlayerEager;
@@ -47,10 +48,41 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
     private bool isShowingEmpireDialogue = false;
     private bool isShowingrehiyonDialogue = false;
     public AudioSource finishAudioSource;
+    public Button ArtifactImageButton;
+    public Button ArtifactUseButton;
+    public Button ArtifactButton;
+
 
     void Start()
     {
+        if (PlayerAchievementManager.IsAchievementUnlocked("Tablet"))
+        {
+            if (ArtifactImageButton != null)
+            {
+                ArtifactImageButton.onClick.AddListener(() =>
+                {
+                    ArtifactUseButton.gameObject.SetActive(!ArtifactUseButton.gameObject.activeInHierarchy);
+                    ArtifactImageButton.gameObject.SetActive(false);
+                });
+            }
+            
+            if (ArtifactUseButton != null)
+            {
+                ArtifactUseButton.onClick.AddListener(UseArtifactButton);
+            }
+        }
+        else
+        {
+            if (ArtifactImageButton != null)
+            {
+                ArtifactImageButton.gameObject.SetActive(false);
+            }
+            Debug.Log("Achievement 'Tablet' is not unlocked yet. Button functionality disabled.");
+        }
+        
+        
         nextButton.gameObject.SetActive(false);
+        GameState.ResetHearts();
 
         if (GameState.hearts <= 0)
             GameState.hearts = 3;
@@ -68,6 +100,52 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
 
         ShowDialogue();
     }
+    public void UseArtifactButton()
+    {
+        if (PlayerPrefs.GetInt("UsePowerArtifactUsed", 0) == 0)
+        {
+            PlayerPrefs.SetInt("UsePowerArtifactUsed", 1);
+            PlayerPrefs.Save();
+
+            dialogueLines = new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    characterName = "Hint",
+                    line = " Nagtunggalian ang dalawang hukbo upang masakop ang lungsod-estado ng Ur"
+                },
+            };
+
+            currentDialogueIndex = 0;
+            ShowDialogue();
+            nextButton.gameObject.SetActive(true);
+            nextButton.onClick.RemoveAllListeners();
+            nextButton.onClick.AddListener(() =>
+            {
+                dialogueLines = new DialogueLine[]
+                {
+                    new DialogueLine
+                    {
+                        characterName = "CHRONO",
+                        line = " Ano ang nangyari matapos ang panandaliang pagbawi ng kapangyarihan ng lungsod-estado ng Ur?"
+                    },
+                };
+                
+                currentDialogueIndex = 0;
+                ShowDialogue();
+            });
+
+            ArtifactUseButton.gameObject.SetActive(false);
+            ArtifactImageButton.gameObject.SetActive(false);
+            
+            Debug.Log("Artifact hint used!");
+        }
+        else
+        {
+            ArtifactUseButton.gameObject.SetActive(false);
+        }
+    }
+
 
     private DialogueLine[] rehiyonLines = new DialogueLine[]
     {
@@ -142,6 +220,7 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
 
     void ShowDialogue()
     {
+        AchievementUnlockedRenderer.SetActive(false);
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
@@ -150,6 +229,7 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
+                    AchievementUnlockedRenderer.SetActive(true);
                     PlayercharacterRenderer.sprite = PlayerEager;
                     ChronocharacterRenderer.sprite = ChronoCheerful;
                     foreach (Button btn in answerButtons)
@@ -158,6 +238,7 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
                     }
                     break;
                 case 1:
+                    AchievementUnlockedRenderer.SetActive(false);
                     PlayercharacterRenderer.sprite = PlayerReflective;
                     ChronocharacterRenderer.sprite = ChronoThinking;
                     break;
@@ -274,6 +355,7 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
 
     void OnAnswerSelected(Answer selected)
     {
+        PlayerAchievementManager.UnlockAchievement("Strategist");
         foreach (Button btn in answerButtons)
             btn.interactable = false;
 

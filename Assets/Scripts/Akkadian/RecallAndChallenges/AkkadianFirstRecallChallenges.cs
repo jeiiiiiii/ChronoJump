@@ -49,10 +49,39 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
     private bool isShowingSargonDialogue = false;
     public AudioSource finishAudioSource;
 
+    public Button ArtifactImageButton;
+    public Button ArtifactUseButton;
+    public Button ArtifactButton;
+
+// Update your Start() method to connect the artifact button properly:
     void Start()
     {
+        if (PlayerAchievementManager.IsAchievementUnlocked("Tablet"))
+        {
+            if (ArtifactImageButton != null)
+            {
+                ArtifactImageButton.onClick.AddListener(() =>
+                {
+                    ArtifactUseButton.gameObject.SetActive(!ArtifactUseButton.gameObject.activeInHierarchy);
+                    ArtifactImageButton.gameObject.SetActive(false);
+                });
+            }
+            
+            if (ArtifactUseButton != null)
+            {
+                ArtifactUseButton.onClick.AddListener(UseArtifactButton);
+            }
+        }
+        else
+        {
+            if (ArtifactImageButton != null)
+            {
+                ArtifactImageButton.gameObject.SetActive(false);
+            }
+            Debug.Log("Achievement 'Tablet' is not unlocked yet. Button functionality disabled.");
+        }
+        
         nextButton.gameObject.SetActive(false);
-
         GameState.ResetHearts();
 
         if (GameState.hearts <= 0)
@@ -70,6 +99,51 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
         };
 
         ShowDialogue();
+    }
+    public void UseArtifactButton()
+    {
+        if (PlayerPrefs.GetInt("UsePowerArtifactUsed", 0) == 0)
+        {
+            PlayerPrefs.SetInt("UsePowerArtifactUsed", 1);
+            PlayerPrefs.Save();
+
+            dialogueLines = new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    characterName = "Hint",
+                    line = "Ang sagot ay isang hari na nagsimula sa Akkad at naging kauna-unahang emperor sa kasaysayan. Ang kanyang pangalan ay nagsisimula sa letrang 'S'."
+                },
+            };
+
+            currentDialogueIndex = 0;
+            ShowDialogue();
+            nextButton.gameObject.SetActive(true);
+            nextButton.onClick.RemoveAllListeners();
+            nextButton.onClick.AddListener(() =>
+            {
+                dialogueLines = new DialogueLine[]
+                {
+                    new DialogueLine
+                    {
+                        characterName = "CHRONO",
+                        line = " Sino ang pinunong nagtayo ng kauna-unahang imperyo sa daigdig?"
+                    },
+                };
+                
+                currentDialogueIndex = 0;
+                ShowDialogue();
+            });
+
+            ArtifactUseButton.gameObject.SetActive(false);
+            ArtifactImageButton.gameObject.SetActive(false);
+            
+            Debug.Log("Artifact hint used!");
+        }
+        else
+        {
+            ArtifactUseButton.gameObject.SetActive(false);
+        }
     }
 
     private DialogueLine[] SargonLines = new DialogueLine[]
@@ -395,6 +469,28 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
             }
         }
     }
+    // public void UseArtifactButton()
+    // {
+    //     ArtifactButton.onClick.AddListener(() =>
+    //     {
+
+    //         PlayerPrefs.SetInt("UsePowerArtifactUsed", 1);
+    //         PlayerPrefs.Save();
+
+    //         dialogueLines = new DialogueLine[]
+    //         {
+    //             new DialogueLine
+    //             {
+    //                 characterName = "CHRONO",
+    //                 line = " Should give a hint"
+    //             },
+    //         };
+
+    //         ArtifactButton.gameObject.SetActive(false);
+    //         ArtifactImageButton.gameObject.SetActive(false);
+
+    //     });
+    // }
     void LoadGameOverScene()
     {
         SceneManager.LoadScene("GameOver");

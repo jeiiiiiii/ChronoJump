@@ -14,6 +14,7 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
     }
     public SpriteRenderer PlayercharacterRenderer;
     public SpriteRenderer ChronocharacterRenderer;
+    public GameObject AchievementUnlockedRenderer;
     public Sprite PlayerSmile;
     public Sprite PlayerEager;
     public Sprite PlayerReflective;
@@ -177,6 +178,7 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
 
     void ShowDialogue()
     {
+        AchievementUnlockedRenderer.SetActive(false);
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
@@ -185,8 +187,10 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
+                    PlayerAchievementManager.UnlockAchievement("Scribe");
                     PlayercharacterRenderer.sprite = PlayerSmile;
                     ChronocharacterRenderer.sprite = ChronoCheerful;
+                    AchievementUnlockedRenderer.SetActive(true);
 
                     foreach (Button btn in answerButtons)
                     {
@@ -196,6 +200,7 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
                 case 1:
                     PlayercharacterRenderer.sprite = PlayerEager;
                     ChronocharacterRenderer.sprite = EnkiKind;
+                    AchievementUnlockedRenderer.SetActive(false);
                     break;
                 case 2:
                     foreach (Button btn in answerButtons)

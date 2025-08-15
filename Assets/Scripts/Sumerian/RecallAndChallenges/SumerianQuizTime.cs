@@ -216,7 +216,6 @@ public class QuizTimeManagerSumerian : MonoBehaviour
         selectedButton = button;
         selectedAnswer = answer;
 
-        // Allow player to proceed
         nextButton.gameObject.SetActive(true);
         nextButton.onClick.RemoveAllListeners();
         nextButton.onClick.AddListener(ConfirmAnswer);
@@ -256,7 +255,7 @@ public class QuizTimeManagerSumerian : MonoBehaviour
     void ShowQuizResult()
     {
         PlayerProgressManager.UnlockCivilization("Akkadian");
-        
+
         timerText.color = Color.white;
         timerText.gameObject.SetActive(false);
 
@@ -299,11 +298,23 @@ public class QuizTimeManagerSumerian : MonoBehaviour
         resultTextUI.text = resultText;
         ScoreTextUI.text = ScoreText;
 
-        nextButton.onClick.RemoveAllListeners();
-        nextButton.onClick.AddListener(() =>
+        if (GameState.score <= 7)
         {
-            SceneManager.LoadScene("CoordinateSelect");
-        });
+            nextButton.onClick.RemoveAllListeners();
+            nextButton.onClick.AddListener(() =>
+            {
+                SceneManager.LoadScene("CoordinateSelect");
+            });
+        }
+        else
+        {
+            nextButton.onClick.RemoveAllListeners();
+            nextButton.onClick.AddListener(() =>
+            {
+                SceneManager.LoadScene("SumerianArtifactScene");
+                PlayerAchievementManager.UnlockAchievement("Tablet");
+            });
+        }
     }
 
     void Update()
