@@ -301,11 +301,23 @@ public class QuizTimeManagerAkkadian : MonoBehaviour
         resultTextUI.text = resultText;
         ScoreTextUI.text = ScoreText;
 
-        nextButton.onClick.RemoveAllListeners();
-        nextButton.onClick.AddListener(() =>
+        if (GameState.score <= 7)
         {
-            SceneManager.LoadScene("CoordinateSelect");
-        });
+            nextButton.onClick.RemoveAllListeners();
+            nextButton.onClick.AddListener(() =>
+            {
+                SceneManager.LoadScene("CoordinateSelect");
+            });
+        }
+        else
+        {
+            nextButton.onClick.RemoveAllListeners();
+            nextButton.onClick.AddListener(() =>
+            {
+                SceneManager.LoadScene("AkkadianArtifactScene");
+                PlayerAchievementManager.UnlockAchievement("Sword");
+            });
+        }
     }
 
     void Update()

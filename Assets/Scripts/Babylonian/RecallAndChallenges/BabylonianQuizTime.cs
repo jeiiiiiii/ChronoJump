@@ -299,11 +299,23 @@ public class QuizTimeManagerBabylonian : MonoBehaviour
         resultTextUI.text = resultText;
         ScoreTextUI.text = ScoreText;
 
-        nextButton.onClick.RemoveAllListeners();
-        nextButton.onClick.AddListener(() =>
+        if (GameState.score <= 7)
         {
-            SceneManager.LoadScene("CoordinateSelect");
-        });
+            nextButton.onClick.RemoveAllListeners();
+            nextButton.onClick.AddListener(() =>
+            {
+                SceneManager.LoadScene("CoordinateSelect");
+            });
+        }
+        else
+        {
+            nextButton.onClick.RemoveAllListeners();
+            nextButton.onClick.AddListener(() =>
+            {
+                SceneManager.LoadScene("BabylonianArtifactScene");
+                PlayerAchievementManager.UnlockAchievement("Stone");
+            });
+        }
     }
 
     void Update()

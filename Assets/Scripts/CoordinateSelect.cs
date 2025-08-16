@@ -14,5 +14,17 @@ public class CoordinateSelect : MonoBehaviour
     {
         SceneManager.LoadScene("SumerianSceneOne");
     }
+    public void LoadChapters()
+    {
+        SceneManager.LoadScene("ChapterSelect");
+    }
+    public void LoadCodexScene()
+    {
+        SceneManager.LoadScene("CodexScene");
+    }
+    public void LoadAchievementScene()
+    {
+        SceneManager.LoadScene("AchievementsScene");
+    }
 
 }

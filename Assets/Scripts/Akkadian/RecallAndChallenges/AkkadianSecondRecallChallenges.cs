@@ -47,9 +47,41 @@ public class AkkadianSecondRecallChallenges : MonoBehaviour
     private bool isShowingHurrianDialogue = false;
     public AudioSource finishAudioSource;
 
+
+    public Button ArtifactImageButton;
+    public Button ArtifactUseButton;
+    public Button ArtifactButton;
+
     void Start()
     {
+        if (PlayerAchievementManager.IsAchievementUnlocked("Tablet"))
+        {
+            if (ArtifactImageButton != null)
+            {
+                ArtifactImageButton.onClick.AddListener(() =>
+                {
+                    ArtifactUseButton.gameObject.SetActive(!ArtifactUseButton.gameObject.activeInHierarchy);
+                    ArtifactImageButton.gameObject.SetActive(false);
+                });
+            }
+            
+            if (ArtifactUseButton != null)
+            {
+                ArtifactUseButton.onClick.AddListener(UseArtifactButton);
+            }
+        }
+        else
+        {
+            if (ArtifactImageButton != null)
+            {
+                ArtifactImageButton.gameObject.SetActive(false);
+            }
+            Debug.Log("Achievement 'Tablet' is not unlocked yet. Button functionality disabled.");
+        }
+        
+        
         nextButton.gameObject.SetActive(false);
+        GameState.ResetHearts();
 
         if (GameState.hearts <= 0)
             GameState.hearts = 3;
@@ -61,11 +93,56 @@ public class AkkadianSecondRecallChallenges : MonoBehaviour
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = "  Ano ang pangunahing dahilan ng pagbagsak ng Akkadian Empire?"
+                line = " Ano ang pangunahing dahilan ng pagbagsak ng Akkadian Empire?"
             },
         };
 
         ShowDialogue();
+    }
+    public void UseArtifactButton()
+    {
+        if (PlayerPrefs.GetInt("UseAkkadianArtifactUsed", 0) == 0)
+        {
+            PlayerPrefs.SetInt("UseAkkadianArtifactUsed", 1);
+            PlayerPrefs.Save();
+
+            dialogueLines = new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    characterName = "Hint",
+                    line = " Dahil sa pagsalakay ng dalawang hukbo"
+                },
+            };
+
+            currentDialogueIndex = 0;
+            ShowDialogue();
+            nextButton.gameObject.SetActive(true);
+            nextButton.onClick.RemoveAllListeners();
+            nextButton.onClick.AddListener(() =>
+            {
+                dialogueLines = new DialogueLine[]
+                {
+                    new DialogueLine
+                    {
+                        characterName = "CHRONO",
+                        line = " Ano ang pangunahing dahilan ng pagbagsak ng Akkadian Empire?"
+                    },
+                };
+                
+                currentDialogueIndex = 0;
+                ShowDialogue();
+            });
+
+            ArtifactUseButton.gameObject.SetActive(false);
+            ArtifactImageButton.gameObject.SetActive(false);
+            
+            Debug.Log("Artifact hint used!");
+        }
+        else
+        {
+            ArtifactUseButton.gameObject.SetActive(false);
+        }
     }
 
     private DialogueLine[] HurrianLines = new DialogueLine[]
@@ -379,6 +456,7 @@ public class AkkadianSecondRecallChallenges : MonoBehaviour
             }
         }
     }
+
     void LoadGameOverScene()
     {
         SceneManager.LoadScene("GameOver");

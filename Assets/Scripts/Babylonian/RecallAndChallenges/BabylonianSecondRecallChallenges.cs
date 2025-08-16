@@ -48,9 +48,37 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
     public Sprite ChronoSad;
     public Sprite ChronoSmile;
     public SpriteRenderer BlurBG;
+        public Button ArtifactImageButton;
+    public Button ArtifactUseButton;
+    public Button ArtifactButton;
 
     void Start()
     {
+        if (PlayerAchievementManager.IsAchievementUnlocked("Sword"))
+        {
+            if (ArtifactImageButton != null)
+            {
+                ArtifactImageButton.onClick.AddListener(() =>
+                {
+                    ArtifactUseButton.gameObject.SetActive(!ArtifactUseButton.gameObject.activeInHierarchy);
+                    ArtifactImageButton.gameObject.SetActive(false);
+                });
+            }
+            
+            if (ArtifactUseButton != null)
+            {
+                ArtifactUseButton.onClick.AddListener(UseArtifactButton);
+            }
+        }
+        else
+        {
+            if (ArtifactImageButton != null)
+            {
+                ArtifactImageButton.gameObject.SetActive(false);
+            }
+            Debug.Log("Achievement 'Sword' is not unlocked yet. Button functionality disabled.");
+        }
+
         nextButton.gameObject.SetActive(false);
 
         if (GameState.hearts <= 0)
@@ -399,6 +427,22 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
             }
         }
     }
+    public void UseArtifactButton()
+    {
+        ArtifactButton.onClick.AddListener(() =>
+        {
+            // Make sure this key matches exactly
+            PlayerPrefs.SetInt("UseBabylonianArtifactUsed", 1);
+            PlayerPrefs.Save();
+
+            answerButtons[1].interactable = false;
+
+            ArtifactButton.gameObject.SetActive(false);
+            ArtifactImageButton.gameObject.SetActive(false);
+
+        });
+    }
+
 
     void LoadGameOverScene()
     {

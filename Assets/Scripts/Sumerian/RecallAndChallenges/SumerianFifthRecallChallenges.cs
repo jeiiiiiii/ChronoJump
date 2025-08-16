@@ -37,6 +37,7 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
 
     public SpriteRenderer PlayercharacterRenderer;
     public SpriteRenderer ChronocharacterRenderer;
+    public GameObject AchievementUnlockedRenderer;
 
     public Sprite PlayerSmile;
     public Sprite PlayerReflective;
@@ -50,6 +51,7 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
     public SpriteRenderer BlurBG;
     void Start()
     {
+        AchievementUnlockedRenderer.SetActive(false);
         nextButton.gameObject.SetActive(false);
         UpdateHeartsUI();
 
@@ -175,6 +177,7 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
                     }
                     break;
                 case 1:
+                    AchievementUnlockedRenderer.SetActive(false);
                     PlayercharacterRenderer.sprite = PlayerEager;
                     ChronocharacterRenderer.sprite = ChronoCheerful;
                     break;
@@ -262,7 +265,7 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
                     if (finishAudioSource != null)
                         finishAudioSource.Play();
                     nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f); // 2 seconds delay, adjust as needed
+                    Invoke(nameof(LoadNextScene), 2f);
                 });
             }
             else
@@ -292,6 +295,12 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
 
         if (selected.isCorrect)
         {
+            if (GameState.hearts == 3)
+            {
+                PlayerAchievementManager.UnlockAchievement("Master");
+                AchievementUnlockedRenderer.SetActive(true);
+            }
+            
             isShowingItaguyodAngKatarunganDialogue = true;
             currentDialogueIndex = 0;
             dialogueLines = ItaguyodAngKatarungan;

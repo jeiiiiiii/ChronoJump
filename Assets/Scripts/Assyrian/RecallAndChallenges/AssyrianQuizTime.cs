@@ -300,11 +300,23 @@ public class QuizTimeManagerAssyrian : MonoBehaviour
         resultTextUI.text = resultText;
         ScoreTextUI.text = ScoreText;
 
-        nextButton.onClick.RemoveAllListeners();
-        nextButton.onClick.AddListener(() =>
+        if (GameState.score <= 7)
         {
-            SceneManager.LoadScene("ChapterSelect");
-        });
+            nextButton.onClick.RemoveAllListeners();
+            nextButton.onClick.AddListener(() =>
+            {
+                SceneManager.LoadScene("CoordinateSelect");
+            });
+        }
+        else
+        {
+            nextButton.onClick.RemoveAllListeners();
+            nextButton.onClick.AddListener(() =>
+            {
+                SceneManager.LoadScene("AssyrianArtifactScene");
+                PlayerAchievementManager.UnlockAchievement("Belt");
+            });
+        }
     }
 
     void Update()

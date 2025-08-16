@@ -21,6 +21,7 @@ public class AssyrianScene2 : MonoBehaviour
     public DialogueLine[] dialogueLines;
 
     public SpriteRenderer PlayercharacterRenderer;
+    public GameObject AchievementUnlockedRenderer;
     public Sprite PlayerCurious;
     public Sprite PlayerSmile;
     public Sprite PlayerEmabrrassed;
@@ -75,6 +76,7 @@ public class AssyrianScene2 : MonoBehaviour
 
     void ShowDialogue()
     {
+        AchievementUnlockedRenderer.SetActive(false);
         AshurbanipalFulldrawnSprite.enabled = false;
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
@@ -97,10 +99,13 @@ public class AssyrianScene2 : MonoBehaviour
                 ChronocharacterRenderer.sprite = AshurbanipalWise;
                 break;
             case 4:
+                AchievementUnlockedRenderer.SetActive(true);
+                PlayerAchievementManager.UnlockAchievement("Guardian");
                 ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 5:
                 PlayercharacterRenderer.sprite = PlayerReflective;
+                
                 break;
         }
 

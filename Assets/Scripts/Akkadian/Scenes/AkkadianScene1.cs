@@ -24,6 +24,8 @@ public class AkkadianScene1 : MonoBehaviour
     public SpriteRenderer PlayercharacterRenderer;
     public SpriteRenderer PlayerFulldrawnSprite;
     public SpriteRenderer ChronoFulldrawnSprite;
+
+    public GameObject AchievementUnlockedRenderer;
     public Sprite PlayerFulldrawn;
     public Sprite PlayerCurious;
     public Sprite PlayerEager;
@@ -89,6 +91,7 @@ public class AkkadianScene1 : MonoBehaviour
 
     void ShowDialogue()
     {
+        AchievementUnlockedRenderer.SetActive(false);
         SargoncharacterRenderer.enabled = false;
         PlayerFulldrawnSprite.enabled = false;
         ChronoFulldrawnSprite.enabled = false;
@@ -116,12 +119,15 @@ public class AkkadianScene1 : MonoBehaviour
                 break;
 
             case 4:
+                PlayerAchievementManager.UnlockAchievement("Rise");
                 SargoncharacterRenderer.enabled = true;
+                AchievementUnlockedRenderer.SetActive(true);
                 break;
 
             case 5:
                 ChronocharacterRenderer.sprite = ChronoCheerful;
                 PlayercharacterRenderer.sprite = PlayerEager;
+                AchievementUnlockedRenderer.SetActive(false);
                 break;
 
             case 6:
