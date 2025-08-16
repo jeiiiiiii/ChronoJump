@@ -100,11 +100,11 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
 
         ShowDialogue();
     }
-    public void UseArtifactButton()
+public void UseArtifactButton()
     {
-        if (PlayerPrefs.GetInt("UsePowerArtifactUsed", 0) == 0)
+        if (PlayerPrefs.GetInt("UseAkkadianArtifactUsed", 0) == 0)
         {
-            PlayerPrefs.SetInt("UsePowerArtifactUsed", 1);
+            PlayerPrefs.SetInt("UseAkkadianArtifactUsed", 1);
             PlayerPrefs.Save();
 
             dialogueLines = new DialogueLine[]
@@ -145,7 +145,6 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
             ArtifactUseButton.gameObject.SetActive(false);
         }
     }
-
 
     private DialogueLine[] rehiyonLines = new DialogueLine[]
     {

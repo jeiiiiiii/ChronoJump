@@ -427,8 +427,7 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
     {
         ArtifactButton.onClick.AddListener(() =>
         {
-            // Make sure this key matches exactly
-            PlayerPrefs.SetInt("UsePowerArtifactUsed", 1);
+            PlayerPrefs.SetInt("UseAssyrianArtifactUsed", 1);
             PlayerPrefs.Save();
             
             GameState.hearts++;

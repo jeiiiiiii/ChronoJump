@@ -181,8 +181,6 @@ public class SumerianScene1 : MonoBehaviour
                 ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
         }
-
-
     }
     void ShowNextDialogue()
     {
@@ -210,15 +208,6 @@ public class SumerianScene1 : MonoBehaviour
     {
         SceneManager.LoadScene("TitleScreen");
     }
-    
-    public void SaveAndLoad()
-    {
-        PlayerPrefs.SetInt("SumerianSceneOne_DialogueIndex", currentDialogueIndex);
-        PlayerPrefs.SetString("LastScene", "SumerianSceneOne");
-        PlayerPrefs.Save();
-        SceneManager.LoadScene("SaveAndLoadScene");
-    }
-
 }
 
 

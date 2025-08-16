@@ -53,7 +53,6 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
     public Button ArtifactUseButton;
     public Button ArtifactButton;
 
-// Update your Start() method to connect the artifact button properly:
     void Start()
     {
         if (PlayerAchievementManager.IsAchievementUnlocked("Tablet"))
@@ -102,9 +101,9 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
     }
     public void UseArtifactButton()
     {
-        if (PlayerPrefs.GetInt("UsePowerArtifactUsed", 0) == 0)
+        if (PlayerPrefs.GetInt("UseAkkadianArtifactUsed", 0) == 0)
         {
-            PlayerPrefs.SetInt("UsePowerArtifactUsed", 1);
+            PlayerPrefs.SetInt("UseAkkadianArtifactUsed", 1);
             PlayerPrefs.Save();
 
             dialogueLines = new DialogueLine[]
@@ -469,28 +468,6 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
             }
         }
     }
-    // public void UseArtifactButton()
-    // {
-    //     ArtifactButton.onClick.AddListener(() =>
-    //     {
-
-    //         PlayerPrefs.SetInt("UsePowerArtifactUsed", 1);
-    //         PlayerPrefs.Save();
-
-    //         dialogueLines = new DialogueLine[]
-    //         {
-    //             new DialogueLine
-    //             {
-    //                 characterName = "CHRONO",
-    //                 line = " Should give a hint"
-    //             },
-    //         };
-
-    //         ArtifactButton.gameObject.SetActive(false);
-    //         ArtifactImageButton.gameObject.SetActive(false);
-
-    //     });
-    // }
     void LoadGameOverScene()
     {
         SceneManager.LoadScene("GameOver");

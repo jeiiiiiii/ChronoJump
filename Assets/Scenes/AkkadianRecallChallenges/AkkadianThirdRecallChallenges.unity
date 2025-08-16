@@ -2619,6 +2619,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 988ae98e8f108e24ea2a99a067b99fc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  civilizations: []
+  useSceneNamePrefix: 1
 --- !u!114 &1359895873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3801,6 +3803,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 988ae98e8f108e24ea2a99a067b99fc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  civilizations:
+  - civilizationName: Akkadian
+    artifactAchievements:
+    - Tablet
+  useSceneNamePrefix: 1
 --- !u!114 &1902764357
 MonoBehaviour:
   m_ObjectHideFlags: 0
