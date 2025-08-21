@@ -16,4 +16,13 @@ public class CodexScene : MonoBehaviour
     {
         SceneManager.LoadScene("ArtifactsScene");
     }
+    public void Characters()
+    {
+        SceneManager.LoadScene("CharacterCoordinate");
+    }
+    public void Story()
+    {
+        SceneManager.LoadScene("StoryCoordinate");
+    }
+
 }

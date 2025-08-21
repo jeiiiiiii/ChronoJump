@@ -165,13 +165,13 @@ EditorBuildSettings:
     path: Assets/Scenes/AssyrianRecallChallenges/GameOver.unity
     guid: 2d63f6f95e20d654584e04ea002527e9
   - enabled: 1
-    path: Assets/Scenes/CodexScene/CodexScene.unity
+    path: Assets/Scenes/CodexScene/Mesopotamia/CodexScene.unity
     guid: 87fa683d5bf0f1d40a4c54835ce63f15
   - enabled: 1
-    path: Assets/Scenes/CodexScene/AchievementsScene.unity
+    path: Assets/Scenes/CodexScene/Mesopotamia/AchievementsScene.unity
     guid: d23ef5932a4552e4ca7777bb6c706dd2
   - enabled: 1
-    path: Assets/Scenes/CodexScene/ArtifactsScene.unity
+    path: Assets/Scenes/CodexScene/Mesopotamia/ArtifactsScene.unity
     guid: 4f94fd0465587754f8ef3581a4868aad
   - enabled: 1
     path: Assets/Scenes/SumerianRecallChallenges/SumerianArtifactScene.unity
@@ -185,6 +185,36 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/AssyrianRecallChallenges/AssyrianArtifactScene.unity
     guid: 0c0a4531ec2c33643891140d571d623e
+  - enabled: 1
+    path: Assets/Scenes/CodexScene/Mesopotamia/CharacterScene/SumerianCharacterScene.unity
+    guid: 2bc15af6565e7f048978bd57411a886f
+  - enabled: 1
+    path: Assets/Scenes/CodexScene/Mesopotamia/CharacterScene/CharacterCoordinate.unity
+    guid: 4a65395df4a0e0645bf372db824be6dd
+  - enabled: 1
+    path: Assets/Scenes/CodexScene/Mesopotamia/CharacterScene/AkkadianCharacterScene.unity
+    guid: a85574e4a03d94f4ea2b202f988c8140
+  - enabled: 1
+    path: Assets/Scenes/CodexScene/Mesopotamia/CharacterScene/BabylonianCharacterScene.unity
+    guid: 713b354c040361a48b6c537c7defe985
+  - enabled: 1
+    path: Assets/Scenes/CodexScene/Mesopotamia/CharacterScene/AssyrianCharacterScene.unity
+    guid: 71c6b51b38ba3bc4e8804e5f531d4bb7
+  - enabled: 1
+    path: Assets/Scenes/CodexScene/Mesopotamia/StoriesScene/StoryCoordinate.unity
+    guid: af42862d66878ec4c99e734386ee4f4f
+  - enabled: 1
+    path: Assets/Scenes/CodexScene/Mesopotamia/StoriesScene/SumerianStoryScene.unity
+    guid: be21233b96b2d3c418566fbfe7fecc34
+  - enabled: 1
+    path: Assets/Scenes/CodexScene/Mesopotamia/StoriesScene/AkkadianStoryScene.unity
+    guid: 5f053dcb781ccc149bf3c17501a37511
+  - enabled: 1
+    path: Assets/Scenes/CodexScene/Mesopotamia/StoriesScene/BabylonianStoryScene.unity
+    guid: 47e16255ce1fa8d419cd7981bbc165a7
+  - enabled: 1
+    path: Assets/Scenes/CodexScene/Mesopotamia/StoriesScene/AssyrianStoryScene.unity
+    guid: 3ffdb00005248584ead933c59d0259e2
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
