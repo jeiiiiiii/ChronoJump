@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 6b6e7b1f3fb98d8449b6cf75d4a05e9c
+guid: 931cf99f05b76484b869143c2c152f9f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 652971386159068519
-    second: dashboardHeader_0
+      213: 797227691843396497
+    second: leaderboardSectionLandignBg_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: dashboardHeader_0
+      name: leaderboardSectionLandignBg_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1936
-        height: 139
+        x: 3
+        y: 3
+        width: 479
+        height: 756
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 76571802402df0900800000000000000
-      internalID: 652971386159068519
+      spriteID: 1932e61ac52501b00800000000000000
+      internalID: 797227691843396497
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      dashboardHeader_0: 652971386159068519
+      leaderboardSectionLandignBg_0: 797227691843396497
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
