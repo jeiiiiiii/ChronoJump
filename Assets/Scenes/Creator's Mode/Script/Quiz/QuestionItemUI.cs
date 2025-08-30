@@ -1,24 +1,38 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class QuestionItemUI : MonoBehaviour
 {
-    [Header("Text fields")]
     public TMP_Text questionText;
-    public TMP_Text[] choiceTexts = new TMP_Text[4];
+    public TMP_Text[] choiceTexts;
+    public Button editButton;
+    public Button deleteButton;
 
-    public void Bind(Question q)
+    private int index;
+    private ReviewQuestionManager manager;
+
+    public void Setup(Question q, int idx, ReviewQuestionManager mgr)
     {
-        if (questionText != null)
-            questionText.text = q.questionText;
+        questionText.text = q.questionText;
 
-        for (int i = 0; i < choiceTexts.Length; i++)
+        // 👇 Display all choices and color the correct one blue
+        for (int i = 0; i < choiceTexts.Length && i < q.choices.Length; i++)
         {
-            if (choiceTexts[i] == null) continue;
-            choiceTexts[i].text = q.choices != null && i < q.choices.Length ? q.choices[i] : "";
-
-            choiceTexts[i].color = (i == q.correctAnswerIndex) ? Color.blue : Color.black;
-            choiceTexts[i].fontStyle = (i == q.correctAnswerIndex) ? FontStyles.Bold : FontStyles.Normal;
+            choiceTexts[i].text = q.choices[i];
+            if (i == q.correctAnswerIndex)
+                choiceTexts[i].color = Color.blue;
+            else
+                choiceTexts[i].color = Color.black; // or your default color
         }
+
+        index = idx;
+        manager = mgr;
+
+        editButton.onClick.RemoveAllListeners();
+        deleteButton.onClick.RemoveAllListeners();
+
+        editButton.onClick.AddListener(() => manager.OnEditQuestion(index));
+        deleteButton.onClick.AddListener(() => manager.OnDeleteQuestion(index));
     }
 }
