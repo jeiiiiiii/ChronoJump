@@ -19,11 +19,13 @@ public class RegisterManager : MonoBehaviour
     public Button goBackButton;
     public Button errorBackButton;
 
+    // Navigate to the login scene
     public void LoginButtonClicked()
     {
         SceneManager.LoadScene("Login");
     }
 
+    // Navigate back to the landing page and reset error messages
     public void BackButtonClicked()
     {
         SceneManager.LoadScene("LandingPage");
@@ -31,6 +33,7 @@ public class RegisterManager : MonoBehaviour
         feedbackText.text = string.Empty;
     }
     
+    // Validate input fields and attempt to register the user, handling errors and success feedback
     public void RegisterButtonClicked()
     {
         string email = emailField.text.Trim();
@@ -109,6 +112,7 @@ public class RegisterManager : MonoBehaviour
         });
     }
     
+    // Close the error message panel and clear feedback text
     public void ErrorBackButtonClicked()
     {
         errorMessagePanel.SetActive(false);

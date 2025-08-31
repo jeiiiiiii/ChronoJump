@@ -1,4 +1,3 @@
-using Firebase.Auth;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -15,41 +14,42 @@ public class TitleScreen : MonoBehaviour
     public Button logoutButton;
 
 
-    // private void Awake()
-    // {
-    //     FirebaseManager.Instance.GetUserData(userData =>
-    //         {
-    //             Debug.Log(userData.displayName);
-    //             if (userData == null)
-    //             {
-    //                 Debug.LogError("No user data found. Redirecting to Register.");
-    //                 return;
-    //             }
-    //             else if (userData.role.ToLower() == "teacher")
-    //             {
-    //                 newGameButton.gameObject.SetActive(false);
-    //                 loadGameButton.gameObject.SetActive(false);
-    //                 optionsButton.gameObject.SetActive(true);
-    //                 classroomButton.gameObject.SetActive(true);
-    //                 creatermodeButton.gameObject.SetActive(true);
-    //                 logoutButton.gameObject.SetActive(true);
-    //             }
-    //             else if (userData.role.ToLower() == "student")
-    //             {
-    //                 newGameButton.gameObject.SetActive(true);
-    //                 loadGameButton.gameObject.SetActive(true);
-    //                 optionsButton.gameObject.SetActive(true);
-    //                 classroomButton.gameObject.SetActive(false);
-    //                 creatermodeButton.gameObject.SetActive(false);
-    //                 logoutButton.gameObject.SetActive(true);
-    //             }
-    //             else
-    //             {
-    //                 Debug.LogError("Unknown user role. Redirecting to Register.");
-    //                 SceneManager.LoadScene("Register");
-    //             }
-    //         });
-    // }
+
+    private void Awake()
+    {
+        FirebaseManager.Instance.GetUserData(userData =>
+            {
+                Debug.Log(userData.displayName);
+                if (userData == null)
+                {
+                    Debug.LogError("No user data found. Redirecting to Register.");
+                    return;
+                }
+                else if (userData.role.ToLower() == "teacher")
+                {
+                    newGameButton.gameObject.SetActive(false);
+                    loadGameButton.gameObject.SetActive(false);
+                    optionsButton.gameObject.SetActive(true);
+                    classroomButton.gameObject.SetActive(true);
+                    creatermodeButton.gameObject.SetActive(true);
+                    logoutButton.gameObject.SetActive(true);
+                }
+                else if (userData.role.ToLower() == "student")
+                {
+                    newGameButton.gameObject.SetActive(true);
+                    loadGameButton.gameObject.SetActive(true);
+                    optionsButton.gameObject.SetActive(true);
+                    classroomButton.gameObject.SetActive(false);
+                    creatermodeButton.gameObject.SetActive(false);
+                    logoutButton.gameObject.SetActive(true);
+                }
+                else
+                {
+                    Debug.LogError("Unknown user role. Redirecting to Register.");
+                    SceneManager.LoadScene("Register");
+                }
+            });
+    }
     public void StartGame()
     {
         SceneManager.LoadScene("ChapterSelect");
@@ -66,7 +66,7 @@ public class TitleScreen : MonoBehaviour
 
     public void Classroom()
     {
-        SceneManager.LoadScene("Classroom");
+        SceneManager.LoadScene("TeacherDashboard");
     }
 
     public void CreatorMode()
