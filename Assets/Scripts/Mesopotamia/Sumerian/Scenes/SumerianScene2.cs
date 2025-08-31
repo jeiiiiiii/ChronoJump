@@ -39,8 +39,6 @@ public class SumerianScene2 : MonoBehaviour
     public Sprite ChronoSad;
     public Sprite ChronoSmile;
     public Sprite ChronoThinking;
-    public AudioSource audioSource;
-    public AudioClip[] dialogueClips;
     
     void Start()
     {
@@ -79,7 +77,7 @@ public class SumerianScene2 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "ENKI",
-                line = " Ang tawag dito sa sistemang ito ay cuneiform. Galing sa salitang nangangahulugang ‘hugis-pantusok’. Bawat marka, may ibig sabihin. Bawat tablet, may silbi."
+                line = " Ang tawag dito sa sistemang ito ay cuneiform. Galing sa salitang nangangahulugang 'hugis-pantusok'. Bawat marka, may ibig sabihin. Bawat tablet, may silbi."
             },
             new DialogueLine
             {
@@ -93,10 +91,27 @@ public class SumerianScene2 : MonoBehaviour
             },
             new DialogueLine
             {
-                characterName = "ENKI",
+                characterName = "PLAYER",
                 line = " Ngunit tila ikaw ay may malasakit sa aming sining. Sige nga, kung naalala mo , anong tawag sa uri ng pagsusulat na ito?"
             },
         };
+
+        // Check if we're loading from a saved game
+        if (PlayerPrefs.HasKey("LoadedDialogueIndex"))
+        {
+            currentDialogueIndex = PlayerPrefs.GetInt("LoadedDialogueIndex");
+            PlayerPrefs.DeleteKey("LoadedDialogueIndex"); // Clear after use
+            
+            // Make sure the index is within bounds
+            if (currentDialogueIndex >= dialogueLines.Length)
+            {
+                currentDialogueIndex = dialogueLines.Length - 1;
+            }
+            if (currentDialogueIndex < 0)
+            {
+                currentDialogueIndex = 0;
+            }
+        }
 
         ShowDialogue();
         nextButton.onClick.AddListener(ShowNextDialogue);
@@ -108,12 +123,6 @@ public class SumerianScene2 : MonoBehaviour
         EnkicharacterRenderer.enabled = false;
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
-
-        if (audioSource != null && dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
-        {
-            audioSource.clip = dialogueClips[currentDialogueIndex];
-            audioSource.Play();
-        }
 
         switch (currentDialogueIndex)
         {
@@ -149,7 +158,6 @@ public class SumerianScene2 : MonoBehaviour
         }
     }
 
-
     void ShowNextDialogue()
     {
         currentDialogueIndex++;
@@ -178,5 +186,3 @@ public class SumerianScene2 : MonoBehaviour
         SceneManager.LoadScene("TitleScreen");
     }
 }
-
-

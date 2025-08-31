@@ -3,7 +3,6 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
 
-
 public class SumerianScene1 : MonoBehaviour
 {
     [System.Serializable]
@@ -16,9 +15,12 @@ public class SumerianScene1 : MonoBehaviour
     [SerializeField] public TextMeshProUGUI dialogueText;
     [SerializeField] public Button nextButton;
     public Button backButton;
+    
+    [Header("UI Buttons")]
+    public Button saveButton;
+    public Button homeButton;
 
     public int currentDialogueIndex = 0;
-
     public DialogueLine[] dialogueLines;
 
     public SpriteRenderer PlayercharacterRenderer;
@@ -43,17 +45,32 @@ public class SumerianScene1 : MonoBehaviour
     public Sprite ChronoSmile;
     public Sprite ChronoThinking;
 
-    public AudioSource audioSource;
-    public AudioClip[] dialogueClips;
-
-
     void Start()
+    {
+        // Ensure SaveLoadManager exists
+        if (SaveLoadManager.Instance == null)
+        {
+            GameObject saveLoadManager = new GameObject("SaveLoadManager");
+            saveLoadManager.AddComponent<SaveLoadManager>();
+        }
+
+        // Initialize dialogue lines
+        InitializeDialogueLines();
+
+        // Load saved dialogue index - THIS IS THE KEY FIX
+        LoadDialogueIndex();
+
+        SetupButtons();
+        ShowDialogue();
+    }
+
+    void InitializeDialogueLines()
     {
         dialogueLines = new DialogueLine[]
         {
             new DialogueLine
             {   characterName = "PLAYER",
-                line = " Ano ‘to…? Ang daming putik... Teka, hindi ito 'yung kwarto ko!"
+                line = " Ano 'to…? Ang daming putik... Teka, hindi ito 'yung kwarto ko!"
             },
             new DialogueLine
             {
@@ -73,7 +90,7 @@ public class SumerianScene1 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "ENKI",
-                line = " Ano’t may mga mukhang banyaga sa gitna ng Uruk? Hmm… hindi kayo taga-rito."
+                line = " Ano't may mga mukhang banyaga sa gitna ng Uruk? Hmm… hindi kayo taga-rito."
             },
             new DialogueLine
             {
@@ -83,7 +100,7 @@ public class SumerianScene1 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "ENKI",
-                line = " Huwag kang matakot. Kami’y hindi sarado sa panauhin. Ako si Enki, isang eskriba. Tagapag-ingat ng kaalaman ng aming bayan."
+                line = " Huwag kang matakot. Kami'y hindi sarado sa panauhin. Ako si Enki, isang eskriba. Tagapag-ingat ng kaalaman ng aming bayan."
             },
             new DialogueLine
             {
@@ -108,7 +125,7 @@ public class SumerianScene1 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "ENKI",
-                line = " Mukhang may interes ka. Halika’t sumama sa akin. Ipapakita ko sa’yo kung paanong ang mga simpleng marka ay nagiging salamin ng buong lungsod."
+                line = " Mukhang may interes ka. Halika't sumama sa akin. Ipapakita ko sa'yo kung paanong ang mga simpleng marka ay nagiging salamin ng buong lungsod."
             },
             new DialogueLine
             {
@@ -116,9 +133,105 @@ public class SumerianScene1 : MonoBehaviour
                 line = " Ihanda mo ang isip mo. Hindi lang ito basta pagsusulat, ito ang puso ng kabihasnan."
             },
         };
-        ShowDialogue();
-        nextButton.onClick.AddListener(ShowNextDialogue);
-        backButton.onClick.AddListener(ShowPreviousDialogue);
+    }
+
+    // Replace the LoadDialogueIndex() method in SumerianScene1.cs with this:
+
+void LoadDialogueIndex()
+{
+    // Check if this is a new game
+    if (PlayerPrefs.GetString("GameMode", "") == "NewGame")
+    {
+        currentDialogueIndex = 0;
+        PlayerPrefs.DeleteKey("GameMode"); // Clear the flag after use
+        Debug.Log("New game started - dialogue index reset to 0");
+        return;
+    }
+
+    // Check if this is a load operation from save file
+    if (PlayerPrefs.GetString("LoadedFromSave", "false") == "true")
+    {
+        // Load from save file
+        if (PlayerPrefs.HasKey("LoadedDialogueIndex"))
+        {
+            currentDialogueIndex = PlayerPrefs.GetInt("LoadedDialogueIndex");
+            PlayerPrefs.DeleteKey("LoadedDialogueIndex");
+            Debug.Log($"Loaded from save file at dialogue index: {currentDialogueIndex}");
+        }
+        
+        // Clear the load flag
+        PlayerPrefs.SetString("LoadedFromSave", "false");
+    }
+    else
+    {
+        // Check for regular scene progression (not from load)
+        if (PlayerPrefs.HasKey("SumerianSceneOne_DialogueIndex"))
+        {
+            currentDialogueIndex = PlayerPrefs.GetInt("SumerianSceneOne_DialogueIndex");
+            Debug.Log($"Continuing from previous session at dialogue index: {currentDialogueIndex}");
+        }
+        else
+        {
+            currentDialogueIndex = 0;
+            Debug.Log("Starting from beginning");
+        }
+    }
+
+    // Ensure index is within bounds
+    if (currentDialogueIndex >= dialogueLines.Length)
+        currentDialogueIndex = dialogueLines.Length - 1;
+    if (currentDialogueIndex < 0)
+        currentDialogueIndex = 0;
+}
+
+    void SetupButtons()
+    {
+        // Setup existing buttons
+        if (nextButton != null)
+            nextButton.onClick.AddListener(ShowNextDialogue);
+            
+        if (backButton != null)
+            backButton.onClick.AddListener(ShowPreviousDialogue);
+
+        // Setup save button
+        if (saveButton != null)
+        {
+            saveButton.onClick.AddListener(SaveAndLoad);
+        }
+        else
+        {
+            // If save button reference is missing, try to find it by name
+            GameObject saveButtonObj = GameObject.Find("SaveBT");
+            if (saveButtonObj != null)
+            {
+                Button foundSaveButton = saveButtonObj.GetComponent<Button>();
+                if (foundSaveButton != null)
+                {
+                    foundSaveButton.onClick.AddListener(SaveAndLoad);
+                    Debug.Log("Save button found and connected!");
+                }
+            }
+        }
+
+        // Setup home button if you have one
+        if (homeButton != null)
+        {
+            homeButton.onClick.AddListener(Home);
+        }
+        else
+        {
+            // Try to find home button by name
+            GameObject homeButtonObj = GameObject.Find("HomeBt");
+            if (homeButtonObj != null)
+            {
+                Button foundHomeButton = homeButtonObj.GetComponent<Button>();
+                if (foundHomeButton != null)
+                {
+                    foundHomeButton.onClick.AddListener(Home);
+                    Debug.Log("Home button found and connected!");
+                }
+            }
+        }
     }
 
     void ShowDialogue()
@@ -126,15 +239,11 @@ public class SumerianScene1 : MonoBehaviour
         EnkicharacterRenderer.enabled = false;
         PlayerFulldrawnSprite.enabled = false;
         ChronoFulldrawnSprite.enabled = false;
+        
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
-        if (audioSource != null && dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
-        {
-            audioSource.clip = dialogueClips[currentDialogueIndex];
-            audioSource.Play();
-        }
-
+        // Your existing sprite logic
         switch (currentDialogueIndex)
         {
             case 0:
@@ -183,9 +292,11 @@ public class SumerianScene1 : MonoBehaviour
                 break;
         }
     }
+
     void ShowNextDialogue()
     {
         currentDialogueIndex++;
+        SaveCurrentProgress();
 
         if (currentDialogueIndex >= dialogueLines.Length)
         {
@@ -201,14 +312,58 @@ public class SumerianScene1 : MonoBehaviour
         if (currentDialogueIndex > 0)
         {
             currentDialogueIndex--;
+            SaveCurrentProgress();
             ShowDialogue();
         }
     }
 
+    // Save current dialogue index and go to Save/Load scene
+    // Replace the SaveAndLoad() method in your SumerianScene1.cs with this:
+
+    // Replace your SaveAndLoad() method in SumerianScene1.cs with this enhanced version:
+
+    // Replace your SaveAndLoad() method in SumerianScene1.cs with this enhanced version:
+
+    public void SaveAndLoad()
+    {
+    // Save the current dialogue index and scene info
+    PlayerPrefs.SetInt("SumerianSceneOne_DialogueIndex", currentDialogueIndex);
+    PlayerPrefs.SetString("LastScene", "SumerianSceneOne");
+    
+    // NEW: Clear LoadOnly mode and set story scene access
+    PlayerPrefs.DeleteKey("AccessMode"); // Clear any previous LoadOnly restriction
+    PlayerPrefs.SetString("SaveSource", "StoryScene"); // Mark that we came from a story scene
+    PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+    PlayerPrefs.Save();
+    
+    // Also directly set the state in SaveLoadManager if it exists
+    if (SaveLoadManager.Instance != null)
+    {
+        SaveLoadManager.Instance.SetCurrentGameState("SumerianSceneOne", currentDialogueIndex);
+    }
+    
+    Debug.Log($"Going to save menu with dialogue index: {currentDialogueIndex} from story scene - save buttons will be enabled");
+    SceneManager.LoadScene("SaveAndLoadScene");
+    }
+
+    void SaveCurrentProgress()
+    {
+        // Save current progress for scene continuity
+        PlayerPrefs.SetInt("SumerianSceneOne_DialogueIndex", currentDialogueIndex);
+        PlayerPrefs.SetString("CurrentScene", "SumerianSceneOne");
+        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        PlayerPrefs.Save();
+    }
+
     public void Home()
     {
+        SaveCurrentProgress();
         SceneManager.LoadScene("TitleScreen");
     }
+
+    public void ManualSave()
+    {
+        SaveCurrentProgress();
+        Debug.Log($"Manual save completed at dialogue {currentDialogueIndex}");
+    }
 }
-
-
