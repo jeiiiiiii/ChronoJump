@@ -1,243 +1,154 @@
 using System.Collections;
-using TMPro;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using System.Linq;
 
 public class TeacherDashboardManager : MonoBehaviour
 {
-    [Header("Buttons")]
-    public Button createNewClassButton;
-    public Button viewStudentProgressButton;
-    public Button viewLeaderboardButton;
+    [Header("Views")]
+    public TeacherDashboardView dashboardView;
+    public ClassListView classListView;
+    public StudentProgressView studentProgressView;
+    public CreateClassView createClassView;
 
-    [Header("Panels")]
-    public GameObject LandingPage;
-    public GameObject EmptyLandingPage;
-    public GameObject StudentProgressPage;
-    public GameObject LeaderboardPage;
-    public GameObject CreateNewClassPanel;
-
-    [Header("Dashboard Visibility")]
-    public CanvasGroup landingPageCanvasGroup;
-
-    [Header("Texts and Icons")]
-    public TextMeshProUGUI teacherNameText;
-    public Image teacherProfileIcon;
-
-    [Header("Class List")]
-    public GameObject classRowPrefab;
-    public Transform classListContent;
-
-    [Header("Class Detail Display")]
-    public TextMeshProUGUI selectedClassCodeText;
-    public TextMeshProUGUI selectedClassNameText;
-
-    [Header("Colors")]
-    public Color defaultTextColor = new Color32(75, 85, 99, 255);   // #4B5563
-    public Color selectedTextColor = new Color32(37, 99, 235, 255); // #2563EB
-
-    [Header("Icons")]
-    public Sprite defaultIcon;
-    public Sprite selectedIcon;
-
-    private Button lastSelectedButton;
-    public TeacherModel teacherData;
-
-    [Header("Student Progress")]
-    public GameObject studentProgressPrefab;
-    public Transform studentProgressList;
+    [Header("State")]
+    private DashboardState _dashboardState;
 
     private void Awake()
     {
+        InitializeState();
+        LoadTeacherData();
+    }
+
+    private void InitializeState()
+    {
+        _dashboardState = new DashboardState();
+    }
+
+    private void LoadTeacherData()
+    {
         FirebaseManager.Instance.GetUserData(userData =>
         {
-            if (userData == null)
-            {
-                Debug.LogError("No user data found.");
-                return;
-            }
-            else if (userData.role.ToLower() == "teacher")
-            {
-                FirebaseManager.Instance.GetTeacherData(userData.userId, teacherData =>
-                {
-                    if (teacherData == null)
-                    {
-                        Debug.LogError("No teacher data found.");
-                        return;
-                    }
-                    this.teacherData = teacherData;
-                    Debug.Log($"Welcome, {teacherData.teachLastName}!");
-                    Debug.Log($"You have {teacherData.classCode.Count} classes.");
-
-                    teacherNameText.text = teacherData.title + " " + teacherData.teachLastName;
-
-                    if (teacherData.classCode == null || teacherData.classCode.Count == 0)
-                    {
-                        LandingPage.SetActive(false);
-                        EmptyLandingPage.SetActive(true);
-                        StudentProgressPage.SetActive(false);
-                        LeaderboardPage.SetActive(false);
-                        CreateNewClassPanel.SetActive(false);
-                    }
-                    else
-                    {
-                        LandingPage.SetActive(true);
-                        EmptyLandingPage.SetActive(false);
-                        StudentProgressPage.SetActive(false);
-                        LeaderboardPage.SetActive(false);
-                        CreateNewClassPanel.SetActive(false);
-
-                        landingPageCanvasGroup.alpha = 0f;
-                        landingPageCanvasGroup.interactable = false;
-                        landingPageCanvasGroup.blocksRaycasts = false;
-
-                        foreach (Transform child in classListContent)
-                        {
-                            Destroy(child.gameObject);
-                        }
-
-                        // Show all classes in the scroll view
-                        foreach (var classEntry in teacherData.classCode)
-                        {
-                            GameObject row = Instantiate(classRowPrefab, classListContent);
-                            TextMeshProUGUI rowText = row.GetComponentInChildren<TextMeshProUGUI>();
-                            if (rowText != null)
-                            {
-                                rowText.text = classEntry.Value[0] + " - " + classEntry.Value[1];
-                            }
-
-                            Button classButton = row.GetComponent<Button>();
-                            classButton.transition = Selectable.Transition.ColorTint;
-                            string classCode = classEntry.Key;
-                            string className = classEntry.Value[0] + " - " + classEntry.Value[1];
-
-                            classButton.onClick.AddListener(() =>
-                                ClassButtonClicked(classButton, classCode, className));
-
-                            row.SetActive(true);
-                        }
-                        // Auto-select the first button in the scroll view
-                        if (classListContent.childCount > 0)
-                        {
-                            Button firstButton = classListContent.GetChild(0).GetComponent<Button>();
-                            if (firstButton != null)
-                            {
-                                string classCode = teacherData.classCode.Keys.First();
-                                string className = teacherData.classCode[classCode][0] + " - " + teacherData.classCode[classCode][1];
-
-                                ClassButtonClicked(firstButton, classCode, className);
-                            }
-                        }
-
-                        // Show students' progress for the first class by default
-                        FirebaseManager.Instance.GetStudentsInClass(teacherData.classCode.Keys.First(), students =>
-                        {
-                            foreach (Transform child in studentProgressList)
-                            {
-                                Destroy(child.gameObject);
-                            }
-
-                            foreach (var student in students)
-                            {
-                                GameObject studentRow = Instantiate(studentProgressPrefab, studentProgressList);
-                                Component[] allComponents = studentRow.GetComponentsInChildren<Component>(true);
-                                foreach (var comp in allComponents)
-                                {
-                                    Debug.Log($"Found component: {comp.GetType().Name} on {comp.gameObject.name}");
-                                }
-                                studentRow.SetActive(true);
-                            }
-                        });
-
-                        StartCoroutine(ShowDashboardAfterRender());
-                    }
-                });
-            }
-            else
+            if (userData?.role?.ToLower() != "teacher")
             {
                 Debug.LogError("User is not a teacher.");
+                return;
             }
+
+            // Use FirebaseManager to get teacher data
+            FirebaseManager.Instance.GetTeacherData(userData.userId, OnTeacherDataLoaded);
         });
     }
 
-    public void BacktoMainMenu()
+    private void OnTeacherDataLoaded(TeacherModel teacherData)
     {
-        SceneManager.LoadScene("TitleScreen");
-    }
-
-    // Class button selection logic
-    private void ClassButtonClicked(Button clickedButton, string classCode, string className)
-    {
-        if (lastSelectedButton != null && lastSelectedButton != clickedButton)
+        if (teacherData == null)
         {
-            ResetButton(lastSelectedButton);
+            Debug.LogError("No teacher data found.");
+            return;
         }
 
-        HighlightButton(clickedButton);
+        _dashboardState.teacherData = teacherData;
+        UpdateDashboardView();
 
-        selectedClassCodeText.text = classCode;
-        selectedClassNameText.text = className;
-
-        lastSelectedButton = clickedButton;
-    }
-
-    private void HighlightButton(Button button)
-    {
-        var colors = button.colors;
-        colors.normalColor = new Color(1, 1, 1, 1);
-        button.colors = colors;
-
-        var bg = button.GetComponent<Image>();
-        if (bg != null) bg.color = new Color32(239, 246, 255, 255);
-
-        var txt = button.GetComponentInChildren<TextMeshProUGUI>();
-        if (txt != null) txt.color = selectedTextColor;
-
-        var iconTransform = button.transform.Find("ClassIcon");
-        if (iconTransform != null)
+        if (_dashboardState.HasClasses)
         {
-            var icon = iconTransform.GetComponentInChildren<Image>();
-            if (icon != null && selectedIcon != null)
-                icon.sprite = selectedIcon;
+            SetupClassList();
+            SelectFirstClass();
         }
     }
 
-    private void ResetButton(Button button)
+    private void UpdateDashboardView()
     {
-        var colors = button.colors;
-        colors.normalColor = new Color(1, 1, 1, 0);
-        button.colors = colors;
+        string teacherName = $"{_dashboardState.teacherData.title} {_dashboardState.teacherData.teachLastName}";
+        dashboardView.UpdateTeacherInfo(teacherName, null); // Add profile icon handling if needed
 
-        var bg = button.GetComponent<Image>();
-        if (bg != null) bg.color = new Color32(239, 246, 255, 255);
-
-        var txt = button.GetComponentInChildren<TextMeshProUGUI>();
-        if (txt != null) txt.color = defaultTextColor;
-
-        var iconTransform = button.transform.Find("ClassIcon");
-        if (iconTransform != null)
+        if (_dashboardState.HasClasses)
         {
-            var icon = iconTransform.GetComponentInChildren<Image>();
-            if (icon != null && defaultIcon != null)
-                icon.sprite = defaultIcon;
+            dashboardView.ShowLandingPage();
+            StartCoroutine(ShowDashboardAfterRender());
+        }
+        else
+        {
+            dashboardView.ShowEmptyLandingPage();
         }
     }
 
+    private void SetupClassList()
+    {
+        classListView.ClearClassList();
+
+        foreach (var classEntry in _dashboardState.teacherData.classCode)
+        {
+            string classCode = classEntry.Key;
+            string className = $"{classEntry.Value[0]} - {classEntry.Value[1]}";
+
+            classListView.AddClassToList(classCode, className, OnClassSelected);
+        }
+    }
+
+    private void SelectFirstClass()
+    {
+        if (_dashboardState.HasClasses)
+        {
+            var firstClass = _dashboardState.teacherData.classCode.First();
+            string classCode = firstClass.Key;
+            string className = $"{firstClass.Value[0]} - {firstClass.Value[1]}";
+
+            OnClassSelected(classCode, className);
+            classListView.SelectFirstClass();
+        }
+    }
+
+    private void OnClassSelected(string classCode, string className)
+    {
+        _dashboardState.selectedClassCode = classCode;
+        _dashboardState.selectedClassName = className;
+
+        dashboardView.UpdateClassSelection(classCode, className);
+        LoadStudentProgress(classCode);
+    }
+
+    private void LoadStudentProgress(string classCode)
+    {
+        // Use FirebaseManager to get students
+        FirebaseManager.Instance.GetStudentsInClass(classCode, students =>
+        {
+            _dashboardState.currentStudents = students ?? new List<StudentModel>();
+            studentProgressView.ShowStudentProgress(_dashboardState.currentStudents);
+        });
+    }
 
     private IEnumerator ShowDashboardAfterRender()
     {
         yield return new WaitForEndOfFrame();
-
-        // Make dashboard visible
-        landingPageCanvasGroup.alpha = 1f;
-        landingPageCanvasGroup.interactable = true;
-        landingPageCanvasGroup.blocksRaycasts = true;
+        dashboardView.SetDashboardInteractable(true);
     }
 
-    public void ShowCreateNewClassPanel()
+    // Public methods for UI events
+    public void OnCreateNewClassClicked()
     {
-        CreateNewClassPanel.SetActive(true);
+        dashboardView.ShowCreateClassPanel();
+    }
+
+    public void OnViewStudentProgressClicked()
+    {
+        dashboardView.ShowStudentProgressPage();
+    }
+
+    public void OnViewLeaderboardClicked()
+    {
+        dashboardView.ShowLeaderboardPage();
+    }
+
+    public void OnBackToMainMenuClicked()
+    {
+        SceneManager.LoadScene("TitleScreen");
+    }
+
+    public void RefreshDashboard()
+    {
+        LoadTeacherData();
     }
 }
