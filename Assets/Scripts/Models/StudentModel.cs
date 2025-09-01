@@ -11,5 +11,5 @@ public class StudentModel
     [FirestoreProperty] public string studProfilePic { get; set; }
     [FirestoreProperty] public string classCode { get; set; }
 
-    public Dictionary<string, string> progress { get; set; }
+    public Dictionary<string, object> studentProgress { get; set; }
 }

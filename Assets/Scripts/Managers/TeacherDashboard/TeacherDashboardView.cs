@@ -10,18 +10,22 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
     public GameObject studentProgressPage;
     public GameObject leaderboardPage;
     public GameObject createNewClassPanel;
-    
+
     [Header("Dashboard Visibility")]
     public CanvasGroup landingPageCanvasGroup;
-    
+
     [Header("Teacher Info")]
     public TextMeshProUGUI teacherNameText;
     public Image teacherProfileIcon;
-    
+
     [Header("Class Selection Display")]
     public TextMeshProUGUI selectedClassCodeText;
     public TextMeshProUGUI selectedClassNameText;
-    
+
+    [Header("Empty State Messages")]
+    public TextMeshProUGUI studentProgressEmptyText;
+    public TextMeshProUGUI leaderboardEmptyText;
+
     public void ShowLandingPage()
     {
         SetActivePanel(landingPage);
@@ -29,45 +33,45 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
         landingPageCanvasGroup.interactable = false;
         landingPageCanvasGroup.blocksRaycasts = false;
     }
-    
+
     public void ShowEmptyLandingPage()
     {
         SetActivePanel(emptyLandingPage);
     }
-    
+
     public void ShowStudentProgressPage()
     {
         SetActivePanel(studentProgressPage);
     }
-    
+
     public void ShowLeaderboardPage()
     {
         SetActivePanel(leaderboardPage);
     }
-    
+
     public void ShowCreateClassPanel()
     {
         createNewClassPanel.SetActive(true);
     }
-    
+
     public void UpdateTeacherInfo(string teacherName, Sprite profileIcon)
     {
         if (teacherNameText != null)
             teacherNameText.text = teacherName;
-            
+
         if (teacherProfileIcon != null && profileIcon != null)
             teacherProfileIcon.sprite = profileIcon;
     }
-    
+
     public void UpdateClassSelection(string classCode, string className)
     {
         if (selectedClassCodeText != null)
             selectedClassCodeText.text = classCode;
-            
+
         if (selectedClassNameText != null)
             selectedClassNameText.text = className;
     }
-    
+
     public void SetDashboardInteractable(bool interactable)
     {
         if (landingPageCanvasGroup != null)
@@ -77,7 +81,15 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
             landingPageCanvasGroup.blocksRaycasts = interactable;
         }
     }
-    
+
+    public void SetEmptyMessages(bool isStudentEmpty)
+    {
+        if (studentProgressEmptyText != null)
+            studentProgressEmptyText.gameObject.SetActive(isStudentEmpty);
+        if (leaderboardEmptyText != null)
+            leaderboardEmptyText.gameObject.SetActive(isStudentEmpty);
+    }
+
     private void SetActivePanel(GameObject activePanel)
     {
         landingPage.SetActive(activePanel == landingPage);

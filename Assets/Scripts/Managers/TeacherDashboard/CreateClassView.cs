@@ -22,7 +22,6 @@ public class CreateClassView : MonoBehaviour
     
     public void CreateClass()
     {
-        Debug.Log("CreateClass method called.");
         string className = classNameInputField.text.Trim();
         string classCodeOption = classCodeOptionDropdown.options[classCodeOptionDropdown.value].text;
         

@@ -10,7 +10,7 @@ public class DynamicProgressBar : MonoBehaviour
     
     [Header("Progress Bar Settings")]
     [Range(0f, 100f)]
-    public float currentProgress = 57f;
+    public float currentProgress = 0f; 
     
     [Header("Animation Settings")]
     public bool animateProgress = true;
@@ -21,6 +21,7 @@ public class DynamicProgressBar : MonoBehaviour
     
     private float targetProgress;
     private float displayedProgress;
+    private bool hasBeenSetProgrammatically = false;
     
     void Start()
     {
@@ -28,8 +29,12 @@ public class DynamicProgressBar : MonoBehaviour
         if (fillImage != null)
             fillImage.color = fillColor;
             
-        targetProgress = currentProgress;
-        displayedProgress = animateProgress ? 0f : currentProgress;
+        // Only use currentProgress if it hasn't been set programmatically
+        if (!hasBeenSetProgrammatically)
+        {
+            targetProgress = currentProgress;
+            displayedProgress = animateProgress ? 0f : currentProgress;
+        }
         
         UpdateProgressBar();
     }
@@ -44,7 +49,8 @@ public class DynamicProgressBar : MonoBehaviour
         }
         
         // Update target progress if the public field changes (for testing in inspector)
-        if (!Mathf.Approximately(targetProgress, currentProgress))
+        // But only if it hasn't been set programmatically
+        if (!hasBeenSetProgrammatically && !Mathf.Approximately(targetProgress, currentProgress))
         {
             SetProgress(currentProgress);
         }
@@ -56,6 +62,7 @@ public class DynamicProgressBar : MonoBehaviour
     /// <param name="percentage">Progress percentage (0-100)</param>
     public void SetProgress(float percentage)
     {
+        hasBeenSetProgrammatically = true;  // Mark as set programmatically
         targetProgress = Mathf.Clamp(percentage, 0f, 100f);
         currentProgress = targetProgress;
         

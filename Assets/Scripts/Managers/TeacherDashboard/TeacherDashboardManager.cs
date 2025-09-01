@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class TeacherDashboardManager : MonoBehaviour
 {
+   
     [Header("Views")]
     public TeacherDashboardView dashboardView;
     public ClassListView classListView;
@@ -116,6 +118,7 @@ public class TeacherDashboardManager : MonoBehaviour
         FirebaseManager.Instance.GetStudentsInClass(classCode, students =>
         {
             _dashboardState.currentStudents = students ?? new List<StudentModel>();
+            dashboardView.SetEmptyMessages(_dashboardState.currentStudents == null || _dashboardState.currentStudents.Count == 0);
             studentProgressView.ShowStudentProgress(_dashboardState.currentStudents);
         });
     }

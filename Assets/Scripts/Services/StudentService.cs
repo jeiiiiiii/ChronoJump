@@ -3,6 +3,7 @@ using Firebase.Extensions;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading.Tasks;
 
 public class StudentService
 {
@@ -14,9 +15,7 @@ public class StudentService
     }
 
     public void GetStudentsInClass(string classCode, Action<List<StudentModel>> callback)
-    {
-        Debug.Log($"Fetching students in class: {classCode}");
-        
+    {   
         _firebaseService.DB.Collection("students")
             .WhereEqualTo("classCode", classCode)
             .GetSnapshotAsync()
@@ -53,7 +52,7 @@ public class StudentService
 
             GetStudentProgress(studId, progress =>
             {
-                student.progress = progress ?? new Dictionary<string, string>();
+                student.studentProgress = progress ?? new Dictionary<string, object>();
                 students.Add(student);
                 remaining--;
                 
@@ -78,37 +77,98 @@ public class StudentService
         };
     }
 
-    private void GetStudentProgress(string studId, Action<Dictionary<string, string>> callback)
+    private async void GetStudentProgress(string studId, Action<Dictionary<string, object>> callback)
     {
-        _firebaseService.DB.Collection("students").Document(studId).Collection("progress")
-            .GetSnapshotAsync()
-            .ContinueWithOnMainThread(task =>
+        try
+        {
+            // Get student progress document
+            var studentProgressSnapshot = await _firebaseService.DB.Collection("studentProgress").Document(studId).GetSnapshotAsync();
+            
+            if (!studentProgressSnapshot.Exists)
             {
-                if (task.IsCanceled || task.IsFaulted)
-                {
-                    Debug.LogError("Failed to get student progress: " + task.Exception);
-                    callback(null);
-                    return;
-                }
+                Debug.LogWarning($"No progress found for student {studId}");
+                callback(null);
+                return;
+            }
 
-                QuerySnapshot snapshot = task.Result;
-                Dictionary<string, string> progress = ProcessProgressDocuments(snapshot);
-                callback(progress);
-            });
+            var progress = await ProcessProgressDocuments(studentProgressSnapshot);
+            callback(progress);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"[GetStudentProgress] Failed to get student progress: {ex}");
+            callback(null);
+        }
     }
 
-    private Dictionary<string, string> ProcessProgressDocuments(QuerySnapshot snapshot)
+    private async Task<Dictionary<string, object>> ProcessProgressDocuments(DocumentSnapshot studentProgressDoc)
     {
-        Dictionary<string, string> progress = new Dictionary<string, string>();
+        Dictionary<string, object> progress = new Dictionary<string, object>();
+        var studentData = studentProgressDoc.ToDictionary();
 
-        foreach (DocumentSnapshot document in snapshot.Documents)
+        // Process each field in the student progress document
+        foreach (var kv in studentData)
         {
-            string level = GetFieldValue(document, "level");
-            string status = GetFieldValue(document, "status");
-            
-            if (!string.IsNullOrEmpty(level))
+            // Check if this field is a currentStory reference
+            if (kv.Key == "currentStory" && kv.Value is DocumentReference storyRef)
             {
-                progress[level] = status;
+                try
+                {
+                    // Get the referenced story document
+                    var storySnapshot = await storyRef.GetSnapshotAsync();
+                    if (storySnapshot.Exists)
+                    {
+                        var storyFields = new Dictionary<string, object>();
+                        var storyData = storySnapshot.ToDictionary();
+                        
+                        // Add all story fields except the chapter reference
+                        foreach (var field in storyData)
+                        {
+                            if (field.Key != "chapter")
+                            {
+                                storyFields[field.Key] = field.Value;
+                            }
+                        }
+                        
+                        // Handle chapter reference if it exists
+                        if (storyData.ContainsKey("chapter") && storyData["chapter"] is DocumentReference chapterRef)
+                        {
+                            try
+                            {
+                                var chapterSnapshot = await chapterRef.GetSnapshotAsync();
+                                if (chapterSnapshot.Exists)
+                                {
+                                    var chapterFields = new Dictionary<string, object>();
+                                    foreach (var chapterField in chapterSnapshot.ToDictionary())
+                                    {
+                                        chapterFields[chapterField.Key] = chapterField.Value;
+                                    }
+                                    storyFields["chapter"] = chapterFields;
+                                }
+                            }
+                            catch (System.Exception ex)
+                            {
+                                Debug.LogError($"Failed to get chapter reference: {ex}");
+                            }
+                        }
+                        
+                        progress["currentStory"] = storyFields;
+                    }
+                    else
+                    {
+                        progress[kv.Key] = kv.Value; // Keep the original reference
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    Debug.LogError($"Failed to get story reference: {ex}");
+                    progress[kv.Key] = kv.Value; // Keep the original reference
+                }
+            }
+            else
+            {
+                // Add non-reference fields directly
+                progress[kv.Key] = kv.Value;
             }
         }
 

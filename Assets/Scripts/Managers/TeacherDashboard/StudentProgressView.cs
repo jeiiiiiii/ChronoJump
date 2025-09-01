@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class StudentProgressView : MonoBehaviour, IStudentProgressView
@@ -28,14 +29,30 @@ public class StudentProgressView : MonoBehaviour, IStudentProgressView
         
         studentRow.SetActive(true);
     }
-    
+
     public void ShowStudentProgress(List<StudentModel> students)
     {
         ClearStudentList();
-        
-        foreach (var student in students)
+
+        // sort here instead of service
+        students = students.OrderBy(s => s.studName).ToList();
+
+        // If scene is Teachers Landing Page, show five student rows only, else show all students
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "TeacherDashboard")
         {
-            AddStudentToList(student);
+            int count = Mathf.Min(5, students.Count);
+            for (int i = 0; i < count; i++)
+            {
+                AddStudentToList(students[i]);
+            }
+            return;
+        }
+        else
+        {
+            foreach (var student in students)
+            {
+                AddStudentToList(student);
+            }
         }
     }
 }

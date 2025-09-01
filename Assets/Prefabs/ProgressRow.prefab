@@ -1,5 +1,59 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &439947703277678671
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5459833173981081114}
+  - component: {fileID: 3373028780182862177}
+  m_Layer: 5
+  m_Name: DynamicProgressBar
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5459833173981081114
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 439947703277678671}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2173944538689500782}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3373028780182862177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 439947703277678671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94561659fd205424a8f22880a25e8345, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fillImage: {fileID: 5142467801159661706}
+  percentageText: {fileID: 5100990999462298498}
+  currentProgress: 57
+  animateProgress: 1
+  animationSpeed: 50
+  fillColor: {r: 0.2, g: 0.8, b: 0.4, a: 1}
 --- !u!1 &979338072244791127
 GameObject:
   m_ObjectHideFlags: 0
@@ -34,7 +88,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 391.39, y: 12.999977}
+  m_AnchoredPosition: {x: 391.39, y: -0.3}
   m_SizeDelta: {x: 135.96, y: 64.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7766826993462231601
@@ -246,7 +300,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -412, y: 13}
+  m_AnchoredPosition: {x: -412, y: 0.8}
   m_SizeDelta: {x: 40, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2806997154785300581
@@ -372,7 +426,6 @@ GameObject:
   m_Component:
   - component: {fileID: 9020129691749649549}
   - component: {fileID: 3884033666323092559}
-  - component: {fileID: 1361935114757677936}
   m_Layer: 5
   m_Name: ProgressSuccessRate
   m_TagString: Untagged
@@ -398,7 +451,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 166, y: 12.997974}
+  m_AnchoredPosition: {x: 166, y: 0.8}
   m_SizeDelta: {x: 210.21, y: 64.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3884033666323092559
@@ -409,24 +462,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5382071227192325548}
   m_CullTransparentMesh: 1
---- !u!114 &1361935114757677936
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5382071227192325548}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94561659fd205424a8f22880a25e8345, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fillImage: {fileID: 5142467801159661706}
-  percentageText: {fileID: 5100990999462298498}
-  currentProgress: 85
-  animateProgress: 1
-  animationSpeed: 50
-  fillColor: {r: 0.2, g: 0.8, b: 0.4, a: 1}
 --- !u!1 &5888198508317895375
 GameObject:
   m_ObjectHideFlags: 0
@@ -784,7 +819,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2173944538689500782}
-  - component: {fileID: 2988999991990097558}
+  - component: {fileID: 3644389762326949491}
   m_Layer: 5
   m_Name: ProgressRow
   m_TagString: Untagged
@@ -809,14 +844,15 @@ RectTransform:
   - {fileID: 6902466829466759861}
   - {fileID: 9020129691749649549}
   - {fileID: 2564393099163839564}
+  - {fileID: 5459833173981081114}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 918.73, y: 133.23}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 9.11}
+  m_SizeDelta: {x: 918.73, y: 58.7171}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2988999991990097558
+--- !u!114 &3644389762326949491
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -825,15 +861,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 7604628574576928488}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94561659fd205424a8f22880a25e8345, type: 3}
+  m_Script: {fileID: 11500000, guid: 20c4c6b9aff023948acf5fe320b4cee8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fillImage: {fileID: 0}
-  percentageText: {fileID: 0}
-  currentProgress: 57
-  animateProgress: 1
-  animationSpeed: 50
-  fillColor: {r: 0.2, g: 0.8, b: 0.4, a: 1}
+  studentNameText: {fileID: 5007017025827009827}
+  studentProfileImage: {fileID: 5921340244656018818}
+  progressBar: {fileID: 3373028780182862177}
+  ProgressStudChapter: {fileID: 693605532158277845}
+  ProgressStudStory: {fileID: 382673641735365243}
+  ProgressSuccessRate: {fileID: 5100990999462298498}
+  ProgressStudOverallScore: {fileID: 2185740110321544518}
 --- !u!1 &8190677950513190363
 GameObject:
   m_ObjectHideFlags: 0
@@ -868,7 +905,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -294.26, y: 12.999977}
+  m_AnchoredPosition: {x: -294.26, y: 0.8}
   m_SizeDelta: {x: 172.49, y: 64.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6329901754667846518
@@ -1005,7 +1042,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -95, y: 12.999977}
+  m_AnchoredPosition: {x: -95, y: 6}
   m_SizeDelta: {x: 172.8, y: 64.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2707033278053773648

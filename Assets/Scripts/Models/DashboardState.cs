@@ -7,6 +7,6 @@ public class DashboardState
     public string selectedClassCode;
     public string selectedClassName;
     public List<StudentModel> currentStudents;
-    
+
     public bool HasClasses => teacherData?.classCode != null && teacherData.classCode.Count > 0;
 }
