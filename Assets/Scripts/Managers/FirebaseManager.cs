@@ -95,4 +95,9 @@ public class FirebaseManager : MonoBehaviour
     {
         StudentService?.GetStudentsInClass(classCode, callback);
     }
+
+    public void GetStudentLeaderboard(string classCode, Action<List<LeaderboardStudentModel>> callback)
+    {
+        StudentService?.GetStudentLeaderboard(classCode, callback);
+    }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,6 +17,9 @@ public class ClassListView : MonoBehaviour, IClassListView
     
     private Button _lastSelectedButton;
     
+    // Dictionary to track class codes to buttons
+    private Dictionary<string, Button> _classButtons = new Dictionary<string, Button>();
+    
     public void ClearClassList()
     {
         foreach (Transform child in classListContent)
@@ -23,6 +27,7 @@ public class ClassListView : MonoBehaviour, IClassListView
             Destroy(child.gameObject);
         }
         _lastSelectedButton = null;
+        _classButtons.Clear();
     }
     
     public void AddClassToList(string classCode, string className, System.Action<string, string> onClassSelected)
@@ -37,6 +42,9 @@ public class ClassListView : MonoBehaviour, IClassListView
         
         Button classButton = row.GetComponent<Button>();
         classButton.transition = Selectable.Transition.ColorTint;
+        
+        // Store the button reference with its class code
+        _classButtons[classCode] = classButton;
         
         classButton.onClick.AddListener(() =>
         {
@@ -59,13 +67,21 @@ public class ClassListView : MonoBehaviour, IClassListView
         }
     }
     
+    public void SelectClassByCode(string classCode)
+    {
+        if (_classButtons.TryGetValue(classCode, out Button button))
+        {
+            OnClassButtonClicked(button, classCode, "");
+        }
+    }
+    
     private void OnClassButtonClicked(Button clickedButton, string classCode, string className)
     {
         if (_lastSelectedButton != null && _lastSelectedButton != clickedButton)
         {
             ResetButton(_lastSelectedButton);
         }
-        
+
         HighlightButton(clickedButton);
         _lastSelectedButton = clickedButton;
     }

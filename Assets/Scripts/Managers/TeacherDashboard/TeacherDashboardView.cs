@@ -82,12 +82,16 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
         }
     }
 
-    public void SetEmptyMessages(bool isStudentEmpty)
+    public void SetProgressEmptyMessages(bool isProgressEmtpy)
     {
         if (studentProgressEmptyText != null)
-            studentProgressEmptyText.gameObject.SetActive(isStudentEmpty);
+            studentProgressEmptyText.gameObject.SetActive(isProgressEmtpy);
+    }
+
+    public void SetLeaderboardEmptyMessages(bool isLeaderboardEmpty)
+    {
         if (leaderboardEmptyText != null)
-            leaderboardEmptyText.gameObject.SetActive(isStudentEmpty);
+            leaderboardEmptyText.gameObject.SetActive(isLeaderboardEmpty);
     }
 
     private void SetActivePanel(GameObject activePanel)

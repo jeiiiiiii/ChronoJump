@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
+using System.Linq;
 
 public class StudentService
 {
@@ -15,7 +16,7 @@ public class StudentService
     }
 
     public void GetStudentsInClass(string classCode, Action<List<StudentModel>> callback)
-    {   
+    {
         _firebaseService.DB.Collection("students")
             .WhereEqualTo("classCode", classCode)
             .GetSnapshotAsync()
@@ -37,13 +38,13 @@ public class StudentService
     {
         List<StudentModel> students = new List<StudentModel>();
 
-        if (snapshot.Count == 0)
+        if (snapshot.Count() == 0)  
         {
             callback(students);
             return;
         }
 
-        int remaining = snapshot.Count;
+        int remaining = snapshot.Count(); 
 
         foreach (DocumentSnapshot document in snapshot.Documents)
         {
@@ -55,7 +56,7 @@ public class StudentService
                 student.studentProgress = progress ?? new Dictionary<string, object>();
                 students.Add(student);
                 remaining--;
-                
+
                 if (remaining <= 0)
                 {
                     callback(students);
@@ -83,7 +84,7 @@ public class StudentService
         {
             // Get student progress document
             var studentProgressSnapshot = await _firebaseService.DB.Collection("studentProgress").Document(studId).GetSnapshotAsync();
-            
+
             if (!studentProgressSnapshot.Exists)
             {
                 Debug.LogWarning($"No progress found for student {studId}");
@@ -120,7 +121,7 @@ public class StudentService
                     {
                         var storyFields = new Dictionary<string, object>();
                         var storyData = storySnapshot.ToDictionary();
-                        
+
                         // Add all story fields except the chapter reference
                         foreach (var field in storyData)
                         {
@@ -129,7 +130,7 @@ public class StudentService
                                 storyFields[field.Key] = field.Value;
                             }
                         }
-                        
+
                         // Handle chapter reference if it exists
                         if (storyData.ContainsKey("chapter") && storyData["chapter"] is DocumentReference chapterRef)
                         {
@@ -151,18 +152,18 @@ public class StudentService
                                 Debug.LogError($"Failed to get chapter reference: {ex}");
                             }
                         }
-                        
+
                         progress["currentStory"] = storyFields;
                     }
                     else
                     {
-                        progress[kv.Key] = kv.Value; // Keep the original reference
+                        progress[kv.Key] = kv.Value; 
                     }
                 }
                 catch (System.Exception ex)
                 {
                     Debug.LogError($"Failed to get story reference: {ex}");
-                    progress[kv.Key] = kv.Value; // Keep the original reference
+                    progress[kv.Key] = kv.Value;
                 }
             }
             else
@@ -178,5 +179,53 @@ public class StudentService
     private string GetFieldValue(DocumentSnapshot document, string fieldName)
     {
         return document.ContainsField(fieldName) ? document.GetValue<string>(fieldName) : "";
+    }
+
+    public void GetStudentLeaderboard(string classCode, Action<List<LeaderboardStudentModel>> callback)
+    {
+        Debug.Log($"[GetStudentLeaderboard] Starting for class: {classCode}");
+        
+        _firebaseService.DB.Collection("studentLeaderboards")
+            .WhereEqualTo("classCode", classCode)
+            .OrderByDescending("overallScore") 
+            .GetSnapshotAsync()
+            .ContinueWithOnMainThread(task =>
+            {
+                if (task.IsCanceled || task.IsFaulted)
+                {
+                    Debug.LogError("Failed to get student leaderboard: " + task.Exception);
+                    callback(null);
+                    return;
+                }
+
+                QuerySnapshot snapshot = task.Result;
+                List<LeaderboardStudentModel> students = new List<LeaderboardStudentModel>();
+
+                Debug.Log($"[GetStudentLeaderboard] Found {snapshot.Documents.Count()} students"); 
+
+                foreach (DocumentSnapshot document in snapshot.Documents)
+                {
+                    var data = document.ToDictionary();
+                    
+                    string studId = data.ContainsKey("studId") ? data["studId"]?.ToString() : "";
+                    string displayName = data.ContainsKey("displayName") ? data["displayName"]?.ToString() : "Unknown Student";
+                    string classCodeFromDoc = data.ContainsKey("classCode") ? data["classCode"]?.ToString() : "";
+                    
+                    int overallScore = 0;
+                    if (data.ContainsKey("overallScore"))
+                    {
+                        if (data["overallScore"] is long longScore)
+                            overallScore = (int)longScore;
+                        else if (data["overallScore"] is int intScore)
+                            overallScore = intScore;
+                        else if (int.TryParse(data["overallScore"]?.ToString(), out int parsedScore))
+                            overallScore = parsedScore;
+                    }
+
+                    students.Add(new LeaderboardStudentModel(studId, displayName, overallScore, classCodeFromDoc));
+                }
+
+                callback(students);
+            });
     }
 }
