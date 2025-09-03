@@ -21,6 +21,7 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
     [Header("Class Selection Display")]
     public TextMeshProUGUI selectedClassCodeText;
     public TextMeshProUGUI selectedClassNameText;
+    public ClipboardButton clipboardButton;
 
     [Header("Empty State Messages")]
     public TextMeshProUGUI studentProgressEmptyText;
@@ -70,6 +71,9 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
 
         if (selectedClassNameText != null)
             selectedClassNameText.text = className;
+        
+        if (clipboardButton != null)
+            clipboardButton.SetClassCode(classCode);
     }
 
     public void SetDashboardInteractable(bool interactable)
@@ -102,4 +106,5 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
         leaderboardPage.SetActive(activePanel == leaderboardPage);
         createNewClassPanel.SetActive(false);
     }
+
 }
