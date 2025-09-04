@@ -11,6 +11,7 @@ public class RegisterManager : MonoBehaviour
     public TMP_InputField emailField;
     public TMP_InputField passwordField;
     public TMP_InputField confirmPasswordField;
+    public TMP_InputField codeField;
     public Toggle isTeacherToggle;
     public Toggle termsToggle;
     public TextMeshProUGUI feedbackText;
@@ -41,66 +42,101 @@ public class RegisterManager : MonoBehaviour
         string lastName = lastNameField.text.Trim();
         string password = passwordField.text.Trim();
         string confirmPassword = confirmPasswordField.text.Trim();
+        string code = codeField.text.Trim();
 
         if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName))
         {
-            errorMessagePanel.SetActive(true);
-            feedbackText.text = "Please enter both first and last names.";
+            ShowError("Please enter both first and last names.");
             return;
         }
         else if (!PatternManager.IsValidEmail(email))
         {
-            errorMessagePanel.SetActive(true);
-            feedbackText.text = "Please enter a valid email address.";
+            ShowError("Please enter a valid email address.");
             return;
         }
         else if (string.IsNullOrEmpty(email))
         {
-            errorMessagePanel.SetActive(true);
-            feedbackText.text = "Email cannot be empty.";
+            ShowError("Email cannot be empty.");
             return;
         }
         else if (string.IsNullOrEmpty(password))
         {
-            errorMessagePanel.SetActive(true);
-            feedbackText.text = "Password cannot be empty.";
+            ShowError("Password cannot be empty.");
             return;
         }
         else if (!PatternManager.IsValidPassword(password))
         {
-            errorMessagePanel.SetActive(true);
-            feedbackText.text = "Password must be 8-32 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.";
+            ShowError("Password must be 8-32 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.");
             return;
         }
         else if (string.IsNullOrEmpty(confirmPassword))
         {
-            errorMessagePanel.SetActive(true);
-            feedbackText.text = "Please confirm your password.";
+            ShowError("Please confirm your password.");
             return;
         }
         else if (password != confirmPassword)
         {
-            errorMessagePanel.SetActive(true);
-            feedbackText.text = "Passwords do not match.";
+            ShowError("Passwords do not match.");
+            return;
+        }
+        else if (string.IsNullOrEmpty(code))
+        {
+            string codeType = isTeacherToggle.isOn ? "teacher code" : "class code";
+            ShowError($"Please enter a valid {codeType}.");
             return;
         }
         else if (!termsToggle.isOn)
         {
-            errorMessagePanel.SetActive(true);
-            feedbackText.text = "You must agree to the terms and conditions.";
+            ShowError("You must agree to the terms and conditions.");
             return;
         }
 
         string fullName = $"{firstName} {lastName}";
         bool isTeacher = isTeacherToggle.isOn;
+        feedbackText.text = "Validating code...";
+
+        // First validate the code before proceeding with registration
+        if (isTeacher)
+        {
+            // Validate teacher code
+            FirebaseManager.Instance.ValidateTeacherCode(code, (isValid) =>
+            {
+                if (!isValid)
+                {
+                    ShowError("Invalid teacher code. Please contact your administrator.");
+                    return;
+                }
+                
+                // Code is valid, proceed with registration
+                ProceedWithRegistration(email, password, fullName, isTeacher, code);
+            });
+        }
+        else
+        {
+            // Validate class code (student)
+            FirebaseManager.Instance.ValidateClassCode(code, (isValid) =>
+            {
+                if (!isValid)
+                {
+                    ShowError("Invalid class code. Please check with your teacher.");
+                    return;
+                }
+                
+                // Code is valid, proceed with registration
+                ProceedWithRegistration(email, password, fullName, isTeacher, code);
+            });
+        }
+    }
+
+    private void ProceedWithRegistration(string email, string password, string fullName, bool isTeacher, string code)
+    {
         feedbackText.text = "Registering...";
 
-        FirebaseManager.Instance.SignUp(email, password, fullName, isTeacher, (success, message) =>
+        FirebaseManager.Instance.SignUp(email, password, fullName, isTeacher, code, (success, message) =>
         {
             if (!success)
             {
-                errorMessagePanel.SetActive(true);
-                feedbackText.text = message;
+                ShowError(message);
                 return;
             }
 
@@ -110,6 +146,12 @@ public class RegisterManager : MonoBehaviour
                 SceneManager.LoadScene("Login");
             });
         });
+    }
+
+    private void ShowError(string message)
+    {
+        errorMessagePanel.SetActive(true);
+        feedbackText.text = message;
     }
     
     // Close the error message panel and clear feedback text

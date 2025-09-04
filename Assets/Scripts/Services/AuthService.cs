@@ -39,7 +39,14 @@ public class AuthService
             });
     }
 
+    // Original SignUp method for backward compatibility
     public void SignUp(string email, string password, string displayName, bool isTeacher, Action<bool, string> callback)
+    {
+        SignUp(email, password, displayName, isTeacher, null, callback);
+    }
+
+    // New SignUp method with code parameter
+    public void SignUp(string email, string password, string displayName, bool isTeacher, string code, Action<bool, string> callback)
     {
         _firebaseService.Auth.CreateUserWithEmailAndPasswordAsync(email, password)
             .ContinueWithOnMainThread(task =>
@@ -62,11 +69,12 @@ public class AuthService
                 var authResult = task.Result;
                 FirebaseUser user = authResult.User;
 
-                UpdateUserProfile(user, displayName, isTeacher, callback);
+                UpdateUserProfile(user, displayName, isTeacher, code, callback);
             });
     }
 
-    private void UpdateUserProfile(FirebaseUser user, string displayName, bool isTeacher, Action<bool, string> callback)
+    // Updated to accept code parameter
+    private void UpdateUserProfile(FirebaseUser user, string displayName, bool isTeacher, string code, Action<bool, string> callback)
     {
         UserProfile profile = new UserProfile
         {
@@ -85,7 +93,7 @@ public class AuthService
             Debug.Log($"User {displayName} registered successfully with email: {user.Email}");
             
             var userService = new UserService(_firebaseService);
-            userService.SaveUserData(user, isTeacher, callback);
+            userService.SaveUserData(user, isTeacher, code, callback);
         });
     }
 

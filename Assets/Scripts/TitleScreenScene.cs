@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -12,6 +13,7 @@ public class TitleScreen : MonoBehaviour
     public Button classroomButton;
     public Button creatermodeButton;
     public Button logoutButton;
+    public TextMeshProUGUI educatorsModeText;
 
 
 
@@ -33,6 +35,7 @@ public class TitleScreen : MonoBehaviour
                     classroomButton.gameObject.SetActive(true);
                     creatermodeButton.gameObject.SetActive(true);
                     logoutButton.gameObject.SetActive(true);
+                    educatorsModeText.gameObject.SetActive(true);
                 }
                 else if (userData.role.ToLower() == "student")
                 {
@@ -42,6 +45,7 @@ public class TitleScreen : MonoBehaviour
                     classroomButton.gameObject.SetActive(false);
                     creatermodeButton.gameObject.SetActive(false);
                     logoutButton.gameObject.SetActive(true);
+                    educatorsModeText.gameObject.SetActive(false);
                 }
                 else
                 {

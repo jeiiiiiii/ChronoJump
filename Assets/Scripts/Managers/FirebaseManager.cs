@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using System.Linq;
 
 public class FirebaseManager : MonoBehaviour
 {
@@ -60,15 +61,80 @@ public class FirebaseManager : MonoBehaviour
         Debug.Log("✅ All Firebase services initialized successfully!");
     }
 
-    // Optional: you can keep these wrappers for backward compatibility
     public void SignIn(string email, string password, Action<bool, string> callback)
     {
         AuthService?.SignIn(email, password, callback);
     }
 
+    // Original SignUp method without code parameter
     public void SignUp(string email, string password, string displayName, bool isTeacher, Action<bool, string> callback)
     {
         AuthService?.SignUp(email, password, displayName, isTeacher, callback);
+    }
+
+    // New SignUp method with code parameter
+    public void SignUp(string email, string password, string displayName, bool isTeacher, string code, Action<bool, string> callback)
+    {
+        AuthService?.SignUp(email, password, displayName, isTeacher, code, callback);
+    }
+
+    // Code validation methods
+    public void ValidateTeacherCode(string code, Action<bool> callback)
+    {
+        if (string.IsNullOrEmpty(code))
+        {
+            callback?.Invoke(false);
+            return;
+        }
+
+        // Check if the code exists in the teacherCodes collection
+        DB.Collection("teacherCodes").Document(code).GetSnapshotAsync().ContinueWith(task =>
+        {
+            UnityDispatcher.RunOnMainThread(() =>
+            {
+                if (task.IsCompletedSuccessfully && task.Result.Exists)
+                {
+                    callback?.Invoke(true);
+                }
+                else
+                {
+                    callback?.Invoke(false);
+                }
+            });
+        });
+    }
+
+    public void ValidateClassCode(string classCode, Action<bool> callback)
+    {
+        if (string.IsNullOrEmpty(classCode))
+        {
+            callback?.Invoke(false);
+            return;
+        }
+
+        DB.Collection("classes")
+        .WhereEqualTo("classCode", classCode)
+        .Limit(1)
+        .GetSnapshotAsync()
+        .ContinueWith((Task<QuerySnapshot> task) =>
+        {
+            UnityDispatcher.RunOnMainThread(() =>
+            {
+                if (task.IsCompletedSuccessfully && task.Result != null && task.Result.Count > 0)
+                {
+                    var doc = task.Result.Documents.FirstOrDefault(); // ✅ safe access
+                    if (doc != null)
+                    {
+                        var classData = doc.ToDictionary();
+                        bool isActive = classData.ContainsKey("isActive") ? (bool)classData["isActive"] : true;
+                        callback?.Invoke(isActive);
+                        return;
+                    }
+                }
+
+                callback?.Invoke(false);
+            });
+        });
     }
 
     public void GetUserData(Action<UserAccountModel> callback)
