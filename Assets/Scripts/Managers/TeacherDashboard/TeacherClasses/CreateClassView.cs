@@ -6,7 +6,6 @@ public class CreateClassView : MonoBehaviour
 {
     [Header("UI References")]
     public TMP_InputField classNameInputField;
-    public TMP_Dropdown classCodeOptionDropdown;
     public GameObject createClassPanel;
     public GameObject errorMessagePanel;
     public TextMeshProUGUI feedbackText;
@@ -31,19 +30,19 @@ public class CreateClassView : MonoBehaviour
         }
         
         // Check UI references
-        if (classNameInputField == null || classCodeOptionDropdown == null)
+        if (classNameInputField == null)
         {
             Debug.LogError("UI references are not assigned in Inspector!");
             return;
         }
 
         string className = classNameInputField.text.Trim();
-        string classCodeOption = classCodeOptionDropdown.options[classCodeOptionDropdown.value].text;
+        string classGradeOption = "8"; // Default to grade 8 level
        
-        if (!string.IsNullOrEmpty(className) && !string.IsNullOrEmpty(classCodeOption))
+        if (!string.IsNullOrEmpty(className) && !string.IsNullOrEmpty(classGradeOption))
         {
             // Use ClassService directly from FirebaseManager
-            FirebaseManager.Instance.ClassService.CreateClass(className, classCodeOption, (success, message) => {
+            FirebaseManager.Instance.ClassService.CreateClass(className, classGradeOption, (success, message) => {
                 if (success)
                 {
                     if (feedbackText != null)
@@ -97,8 +96,5 @@ public class CreateClassView : MonoBehaviour
             
         if (classNameInputField != null)
             classNameInputField.text = "";
-            
-        if (classCodeOptionDropdown != null)
-            classCodeOptionDropdown.value = 0;
     }
 }

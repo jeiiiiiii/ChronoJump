@@ -17,6 +17,12 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
     [Header("Teacher Info")]
     public TextMeshProUGUI teacherNameText;
     public Image teacherProfileIcon;
+    
+    [Header("Title Profile Icons")]
+    public Sprite mrIcon;
+    public Sprite msIcon;
+    public Sprite mrsIcon;
+    public Sprite drIcon;
 
     [Header("Class Selection Display")]
     public TextMeshProUGUI selectedClassCodeText;
@@ -31,8 +37,10 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
     public GameObject viewAllProgressButton;
 
     [Header("Leaderboard Controls")]
-    public GameObject viewAllLeaderboardButton; 
+    public GameObject viewAllLeaderboardButton;
 
+    [Header("Others")]
+    public GameObject newClassButton;
 
     public void ShowLandingPage()
     {
@@ -59,7 +67,6 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
         SetViewAllLeaderboardButtonVisible(false);
     }
 
-
     public void ShowCreateClassPanel()
     {
         createNewClassPanel.SetActive(true);
@@ -70,8 +77,47 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
         if (teacherNameText != null)
             teacherNameText.text = teacherName;
 
-        if (teacherProfileIcon != null && profileIcon != null)
-            teacherProfileIcon.sprite = profileIcon;
+        // Set profile icon based on title if no specific icon is provided
+        if (teacherProfileIcon != null)
+        {
+            if (profileIcon != null)
+            {
+                teacherProfileIcon.sprite = profileIcon;
+            }
+            else
+            {
+                // Extract title from teacherName and set appropriate icon
+                teacherProfileIcon.sprite = GetIconForTitle(teacherName);
+            }
+        }
+    }
+
+    private Sprite GetIconForTitle(string teacherName)
+    {
+        if (string.IsNullOrEmpty(teacherName))
+            return null;
+
+        // Extract the title (first word) from the teacher name
+        string title = teacherName.Split(' ')[0].ToLower();
+
+        switch (title)
+        {
+            case "mr":
+            case "mr.":
+                return mrIcon;
+            case "ms":
+            case "ms.":
+                return msIcon;
+            case "mrs":
+            case "mrs.":
+                return mrsIcon;
+            case "dr":
+            case "dr.":
+                return drIcon;
+            default:
+                // Return a default icon or null if no match
+                return mrIcon; // or return null;
+        }
     }
 
     public void UpdateClassSelection(string classCode, string className)
@@ -120,7 +166,6 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
             viewAllLeaderboardButton.SetActive(visible);
     }
 
-
     private void SetActivePanel(GameObject activePanel)
     {
         landingPage.SetActive(activePanel == landingPage);
@@ -129,11 +174,24 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
         leaderboardPage.SetActive(activePanel == leaderboardPage);
         createNewClassPanel.SetActive(false);
 
+        // ✅ Control newClassButton visibility
+        if (newClassButton != null)
+        {
+            // Show only on landingPage and emptyLandingPage
+            bool shouldShowNewClassButton = (activePanel == landingPage || activePanel == emptyLandingPage);
+            newClassButton.SetActive(shouldShowNewClassButton);
+        }
+
+        // ✅ Handle view-all buttons
         if (activePanel == landingPage)
         {
             SetViewAllProgressButtonVisible(true);
-            SetViewAllLeaderboardButtonVisible(true); // 🔹 Leaderboard button visible on landing
+            SetViewAllLeaderboardButtonVisible(true);
+        }
+        else
+        {
+            SetViewAllProgressButtonVisible(false);
+            SetViewAllLeaderboardButtonVisible(false);
         }
     }
-
 }
