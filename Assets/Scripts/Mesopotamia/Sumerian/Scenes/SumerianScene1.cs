@@ -45,6 +45,12 @@ public class SumerianScene1 : MonoBehaviour
     public Sprite ChronoSmile;
     public Sprite ChronoThinking;
 
+    // ======= VOICE NARRATION ADDITION #1 =======
+    // Add these two variables for voice narration
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;
+    // ==========================================
+
     void Start()
     {
         // Ensure SaveLoadManager exists
@@ -135,54 +141,52 @@ public class SumerianScene1 : MonoBehaviour
         };
     }
 
-    // Replace the LoadDialogueIndex() method in SumerianScene1.cs with this:
-
-void LoadDialogueIndex()
-{
-    // Check if this is a new game
-    if (PlayerPrefs.GetString("GameMode", "") == "NewGame")
+    void LoadDialogueIndex()
     {
-        currentDialogueIndex = 0;
-        PlayerPrefs.DeleteKey("GameMode"); // Clear the flag after use
-        Debug.Log("New game started - dialogue index reset to 0");
-        return;
-    }
-
-    // Check if this is a load operation from save file
-    if (PlayerPrefs.GetString("LoadedFromSave", "false") == "true")
-    {
-        // Load from save file
-        if (PlayerPrefs.HasKey("LoadedDialogueIndex"))
+        // Check if this is a new game
+        if (PlayerPrefs.GetString("GameMode", "") == "NewGame")
         {
-            currentDialogueIndex = PlayerPrefs.GetInt("LoadedDialogueIndex");
-            PlayerPrefs.DeleteKey("LoadedDialogueIndex");
-            Debug.Log($"Loaded from save file at dialogue index: {currentDialogueIndex}");
+            currentDialogueIndex = 0;
+            PlayerPrefs.DeleteKey("GameMode"); // Clear the flag after use
+            Debug.Log("New game started - dialogue index reset to 0");
+            return;
         }
-        
-        // Clear the load flag
-        PlayerPrefs.SetString("LoadedFromSave", "false");
-    }
-    else
-    {
-        // Check for regular scene progression (not from load)
-        if (PlayerPrefs.HasKey("SumerianSceneOne_DialogueIndex"))
+
+        // Check if this is a load operation from save file
+        if (PlayerPrefs.GetString("LoadedFromSave", "false") == "true")
         {
-            currentDialogueIndex = PlayerPrefs.GetInt("SumerianSceneOne_DialogueIndex");
-            Debug.Log($"Continuing from previous session at dialogue index: {currentDialogueIndex}");
+            // Load from save file
+            if (PlayerPrefs.HasKey("LoadedDialogueIndex"))
+            {
+                currentDialogueIndex = PlayerPrefs.GetInt("LoadedDialogueIndex");
+                PlayerPrefs.DeleteKey("LoadedDialogueIndex");
+                Debug.Log($"Loaded from save file at dialogue index: {currentDialogueIndex}");
+            }
+            
+            // Clear the load flag
+            PlayerPrefs.SetString("LoadedFromSave", "false");
         }
         else
         {
-            currentDialogueIndex = 0;
-            Debug.Log("Starting from beginning");
+            // Check for regular scene progression (not from load)
+            if (PlayerPrefs.HasKey("SumerianSceneOne_DialogueIndex"))
+            {
+                currentDialogueIndex = PlayerPrefs.GetInt("SumerianSceneOne_DialogueIndex");
+                Debug.Log($"Continuing from previous session at dialogue index: {currentDialogueIndex}");
+            }
+            else
+            {
+                currentDialogueIndex = 0;
+                Debug.Log("Starting from beginning");
+            }
         }
-    }
 
-    // Ensure index is within bounds
-    if (currentDialogueIndex >= dialogueLines.Length)
-        currentDialogueIndex = dialogueLines.Length - 1;
-    if (currentDialogueIndex < 0)
-        currentDialogueIndex = 0;
-}
+        // Ensure index is within bounds
+        if (currentDialogueIndex >= dialogueLines.Length)
+            currentDialogueIndex = dialogueLines.Length - 1;
+        if (currentDialogueIndex < 0)
+            currentDialogueIndex = 0;
+    }
 
     void SetupButtons()
     {
@@ -242,6 +246,15 @@ void LoadDialogueIndex()
         
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
+
+        // ======= VOICE NARRATION ADDITION #2 =======
+        // This is the CORE voice narration code - plays audio for current dialogue
+        if (audioSource != null && dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+        {
+            audioSource.clip = dialogueClips[currentDialogueIndex];
+            audioSource.Play();
+        }
+        // ==========================================
 
         // Your existing sprite logic
         switch (currentDialogueIndex)
@@ -304,7 +317,7 @@ void LoadDialogueIndex()
             nextButton.interactable = false;
             return;
         }
-        ShowDialogue();
+        ShowDialogue(); // This calls ShowDialogue() which now includes voice narration
     }
 
     void ShowPreviousDialogue()
@@ -313,37 +326,30 @@ void LoadDialogueIndex()
         {
             currentDialogueIndex--;
             SaveCurrentProgress();
-            ShowDialogue();
+            ShowDialogue(); // This calls ShowDialogue() which now includes voice narration
         }
     }
 
-    // Save current dialogue index and go to Save/Load scene
-    // Replace the SaveAndLoad() method in your SumerianScene1.cs with this:
-
-    // Replace your SaveAndLoad() method in SumerianScene1.cs with this enhanced version:
-
-    // Replace your SaveAndLoad() method in SumerianScene1.cs with this enhanced version:
-
     public void SaveAndLoad()
     {
-    // Save the current dialogue index and scene info
-    PlayerPrefs.SetInt("SumerianSceneOne_DialogueIndex", currentDialogueIndex);
-    PlayerPrefs.SetString("LastScene", "SumerianSceneOne");
-    
-    // NEW: Clear LoadOnly mode and set story scene access
-    PlayerPrefs.DeleteKey("AccessMode"); // Clear any previous LoadOnly restriction
-    PlayerPrefs.SetString("SaveSource", "StoryScene"); // Mark that we came from a story scene
-    PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-    PlayerPrefs.Save();
-    
-    // Also directly set the state in SaveLoadManager if it exists
-    if (SaveLoadManager.Instance != null)
-    {
-        SaveLoadManager.Instance.SetCurrentGameState("SumerianSceneOne", currentDialogueIndex);
-    }
-    
-    Debug.Log($"Going to save menu with dialogue index: {currentDialogueIndex} from story scene - save buttons will be enabled");
-    SceneManager.LoadScene("SaveAndLoadScene");
+        // Save the current dialogue index and scene info
+        PlayerPrefs.SetInt("SumerianSceneOne_DialogueIndex", currentDialogueIndex);
+        PlayerPrefs.SetString("LastScene", "SumerianSceneOne");
+        
+        // NEW: Clear LoadOnly mode and set story scene access
+        PlayerPrefs.DeleteKey("AccessMode"); // Clear any previous LoadOnly restriction
+        PlayerPrefs.SetString("SaveSource", "StoryScene"); // Mark that we came from a story scene
+        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        PlayerPrefs.Save();
+        
+        // Also directly set the state in SaveLoadManager if it exists
+        if (SaveLoadManager.Instance != null)
+        {
+            SaveLoadManager.Instance.SetCurrentGameState("SumerianSceneOne", currentDialogueIndex);
+        }
+        
+        Debug.Log($"Going to save menu with dialogue index: {currentDialogueIndex} from story scene - save buttons will be enabled");
+        SceneManager.LoadScene("SaveAndLoadScene");
     }
 
     void SaveCurrentProgress()

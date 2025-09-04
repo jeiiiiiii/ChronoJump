@@ -2044,6 +2044,24 @@ MonoBehaviour:
   - {fileID: 1490102247}
   - {fileID: 206160653}
   finishAudioSource: {fileID: 1749078138}
+  audioSource: {fileID: 1749078138}
+  dialogueClips:
+  - {fileID: 8300000, guid: 8baa95ae8a2ae95489fb0ac55338ecc3, type: 3}
+  tigrisClips:
+  - {fileID: 8300000, guid: 700d5511c4ce3264eb1286c16d38e4fc, type: 3}
+  - {fileID: 8300000, guid: 9c3069ec0990bc24d99f7272bd59add9, type: 3}
+  - {fileID: 8300000, guid: ea7503fa2c0b1574d94e85c5a184d6e1, type: 3}
+  - {fileID: 8300000, guid: 2476eadf9d978ab41bd69fa67e67fc3a, type: 3}
+  - {fileID: 8300000, guid: 736da353fc248c0429829b183b213a8d, type: 3}
+  - {fileID: 8300000, guid: 9cb19d2b71cc48f449a95efe280531c9, type: 3}
+  disyertoClips:
+  - {fileID: 8300000, guid: 50e7f29f44a212e488cfb14c8b8b3c0e, type: 3}
+  - {fileID: 8300000, guid: 970c0843db656024196feb370e50e2d8, type: 3}
+  - {fileID: 8300000, guid: 50ae6d41e57294c4b963c3909c667ce6, type: 3}
+  imbakNaUlanClips:
+  - {fileID: 8300000, guid: a7832e9cfa81d0c49aaf8673240cdf57, type: 3}
+  - {fileID: 8300000, guid: 970c0843db656024196feb370e50e2d8, type: 3}
+  - {fileID: 0}
   PlayercharacterRenderer: {fileID: 81652815}
   ChronocharacterRenderer: {fileID: 355097131}
   PlayerSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}

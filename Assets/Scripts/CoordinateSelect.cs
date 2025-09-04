@@ -19,11 +19,52 @@ public class CoordinateSelect : MonoBehaviour
         SceneManager.LoadScene("SumerianSceneOne");
     }
 
+    public void LoadAkkadian()
+    {
+        ClearProgressForNewGame();
+        SceneManager.LoadScene("AkkadianSceneOne"); // Replace with actual scene name
+    }
+
+    public void LoadAssyrian()
+    {
+        ClearProgressForNewGame();
+        SceneManager.LoadScene("AssyrianSceneOne"); // Replace with actual scene name
+    }
+
+    public void LoadBabylonian()
+    {
+        ClearProgressForNewGame();
+        SceneManager.LoadScene("BabylonianSceneOne"); // Replace with actual scene name
+    }
+
     private void ClearProgressForNewGame()
     {
         // Clear all dialogue progress for starting fresh
         PlayerPrefs.DeleteKey("SumerianSceneOne_DialogueIndex");
         PlayerPrefs.DeleteKey("SumerianSceneTwo_DialogueIndex");
+        PlayerPrefs.DeleteKey("SumerianSceneThree_DialogueIndex");
+        PlayerPrefs.DeleteKey("SumerianSceneFour_DialogueIndex");
+        PlayerPrefs.DeleteKey("SumerianSceneFive_DialogueIndex");
+        PlayerPrefs.DeleteKey("SumerianSceneSix_DialogueIndex");
+        PlayerPrefs.DeleteKey("SumerianSceneSeven_DialogueIndex");
+        PlayerPrefs.DeleteKey("AkkadianSceneOne_DialogueIndex");
+        PlayerPrefs.DeleteKey("AkkadianSceneTwo_DialogueIndex");
+        PlayerPrefs.DeleteKey("AkkadianSceneThree_DialogueIndex");
+        PlayerPrefs.DeleteKey("AkkadianSceneFour_DialogueIndex");
+        PlayerPrefs.DeleteKey("AkkadianSceneFive_DialogueIndex");
+        PlayerPrefs.DeleteKey("AkkadianSceneSix_DialogueIndex");
+        PlayerPrefs.DeleteKey("BabylonianSceneOne_DialogueIndex");
+        PlayerPrefs.DeleteKey("BabylonianSceneTwo_DialogueIndex");
+        PlayerPrefs.DeleteKey("BabylonianSceneThree_DialogueIndex");
+        PlayerPrefs.DeleteKey("BabylonianSceneFour_DialogueIndex");
+        PlayerPrefs.DeleteKey("BabylonianSceneFive_DialogueIndex");
+        PlayerPrefs.DeleteKey("BabylonianSceneSix_DialogueIndex");
+        PlayerPrefs.DeleteKey("BabylonianSceneSeven_DialogueIndex");
+        PlayerPrefs.DeleteKey("AssyrianSceneOne_DialogueIndex");
+        PlayerPrefs.DeleteKey("AssyrianSceneTwo_DialogueIndex");
+        PlayerPrefs.DeleteKey("AssyrianSceneThree_DialogueIndex");
+        PlayerPrefs.DeleteKey("AssyrianSceneFour_DialogueIndex");
+        PlayerPrefs.DeleteKey("AssyrianSceneFive_DialogueIndex");
         PlayerPrefs.DeleteKey("CurrentScene");
         PlayerPrefs.DeleteKey("LastScene");
         PlayerPrefs.DeleteKey("SaveTimestamp");
@@ -39,22 +80,4 @@ public class CoordinateSelect : MonoBehaviour
         Debug.Log("Starting new game - all progress cleared");
     }
 
-    // Optional: Add method for other chapters if you have them
-    public void LoadAkkadian()
-    {
-        ClearProgressForNewGame();
-        SceneManager.LoadScene("AkkadianScene"); // Replace with actual scene name
-    }
-
-    public void LoadAssyrian()
-    {
-        ClearProgressForNewGame();
-        SceneManager.LoadScene("AssyrianScene"); // Replace with actual scene name
-    }
-
-    public void LoadBabylonian()
-    {
-        ClearProgressForNewGame();
-        SceneManager.LoadScene("BabylonianScene"); // Replace with actual scene name
-    }
 }

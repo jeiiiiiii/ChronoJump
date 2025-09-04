@@ -43,6 +43,7 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
     public DialogueLine[] dialogueLines;
     private Answer[] answers;
     private bool hasAnswered = false;
+    private bool challengeCompleted = false; // NEW: Track if challenge was completed
 
     public Image[] heartImages;
     private bool isShowingBaybayinDialogue = false;
@@ -54,8 +55,6 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
     public AudioClip[] cuneiformClips;
     public AudioClip[] baybayinClips;
     public AudioClip[] hieroglyphicsClips;
-
-
 
     void Start()
     {
@@ -108,7 +107,7 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
         new DialogueLine
         {
             characterName = "ENKI",
-            line = "Halina’t dalhin ko kayo sa aming mga kanal. Doon niyo makikita kung paano naging masagana ang buhay sa gitna ng disyerto."
+            line = "Halina't dalhin ko kayo sa aming mga kanal. Doon niyo makikita kung paano naging masagana ang buhay sa gitna ng disyerto."
         },
     };
     private DialogueLine[] baybayinLines = new DialogueLine[]
@@ -119,13 +118,13 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
             line = "Baybayin...?" },
         new DialogueLine
         {
-            characterName = "ENKI",
-            line = "Hmm… maganda rin ‘yan, pero hindi sa panahong ito. Ang Baybayin ay matutuklasan pa lamang sa mga isla ng malayo. Isipin mong mas luma pa rito."
+            characterName = "CHRONO",
+            line = "Hmm… maganda rin 'yan, pero hindi sa panahong ito. Ang Baybayin ay matutuklasan pa lamang sa mga isla ng malayo. Isipin mong mas luma pa rito."
         },
         new DialogueLine
         {
-            characterName = "ENKI",
-            line = "Ito’y ukit sa luwad, at may hugis pantusok. Subukan mong muli."
+            characterName = "CHRONO",
+            line = "Ito'y ukit sa luwad, at may hugis pantusok. Subukan mong muli."
         },
         new DialogueLine
         {
@@ -141,13 +140,13 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
             line = "Hieroglyphics...?" },
         new DialogueLine
         {
-            characterName = "ENKI",
-            line = "Hmm… maganda rin ‘yan, pero hindi sa panahong ito. Ang Hieroglyphics ay matutuklasan pa lamang sa mga isla ng malayo. Isipin mong mas luma pa rito."
+            characterName = "CHRONO",
+            line = "Hmm… maganda rin 'yan, pero hindi sa panahong ito. Ang Hieroglyphics ay matutuklasan pa lamang sa mga isla ng malayo. Isipin mong mas luma pa rito."
         },
         new DialogueLine
         {
-            characterName = "ENKI",
-            line = "Ito’y ukit sa luwad, at may hugis pantusok. Subukan mong muli."
+            characterName = "CHRONO",
+            line = "Ito'y ukit sa luwad, at may hugis pantusok. Subukan mong muli."
         },
         new DialogueLine
         {
@@ -220,6 +219,17 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
                     PlayercharacterRenderer.sprite = PlayerSmile;
                     ChronocharacterRenderer.sprite = ChronoCheerful;
                     AchievementUnlockedRenderer.SetActive(true);
+
+                    // NEW: Mark challenge as completed and overwrite saves
+                    if (!challengeCompleted)
+                    {
+                        challengeCompleted = true;
+                        // Overwrite all existing saves to the next scene to prevent going back
+                        if (SaveLoadManager.Instance != null)
+                        {
+                            SaveLoadManager.Instance.OverwriteAllSavesAfterChallenge("SumerianSceneThree", 0);
+                        }
+                    }
 
                     foreach (Button btn in answerButtons)
                     {
@@ -495,4 +505,3 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
     }
 
 }
-

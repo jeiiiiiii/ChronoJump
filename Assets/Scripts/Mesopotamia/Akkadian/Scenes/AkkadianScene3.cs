@@ -16,6 +16,10 @@ public class AkkadianScene3 : MonoBehaviour
     [SerializeField] public Button nextButton;
     public Button backButton;
 
+    [Header("UI Buttons")]
+    public Button saveButton;
+    public Button homeButton;
+
     public int currentDialogueIndex = 0;
 
     public DialogueLine[] dialogueLines;
@@ -29,7 +33,22 @@ public class AkkadianScene3 : MonoBehaviour
     public Sprite SargonExplaining;
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
+
     void Start()
+    {
+        if (SaveLoadManager.Instance == null)
+        {
+            GameObject saveLoadManager = new GameObject("SaveLoadManager");
+            saveLoadManager.AddComponent<SaveLoadManager>();
+        }
+
+        InitializeDialogueLines();
+        LoadDialogueIndex();
+        SetupButtons();
+        ShowDialogue();
+    }
+
+    void InitializeDialogueLines()
     {
         dialogueLines = new DialogueLine[]
         {
@@ -59,10 +78,81 @@ public class AkkadianScene3 : MonoBehaviour
                 line = " Pero anong nangyari pagkatapos ni Sargon?"
             },
         };
+    }
 
-        ShowDialogue();
-        nextButton.onClick.AddListener(ShowNextDialogue);
-        backButton.onClick.AddListener(ShowPreviousDialogue);
+    void LoadDialogueIndex()
+    {
+        if (PlayerPrefs.GetString("GameMode", "") == "NewGame")
+        {
+            currentDialogueIndex = 0;
+            PlayerPrefs.DeleteKey("GameMode");
+            Debug.Log("New game started - dialogue index reset to 0");
+            return;
+        }
+
+        if (PlayerPrefs.GetString("LoadedFromSave", "false") == "true")
+        {
+            if (PlayerPrefs.HasKey("LoadedDialogueIndex"))
+            {
+                currentDialogueIndex = PlayerPrefs.GetInt("LoadedDialogueIndex");
+                PlayerPrefs.DeleteKey("LoadedDialogueIndex");
+                Debug.Log($"Loaded from save file at dialogue index: {currentDialogueIndex}");
+            }
+            PlayerPrefs.SetString("LoadedFromSave", "false");
+        }
+        else
+        {
+            if (PlayerPrefs.HasKey("AkkadianSceneThree_DialogueIndex"))
+            {
+                currentDialogueIndex = PlayerPrefs.GetInt("AkkadianSceneThree_DialogueIndex");
+                Debug.Log($"Continuing from previous session at dialogue index: {currentDialogueIndex}");
+            }
+            else
+            {
+                currentDialogueIndex = 0;
+                Debug.Log("Starting from beginning");
+            }
+        }
+
+        if (currentDialogueIndex >= dialogueLines.Length)
+            currentDialogueIndex = dialogueLines.Length - 1;
+        if (currentDialogueIndex < 0)
+            currentDialogueIndex = 0;
+    }
+
+    void SetupButtons()
+    {
+        if (nextButton != null)
+            nextButton.onClick.AddListener(ShowNextDialogue);
+
+        if (backButton != null)
+            backButton.onClick.AddListener(ShowPreviousDialogue);
+
+        if (saveButton != null)
+            saveButton.onClick.AddListener(SaveAndLoad);
+        else
+        {
+            GameObject saveButtonObj = GameObject.Find("SaveBT");
+            if (saveButtonObj != null)
+            {
+                Button foundSaveButton = saveButtonObj.GetComponent<Button>();
+                if (foundSaveButton != null)
+                    foundSaveButton.onClick.AddListener(SaveAndLoad);
+            }
+        }
+
+        if (homeButton != null)
+            homeButton.onClick.AddListener(Home);
+        else
+        {
+            GameObject homeButtonObj = GameObject.Find("HomeBt");
+            if (homeButtonObj != null)
+            {
+                Button foundHomeButton = homeButtonObj.GetComponent<Button>();
+                if (foundHomeButton != null)
+                    foundHomeButton.onClick.AddListener(Home);
+            }
+        }
     }
 
     void ShowDialogue()
@@ -90,10 +180,13 @@ public class AkkadianScene3 : MonoBehaviour
                 break;
         }
 
+        SaveCurrentProgress();
     }
+
     void ShowNextDialogue()
     {
         currentDialogueIndex++;
+        SaveCurrentProgress();
 
         if (currentDialogueIndex >= dialogueLines.Length)
         {
@@ -110,14 +203,43 @@ public class AkkadianScene3 : MonoBehaviour
         if (currentDialogueIndex > 0)
         {
             currentDialogueIndex--;
+            SaveCurrentProgress();
             ShowDialogue();
         }
     }
-    
+
+    public void SaveAndLoad()
+    {
+        PlayerPrefs.SetInt("AkkadianSceneThree_DialogueIndex", currentDialogueIndex);
+        PlayerPrefs.SetString("LastScene", "AkkadianSceneThree");
+        PlayerPrefs.DeleteKey("AccessMode");
+        PlayerPrefs.SetString("SaveSource", "StoryScene");
+        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        PlayerPrefs.Save();
+
+        if (SaveLoadManager.Instance != null)
+            SaveLoadManager.Instance.SetCurrentGameState("AkkadianSceneThree", currentDialogueIndex);
+
+        SceneManager.LoadScene("SaveAndLoadScene");
+    }
+
+    void SaveCurrentProgress()
+    {
+        PlayerPrefs.SetInt("AkkadianSceneThree_DialogueIndex", currentDialogueIndex);
+        PlayerPrefs.SetString("CurrentScene", "AkkadianSceneThree");
+        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        PlayerPrefs.Save();
+    }
+
     public void Home()
     {
+        SaveCurrentProgress();
         SceneManager.LoadScene("TitleScreen");
     }
+
+    public void ManualSave()
+    {
+        SaveCurrentProgress();
+        Debug.Log($"Manual save completed at dialogue {currentDialogueIndex}");
+    }
 }
-
-

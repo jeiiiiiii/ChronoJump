@@ -16,6 +16,10 @@ public class BabylonianScene6 : MonoBehaviour
     [SerializeField] public Button nextButton;
     public Button backButton;
 
+    [Header("UI Buttons")]
+    public Button saveButton;
+    public Button homeButton;
+
     public int currentDialogueIndex = 0;
 
     public DialogueLine[] dialogueLines;
@@ -29,6 +33,24 @@ public class BabylonianScene6 : MonoBehaviour
     public Sprite ChronoSmile;
 
     void Start()
+    {
+        // Ensure SaveLoadManager exists
+        if (SaveLoadManager.Instance == null)
+        {
+            GameObject saveLoadManager = new GameObject("SaveLoadManager");
+            saveLoadManager.AddComponent<SaveLoadManager>();
+        }
+
+        InitializeDialogueLines();
+
+        // Load saved progress
+        LoadDialogueIndex();
+
+        SetupButtons();
+        ShowDialogue();
+    }
+
+    void InitializeDialogueLines()
     {
         dialogueLines = new DialogueLine[]
         {
@@ -78,10 +100,84 @@ public class BabylonianScene6 : MonoBehaviour
                 line = " Oo. Marami pa tayong matututunan sa susunod na paglalakbay."
             }
         };
+    }
 
-        ShowDialogue();
-        nextButton.onClick.AddListener(ShowNextDialogue);
-        backButton.onClick.AddListener(ShowPreviousDialogue);
+    // === Load Dialogue Index Logic ===
+    void LoadDialogueIndex()
+    {
+        if (PlayerPrefs.GetString("GameMode", "") == "NewGame")
+        {
+            currentDialogueIndex = 0;
+            PlayerPrefs.DeleteKey("GameMode");
+            Debug.Log("New game started - dialogue index reset to 0");
+            return;
+        }
+
+        if (PlayerPrefs.GetString("LoadedFromSave", "false") == "true")
+        {
+            if (PlayerPrefs.HasKey("LoadedDialogueIndex"))
+            {
+                currentDialogueIndex = PlayerPrefs.GetInt("LoadedDialogueIndex");
+                PlayerPrefs.DeleteKey("LoadedDialogueIndex");
+                Debug.Log($"Loaded from save file at dialogue index: {currentDialogueIndex}");
+            }
+
+            PlayerPrefs.SetString("LoadedFromSave", "false");
+        }
+        else
+        {
+            if (PlayerPrefs.HasKey("BabylonianSceneSix_DialogueIndex"))
+            {
+                currentDialogueIndex = PlayerPrefs.GetInt("BabylonianSceneSix_DialogueIndex");
+                Debug.Log($"Continuing from previous session at dialogue index: {currentDialogueIndex}");
+            }
+            else
+            {
+                currentDialogueIndex = 0;
+                Debug.Log("Starting from beginning");
+            }
+        }
+
+        if (currentDialogueIndex >= dialogueLines.Length)
+            currentDialogueIndex = dialogueLines.Length - 1;
+        if (currentDialogueIndex < 0)
+            currentDialogueIndex = 0;
+    }
+
+    // === Setup Buttons ===
+    void SetupButtons()
+    {
+        if (nextButton != null)
+            nextButton.onClick.AddListener(ShowNextDialogue);
+
+        if (backButton != null)
+            backButton.onClick.AddListener(ShowPreviousDialogue);
+
+        if (saveButton != null)
+            saveButton.onClick.AddListener(SaveAndLoad);
+        else
+        {
+            GameObject saveButtonObj = GameObject.Find("SaveBT");
+            if (saveButtonObj != null)
+            {
+                Button foundSaveButton = saveButtonObj.GetComponent<Button>();
+                if (foundSaveButton != null)
+                    foundSaveButton.onClick.AddListener(SaveAndLoad);
+            }
+        }
+
+        if (homeButton != null)
+            homeButton.onClick.AddListener(Home);
+        else
+        {
+            GameObject homeButtonObj = GameObject.Find("HomeBt");
+            if (homeButtonObj != null)
+            {
+                Button foundHomeButton = homeButtonObj.GetComponent<Button>();
+                if (foundHomeButton != null)
+                    foundHomeButton.onClick.AddListener(Home);
+            }
+        }
     }
 
     void ShowDialogue()
@@ -126,6 +222,7 @@ public class BabylonianScene6 : MonoBehaviour
     void ShowNextDialogue()
     {
         currentDialogueIndex++;
+        SaveCurrentProgress();
 
         if (currentDialogueIndex >= dialogueLines.Length)
         {
@@ -136,18 +233,53 @@ public class BabylonianScene6 : MonoBehaviour
 
         ShowDialogue();
     }
+
     void ShowPreviousDialogue()
     {
         if (currentDialogueIndex > 0)
         {
             currentDialogueIndex--;
+            SaveCurrentProgress();
             ShowDialogue();
         }
     }
+
+    // === Save & Load ===
+    public void SaveAndLoad()
+    {
+        PlayerPrefs.SetInt("BabylonianSceneSix_DialogueIndex", currentDialogueIndex);
+        PlayerPrefs.SetString("LastScene", "BabylonianSceneSix");
+
+        PlayerPrefs.DeleteKey("AccessMode");
+        PlayerPrefs.SetString("SaveSource", "StoryScene");
+        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        PlayerPrefs.Save();
+
+        if (SaveLoadManager.Instance != null)
+            SaveLoadManager.Instance.SetCurrentGameState("BabylonianSceneSix", currentDialogueIndex);
+
+        Debug.Log($"Going to save menu with dialogue index: {currentDialogueIndex}");
+        SceneManager.LoadScene("SaveAndLoadScene");
+    }
+
+    // === Save Current Progress Only ===
+    void SaveCurrentProgress()
+    {
+        PlayerPrefs.SetInt("BabylonianSceneSix_DialogueIndex", currentDialogueIndex);
+        PlayerPrefs.SetString("CurrentScene", "BabylonianSceneSix");
+        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        PlayerPrefs.Save();
+    }
+
     public void Home()
     {
+        SaveCurrentProgress();
         SceneManager.LoadScene("TitleScreen");
     }
+
+    public void ManualSave()
+    {
+        SaveCurrentProgress();
+        Debug.Log($"Manual save completed at dialogue {currentDialogueIndex}");
+    }
 }
-
-

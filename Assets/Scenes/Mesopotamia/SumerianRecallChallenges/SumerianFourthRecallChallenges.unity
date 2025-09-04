@@ -2280,15 +2280,32 @@ MonoBehaviour:
   - {fileID: 508173604}
   - {fileID: 1490102247}
   - {fileID: 206160653}
-  finishAudioSource: {fileID: 162030415}
   PlayercharacterRenderer: {fileID: 81652815}
   ChronocharacterRenderer: {fileID: 355097131}
+  finishAudioSource: {fileID: 162030415}
+  audioSource: {fileID: 162030415}
+  dialogueClips:
+  - {fileID: 8300000, guid: 9f22c7dd7c1e2264d8fbae590718096d, type: 3}
+  gulongClips:
+  - {fileID: 8300000, guid: 7a1242e771a470b4b89b9a29133489d1, type: 3}
+  - {fileID: 8300000, guid: 5614db07f7ef47c479ae1cf1d62ca841, type: 3}
+  - {fileID: 8300000, guid: 512e44b013ca8924282c52e62402c459, type: 3}
+  apoyClips:
+  - {fileID: 8300000, guid: 563b6812e1026544d8626b020e963470, type: 3}
+  - {fileID: 8300000, guid: bebbc7722581f6f48949f492179d05cd, type: 3}
+  - {fileID: 8300000, guid: 39c57c50131805e458b893014cf4c252, type: 3}
+  layagClips:
+  - {fileID: 8300000, guid: 514ac8cb8b3c58a479a0c09cbecb5016, type: 3}
+  - {fileID: 8300000, guid: c400a25964ef8404691d6ff0c0fde7cb, type: 3}
+  - {fileID: 8300000, guid: 4765ad280a3d9e743ae69dcc314e3ab9, type: 3}
+  - {fileID: 8300000, guid: 39c57c50131805e458b893014cf4c252, type: 3}
   PlayerSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}
   PlayerReflective: {fileID: -6828170361931683543, guid: 41872a0e55450ef43b535aba6363171a, type: 3}
   PlayerEager: {fileID: 5428063399545322546, guid: c517d75299d0ddb4cb6eed3374b7a5b3, type: 3}
   PlayerEmbarassed: {fileID: 21300000, guid: f1f43dbd9447c5f468698952cbd6a509, type: 3}
   ChronoCheerful: {fileID: -4788844467492341420, guid: 2d820e03f038071438b5607182311759, type: 3}
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
+  ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   PatesiFormal: {fileID: 8262088842231230576, guid: 44517f0f0872c2a4a89a735d4945961b, type: 3}
   IshmaSmirking: {fileID: -8185647323617709461, guid: 7cc93e3b623b8144f89529f5558c64f7, type: 3}
   BlurBG: {fileID: 1061096143}

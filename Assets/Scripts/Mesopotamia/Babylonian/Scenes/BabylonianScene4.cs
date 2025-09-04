@@ -16,23 +16,50 @@ public class BabylonianScene4 : MonoBehaviour
     [SerializeField] public Button nextButton;
     public Button backButton;
 
-    public int currentDialogueIndex = 0;
+    [Header("UI Buttons")]
+    public Button saveButton;
+    public Button homeButton;
 
+    public int currentDialogueIndex = 0;
     public DialogueLine[] dialogueLines;
 
+    [Header("Sprites - Player")]
     public SpriteRenderer PlayercharacterRenderer;
     public Sprite PlayerCurious;
     public Sprite PlayerSmile;
     public Sprite PlayerReflective;
     public Sprite PlayerEager;
+
+    [Header("Sprites - Hammurabi")]
     public Sprite HammurabiProud;
     public Sprite HammurabiExplaining;
     public Sprite HammurabiWise;
+
+    [Header("Sprites - Chrono")]
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
     public Sprite ChronoCheerful;
     public Sprite ChronoSmile;
+
     void Start()
+    {
+        // Ensure SaveLoadManager exists
+        if (SaveLoadManager.Instance == null)
+        {
+            GameObject saveLoadManager = new GameObject("SaveLoadManager");
+            saveLoadManager.AddComponent<SaveLoadManager>();
+        }
+
+        InitializeDialogueLines();
+
+        // Load saved progress
+        LoadDialogueIndex();
+
+        SetupButtons();
+        ShowDialogue();
+    }
+
+    void InitializeDialogueLines()
     {
         dialogueLines = new DialogueLine[]
         {
@@ -43,7 +70,7 @@ public class BabylonianScene4 : MonoBehaviour
             },
             new DialogueLine
             {
-                characterName = "CHRONO ",
+                characterName = "CHRONO",
                 line = " Iyan ang panitikan ng mga taga-Babylonia. Sa panahon ni Hammurabi, umunlad hindi lang ang batas kundi pati sining at panulat."
             },
             new DialogueLine
@@ -56,7 +83,7 @@ public class BabylonianScene4 : MonoBehaviour
                 characterName = "PLAYER",
                 line = " Epiko? Parang kwento tungkol sa bayani?"
             },
-            new DialogueLine // need to shorten
+            new DialogueLine
             {
                 characterName = "HAMMURABI",
                 line = " Si Gilgamesh ay isang maalamat na hari na naglakbay para hanapin ang lihim ng walang kamatayan. Sa pamamagitan ng kanyang kwento, natututo ang aming bayan tungkol sa tapang, pagkakaibigan, at pagtanggap sa katotohanan ng buhay."
@@ -77,12 +104,87 @@ public class BabylonianScene4 : MonoBehaviour
                 line = " Ang isang imperyo ay hindi lamang nasusukat sa laki ng nasasakupan, kundi sa lalim ng alaala at karunungang naiiwan."
             },
         };
-
-        ShowDialogue();
-        nextButton.onClick.AddListener(ShowNextDialogue);
-        backButton.onClick.AddListener(ShowPreviousDialogue);
     }
 
+    // === Load Dialogue Index Logic ===
+    void LoadDialogueIndex()
+    {
+        if (PlayerPrefs.GetString("GameMode", "") == "NewGame")
+        {
+            currentDialogueIndex = 0;
+            PlayerPrefs.DeleteKey("GameMode");
+            Debug.Log("New game started - dialogue index reset to 0");
+            return;
+        }
+
+        if (PlayerPrefs.GetString("LoadedFromSave", "false") == "true")
+        {
+            if (PlayerPrefs.HasKey("LoadedDialogueIndex"))
+            {
+                currentDialogueIndex = PlayerPrefs.GetInt("LoadedDialogueIndex");
+                PlayerPrefs.DeleteKey("LoadedDialogueIndex");
+                Debug.Log($"Loaded from save file at dialogue index: {currentDialogueIndex}");
+            }
+
+            PlayerPrefs.SetString("LoadedFromSave", "false");
+        }
+        else
+        {
+            if (PlayerPrefs.HasKey("BabylonianSceneFour_DialogueIndex"))
+            {
+                currentDialogueIndex = PlayerPrefs.GetInt("BabylonianSceneFour_DialogueIndex");
+                Debug.Log($"Continuing from previous session at dialogue index: {currentDialogueIndex}");
+            }
+            else
+            {
+                currentDialogueIndex = 0;
+                Debug.Log("Starting from beginning");
+            }
+        }
+
+        if (currentDialogueIndex >= dialogueLines.Length)
+            currentDialogueIndex = dialogueLines.Length - 1;
+        if (currentDialogueIndex < 0)
+            currentDialogueIndex = 0;
+    }
+
+    // === Setup Buttons ===
+    void SetupButtons()
+    {
+        if (nextButton != null)
+            nextButton.onClick.AddListener(ShowNextDialogue);
+
+        if (backButton != null)
+            backButton.onClick.AddListener(ShowPreviousDialogue);
+
+        if (saveButton != null)
+            saveButton.onClick.AddListener(SaveAndLoad);
+        else
+        {
+            GameObject saveButtonObj = GameObject.Find("SaveBT");
+            if (saveButtonObj != null)
+            {
+                Button foundSaveButton = saveButtonObj.GetComponent<Button>();
+                if (foundSaveButton != null)
+                    foundSaveButton.onClick.AddListener(SaveAndLoad);
+            }
+        }
+
+        if (homeButton != null)
+            homeButton.onClick.AddListener(Home);
+        else
+        {
+            GameObject homeButtonObj = GameObject.Find("HomeBt");
+            if (homeButtonObj != null)
+            {
+                Button foundHomeButton = homeButtonObj.GetComponent<Button>();
+                if (foundHomeButton != null)
+                    foundHomeButton.onClick.AddListener(Home);
+            }
+        }
+    }
+
+    // === Show Dialogue ===
     void ShowDialogue()
     {
         DialogueLine line = dialogueLines[currentDialogueIndex];
@@ -117,11 +219,13 @@ public class BabylonianScene4 : MonoBehaviour
                 ChronocharacterRenderer.sprite = HammurabiWise;
                 break;
         }
-
     }
+
+    // === Next Dialogue ===
     void ShowNextDialogue()
     {
         currentDialogueIndex++;
+        SaveCurrentProgress();
 
         if (currentDialogueIndex >= dialogueLines.Length)
         {
@@ -133,19 +237,55 @@ public class BabylonianScene4 : MonoBehaviour
         ShowDialogue();
     }
 
+    // === Previous Dialogue ===
     void ShowPreviousDialogue()
     {
         if (currentDialogueIndex > 0)
         {
             currentDialogueIndex--;
+            SaveCurrentProgress();
             ShowDialogue();
         }
     }
-    
+
+    // === Save & Load ===
+    public void SaveAndLoad()
+    {
+        PlayerPrefs.SetInt("BabylonianSceneFour_DialogueIndex", currentDialogueIndex);
+        PlayerPrefs.SetString("LastScene", "BabylonianSceneFour");
+
+        PlayerPrefs.DeleteKey("AccessMode");
+        PlayerPrefs.SetString("SaveSource", "StoryScene");
+        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        PlayerPrefs.Save();
+
+        if (SaveLoadManager.Instance != null)
+            SaveLoadManager.Instance.SetCurrentGameState("BabylonianSceneFour", currentDialogueIndex);
+
+        Debug.Log($"Going to save menu with dialogue index: {currentDialogueIndex}");
+        SceneManager.LoadScene("SaveAndLoadScene");
+    }
+
+    // === Save Current Progress Only ===
+    void SaveCurrentProgress()
+    {
+        PlayerPrefs.SetInt("BabylonianSceneFour_DialogueIndex", currentDialogueIndex);
+        PlayerPrefs.SetString("CurrentScene", "BabylonianSceneFour");
+        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        PlayerPrefs.Save();
+    }
+
+    // === Go Home ===
     public void Home()
     {
+        SaveCurrentProgress();
         SceneManager.LoadScene("TitleScreen");
     }
+
+    // === Manual Save ===
+    public void ManualSave()
+    {
+        SaveCurrentProgress();
+        Debug.Log($"Manual save completed at dialogue {currentDialogueIndex}");
+    }
 }
-
-

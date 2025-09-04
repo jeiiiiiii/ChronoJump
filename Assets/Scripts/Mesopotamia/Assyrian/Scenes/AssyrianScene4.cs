@@ -16,18 +16,43 @@ public class AssyrianScene4 : MonoBehaviour
     [SerializeField] public Button nextButton;
     public Button backButton;
 
-    public int currentDialogueIndex = 0;
+    [Header("UI Buttons")]
+    public Button saveButton;
+    public Button homeButton;
 
+    public int currentDialogueIndex = 0;
     public DialogueLine[] dialogueLines;
 
+    [Header("Sprites - Player")]
     public SpriteRenderer PlayercharacterRenderer;
     public Sprite PlayerSmile;
     public Sprite PlayerEmbarrassed;
-    public Sprite AshurbanipalSomber;
+
+    [Header("Sprites - Chrono & Ashurbanipal")]
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
     public Sprite ChronoSad;
+    public Sprite AshurbanipalSomber;
+
     void Start()
+    {
+        // Ensure SaveLoadManager exists
+        if (SaveLoadManager.Instance == null)
+        {
+            GameObject saveLoadManager = new GameObject("SaveLoadManager");
+            saveLoadManager.AddComponent<SaveLoadManager>();
+        }
+
+        InitializeDialogueLines();
+
+        // Load saved progress
+        LoadDialogueIndex();
+
+        SetupButtons();
+        ShowDialogue();
+    }
+
+    void InitializeDialogueLines()
     {
         dialogueLines = new DialogueLine[]
         {
@@ -57,12 +82,87 @@ public class AssyrianScene4 : MonoBehaviour
                 line = " Gumuho ang siyudad. Sunog, dugo, at pagbagsak ng isang dating makapangyarihan. Ang takot na ginamit upang maghari ay binalik ng galit na hindi na mapipigil."
             }
         };
-
-        ShowDialogue();
-        nextButton.onClick.AddListener(ShowNextDialogue);
-        backButton.onClick.AddListener(ShowPreviousDialogue);
     }
 
+    // === Load Dialogue Index Logic ===
+    void LoadDialogueIndex()
+    {
+        if (PlayerPrefs.GetString("GameMode", "") == "NewGame")
+        {
+            currentDialogueIndex = 0;
+            PlayerPrefs.DeleteKey("GameMode");
+            Debug.Log("New game started - dialogue index reset to 0");
+            return;
+        }
+
+        if (PlayerPrefs.GetString("LoadedFromSave", "false") == "true")
+        {
+            if (PlayerPrefs.HasKey("LoadedDialogueIndex"))
+            {
+                currentDialogueIndex = PlayerPrefs.GetInt("LoadedDialogueIndex");
+                PlayerPrefs.DeleteKey("LoadedDialogueIndex");
+                Debug.Log($"Loaded from save file at dialogue index: {currentDialogueIndex}");
+            }
+
+            PlayerPrefs.SetString("LoadedFromSave", "false");
+        }
+        else
+        {
+            if (PlayerPrefs.HasKey("AssyrianSceneFour_DialogueIndex"))
+            {
+                currentDialogueIndex = PlayerPrefs.GetInt("AssyrianSceneFour_DialogueIndex");
+                Debug.Log($"Continuing from previous session at dialogue index: {currentDialogueIndex}");
+            }
+            else
+            {
+                currentDialogueIndex = 0;
+                Debug.Log("Starting from beginning");
+            }
+        }
+
+        if (currentDialogueIndex >= dialogueLines.Length)
+            currentDialogueIndex = dialogueLines.Length - 1;
+        if (currentDialogueIndex < 0)
+            currentDialogueIndex = 0;
+    }
+
+    // === Setup Buttons ===
+    void SetupButtons()
+    {
+        if (nextButton != null)
+            nextButton.onClick.AddListener(ShowNextDialogue);
+
+        if (backButton != null)
+            backButton.onClick.AddListener(ShowPreviousDialogue);
+
+        if (saveButton != null)
+            saveButton.onClick.AddListener(SaveAndLoad);
+        else
+        {
+            GameObject saveButtonObj = GameObject.Find("SaveBT");
+            if (saveButtonObj != null)
+            {
+                Button foundSaveButton = saveButtonObj.GetComponent<Button>();
+                if (foundSaveButton != null)
+                    foundSaveButton.onClick.AddListener(SaveAndLoad);
+            }
+        }
+
+        if (homeButton != null)
+            homeButton.onClick.AddListener(Home);
+        else
+        {
+            GameObject homeButtonObj = GameObject.Find("HomeBt");
+            if (homeButtonObj != null)
+            {
+                Button foundHomeButton = homeButtonObj.GetComponent<Button>();
+                if (foundHomeButton != null)
+                    foundHomeButton.onClick.AddListener(Home);
+            }
+        }
+    }
+
+    // === Show Dialogue ===
     void ShowDialogue()
     {
         DialogueLine line = dialogueLines[currentDialogueIndex];
@@ -85,9 +185,12 @@ public class AssyrianScene4 : MonoBehaviour
                 break;
         }
     }
+
+    // === Next Dialogue ===
     void ShowNextDialogue()
     {
         currentDialogueIndex++;
+        SaveCurrentProgress();
 
         if (currentDialogueIndex >= dialogueLines.Length)
         {
@@ -99,19 +202,55 @@ public class AssyrianScene4 : MonoBehaviour
         ShowDialogue();
     }
 
+    // === Previous Dialogue ===
     void ShowPreviousDialogue()
     {
         if (currentDialogueIndex > 0)
         {
             currentDialogueIndex--;
+            SaveCurrentProgress();
             ShowDialogue();
         }
     }
-    
+
+    // === Save & Load ===
+    public void SaveAndLoad()
+    {
+        PlayerPrefs.SetInt("AssyrianSceneFour_DialogueIndex", currentDialogueIndex);
+        PlayerPrefs.SetString("LastScene", "AssyrianSceneFour");
+
+        PlayerPrefs.DeleteKey("AccessMode");
+        PlayerPrefs.SetString("SaveSource", "StoryScene");
+        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        PlayerPrefs.Save();
+
+        if (SaveLoadManager.Instance != null)
+            SaveLoadManager.Instance.SetCurrentGameState("AssyrianSceneFour", currentDialogueIndex);
+
+        Debug.Log($"Going to save menu with dialogue index: {currentDialogueIndex}");
+        SceneManager.LoadScene("SaveAndLoadScene");
+    }
+
+    // === Save Current Progress Only ===
+    void SaveCurrentProgress()
+    {
+        PlayerPrefs.SetInt("AssyrianSceneFour_DialogueIndex", currentDialogueIndex);
+        PlayerPrefs.SetString("CurrentScene", "AssyrianSceneFour");
+        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        PlayerPrefs.Save();
+    }
+
+    // === Go Home ===
     public void Home()
     {
+        SaveCurrentProgress();
         SceneManager.LoadScene("TitleScreen");
     }
+
+    // === Manual Save ===
+    public void ManualSave()
+    {
+        SaveCurrentProgress();
+        Debug.Log($"Manual save completed at dialogue {currentDialogueIndex}");
+    }
 }
-
-

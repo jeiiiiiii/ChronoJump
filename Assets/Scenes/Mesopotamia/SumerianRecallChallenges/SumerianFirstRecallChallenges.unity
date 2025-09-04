@@ -2370,11 +2370,21 @@ MonoBehaviour:
   - {fileID: 8300000, guid: a49f0cd6497482043ac82b1ac0d362af, type: 3}
   cuneiformClips:
   - {fileID: 8300000, guid: 024c382bd2e70a14382546000a91f11e, type: 3}
+  - {fileID: 8300000, guid: 7611d1a1a36156647aecf62fd4de381e, type: 3}
+  - {fileID: 8300000, guid: 7fcf93628aca650438f2f2bcdc3bddb9, type: 3}
+  - {fileID: 8300000, guid: f0bae2fa94128324db5808fcbcea8903, type: 3}
+  - {fileID: 8300000, guid: 22e660d42bf73704980817b4c3217772, type: 3}
+  - {fileID: 8300000, guid: fc2923d0f8e623446a8758aa26ed42fa, type: 3}
   baybayinClips:
   - {fileID: 8300000, guid: eeb5bb103126b5c4194704721571df01, type: 3}
+  - {fileID: 8300000, guid: 59b22aa9bada7cd4f956432deeac203e, type: 3}
+  - {fileID: 8300000, guid: c765ec10bf9b5fa4fa773d347d6d6e39, type: 3}
+  - {fileID: 8300000, guid: 6ef7357973e422642b8ecbe6220cec6e, type: 3}
   hieroglyphicsClips:
   - {fileID: 8300000, guid: 6d7daf968a260ef49acd2778780e0e55, type: 3}
   - {fileID: 8300000, guid: 4eeb35d2142c07948a716bb176eb02f8, type: 3}
+  - {fileID: 8300000, guid: c765ec10bf9b5fa4fa773d347d6d6e39, type: 3}
+  - {fileID: 8300000, guid: 6ef7357973e422642b8ecbe6220cec6e, type: 3}
 --- !u!82 &1240278857
 AudioSource:
   m_ObjectHideFlags: 0

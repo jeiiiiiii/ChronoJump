@@ -33,7 +33,15 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
     private bool isShowingDisyertoDialogue = false;
     private bool isShowingImbakNaUlanDialogue = false;
     private bool isShowingTigrisAndEuphratesDialogue = false;
+
     public AudioSource finishAudioSource;
+
+    // 🔹 ADDED - Audio for narration
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;           // for default dialogue
+    public AudioClip[] tigrisClips;             // for Tigris and Euphrates dialogue
+    public AudioClip[] disyertoClips;           // for Disyerto dialogue
+    public AudioClip[] imbakNaUlanClips;        // for Imbak na Ulan dialogue
 
     public SpriteRenderer PlayercharacterRenderer;
     public SpriteRenderer ChronocharacterRenderer;
@@ -66,6 +74,7 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
 
         ShowDialogue();
     }
+
     private DialogueLine[] TigrisAndEuphrates = new DialogueLine[]
     {
         new DialogueLine
@@ -163,6 +172,30 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
     {
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
+
+        // 🔹 ADDED - Play narration for current line
+        if (audioSource != null)
+        {
+            AudioClip clipToPlay = null;
+
+            if (dialogueLines == TigrisAndEuphrates && tigrisClips != null && currentDialogueIndex < tigrisClips.Length)
+                clipToPlay = tigrisClips[currentDialogueIndex];
+            else if (dialogueLines == Disyerto && disyertoClips != null && currentDialogueIndex < disyertoClips.Length)
+                clipToPlay = disyertoClips[currentDialogueIndex];
+            else if (dialogueLines == ImbakNaUlan && imbakNaUlanClips != null && currentDialogueIndex < imbakNaUlanClips.Length)
+                clipToPlay = imbakNaUlanClips[currentDialogueIndex];
+            else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+                clipToPlay = dialogueClips[currentDialogueIndex];
+
+            if (clipToPlay != null)
+            {
+                audioSource.Stop();
+                audioSource.clip = clipToPlay;
+                audioSource.Play();
+            }
+        }
+
+        // 🔹 (the rest of ShowDialogue stays the same below...)
         
     if (dialogueLines == TigrisAndEuphrates)
         {

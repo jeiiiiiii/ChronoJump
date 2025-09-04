@@ -116,8 +116,30 @@ public class SaveLoadUI : MonoBehaviour
         // Valid story scenes that can save
         bool isValidStoryScene = (lastScene == "SumerianSceneOne" || lastScene == "SumerianScene1" || 
                                  lastScene == "SumerianSceneTwo" || lastScene == "SumerianScene2" ||
-                                 lastScene == "AkkadianScene" || lastScene == "AssyrianScene" || 
-                                 lastScene == "BabylonianScene");
+                                 lastScene == "SumerianSceneThree" || lastScene == "SumerianScene3" ||
+                                 lastScene == "SumerianSceneFour" || lastScene == "SumerianScene4" ||
+                                 lastScene == "SumerianSceneFive" || lastScene == "SumerianScene5" ||
+                                 lastScene == "SumerianSceneSix" || lastScene == "SumerianScene6" ||
+                                 lastScene == "SumerianSceneSeven" || lastScene == "SumerianScene7" ||
+                                 lastScene == "AkkadianSceneOne" || lastScene == "AkkadianScene1" || 
+                                 lastScene == "AkkadianSceneTwo" || lastScene == "AkkadianScene2" ||
+                                 lastScene == "AkkadianSceneThree" || lastScene == "AkkadianScene3" ||
+                                 lastScene == "AkkadianSceneFour" || lastScene == "AkkadianScene4" ||
+                                 lastScene == "AkkadianSceneFive" || lastScene == "AkkadianScene5" || 
+                                 lastScene == "AkkadianSceneSix" || lastScene == "AkkadianScene6" ||    
+                                 lastScene == "BabylonianSceneOne" || lastScene == "BabylonianScene1" ||
+                                 lastScene == "BabylonianSceneTwo" || lastScene == "BabylonianScene2" ||
+                                 lastScene == "BabylonianSceneThree" || lastScene == "BabylonianScene3" ||
+                                 lastScene == "BabylonianSceneFour" || lastScene == "BabylonianScene4" ||
+                                 lastScene == "BabylonianSceneFive" || lastScene == "BabylonianScene5" ||
+                                 lastScene == "BabylonianSceneSix" || lastScene == "BabylonianScene6" ||
+                                 lastScene == "BabylonianSceneSeven" || lastScene == "BabylonianScene7" ||
+                                 lastScene == "AssyrianSceneOne" || lastScene == "AssyrianScene1" ||
+                                 lastScene == "AssyrianSceneTwo" || lastScene == "AssyrianScene2" ||
+                                 lastScene == "AssyrianSceneThree" || lastScene == "AssyrianScene3" ||
+                                 lastScene == "AssyrianSceneFour" || lastScene == "AssyrianScene4" ||
+                                 lastScene == "AssyrianSceneFive" || lastScene == "AssyrianScene5" 
+                                 );
         
         bool cameFromStoryScene = saveSource == "StoryScene" && isValidStoryScene;
         
@@ -346,8 +368,30 @@ public class SaveLoadUI : MonoBehaviour
         
         bool isValidStoryScene = (lastScene == "SumerianSceneOne" || lastScene == "SumerianScene1" || 
                                  lastScene == "SumerianSceneTwo" || lastScene == "SumerianScene2" ||
-                                 lastScene == "AkkadianScene" || lastScene == "AssyrianScene" || 
-                                 lastScene == "BabylonianScene");
+                                 lastScene == "SumerianSceneThree" || lastScene == "SumerianScene3" ||
+                                 lastScene == "SumerianSceneFour" || lastScene == "SumerianScene4" ||
+                                 lastScene == "SumerianSceneFive" || lastScene == "SumerianScene5" ||
+                                 lastScene == "SumerianSceneSix" || lastScene == "SumerianScene6" ||
+                                 lastScene == "SumerianSceneSeven" || lastScene == "SumerianScene7" ||
+                                 lastScene == "AkkadianSceneOne" || lastScene == "AkkadianScene1" ||
+                                 lastScene == "AkkadianSceneTwo" || lastScene == "AkkadianScene2" ||
+                                 lastScene == "AkkadianSceneThree" || lastScene == "AkkadianScene3" ||
+                                 lastScene == "AkkadianSceneFour" || lastScene == "AkkadianScene4" || 
+                                 lastScene == "AkkadianSceneFive" || lastScene == "AkkadianScene5" ||
+                                 lastScene == "AkkadianSceneSix" || lastScene == "AkkadianScene6" ||         
+                                 lastScene == "BabylonianSceneOne" || lastScene == "BabylonianScene1" ||
+                                 lastScene == "BabylonianSceneTwo" || lastScene == "BabylonianScene2" ||
+                                 lastScene == "BabylonianSceneThree" || lastScene == "BabylonianScene3" ||
+                                 lastScene == "BabylonianSceneFour" || lastScene == "BabylonianScene4" ||
+                                 lastScene == "BabylonianSceneFive" || lastScene == "BabylonianScene5" ||
+                                 lastScene == "BabylonianSceneSix" || lastScene == "BabylonianScene6" ||
+                                 lastScene == "BabylonianSceneSeven" || lastScene == "BabylonianScene7" ||
+                                 lastScene == "AssyrianSceneOne" || lastScene == "AssyrianScene1" ||
+                                 lastScene == "AssyrianSceneTwo" || lastScene == "AssyrianScene2" ||
+                                 lastScene == "AssyrianSceneThree" || lastScene == "AssyrianScene3" ||
+                                 lastScene == "AssyrianSceneFour" || lastScene == "AssyrianScene4" ||
+                                 lastScene == "AssyrianSceneFive" || lastScene == "AssyrianScene5" 
+                                );
         
         bool cameFromStoryScene = saveSource == "StoryScene" && isValidStoryScene;
         
@@ -412,20 +456,20 @@ public class SaveLoadUI : MonoBehaviour
     // Confirm save action
     void ConfirmSave()
     {
-        if (pendingSaveSlot != -1)
-        {
-            SaveGame(pendingSaveSlot);
-        }
-        
-        // Hide confirmation panel
-        if (confirmationPanel != null)
-        {
-            confirmationPanel.SetActive(false);
-        }
-        
-        pendingSaveSlot = -1;
+    if (pendingSaveSlot != -1)
+    {
+        // Call the method that actually performs the save
+        PerformActualSave(pendingSaveSlot);
     }
-
+    
+    // Hide confirmation panel
+    if (confirmationPanel != null)
+    {
+        confirmationPanel.SetActive(false);
+    }
+    
+    pendingSaveSlot = -1;
+    }
     // Cancel save action
     void CancelSave()
     {
@@ -441,19 +485,26 @@ public class SaveLoadUI : MonoBehaviour
 
     public void SaveGame(int slotNumber)
     {
-        // NEW: Final check before saving
-        string lastScene = PlayerPrefs.GetString("LastScene", "");
-        bool hasValidGameState = !string.IsNullOrEmpty(lastScene) && lastScene != "SaveAndLoadScene";
-        
-        if (!hasValidGameState)
-        {
-            Debug.LogWarning("Cannot save - no valid game state available");
-            return;
-        }
+    // This method should ONLY show the confirmation dialog, not actually save
+    ShowSaveConfirmation(slotNumber);
+    }
 
-        SaveLoadManager.Instance.SaveGame(slotNumber);
-        UpdateSlotDisplay();
-        Debug.Log($"Game saved to Slot {slotNumber}");
+    void PerformActualSave(int slotNumber)
+        {
+    // Final validation before saving
+    string lastScene = PlayerPrefs.GetString("LastScene", "");
+    bool hasValidGameState = !string.IsNullOrEmpty(lastScene) && lastScene != "SaveAndLoadScene";
+    
+    if (!hasValidGameState)
+    {
+        Debug.LogWarning("Cannot save - no valid game state available");
+        return;
+    }
+
+    // Actually perform the save operation
+    SaveLoadManager.Instance.SaveGame(slotNumber);
+    UpdateSlotDisplay();
+    Debug.Log($"Game saved to Slot {slotNumber}");
     }
 
     public void LoadGame(int slotNumber)
@@ -468,29 +519,127 @@ public class SaveLoadUI : MonoBehaviour
         }
     }
 
+    // Replace your GoBack() method in SaveLoadUI.cs with this:
+
     public void GoBack()
     {
+    // Check if we came from a story scene (in-game save button)
+    string saveSource = PlayerPrefs.GetString("SaveSource", "");
+    string lastScene = PlayerPrefs.GetString("LastScene", "");
+    
+    if (saveSource == "StoryScene" && !string.IsNullOrEmpty(lastScene))
+    {
+        // We came from a story scene via the save button, go back to that scene
+        Debug.Log($"Returning to story scene: {lastScene}");
+        
+        // Clear the save source flag since we're going back
+        PlayerPrefs.DeleteKey("SaveSource");
+        PlayerPrefs.Save();
+        
+        SceneManager.LoadScene(lastScene);
+        }
+        else
+        {
+        // Default behavior - go to title screen (for Load Game access)
+        Debug.Log("Returning to Title Screen");
         SceneManager.LoadScene("TitleScreen");
+        }
     }
-
     string GetFriendlySceneName(string sceneName)
     {
         switch (sceneName)
         {
             case "SumerianScene1":
             case "SumerianSceneOne": 
-                return "Sumerian Chapter 1";
+                return "Sumerian Scene 1";
             case "SumerianScene2":
             case "SumerianSceneTwo": 
-                return "Sumerian Chapter 2";
+                return "Sumerian Scene 2";
             case "SumerianFirstRecallChallenges": 
                 return "Sumerian Challenges";
-            case "AkkadianScene": 
-                return "Akkadian Chapter";
-            case "AssyrianScene": 
-                return "Assyrian Chapter";
-            case "BabylonianScene": 
-                return "Babylonian Chapter";
+            case "SumerianScene3":
+            case "SumerianSceneThree":
+                return "Sumerian Scene 3";
+            case "SumerianSecondRecallChallenges": 
+                return "Sumerian Challenges";
+            case "SumerianScene4":
+            case "SumerianSceneFour":
+                return "Sumerian Scene 4";
+            case "SumerianThirdRecallChallenges": 
+                return "Sumerian Challenges";
+            case "SumerianScene5":
+            case "SumerianSceneFive":
+                return "Sumerian Scene 5";
+            case "SumerianFourthRecallChallenges": 
+                return "Sumerian Challenges";
+            case "SumerianScene6":
+            case "SumerianSceneSix":
+                return "Sumerian Scene 6";
+            case "SumerianFifthRecallChallenges": 
+                return "Sumerian Challenges";
+            case "SumerianScene7":
+            case "SumerianSceneSeven":
+                return "Sumerian Scene 7";            
+            case "AkkadianScene1":
+            case "AkkadianSceneOne": 
+                return "Akkadian Scene 1";
+            case "AkkadianScene2":
+            case "AkkadianSceneTwo": 
+                return "Akkadian Scene 2";
+            case "AkkadianFirstRecallChallenges": 
+                return "Akkadian Challenges";
+            case "AkkadianScene3":
+            case "AkkadianSceneThree": 
+                return "Akkadian Scene 3";
+            case "AkkadianScene4":
+            case "AkkadianSceneFour": 
+                return "Akkadian Scene 4";
+            case "AkkadianSecondRecallChallenges": 
+                return "Akkadian Challenges";
+            case "AkkadianScene5":
+            case "AkkadianSceneFive": 
+                return "Akkadian Scene 5";
+            case "AkkadianThirdRecallChallenges": 
+                return "Akkadian Challenges";
+            case "AkkadianScene6":
+            case "AkkadianSceneSix": 
+                return "Akkadian Scene 6";            
+            case "BabylonianScene1":
+            case "BabylonianSceneOne":  
+                return "Babylonian Scene 1";
+            case "BabylonianScene2":
+            case "BabylonianSceneTwo":  
+                return "Babylonian Scene 2";
+            case "BabylonianScene3":
+            case "BabylonianSceneThree":  
+                return "Babylonian Scene 3";
+            case "BabylonianScene4":
+            case "BabylonianSceneFour":  
+                return "Babylonian Scene 4";
+            case "BabylonianScene5":
+            case "BabylonianSceneFive":  
+                return "Babylonian Scene 5";
+            case "BabylonianScene6":
+            case "BabylonianSceneSix":  
+                return "Babylonian Scene 6";
+            case "BabylonianScene7":
+            case "BabylonianSceneSeven":  
+                return "Babylonian Scene 7";
+            case "AssyrianScene1":
+            case "AssyrianSceneOne": 
+                return "Assyrian Scene 1";
+            case "AssyrianScene2":
+            case "AssyrianSceneTwo": 
+                return "Assyrian Scene 2";
+            case "AssyrianScene3":
+            case "AssyrianSceneThree": 
+                return "Assyrian Scene 3";
+            case "AssyrianScene4":
+            case "AssyrianSceneFour": 
+                return "Assyrian Scene 4";
+            case "AssyrianScene5":
+            case "AssyrianSceneFive": 
+                return "Assyrian Scene 5";
             default: 
                 return sceneName;
         }

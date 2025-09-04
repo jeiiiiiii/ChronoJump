@@ -82,6 +82,34 @@ public class SaveLoadManager : MonoBehaviour
         }
     }
 
+    // NEW METHOD: Force overwrite all saves when player completes challenges
+    public void OverwriteAllSavesAfterChallenge(string nextSceneName, int nextDialogueIndex = 0)
+    {
+        SaveData newSaveData = new SaveData(nextSceneName, nextDialogueIndex);
+        
+        // Overwrite all existing save slots
+        for (int slot = 1; slot <= 3; slot++) // Assuming you have 3 save slots
+        {
+            if (HasSaveFile(slot))
+            {
+                string json = JsonUtility.ToJson(newSaveData, true);
+                string filePath = GetSaveFilePath(slot);
+                
+                try
+                {
+                    File.WriteAllText(filePath, json);
+                    Debug.Log($"Overwritten save slot {slot} after challenge completion - Scene: {nextSceneName}, Dialogue: {nextDialogueIndex}");
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"Failed to overwrite save slot {slot}: {e.Message}");
+                }
+            }
+        }
+        
+        Debug.Log($"All existing saves have been updated to prevent challenge replay exploit");
+    }
+
     public void SaveGame(int slotNumber)
     {
         SaveData saveData;
@@ -168,12 +196,41 @@ public class SaveLoadManager : MonoBehaviour
             return sumerianScene.currentDialogueIndex;
         }
 
-        // Add other scene types here as needed
-        // var sumerianScene2 = FindObjectOfType<SumerianScene2>();
-        // if (sumerianScene2 != null)
-        // {
-        //     return sumerianScene2.currentDialogueIndex;
-        // }
+        var sumerianScene2 = FindObjectOfType<SumerianScene2>();
+        if (sumerianScene2 != null)
+        {
+            return sumerianScene2.currentDialogueIndex;
+        }
+
+        var sumerianScene3 = FindObjectOfType<SumerianScene3>();
+        if (sumerianScene3 != null)
+        {
+            return sumerianScene3.currentDialogueIndex;
+        }
+
+        var sumerianScene4 = FindObjectOfType<SumerianScene4>();
+        if (sumerianScene4 != null)
+        {
+            return sumerianScene4.currentDialogueIndex;
+        }
+
+        var sumerianScene5 = FindObjectOfType<SumerianScene5>();
+        if (sumerianScene5 != null)
+        {
+            return sumerianScene5.currentDialogueIndex;
+        }
+
+        var sumerianScene6 = FindObjectOfType<SumerianScene6>();
+        if (sumerianScene6 != null)
+        {
+            return sumerianScene6.currentDialogueIndex;
+        }
+
+        var sumerianScene7 = FindObjectOfType<SumerianScene7>();
+        if (sumerianScene7 != null)
+        {
+            return sumerianScene7.currentDialogueIndex;
+        }
 
         return 0; // Default if no dialogue manager found
     }
@@ -189,7 +246,75 @@ public class SaveLoadManager : MonoBehaviour
             case "SumerianSceneTwo":
             case "SumerianScene2":
                 return "SumerianSceneTwo_DialogueIndex";
-            // Add more scenes as needed
+            case "SumerianSceneThree":
+            case "SumerianScene3":
+                return "SumerianSceneThree_DialogueIndex";
+            case "SumerianSceneFour":
+            case "SumerianScene4":
+                return "SumerianSceneFour_DialogueIndex";
+            case "SumerianSceneFive":
+            case "SumerianScene5":
+                return "SumerianSceneFive_DialogueIndex";
+            case "SumerianSceneSix":
+            case "SumerianScene6":
+                return "SumerianSceneSix_DialogueIndex";
+            case "SumerianSceneSeven":
+            case "SumerianScene7":
+                return "SumerianSceneSeven_DialogueIndex";
+            case "AkkadianSceneOne":
+            case "AkkadianScene1":
+                return "AkkadianSceneOne_DialogueIndex";
+            case "AkkadianSceneTwo":
+            case "AkkadianScene2":
+                return "AkkadianSceneTwo_DialogueIndex";
+            case "AkkadianSceneThree":
+            case "AkkadianScene3":
+                return "AkkadianSceneThree_DialogueIndex";
+            case "AkkadianSceneFour":
+            case "AkkadianScene4":
+                return "AkkadianSceneFour_DialogueIndex";
+            case "AkkadianSceneFive":
+            case "AkkadianScene5":
+                return "AkkadianSceneFive_DialogueIndex";
+            case "AkkadianSceneSix":
+            case "AkkadianScene6":
+                return "AkkadianSceneSix_DialogueIndex";
+            case "BabylonianSceneOne":
+            case "BabylonianScene1":
+                return "BabylonianSceneOne_DialogueIndex";
+            case "BabylonianSceneTwo":
+            case "BabylonianScene2":
+                return "BabylonianSceneTwo_DialogueIndex";
+            case "BabylonianSceneThree":
+            case "BabylonianScene3":
+                return "BabylonianSceneThree_DialogueIndex";    
+            case "BabylonianSceneFour":
+            case "BabylonianScene4":
+                return "BabylonianSceneFour_DialogueIndex"; 
+            case "BabylonianSceneFive":
+            case "BabylonianScene5":
+                return "BabylonianSceneFive_DialogueIndex";
+            case "BabylonianSceneSix":
+            case "BabylonianScene6":
+                return "BabylonianSceneSix_DialogueIndex";  
+            case "BabylonianSceneSeven":
+            case "BabylonianScene7":
+                return "BabylonianSceneSeven_DialogueIndex";                         
+            case "AssyrianSceneOne":
+            case "AssyrianScene1":
+                return "AssyrianSceneOne_DialogueIndex";
+            case "AssyrianSceneTwo":
+            case "AssyrianScene2":
+                return "AssyrianSceneTwo_DialogueIndex";
+            case "AssyrianSceneThree":
+            case "AssyrianScene3":
+                return "AssyrianSceneThree_DialogueIndex";
+            case "AssyrianSceneFour":
+            case "AssyrianScene4":
+                return "AssyrianSceneFour_DialogueIndex";
+            case "AssyrianSceneFive":
+            case "AssyrianScene5":
+                return "AssyrianSceneFive_DialogueIndex";
             default:
                 return sceneName + "_DialogueIndex";
         }

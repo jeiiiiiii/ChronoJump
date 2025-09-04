@@ -3116,10 +3116,28 @@ MonoBehaviour:
   - {fileID: 508173604}
   - {fileID: 1490102247}
   - {fileID: 206160653}
-  finishAudioSource: {fileID: 1687920441}
   PlayercharacterRenderer: {fileID: 81652815}
   ChronocharacterRenderer: {fileID: 355097131}
   AchievementUnlockedRenderer: {fileID: 1096847426}
+  finishAudioSource: {fileID: 1687920441}
+  audioSource: {fileID: 1687920441}
+  dialogueClips:
+  - {fileID: 8300000, guid: 4714ee7e111bc5745a1aabedc96ec4f0, type: 3}
+  itaguyodClips:
+  - {fileID: 8300000, guid: bd21fe158112e84499a0de279ad1687b, type: 3}
+  - {fileID: 8300000, guid: 2d708e09a8168f84b9e5fb975bb07c01, type: 3}
+  - {fileID: 8300000, guid: 9c318a824827c6147acffcc294593988, type: 3}
+  - {fileID: 8300000, guid: 2d31e12aaa59e2742ae8f008b9e5eb06, type: 3}
+  - {fileID: 8300000, guid: 653925ed16b67b848bb262eff82bdd6c, type: 3}
+  - {fileID: 8300000, guid: ee41cb80778d53341afa190316e03300, type: 3}
+  parusahanClips:
+  - {fileID: 8300000, guid: e829e70ec8a086348a229896b7310fc4, type: 3}
+  - {fileID: 8300000, guid: d0a465ed70fb91f459d7c3b290d01726, type: 3}
+  - {fileID: 8300000, guid: 2887e7d544e1e65409f6ef91c9e3ddd7, type: 3}
+  pribilehiyoClips:
+  - {fileID: 8300000, guid: b80b3371105d2164d828d0a8c694c342, type: 3}
+  - {fileID: 8300000, guid: d0a465ed70fb91f459d7c3b290d01726, type: 3}
+  - {fileID: 8300000, guid: 2887e7d544e1e65409f6ef91c9e3ddd7, type: 3}
   PlayerSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}
   PlayerReflective: {fileID: -6828170361931683543, guid: 41872a0e55450ef43b535aba6363171a, type: 3}
   PlayerEager: {fileID: 5428063399545322546, guid: c517d75299d0ddb4cb6eed3374b7a5b3, type: 3}
@@ -3129,6 +3147,7 @@ MonoBehaviour:
   ChronoCalculating: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   EnkiKind: {fileID: -6720390084276533358, guid: d288c2e22971dcc47a6edbd96b9f8b8c, type: 3}
+  EnkiTesting: {fileID: -9032671620723716314, guid: 5ea8c885caa4aee46bd8617016edca1e, type: 3}
   BlurBG: {fileID: 1061096143}
 --- !u!1 &1284312880
 GameObject:
