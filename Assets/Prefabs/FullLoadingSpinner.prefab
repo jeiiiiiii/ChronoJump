@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8680736038961625709}
   - component: {fileID: 7388848689516764468}
   m_Layer: 5
-  m_Name: LoadingSpinner
+  m_Name: FullLoadingSpinner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

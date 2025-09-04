@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 
 public class TeacherDashboardManager : MonoBehaviour
 {
-   
     [Header("Views")]
     public TeacherDashboardView dashboardView;
     public ClassListView classListView;
@@ -20,9 +19,11 @@ public class TeacherDashboardManager : MonoBehaviour
     
     private string _previousSelectedClassCode;
     
-    // Add loading state tracking
     private bool _isLoadingProgress = false;
     private bool _isLoadingLeaderboard = false;
+    private bool _isViewingAllStudents = false;
+    private bool _isViewingAllLeaderboard = false;
+
 
     private void Awake()
     {
@@ -45,7 +46,6 @@ public class TeacherDashboardManager : MonoBehaviour
                 return;
             }
 
-            // Use FirebaseManager to get teacher data
             FirebaseManager.Instance.GetTeacherData(userData.userId, OnTeacherDataLoaded);
         });
     }
@@ -65,16 +65,13 @@ public class TeacherDashboardManager : MonoBehaviour
         {
             SetupClassList();
             
-            // Try to restore previous selection, otherwise select first class
             if (!string.IsNullOrEmpty(_previousSelectedClassCode) && 
                 _dashboardState.teacherData.classCode.ContainsKey(_previousSelectedClassCode))
             {
-                // Restore previous selection
                 RestoreClassSelection(_previousSelectedClassCode);
             }
             else
             {
-                // Select first class (new user or no previous selection)
                 SelectFirstClass();
             }
         }
@@ -83,7 +80,7 @@ public class TeacherDashboardManager : MonoBehaviour
     private void UpdateDashboardView()
     {
         string teacherName = $"{_dashboardState.teacherData.title} {_dashboardState.teacherData.teachLastName}";
-        dashboardView.UpdateTeacherInfo(teacherName, null); // Add profile icon handling if needed
+        dashboardView.UpdateTeacherInfo(teacherName, null);
 
         if (_dashboardState.HasClasses)
         {
@@ -130,8 +127,6 @@ public class TeacherDashboardManager : MonoBehaviour
             string className = $"{classData[0]} - {classData[1]}";
             
             OnClassSelected(classCode, className);
-            
-            // Add this line to highlight the button in the UI
             classListView.SelectClassByCode(classCode);
         }
     }
@@ -141,22 +136,18 @@ public class TeacherDashboardManager : MonoBehaviour
         _dashboardState.selectedClassCode = classCode;
         _dashboardState.selectedClassName = className;
         
-        // Store current selection
         _previousSelectedClassCode = classCode;
 
         dashboardView.UpdateClassSelection(classCode, className);
-        
-        // Show loading states immediately
+
         ShowLoadingStates();
         
-        // Load data with priority - leaderboard first (usually faster), then progress
         LoadStudentLeaderboard(classCode);
-        LoadStudentProgress(classCode);
+        LoadStudentProgress(classCode); 
     }
 
     private void ShowLoadingStates()
     {
-        // Show loading indicators instead of empty views
         if (studentProgressView != null)
         {
             studentProgressView.ShowLoadingState(); 
@@ -164,7 +155,8 @@ public class TeacherDashboardManager : MonoBehaviour
         
         if (studentLeaderboardView != null)
         {
-            studentLeaderboardView.ShowLoadingState(); 
+            // Pass the correct view flag based on current state
+            studentLeaderboardView.ShowLoadingState(_isViewingAllLeaderboard); 
         }
     }
 
@@ -175,7 +167,6 @@ public class TeacherDashboardManager : MonoBehaviour
         _isLoadingProgress = true;
         dashboardView.SetProgressEmptyMessages(false);
 
-        // Check cache first
         if (_dashboardState.cachedStudents.ContainsKey(classCode))
         {
             _isLoadingProgress = false;
@@ -185,15 +176,16 @@ public class TeacherDashboardManager : MonoBehaviour
             if (cached.Count == 0)
             {
                 dashboardView.SetProgressEmptyMessages(true);
+                dashboardView.SetViewAllProgressButtonVisible(false); 
             }
             else
             {
-                studentProgressView.ShowStudentProgress(cached);
+                dashboardView.SetViewAllProgressButtonVisible(true);  
+                studentProgressView.ShowStudentProgress(cached, _isViewingAllStudents);
             }
             return;
         }
 
-        // Not cached → fetch from Firebase
         studentProgressView.ShowLoadingState();
 
         FirebaseManager.Instance.GetStudentsInClass(classCode, students =>
@@ -202,8 +194,6 @@ public class TeacherDashboardManager : MonoBehaviour
 
             var list = students ?? new List<StudentModel>();
             _dashboardState.currentStudents = list;
-
-            // Store in cache
             _dashboardState.cachedStudents[classCode] = list;
 
             studentProgressView.ClearLoadingState();
@@ -211,15 +201,15 @@ public class TeacherDashboardManager : MonoBehaviour
             if (list.Count == 0)
             {
                 dashboardView.SetProgressEmptyMessages(true);
+                dashboardView.SetViewAllProgressButtonVisible(false);
             }
             else
             {
-                studentProgressView.ShowStudentProgress(list);
+                dashboardView.SetViewAllProgressButtonVisible(true);
+                studentProgressView.ShowStudentProgress(list, _isViewingAllStudents);
             }
         });
     }
-
-
 
     private void LoadStudentLeaderboard(string classCode)
     {
@@ -228,7 +218,6 @@ public class TeacherDashboardManager : MonoBehaviour
         _isLoadingLeaderboard = true;
         dashboardView.SetLeaderboardEmptyMessages(false);
 
-        // Check cache first
         if (_dashboardState.cachedLeaderboards.ContainsKey(classCode))
         {
             _isLoadingLeaderboard = false;
@@ -238,36 +227,40 @@ public class TeacherDashboardManager : MonoBehaviour
             if (cached.Count == 0)
             {
                 dashboardView.SetLeaderboardEmptyMessages(true);
+                dashboardView.SetViewAllLeaderboardButtonVisible(false); 
             }
             else
             {
-                studentLeaderboardView.ShowStudentLeaderboard(cached);
+                dashboardView.SetViewAllLeaderboardButtonVisible(true);  
+                // Pass the _isViewingAllLeaderboard flag to show in correct view
+                studentLeaderboardView.ShowStudentLeaderboard(cached, _isViewingAllLeaderboard);
             }
             return;
         }
 
-        // Not cached → fetch from Firebase
+        studentLeaderboardView.ShowLoadingState(_isViewingAllLeaderboard);
+
         FirebaseManager.Instance.GetStudentLeaderboard(classCode, leaderboardData =>
         {
             _isLoadingLeaderboard = false;
 
             var list = leaderboardData ?? new List<LeaderboardStudentModel>();
-
-            // Store in cache
             _dashboardState.cachedLeaderboards[classCode] = list;
 
             if (list.Count == 0)
             {
                 studentLeaderboardView.ClearLeaderboard();
                 dashboardView.SetLeaderboardEmptyMessages(true);
+                dashboardView.SetViewAllLeaderboardButtonVisible(false);
             }
             else
             {
-                studentLeaderboardView.ShowStudentLeaderboard(list);
+                dashboardView.SetViewAllLeaderboardButtonVisible(true);
+                // Pass the _isViewingAllLeaderboard flag to show in correct view
+                studentLeaderboardView.ShowStudentLeaderboard(list, _isViewingAllLeaderboard);
             }
         });
     }
-
 
 
     private IEnumerator ShowDashboardAfterRender()
@@ -276,22 +269,16 @@ public class TeacherDashboardManager : MonoBehaviour
         dashboardView.SetDashboardInteractable(true);
     }
 
-    // Public methods for UI events
     public void OnCreateNewClassClicked()
     {
         dashboardView.ShowCreateClassPanel();
     }
 
-    public void OnViewStudentProgressClicked()
+    public void OnViewLeaderboardClickedFull()
     {
-        dashboardView.ShowStudentProgressPage();
-    }
-
-    public void OnViewLeaderboardClicked()
-    {
+        _isViewingAllLeaderboard = true;
         dashboardView.ShowLeaderboardPage();
-        
-        // Only refresh if not currently loading
+
         if (!_isLoadingLeaderboard && !string.IsNullOrEmpty(_dashboardState.selectedClassCode))
         {
             LoadStudentLeaderboard(_dashboardState.selectedClassCode);
@@ -302,29 +289,56 @@ public class TeacherDashboardManager : MonoBehaviour
     {
         SceneManager.LoadScene("TitleScreen");
     }
+    
+    public void OnViewStudentProgressClickedFull()
+    {
+        _isViewingAllStudents = true;
+        dashboardView.ShowStudentProgressPage();
+
+        if (!_isLoadingProgress && !string.IsNullOrEmpty(_dashboardState.selectedClassCode))
+        {
+            LoadStudentProgress(_dashboardState.selectedClassCode);
+        }
+    }
+
+ public void OnBackToLandingPageClicked()
+{
+    _isViewingAllStudents = false;
+    _isViewingAllLeaderboard = false;
+    dashboardView.ShowLandingPage();
+
+    if (!_isLoadingProgress && !string.IsNullOrEmpty(_dashboardState.selectedClassCode))
+    {
+        LoadStudentProgress(_dashboardState.selectedClassCode);
+    }
+
+    if (!_isLoadingLeaderboard && !string.IsNullOrEmpty(_dashboardState.selectedClassCode))
+    {
+        LoadStudentLeaderboard(_dashboardState.selectedClassCode);
+    }
+
+    StartCoroutine(ShowDashboardAfterRender());
+}
+
+
 
     public void RefreshDashboard()
     {
-        // Reset loading states
         _isLoadingProgress = false;
         _isLoadingLeaderboard = false;
         
         LoadTeacherData();
     }
     
-    // Method to select a newly created class
     public void RefreshDashboardAndSelectClass(string newClassCode)
     {
         _previousSelectedClassCode = newClassCode;
-        
-        // Reset loading states
         _isLoadingProgress = false;
         _isLoadingLeaderboard = false;
         
         LoadTeacherData();
     }
 
-    // Method to refresh leaderboard data
     public void RefreshLeaderboard()
     {
         if (!string.IsNullOrEmpty(_dashboardState.selectedClassCode) && !_isLoadingLeaderboard)

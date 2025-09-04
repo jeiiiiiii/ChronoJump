@@ -27,6 +27,13 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
     public TextMeshProUGUI studentProgressEmptyText;
     public TextMeshProUGUI leaderboardEmptyText;
 
+    [Header("Student Progress Controls")]
+    public GameObject viewAllProgressButton;
+
+    [Header("Leaderboard Controls")]
+    public GameObject viewAllLeaderboardButton; 
+
+
     public void ShowLandingPage()
     {
         SetActivePanel(landingPage);
@@ -43,12 +50,15 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
     public void ShowStudentProgressPage()
     {
         SetActivePanel(studentProgressPage);
-    }
+        SetViewAllProgressButtonVisible(false);
+    }   
 
     public void ShowLeaderboardPage()
     {
         SetActivePanel(leaderboardPage);
+        SetViewAllLeaderboardButtonVisible(false);
     }
+
 
     public void ShowCreateClassPanel()
     {
@@ -86,10 +96,10 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
         }
     }
 
-    public void SetProgressEmptyMessages(bool isProgressEmtpy)
+    public void SetProgressEmptyMessages(bool isProgressEmpty)
     {
         if (studentProgressEmptyText != null)
-            studentProgressEmptyText.gameObject.SetActive(isProgressEmtpy);
+            studentProgressEmptyText.gameObject.SetActive(isProgressEmpty);
     }
 
     public void SetLeaderboardEmptyMessages(bool isLeaderboardEmpty)
@@ -98,6 +108,19 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
             leaderboardEmptyText.gameObject.SetActive(isLeaderboardEmpty);
     }
 
+    public void SetViewAllProgressButtonVisible(bool visible)
+    {
+        if (viewAllProgressButton != null)
+            viewAllProgressButton.SetActive(visible);
+    }
+
+    public void SetViewAllLeaderboardButtonVisible(bool visible)
+    {
+        if (viewAllLeaderboardButton != null)
+            viewAllLeaderboardButton.SetActive(visible);
+    }
+
+
     private void SetActivePanel(GameObject activePanel)
     {
         landingPage.SetActive(activePanel == landingPage);
@@ -105,6 +128,12 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
         studentProgressPage.SetActive(activePanel == studentProgressPage);
         leaderboardPage.SetActive(activePanel == leaderboardPage);
         createNewClassPanel.SetActive(false);
+
+        if (activePanel == landingPage)
+        {
+            SetViewAllProgressButtonVisible(true);
+            SetViewAllLeaderboardButtonVisible(true); // 🔹 Leaderboard button visible on landing
+        }
     }
 
 }
