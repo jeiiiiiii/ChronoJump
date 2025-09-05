@@ -2334,6 +2334,11 @@ MonoBehaviour:
   PlayerSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}
   ChronocharacterRenderer: {fileID: 1052601367}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
+  audioSource: {fileID: 1551423822}
+  dialogueClips:
+  - {fileID: 8300000, guid: c7892e868a309fe4bb2d166fbdd60c22, type: 3}
+  - {fileID: 8300000, guid: e3789723a3d9cc342a320b3049b33919, type: 3}
+  - {fileID: 8300000, guid: b8fb2f42a5d0e7941a29bd3c8a6d4aac, type: 3}
 --- !u!1 &1551423820
 GameObject:
   m_ObjectHideFlags: 0

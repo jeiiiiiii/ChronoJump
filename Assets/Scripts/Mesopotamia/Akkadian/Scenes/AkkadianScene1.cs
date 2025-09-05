@@ -41,6 +41,9 @@ public class AkkadianScene1 : MonoBehaviour
     public Sprite ChronoCheerful;
     public Sprite ChronoSmile;
 
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;
+
     void Start()
     {
         // Ensure SaveLoadManager exists
@@ -65,7 +68,7 @@ public class AkkadianScene1 : MonoBehaviour
         {
             new DialogueLine
             {   characterName = "PLAYER",
-                line = " Sandali… iba ‘to. Parang mas... masigla pero mas istrikto."
+                line = " Sandali… ibang lugar ‘to. Parang mas... masigla pero mas istrikto."
             },
             new DialogueLine
             {
@@ -189,6 +192,12 @@ public class AkkadianScene1 : MonoBehaviour
 
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
+
+        if (audioSource != null && dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+        {
+            audioSource.clip = dialogueClips[currentDialogueIndex];
+            audioSource.Play();
+        }
 
         switch (currentDialogueIndex)
         {

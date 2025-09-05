@@ -37,6 +37,9 @@ public class BabylonianScene2 : MonoBehaviour
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
 
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;
+
     void Start()
     {
         // Ensure SaveLoadManager exists
@@ -99,7 +102,7 @@ public class BabylonianScene2 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "HAMMURABI",
-                line = " Kung sinaktan mo ang iba, may kapalit na parusa. Tinatawag itong prinsipyo ng mata sa mata, ngipin sa ngipin o Lex Talionis . Ibig sabihin, ang ginawa mo sa iba ay maaaring mangyari rin sa iyo."
+                line = " Kung sinaktan mo ang iba, may kapalit na parusa. Tinatawag itong prinsipyo ng mata sa mata, ngipin sa ngipin. Ibig sabihin, ang ginawa mo sa iba ay maaaring mangyari rin sa iyo."
             },
             new DialogueLine
             {
@@ -204,6 +207,12 @@ public class BabylonianScene2 : MonoBehaviour
     {
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
+
+        if (audioSource != null && dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+        {
+            audioSource.clip = dialogueClips[currentDialogueIndex];
+            audioSource.Play();
+        }
 
         switch (currentDialogueIndex)
         {

@@ -49,9 +49,16 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
     public Sprite ChronoSad;
     public Sprite ChronoSmile;
     public SpriteRenderer BlurBG;
-        public Button ArtifactImageButton;
+    public Button ArtifactImageButton;
     public Button ArtifactUseButton;
     public Button ArtifactButton;
+
+    public AudioSource audioSource;
+
+    public AudioClip[] dialogueClips;
+    public AudioClip[] KodigoClips;
+    public AudioClip[] KatarunganClips;
+    public AudioClip[] KalakalanClips;
 
     void Start()
     {
@@ -188,6 +195,27 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
     {
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
+
+        if (audioSource != null)
+        {
+            AudioClip clipToPlay = null;
+
+            if (dialogueLines == KodigoLines && KodigoClips != null && currentDialogueIndex < KodigoClips.Length)
+                clipToPlay = KodigoClips[currentDialogueIndex];
+            else if (dialogueLines == KatarunganLines && KatarunganClips != null && currentDialogueIndex < KatarunganClips.Length)
+                clipToPlay = KatarunganClips[currentDialogueIndex];
+            else if (dialogueLines == KalakalanLines && KalakalanClips != null && currentDialogueIndex < KalakalanClips.Length)
+                clipToPlay = KalakalanClips[currentDialogueIndex];
+            else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+                clipToPlay = dialogueClips[currentDialogueIndex];
+
+            if (clipToPlay != null)
+            {
+                audioSource.Stop();
+                audioSource.clip = clipToPlay;
+                audioSource.Play();
+            }
+        }
 
         if (dialogueLines == KodigoLines)
         {

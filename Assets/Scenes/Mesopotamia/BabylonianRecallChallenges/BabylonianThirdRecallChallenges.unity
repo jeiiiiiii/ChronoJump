@@ -850,6 +850,23 @@ MonoBehaviour:
   ArtifactImageButton: {fileID: 1201529128}
   ArtifactUseButton: {fileID: 231838075}
   ArtifactButton: {fileID: 231838075}
+  audioSource: {fileID: 1810599432}
+  dialogueClips:
+  - {fileID: 8300000, guid: 0e7bc270ae7873e4a9e25bfa585d487e, type: 3}
+  GilgameshClips:
+  - {fileID: 8300000, guid: 905620ffcbd8c3942a151595384683ab, type: 3}
+  - {fileID: 8300000, guid: 57c224d8c6d7fb342981c78d06a49698, type: 3}
+  - {fileID: 8300000, guid: a93eea39856f1b443bad897be1dfc3f5, type: 3}
+  - {fileID: 8300000, guid: f855b2f461c4ecb42ad17c6095af746e, type: 3}
+  - {fileID: 0}
+  UrukClips:
+  - {fileID: 8300000, guid: 09d951080629e7b4bbaa9fcf9a81d561, type: 3}
+  - {fileID: 8300000, guid: b8ce90437752c59488d1a852a594023f, type: 3}
+  - {fileID: 8300000, guid: 6ba04006ac7552642855c23d5ff777ab, type: 3}
+  AklatClips:
+  - {fileID: 8300000, guid: d0f988b7691e76c41baf7b36394e801a, type: 3}
+  - {fileID: 8300000, guid: 59be84ebcc24dce4e8c54fb029034f72, type: 3}
+  - {fileID: 8300000, guid: 6ba04006ac7552642855c23d5ff777ab, type: 3}
 --- !u!1 &406098304
 GameObject:
   m_ObjectHideFlags: 0

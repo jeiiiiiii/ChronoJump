@@ -25,6 +25,7 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
     public Sprite ChronoCheerful;
     public Sprite ChronoSad;
     public Sprite ChronoSmile;
+    public Sprite SargonThinking;
     public SpriteRenderer BlurBG;
 
     [System.Serializable]
@@ -52,6 +53,12 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
     public Button ArtifactImageButton;
     public Button ArtifactUseButton;
     public Button ArtifactButton;
+    
+    public AudioSource audioSource;
+    public AudioClip[] initialClips;
+    public AudioClip[] rehiyonClips;
+    public AudioClip[] BabyloniaClips;
+    public AudioClip[] EmpireClips;
 
 
     void Start()
@@ -94,7 +101,7 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
         {
             new DialogueLine
             {
-                characterName = "CHRONO",
+                characterName = "SARGON I",
                 line = " Ano ang nangyari matapos ang panandaliang pagbawi ng kapangyarihan ng lungsod-estado ng Ur?"
             },
         };
@@ -156,6 +163,11 @@ public void UseArtifactButton()
         },
         new DialogueLine
         {
+            characterName = "CHRONO",
+            line = " Tama. Sa halip na pagkakaisa, nauwi sa tunggalian ang mga lungsod sa timog."
+        },
+        new DialogueLine
+        {
             characterName = "PLAYER",
             line = " Sana ganoon din ang pamumuno sa panahon namin. May layunin, hindi lang kapangyarihan."
         },
@@ -171,6 +183,11 @@ public void UseArtifactButton()
         new DialogueLine
         {
             characterName = "PLAYER",
+            line = " Sinimulan na ang panahon ng Babylonia"
+        },
+        new DialogueLine
+        {
+            characterName = "PLAYER",
             line = " Hindi pa ito ang panahon ng Babylonia. Iba pang mga lungsod-estado ang namayani noon sa Mesopotamia."
         },
         new DialogueLine
@@ -182,6 +199,11 @@ public void UseArtifactButton()
 
     private DialogueLine[] EmpireLines = new DialogueLine[]
     {
+        new DialogueLine
+        {
+            characterName = "PLAYER",
+            line = " Naibalik ang Akkadian Empire"
+        },
         new DialogueLine
         {
             characterName = "PLAYER",
@@ -223,6 +245,27 @@ public void UseArtifactButton()
         AchievementUnlockedRenderer.SetActive(false);
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
+
+        if (audioSource != null)
+        {
+            AudioClip clipToPlay = null;
+
+            if (dialogueLines == rehiyonLines && rehiyonClips != null && currentDialogueIndex < rehiyonClips.Length)
+                clipToPlay = rehiyonClips[currentDialogueIndex];
+            else if (dialogueLines == BabyloniaLines && BabyloniaClips != null && currentDialogueIndex < BabyloniaClips.Length)
+                clipToPlay = BabyloniaClips[currentDialogueIndex];
+            else if (dialogueLines == EmpireLines && EmpireClips != null && currentDialogueIndex < EmpireClips.Length)
+                clipToPlay = EmpireClips[currentDialogueIndex];
+            else if (initialClips != null && currentDialogueIndex < initialClips.Length)
+                clipToPlay = initialClips[currentDialogueIndex];
+
+            if (clipToPlay != null)
+            {
+                audioSource.Stop();
+                audioSource.clip = clipToPlay;
+                audioSource.Play();
+            }
+        }
 
         if (dialogueLines == rehiyonLines)
         {
@@ -303,7 +346,7 @@ public void UseArtifactButton()
             {
                 case 0:
                     PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    ChronocharacterRenderer.sprite = SargonThinking;
                     break;
             }
         }

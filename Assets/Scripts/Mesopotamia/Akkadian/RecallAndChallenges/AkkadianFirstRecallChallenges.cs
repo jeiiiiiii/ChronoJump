@@ -54,6 +54,12 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
     public Button ArtifactUseButton;
     public Button ArtifactButton;
 
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;
+    public AudioClip[] SargonClips;
+    public AudioClip[] UrNammuClips;
+    public AudioClip[] HammurabiClips;
+
     void Start()
     {
         if (PlayerAchievementManager.IsAchievementUnlocked("Tablet"))
@@ -93,7 +99,7 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
         {
             new DialogueLine
             {
-                characterName = "CHRONO",
+                characterName = "SARGON I",
                 line = " Sino ang pinunong nagtayo ng kauna-unahang imperyo sa daigdig?"
             },
         };
@@ -180,6 +186,11 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
         new DialogueLine
         {
             characterName = "PLAYER",
+            line = " Ur-Nammu?"
+        },
+        new DialogueLine
+        {
+            characterName = "PLAYER",
             line = " Si Ur-Nammu ay naging pinuno sa Ur pero mas huli siya. Isipin mo kung sino ang unang nagbuklod sa mga lungsod." },
         new DialogueLine
         {
@@ -189,6 +200,11 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
     };
     private DialogueLine[] HammurabiLines = new DialogueLine[]
     {
+        new DialogueLine
+        {
+            characterName = "PLAYER",
+            line = " Hammurabi?"
+        },
         new DialogueLine
         {
             characterName = "PLAYER",
@@ -230,6 +246,27 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+        if (audioSource != null)
+        {
+            AudioClip clipToPlay = null;
+
+            if (dialogueLines == SargonLines && SargonClips != null && currentDialogueIndex < SargonClips.Length)
+                clipToPlay = SargonClips[currentDialogueIndex];
+            else if (dialogueLines == UrNammuLines && UrNammuClips != null && currentDialogueIndex < UrNammuClips.Length)
+                clipToPlay = UrNammuClips[currentDialogueIndex];
+            else if (dialogueLines == HammurabiLines && HammurabiClips != null && currentDialogueIndex < HammurabiClips.Length)
+                clipToPlay = HammurabiClips[currentDialogueIndex];
+            else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+                clipToPlay = dialogueClips[currentDialogueIndex];
+
+            if (clipToPlay != null)
+            {
+                audioSource.Stop();
+                audioSource.clip = clipToPlay;
+                audioSource.Play();
+            }
+        }
+
         if (dialogueLines == SargonLines)
         {
             switch (currentDialogueIndex)
@@ -255,7 +292,7 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
                     break;
                 case 1:
                     PlayercharacterRenderer.sprite = PlayerEager;
-                    ChronocharacterRenderer.sprite = SargonProud;
+                    ChronocharacterRenderer.sprite = ChronoCheerful;
                     break;
                 case 2:
                     foreach (Button btn in answerButtons)
@@ -269,7 +306,6 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
                     }
                     BlurBG.gameObject.SetActive(false);
                     PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = SargonThinking;
                     break;
                 case 3:
                     ChronocharacterRenderer.sprite = ChronoThinking;
@@ -314,7 +350,7 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
             {
                 case 0:
                     PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    ChronocharacterRenderer.sprite = SargonThinking;
                     break;
             }
         }

@@ -974,6 +974,23 @@ MonoBehaviour:
   ArtifactImageButton: {fileID: 1206006174}
   ArtifactUseButton: {fileID: 12948882}
   ArtifactButton: {fileID: 12948882}
+  audioSource: {fileID: 1810599432}
+  dialogueClips:
+  - {fileID: 8300000, guid: c502fa023c710d74ba881792b569007a, type: 3}
+  MardukClips:
+  - {fileID: 8300000, guid: 90d275120d5b07f4ab84d55d2aab4bed, type: 3}
+  - {fileID: 8300000, guid: 3daaab0acfbbc9b40918d45017de17ab, type: 3}
+  - {fileID: 8300000, guid: d86e5d6e0e20b8c42b8fc89e701f9c2d, type: 3}
+  - {fileID: 8300000, guid: b3cfe4ad0ad38c940be226b12e4e214a, type: 3}
+  - {fileID: 8300000, guid: a4ba5cef7a924f543b4787ec37057135, type: 3}
+  IshtarClips:
+  - {fileID: 8300000, guid: 3167c03dbd93e1946b2cfd0a7614c5ce, type: 3}
+  - {fileID: 8300000, guid: 94f515a0122c36a48a30cb0708191e23, type: 3}
+  - {fileID: 8300000, guid: 12f1377f14c5dc6458b47490d6275cd0, type: 3}
+  NannaClips:
+  - {fileID: 8300000, guid: e7b02e5e64cb3704c9dd96b6d63ac38b, type: 3}
+  - {fileID: 8300000, guid: ec3ebb6518a3c0549b8f289de164efec, type: 3}
+  - {fileID: 8300000, guid: 12f1377f14c5dc6458b47490d6275cd0, type: 3}
 --- !u!1 &406098304
 GameObject:
   m_ObjectHideFlags: 0

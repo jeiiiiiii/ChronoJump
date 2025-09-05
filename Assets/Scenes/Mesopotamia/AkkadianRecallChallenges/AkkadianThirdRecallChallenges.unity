@@ -649,6 +649,7 @@ MonoBehaviour:
   ChronoCheerful: {fileID: -4788844467492341420, guid: 2d820e03f038071438b5607182311759, type: 3}
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
+  SargonThinking: {fileID: -3581579875758752137, guid: 1b267f055a3615840b151c317952119e, type: 3}
   BlurBG: {fileID: 1061096143}
   answerButtons:
   - {fileID: 40675570}
@@ -666,6 +667,22 @@ MonoBehaviour:
   ArtifactImageButton: {fileID: 1359895873}
   ArtifactUseButton: {fileID: 1902764357}
   ArtifactButton: {fileID: 1902764357}
+  audioSource: {fileID: 1810599432}
+  initialClips:
+  - {fileID: 8300000, guid: 0a97eb14971281c4e8ec4565578db95d, type: 3}
+  rehiyonClips:
+  - {fileID: 8300000, guid: cc11324981b7ae54e954c97ed2a7712b, type: 3}
+  - {fileID: 8300000, guid: 8fff201b3866a53418a25f1a9daa70c8, type: 3}
+  - {fileID: 8300000, guid: 7bcaf55fe01fcaf4495b84e21f78dd23, type: 3}
+  - {fileID: 8300000, guid: 75e310956351362459dda88822f1cb1a, type: 3}
+  BabyloniaClips:
+  - {fileID: 8300000, guid: 8de866a864e081246acae76b07b3e70e, type: 3}
+  - {fileID: 8300000, guid: 35f7c0387b1d33a468b37f1b56ae699c, type: 3}
+  - {fileID: 8300000, guid: 88cd65429ebdabc4f8f26d3e2f8738d7, type: 3}
+  EmpireClips:
+  - {fileID: 8300000, guid: 8601b6fab1b1c0e42838965e823e4dfa, type: 3}
+  - {fileID: 8300000, guid: 059676914a451ca44bcabe41f4b377bb, type: 3}
+  - {fileID: 8300000, guid: 88cd65429ebdabc4f8f26d3e2f8738d7, type: 3}
 --- !u!1 &406098304
 GameObject:
   m_ObjectHideFlags: 0
@@ -2619,8 +2636,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 988ae98e8f108e24ea2a99a067b99fc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  civilizations: []
-  useSceneNamePrefix: 1
 --- !u!114 &1359895873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3803,11 +3818,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 988ae98e8f108e24ea2a99a067b99fc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  civilizations:
-  - civilizationName: Akkadian
-    artifactAchievements:
-    - Tablet
-  useSceneNamePrefix: 1
 --- !u!114 &1902764357
 MonoBehaviour:
   m_ObjectHideFlags: 0

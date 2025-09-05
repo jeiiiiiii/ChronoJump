@@ -54,6 +54,13 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
     public Button ArtifactUseButton;
     public Button ArtifactButton;
 
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;
+    public AudioClip[] pananakopClips;
+    public AudioClip[] siningClips;
+    public AudioClip[] kalabanClips;
+
+
     private bool artifactPowerActivated = false;
 
 
@@ -194,6 +201,27 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
     {
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
+
+        if (audioSource != null)
+        {
+            AudioClip clipToPlay = null;
+
+            if (dialogueLines == pananakopLines && pananakopClips != null && currentDialogueIndex < pananakopClips.Length)
+                clipToPlay = pananakopClips[currentDialogueIndex];
+            else if (dialogueLines == siningLines && siningClips != null && currentDialogueIndex < siningClips.Length)
+                clipToPlay = siningClips[currentDialogueIndex];
+            else if (dialogueLines == kalabanLines && kalabanClips != null && currentDialogueIndex < kalabanClips.Length)
+                clipToPlay = kalabanClips[currentDialogueIndex];
+            else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+                clipToPlay = dialogueClips[currentDialogueIndex];
+
+            if (clipToPlay != null)
+            {
+                audioSource.Stop();
+                audioSource.clip = clipToPlay;
+                audioSource.Play();
+            }
+        }
 
         if (dialogueLines == pananakopLines)
         {

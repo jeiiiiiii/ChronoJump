@@ -53,6 +53,13 @@ public class BabylonianFirstRecallChallenges : MonoBehaviour
     public Button ArtifactUseButton;
     public Button ArtifactButton;
 
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;
+    public AudioClip[] HammurabiClips;
+    public AudioClip[] SargonClips;
+    public AudioClip[] AshurbanipalClips;
+
+
     void Start()
     {
         if (PlayerAchievementManager.IsAchievementUnlocked("Sword"))
@@ -191,6 +198,28 @@ public class BabylonianFirstRecallChallenges : MonoBehaviour
     {
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
+
+        if (audioSource != null)
+        {
+            AudioClip clipToPlay = null;
+
+            if (dialogueLines == SargonLines && SargonClips != null && currentDialogueIndex < SargonClips.Length)
+                clipToPlay = SargonClips[currentDialogueIndex];
+            else if (dialogueLines == HammurabiLines && HammurabiClips != null && currentDialogueIndex < HammurabiClips.Length)
+                clipToPlay = HammurabiClips[currentDialogueIndex];
+            else if (dialogueLines == AshurbanipalLines && AshurbanipalClips != null && currentDialogueIndex < AshurbanipalClips.Length)
+                clipToPlay = AshurbanipalClips[currentDialogueIndex];
+            else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+                clipToPlay = dialogueClips[currentDialogueIndex];
+
+            if (clipToPlay != null)
+            {
+                audioSource.Stop();
+                audioSource.clip = clipToPlay;
+                audioSource.Play();
+            }
+        }
+
 
         if (dialogueLines == HammurabiLines)
         {

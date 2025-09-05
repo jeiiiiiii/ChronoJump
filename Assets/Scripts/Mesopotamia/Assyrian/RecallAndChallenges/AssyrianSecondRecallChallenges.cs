@@ -53,6 +53,12 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
     public Button ArtifactUseButton;
     public Button ArtifactButton;
 
+    public AudioSource audioSource;
+    public AudioClip[] HammurabiClips;
+    public AudioClip[] NebuchadnezzarClips;
+    public AudioClip[] AshurbanipalClips;
+    public AudioClip[] dialogueClips;
+
     private bool artifactPowerActivated = false;
 
     void Start()
@@ -192,6 +198,27 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
     {
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
+
+        if (audioSource != null)
+        {
+            AudioClip clipToPlay = null;
+
+            if (dialogueLines == AshurbanipalLines && AshurbanipalClips != null && currentDialogueIndex < AshurbanipalClips.Length)
+                clipToPlay = AshurbanipalClips[currentDialogueIndex];
+            else if (dialogueLines == HammurabiLines && HammurabiClips != null && currentDialogueIndex < HammurabiClips.Length)
+                clipToPlay = HammurabiClips[currentDialogueIndex];
+            else if (dialogueLines == NebuchadnezzarLines && NebuchadnezzarClips != null && currentDialogueIndex < NebuchadnezzarClips.Length)
+                clipToPlay = NebuchadnezzarClips[currentDialogueIndex];
+            else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+                clipToPlay = dialogueClips[currentDialogueIndex];
+
+            if (clipToPlay != null)
+            {
+                audioSource.Stop();
+                audioSource.clip = clipToPlay;
+                audioSource.Play();
+            }
+        }
 
         if (dialogueLines == AshurbanipalLines)
         {

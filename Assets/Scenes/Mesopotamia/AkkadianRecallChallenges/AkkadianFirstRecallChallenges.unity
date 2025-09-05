@@ -760,7 +760,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -752, y: -335}
+  m_AnchoredPosition: {x: -767, y: -335}
   m_SizeDelta: {x: 326.93, y: 345.09}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &355097131
@@ -1372,13 +1372,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 988ae98e8f108e24ea2a99a067b99fc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  civilizations:
-  - civilizationName: Akkadian
-    artifactAchievements:
-    - Tablet
-  - civilizationName: 
-    artifactAchievements: []
-  useSceneNamePrefix: 1
 --- !u!1 &771207043
 GameObject:
   m_ObjectHideFlags: 0
@@ -2487,6 +2480,23 @@ MonoBehaviour:
   ArtifactImageButton: {fileID: 1761810929}
   ArtifactUseButton: {fileID: 661840222}
   ArtifactButton: {fileID: 661840222}
+  audioSource: {fileID: 771207045}
+  dialogueClips:
+  - {fileID: 8300000, guid: 91749132e4197e441a71a83d1cfc85d7, type: 3}
+  SargonClips:
+  - {fileID: 8300000, guid: 86631cc3afaa9244bbb8783052d2156f, type: 3}
+  - {fileID: 8300000, guid: f7cb3f28c4af6b24d88abf9854e5332d, type: 3}
+  - {fileID: 8300000, guid: daa3a83457672ee4997edb6977e43a51, type: 3}
+  - {fileID: 8300000, guid: 28e94d8b20ea35845be29276eff968c5, type: 3}
+  - {fileID: 8300000, guid: 4d23325941881ca47a659f1474bbe15b, type: 3}
+  UrNammuClips:
+  - {fileID: 8300000, guid: d2ff335ba3d32244381236cfa9cf99d0, type: 3}
+  - {fileID: 8300000, guid: 38148e85ff2b335448abd0581fa5539f, type: 3}
+  - {fileID: 8300000, guid: bd5d506918804744f85924b340e9173f, type: 3}
+  HammurabiClips:
+  - {fileID: 8300000, guid: 3c9bf0e9514ed5a4bace0c49949e07e2, type: 3}
+  - {fileID: 8300000, guid: 2be9bedae550c9e469adee479e2aae8d, type: 3}
+  - {fileID: 8300000, guid: bd5d506918804744f85924b340e9173f, type: 3}
 --- !u!1 &1416260132
 GameObject:
   m_ObjectHideFlags: 0
@@ -3654,8 +3664,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 988ae98e8f108e24ea2a99a067b99fc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  civilizations: []
-  useSceneNamePrefix: 1
 --- !u!1 &1805423973
 GameObject:
   m_ObjectHideFlags: 0

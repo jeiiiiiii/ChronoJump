@@ -34,6 +34,9 @@ public class AkkadianScene3 : MonoBehaviour
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
 
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;
+
     void Start()
     {
         if (SaveLoadManager.Instance == null)
@@ -159,6 +162,12 @@ public class AkkadianScene3 : MonoBehaviour
     {
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
+
+        if (audioSource != null && dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+        {
+            audioSource.clip = dialogueClips[currentDialogueIndex];
+            audioSource.Play();
+        }
 
         switch (currentDialogueIndex)
         {

@@ -34,6 +34,9 @@ public class BabylonianScene3 : MonoBehaviour
     public Sprite HammurabiFirm;
     public Sprite HammurabiWise;
 
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;
+
     void Start()
     {
         // Ensure SaveLoadManager exists
@@ -182,6 +185,12 @@ public class BabylonianScene3 : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+        if (audioSource != null && dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+        {
+            audioSource.clip = dialogueClips[currentDialogueIndex];
+            audioSource.Play();
+        }
+
         switch (currentDialogueIndex)
         {
             case 0:
@@ -195,16 +204,19 @@ public class BabylonianScene3 : MonoBehaviour
                 ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 3:
-                ChronocharacterRenderer.sprite = HammurabiFirm;
+                ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
             case 4:
+                ChronocharacterRenderer.sprite = HammurabiFirm;
                 PlayercharacterRenderer.sprite = PlayerSmile;
                 break;
             case 5:
-                ChronocharacterRenderer.sprite = HammurabiWise;
                 PlayercharacterRenderer.sprite = PlayerCurious;
                 break;
             case 6:
+                ChronocharacterRenderer.sprite = HammurabiFirm;
+                break;
+            case 7:
                 ChronocharacterRenderer.sprite = ChronoCheerful;
                 break;
         }

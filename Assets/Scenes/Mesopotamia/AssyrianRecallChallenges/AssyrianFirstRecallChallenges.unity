@@ -2817,6 +2817,22 @@ MonoBehaviour:
   ArtifactImageButton: {fileID: 822885669}
   ArtifactUseButton: {fileID: 317194327}
   ArtifactButton: {fileID: 317194327}
+  audioSource: {fileID: 771207045}
+  dialogueClips:
+  - {fileID: 8300000, guid: 3b53ef74725b8b241b80091588300e0f, type: 3}
+  pananakopClips:
+  - {fileID: 8300000, guid: f9c02b2ab6a8eab4683c9f3bf81ab798, type: 3}
+  - {fileID: 8300000, guid: ceac73e5781d9674b9ff930cdbe1f785, type: 3}
+  - {fileID: 8300000, guid: d687bb45cedb94f4b8ff62676b7f0a9e, type: 3}
+  - {fileID: 8300000, guid: c9bcc5d38783697489a9942f315486a4, type: 3}
+  siningClips:
+  - {fileID: 8300000, guid: 07e99a965eebba64da8e116e61fd5397, type: 3}
+  - {fileID: 8300000, guid: 3ecf07c4d2ab8e04799c4ddd4f85a8a3, type: 3}
+  - {fileID: 8300000, guid: a0628319de7576d4bad6019a4a7eea27, type: 3}
+  kalabanClips:
+  - {fileID: 8300000, guid: 80aadb9ed7623484a8b64db21fcbd35e, type: 3}
+  - {fileID: 8300000, guid: f21a79fbbde6f9149ac0f8715712fa70, type: 3}
+  - {fileID: 8300000, guid: a0628319de7576d4bad6019a4a7eea27, type: 3}
 --- !u!1 &1261902334
 GameObject:
   m_ObjectHideFlags: 0

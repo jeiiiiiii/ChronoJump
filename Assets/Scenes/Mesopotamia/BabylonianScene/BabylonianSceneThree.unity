@@ -3119,6 +3119,16 @@ MonoBehaviour:
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   HammurabiFirm: {fileID: 3292072888587555374, guid: 36199c836940977439569389d2aa9f38, type: 3}
   HammurabiWise: {fileID: 2449626087761298932, guid: 27e572d8ff10f0e458ed6b7ca72288d9, type: 3}
+  audioSource: {fileID: 2071274775}
+  dialogueClips:
+  - {fileID: 8300000, guid: da7d73321faf598429c1d5b560456082, type: 3}
+  - {fileID: 8300000, guid: 3847dd53e14205b49a5c7fc78cfe6d3c, type: 3}
+  - {fileID: 8300000, guid: d453be10373bfc846b2256a00d4dcc9e, type: 3}
+  - {fileID: 8300000, guid: ff60a29861d0e2c43bc41544939e8c91, type: 3}
+  - {fileID: 8300000, guid: 86cb37f04b2a5474a8cf54a362343fda, type: 3}
+  - {fileID: 8300000, guid: 3824fb79548a46345a2a630303001b71, type: 3}
+  - {fileID: 8300000, guid: 0b0d384b151dc264994a52db44708a74, type: 3}
+  - {fileID: 8300000, guid: 08ed5a51073035145ae798e8da71eb95, type: 3}
 --- !u!1 &2049937663
 GameObject:
   m_ObjectHideFlags: 0

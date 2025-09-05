@@ -42,6 +42,9 @@ public class AssyrianScene1 : MonoBehaviour
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
 
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;
+
     void Start()
     {
         // Ensure SaveLoadManager exists
@@ -211,6 +214,12 @@ public class AssyrianScene1 : MonoBehaviour
         TiglathFulldrawnSprite.enabled = false;
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
+
+        if (audioSource != null && dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+        {
+            audioSource.clip = dialogueClips[currentDialogueIndex];
+            audioSource.Play();
+        }
 
         switch (currentDialogueIndex)
         {

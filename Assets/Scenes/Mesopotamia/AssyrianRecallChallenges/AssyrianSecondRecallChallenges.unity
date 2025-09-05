@@ -2220,6 +2220,22 @@ MonoBehaviour:
   ArtifactImageButton: {fileID: 1108436824}
   ArtifactUseButton: {fileID: 1594683679}
   ArtifactButton: {fileID: 1594683679}
+  audioSource: {fileID: 835022141}
+  HammurabiClips:
+  - {fileID: 8300000, guid: af7f846125e675c4e98c5b6f1a70ee35, type: 3}
+  - {fileID: 8300000, guid: 4b7f7fa9f8f32b249b2852efde91d489, type: 3}
+  - {fileID: 8300000, guid: 967cbcdbe4a8d5c4aadb70cdf1c3742c, type: 3}
+  NebuchadnezzarClips:
+  - {fileID: 8300000, guid: 539fa849988a59a448779f92e6a145f4, type: 3}
+  - {fileID: 8300000, guid: e3a243f7ab0b91742a23456bd3283325, type: 3}
+  - {fileID: 8300000, guid: 967cbcdbe4a8d5c4aadb70cdf1c3742c, type: 3}
+  AshurbanipalClips:
+  - {fileID: 8300000, guid: 486d6ceaff0bc9e4c8ff185c01b26aa1, type: 3}
+  - {fileID: 8300000, guid: 87360e868a600cf41b345a686917c7f1, type: 3}
+  - {fileID: 8300000, guid: 674f75eeaa246e54a8dd809a9989d016, type: 3}
+  - {fileID: 8300000, guid: f12d5390a06812742b8ffe5a0c93b763, type: 3}
+  dialogueClips:
+  - {fileID: 8300000, guid: c76c52a1dfbf0954bba8ef41892d5d1f, type: 3}
 --- !u!1 &1293980843
 GameObject:
   m_ObjectHideFlags: 0

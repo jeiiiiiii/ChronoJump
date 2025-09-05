@@ -55,6 +55,13 @@ public class BabylonianFourthRecallChallenges : MonoBehaviour
     public Button ArtifactUseButton;
     public Button ArtifactButton;
 
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;
+    public AudioClip[] MardukClips;
+    public AudioClip[] IshtarClips;
+    public AudioClip[] NannaClips;
+
+
     void Start()
     {
         if (PlayerAchievementManager.IsAchievementUnlocked("Sword"))
@@ -107,7 +114,7 @@ public class BabylonianFourthRecallChallenges : MonoBehaviour
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Si Marduk!"
+            line = " Marduk!"
         },
         new DialogueLine
         {
@@ -135,7 +142,7 @@ public class BabylonianFourthRecallChallenges : MonoBehaviour
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Si Ishtar?"
+            line = " Ishtar?"
         },
         new DialogueLine
         {
@@ -153,7 +160,7 @@ public class BabylonianFourthRecallChallenges : MonoBehaviour
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = "Si Nanna?"
+            line = " Nanna?"
         },
         new DialogueLine
         {
@@ -196,6 +203,28 @@ public class BabylonianFourthRecallChallenges : MonoBehaviour
     {
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
+
+        if (audioSource != null)
+        {
+            AudioClip clipToPlay = null;
+
+            if (dialogueLines == MardukLines && MardukClips != null && currentDialogueIndex < MardukClips.Length)
+                clipToPlay = MardukClips[currentDialogueIndex];
+            else if (dialogueLines == IshtarLines && IshtarClips != null && currentDialogueIndex < IshtarClips.Length)
+                clipToPlay = IshtarClips[currentDialogueIndex];
+            else if (dialogueLines == NannaLines && NannaClips != null && currentDialogueIndex < NannaClips.Length)
+                clipToPlay = NannaClips[currentDialogueIndex];
+            else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+                clipToPlay = dialogueClips[currentDialogueIndex];
+
+            if (clipToPlay != null)
+            {
+                audioSource.Stop();
+                audioSource.clip = clipToPlay;
+                audioSource.Play();
+            }
+        }
+
 
         if (dialogueLines == MardukLines)
         {

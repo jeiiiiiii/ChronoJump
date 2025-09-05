@@ -3119,6 +3119,13 @@ MonoBehaviour:
   SargonExplaining: {fileID: 7251230261209195191, guid: 16b27d53a637b30448df40c6c01223aa, type: 3}
   ChronocharacterRenderer: {fileID: 808504571}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
+  audioSource: {fileID: 2071274775}
+  dialogueClips:
+  - {fileID: 8300000, guid: c09021352faf84d40843aa957980fcff, type: 3}
+  - {fileID: 8300000, guid: af7b59ddb126d2845a846d2cab552d33, type: 3}
+  - {fileID: 8300000, guid: b65c3c8bc6d0cde44a5b3ef4baebb04c, type: 3}
+  - {fileID: 8300000, guid: 91e54beaeefe9df439b9ff4805e97b35, type: 3}
+  - {fileID: 8300000, guid: 07d56667249158140b2986e01db3036e, type: 3}
 --- !u!1 &2049937663
 GameObject:
   m_ObjectHideFlags: 0

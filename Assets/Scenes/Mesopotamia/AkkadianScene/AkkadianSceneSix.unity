@@ -2271,12 +2271,18 @@ MonoBehaviour:
   dialogueText: {fileID: 991958766}
   nextButton: {fileID: 1312188699}
   backButton: {fileID: 1733892252}
+  saveButton: {fileID: 0}
+  homeButton: {fileID: 0}
   currentDialogueIndex: 0
   dialogueLines: []
   PlayercharacterRenderer: {fileID: 363254929}
   PlayerReflective: {fileID: -6828170361931683543, guid: 41872a0e55450ef43b535aba6363171a, type: 3}
   ChronocharacterRenderer: {fileID: 1052601367}
   ChronoCheerful: {fileID: -4788844467492341420, guid: 2d820e03f038071438b5607182311759, type: 3}
+  audioSource: {fileID: 882755962}
+  dialogueClips:
+  - {fileID: 8300000, guid: 1d8fb827f2e749742a414e5a9d0d4564, type: 3}
+  - {fileID: 8300000, guid: 524242c8faa6f5341b793aae6d0703d5, type: 3}
 --- !u!1 &1733892251
 GameObject:
   m_ObjectHideFlags: 0

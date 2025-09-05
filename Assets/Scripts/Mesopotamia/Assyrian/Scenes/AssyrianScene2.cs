@@ -39,9 +39,13 @@ public class AssyrianScene2 : MonoBehaviour
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
     public Sprite ChronoCheerful;
+    
 
     [Header("Achievements")]
     public GameObject AchievementUnlockedRenderer;
+
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;
 
     void Start()
     {
@@ -185,6 +189,12 @@ public class AssyrianScene2 : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+        if (audioSource != null && dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+        {
+            audioSource.clip = dialogueClips[currentDialogueIndex];
+            audioSource.Play();
+        }
+
         switch (currentDialogueIndex)
         {
             case 0:
@@ -200,7 +210,7 @@ public class AssyrianScene2 : MonoBehaviour
                 PlayercharacterRenderer.sprite = PlayerCurious;
                 break;
             case 3:
-                AshurbanipalFulldrawnSprite.sprite = AshurbanipalWise;
+                ChronocharacterRenderer.sprite = AshurbanipalWise;
                 break;
             case 4:
                 AchievementUnlockedRenderer.SetActive(true);

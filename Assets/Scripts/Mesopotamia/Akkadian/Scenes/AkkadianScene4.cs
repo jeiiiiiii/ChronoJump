@@ -31,6 +31,9 @@ public class AkkadianScene4 : MonoBehaviour
     public Sprite ChronoSad;
     public Sprite ChronoSmile;
 
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;
+
     void Start()
     {
         if (SaveLoadManager.Instance == null)
@@ -57,7 +60,7 @@ public class AkkadianScene4 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Bakit siya humina? Dahil sa digmaan?"
+                line = " Bakit siya humina? Dahil ba sa digmaan?"
             },
             new DialogueLine
             {
@@ -67,7 +70,7 @@ public class AkkadianScene4 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "SARGON I",
-                line = " Isang imperyo, gaano man kalawak, ay maaaring bumagsak kapag hindi ito naipagtanggol nang maayos."
+                line = " Ang isang imperyo, gaano man kalawak, ay maaaring bumagsak kapag hindi ito naipagtanggol nang maayos."
             },
             new DialogueLine
             {
@@ -152,6 +155,12 @@ public class AkkadianScene4 : MonoBehaviour
     {
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
+
+        if (audioSource != null && dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+        {
+            audioSource.clip = dialogueClips[currentDialogueIndex];
+            audioSource.Play();
+        }
 
         switch (currentDialogueIndex)
         {

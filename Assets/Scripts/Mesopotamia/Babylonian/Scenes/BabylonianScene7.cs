@@ -32,6 +32,9 @@ public class BabylonianScene7 : MonoBehaviour
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
 
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;
+
     void Start()
     {
         // Ensure SaveLoadManager exists
@@ -160,6 +163,12 @@ public class BabylonianScene7 : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+        if (audioSource != null && dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+        {
+            audioSource.clip = dialogueClips[currentDialogueIndex];
+            audioSource.Play();
+        }
+
         switch (currentDialogueIndex)
         {
             case 0:
@@ -170,6 +179,7 @@ public class BabylonianScene7 : MonoBehaviour
                 ChronocharacterRenderer.sprite = ChronoSad;
                 break;
             case 2:
+                ChronocharacterRenderer.sprite = ChronoSmile;
                 PlayercharacterRenderer.sprite = PlayerReflective;
                 break;
             case 3:

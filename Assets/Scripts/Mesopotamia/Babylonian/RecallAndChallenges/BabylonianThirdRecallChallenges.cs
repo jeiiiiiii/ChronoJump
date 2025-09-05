@@ -53,6 +53,13 @@ public class BabylonianThirdRecallChallenges : MonoBehaviour
     public Button ArtifactUseButton;
     public Button ArtifactButton;
 
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;
+    public AudioClip[] GilgameshClips;
+    public AudioClip[] UrukClips;
+    public AudioClip[] AklatClips;
+
+
     void Start()
     {
         if (PlayerAchievementManager.IsAchievementUnlocked("Sword"))
@@ -109,12 +116,7 @@ public class BabylonianThirdRecallChallenges : MonoBehaviour
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Tama. Isa ito sa pinakamatandang epiko sa daigdig. Isinulat ito sa panahon ng Uruk, at nagpapakita ng pakikipagsapalaran ng isang bayani na si Gilgamesh."
-        },
-        new DialogueLine
-        {
-            characterName = "HAMMURABI",
-            line = " Ang isang imperyo ay hindi lamang nasusukat sa laki ng nasasakupan, kundi sa lalim ng alaala at karunungang naiiwan."
+            line = " Tama. Isa ito sa pinakamatandang epiko sa daigdig. Isinulat ito sa panahon ng Babylonia, at nagpapakita ng pakikipagsapalaran ng isang bayani na si Gilgamesh."
         },
         new DialogueLine
         {
@@ -193,6 +195,27 @@ public class BabylonianThirdRecallChallenges : MonoBehaviour
     {
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
+
+        if (audioSource != null)
+        {
+            AudioClip clipToPlay = null;
+
+            if (dialogueLines == GilgameshLines && GilgameshClips != null && currentDialogueIndex < GilgameshClips.Length)
+                clipToPlay = GilgameshClips[currentDialogueIndex];
+            else if (dialogueLines == UrukLines && UrukClips != null && currentDialogueIndex < UrukClips.Length)
+                clipToPlay = UrukClips[currentDialogueIndex];
+            else if (dialogueLines == AklatLines && AklatClips != null && currentDialogueIndex < AklatClips.Length)
+                clipToPlay = AklatClips[currentDialogueIndex];
+            else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+                clipToPlay = dialogueClips[currentDialogueIndex];
+
+            if (clipToPlay != null)
+            {
+                audioSource.Stop();
+                audioSource.clip = clipToPlay;
+                audioSource.Play();
+            }
+        }
 
         if (dialogueLines == GilgameshLines)
         {

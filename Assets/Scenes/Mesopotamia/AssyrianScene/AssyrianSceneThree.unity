@@ -3118,6 +3118,17 @@ MonoBehaviour:
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   AshurbanipalStern: {fileID: 441634106754488686, guid: cff51948cab40d84193bc1f3721d8714, type: 3}
+  audioSource: {fileID: 2071274775}
+  dialogueClips:
+  - {fileID: 8300000, guid: dbf6a8440594e4f4e88f0475d2127fa4, type: 3}
+  - {fileID: 8300000, guid: be521d0eb330f8645a345b8e3d8b7ec0, type: 3}
+  - {fileID: 8300000, guid: 14f0c2c4db582ee45ba5e4fb920165cc, type: 3}
+  - {fileID: 8300000, guid: 399041ed3c1c22e48816b313e64dbe05, type: 3}
+  - {fileID: 8300000, guid: 0e8bed763e1b61846a34a91d76c73962, type: 3}
+  - {fileID: 8300000, guid: 2d762e39286d62e4089ad5fe47b2e0f6, type: 3}
+  - {fileID: 8300000, guid: a85dd55f9b9ae7449881ba401917c98c, type: 3}
+  - {fileID: 8300000, guid: dc1f89264e329a745b5cf9a22d09c8a2, type: 3}
+  - {fileID: 8300000, guid: 64836a6d118de9c44b436c5cb6962fc0, type: 3}
 --- !u!1 &2049937663
 GameObject:
   m_ObjectHideFlags: 0

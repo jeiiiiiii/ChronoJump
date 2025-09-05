@@ -899,6 +899,24 @@ MonoBehaviour:
   ArtifactImageButton: {fileID: 101757750}
   ArtifactUseButton: {fileID: 869400932}
   ArtifactButton: {fileID: 869400932}
+  audioSource: {fileID: 1810599432}
+  dialogueClips:
+  - {fileID: 0}
+  PersianClips:
+  - {fileID: 8300000, guid: f2277b26d782a264b8ac23b0119d77be, type: 3}
+  - {fileID: 8300000, guid: 13ec142de50317141891668bbc83af9c, type: 3}
+  - {fileID: 8300000, guid: b771fa561e368bd4e8d8ce8104ca6074, type: 3}
+  - {fileID: 8300000, guid: 26aa8a98c997bf7449c94c31ca0030ed, type: 3}
+  - {fileID: 8300000, guid: 56e11af523ff0a245b95cdeaaa705a6f, type: 3}
+  - {fileID: 8300000, guid: bed29c3935b36f348a241acd11be6b83, type: 3}
+  EgyptianClips:
+  - {fileID: 8300000, guid: 991391f0e53716e4ab74ca80aa299135, type: 3}
+  - {fileID: 8300000, guid: 76f4dd81ef723d9488abc6abb2ad6d6c, type: 3}
+  - {fileID: 8300000, guid: bc0958b6050c02543885fc06548ed9f1, type: 3}
+  RomansClips:
+  - {fileID: 8300000, guid: d57df207bb6db2a4faeea3c7b5e7d420, type: 3}
+  - {fileID: 8300000, guid: 4cb94cfc58d0b7e46a4d2bba7361d5e2, type: 3}
+  - {fileID: 8300000, guid: bc0958b6050c02543885fc06548ed9f1, type: 3}
 --- !u!1 &406098304
 GameObject:
   m_ObjectHideFlags: 0

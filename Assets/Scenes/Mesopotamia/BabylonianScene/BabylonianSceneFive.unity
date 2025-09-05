@@ -2343,6 +2343,20 @@ MonoBehaviour:
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   ChronoCheerful: {fileID: -4788844467492341420, guid: 2d820e03f038071438b5607182311759, type: 3}
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
+  audioSource: {fileID: 1551423822}
+  dialogueClips:
+  - {fileID: 8300000, guid: 59ae55aabbc55344c8e4e47b0a53fdf9, type: 3}
+  - {fileID: 8300000, guid: 3699db54aadd1b044ad398c4f3cfca47, type: 3}
+  - {fileID: 8300000, guid: ef718973f4ff1394fbe709cc53a77407, type: 3}
+  - {fileID: 8300000, guid: c4fed2d7eaad12c4e8e0be373291cb3a, type: 3}
+  - {fileID: 8300000, guid: ebe2115ccad82074dbb42434ba15da21, type: 3}
+  - {fileID: 8300000, guid: 4bd3b2e0ae2fb694596b77134dcaadfb, type: 3}
+  - {fileID: 8300000, guid: 89594bc06a496114287173db03c0c2a7, type: 3}
+  - {fileID: 8300000, guid: 7d0ede57e5ae49149873455dbdd11145, type: 3}
+  - {fileID: 8300000, guid: 0c992dd11d1bfed4b8ef11fb2dfbfe05, type: 3}
+  - {fileID: 8300000, guid: 49c86cb665c77ab429e0a4206e616a35, type: 3}
+  - {fileID: 8300000, guid: 4ba6d2cd53e7d2c4da58bc4332752fae, type: 3}
+  - {fileID: 8300000, guid: 3871b44aa4cdd964a9aab8a2c4cea75e, type: 3}
 --- !u!1 &1551423820
 GameObject:
   m_ObjectHideFlags: 0

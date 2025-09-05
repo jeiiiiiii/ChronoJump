@@ -2244,7 +2244,7 @@ MonoBehaviour:
   PlayercharacterRenderer: {fileID: 477065903}
   PlayerCurious: {fileID: 1425434424722430075, guid: 5c1923377ae91324084f960706141b9f, type: 3}
   PlayerSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}
-  PlayerEmbarrassed: {fileID: 0}
+  PlayerEmbarrassed: {fileID: 21300000, guid: f1f43dbd9447c5f468698952cbd6a509, type: 3}
   PlayerReflective: {fileID: -6828170361931683543, guid: 41872a0e55450ef43b535aba6363171a, type: 3}
   AshurbanipalFulldrawnSprite: {fileID: 385422580}
   AshurbanipalWise: {fileID: 441634106754488686, guid: cff51948cab40d84193bc1f3721d8714, type: 3}
@@ -2253,6 +2253,14 @@ MonoBehaviour:
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   ChronoCheerful: {fileID: -4788844467492341420, guid: 2d820e03f038071438b5607182311759, type: 3}
   AchievementUnlockedRenderer: {fileID: 924537611}
+  audioSource: {fileID: 1021808131}
+  dialogueClips:
+  - {fileID: 8300000, guid: 7484921102cbc0644ac9a4f3b11e4b29, type: 3}
+  - {fileID: 8300000, guid: 9a59f748bb88d5549843170ddb748338, type: 3}
+  - {fileID: 8300000, guid: 19a337d49e3d85646a02ff7ca1b87917, type: 3}
+  - {fileID: 8300000, guid: ef861bf430e193440ab18a88cf74c427, type: 3}
+  - {fileID: 8300000, guid: b1c4a31f100a12b40915356648096ada, type: 3}
+  - {fileID: 8300000, guid: 8b6d34da727708045837a1819d5e217f, type: 3}
 --- !u!1 &1317386103
 GameObject:
   m_ObjectHideFlags: 0

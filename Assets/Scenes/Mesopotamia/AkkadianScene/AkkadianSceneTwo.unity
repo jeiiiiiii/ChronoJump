@@ -2132,11 +2132,17 @@ MonoBehaviour:
   PlayercharacterRenderer: {fileID: 477065903}
   PlayerCurious: {fileID: 1425434424722430075, guid: 5c1923377ae91324084f960706141b9f, type: 3}
   PlayerSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}
-  PlayerReflective: {fileID: 0}
+  PlayerReflective: {fileID: -6828170361931683543, guid: 41872a0e55450ef43b535aba6363171a, type: 3}
   SargonNuetral: {fileID: -6613305240802378728, guid: 12be3ed4692b09c4ea3888fd1c92ffe3, type: 3}
   SargonFirm: {fileID: -9108852770763819013, guid: 3bb2697cfccacad419502fc037049ff1, type: 3}
   ChronocharacterRenderer: {fileID: 1317386105}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
+  audioSource: {fileID: 1021808131}
+  dialogueClips:
+  - {fileID: 8300000, guid: 6058c0046df0b7040ac7d6e84e5cd26e, type: 3}
+  - {fileID: 8300000, guid: 31c44dfffefb29b45bc3e29b075ff214, type: 3}
+  - {fileID: 8300000, guid: 8909a99daae5a0442a0458ee7904188d, type: 3}
+  - {fileID: 8300000, guid: 825e242679b92a04ea0284dde5956633, type: 3}
 --- !u!1 &1317386103
 GameObject:
   m_ObjectHideFlags: 0

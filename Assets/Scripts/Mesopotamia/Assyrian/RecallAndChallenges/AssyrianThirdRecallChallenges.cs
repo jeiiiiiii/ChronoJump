@@ -53,6 +53,14 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
     public Button ArtifactUseButton;
     public Button ArtifactButton;
 
+    public AudioSource audioSource;
+
+    public AudioClip[] dialogueClips;
+    public AudioClip[] PersianClips;
+    public AudioClip[] EgyptianClips;
+    public AudioClip[] RomansClips;
+
+
     private bool artifactPowerActivated = false;
 
     void Start()
@@ -117,6 +125,11 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
         {
             characterName = "CHRONO",
             line = " Ang mga pinaghaharian ay minsang nagkaisa—at ang dambuhala ay bumagsak."
+        },
+        new DialogueLine
+        {
+            characterName = "PLAYER",
+            line = " Parang nagsara ang isang aklat... ngunit maraming aral ang naiwan."
         },
         new DialogueLine
         {
@@ -197,6 +210,28 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
     {
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
+
+        if (audioSource != null)
+        {
+            AudioClip clipToPlay = null;
+
+            if (dialogueLines == PersianLines && PersianClips != null && currentDialogueIndex < PersianClips.Length)
+                clipToPlay = PersianClips[currentDialogueIndex];
+            else if (dialogueLines == EgyptianLines && EgyptianClips != null && currentDialogueIndex < EgyptianClips.Length)
+                clipToPlay = EgyptianClips[currentDialogueIndex];
+            else if (dialogueLines == RomansLines && RomansClips != null && currentDialogueIndex < RomansClips.Length)
+                clipToPlay = RomansClips[currentDialogueIndex];
+            else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+                clipToPlay = dialogueClips[currentDialogueIndex];
+
+            if (clipToPlay != null)
+            {
+                audioSource.Stop();
+                audioSource.clip = clipToPlay;
+                audioSource.Play();
+            }
+        }
+
 
         if (dialogueLines == PersianLines)
         {

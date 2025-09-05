@@ -2194,6 +2194,7 @@ MonoBehaviour:
   ChronoCheerful: {fileID: -4788844467492341420, guid: 2d820e03f038071438b5607182311759, type: 3}
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
+  SargonThinking: {fileID: -3581579875758752137, guid: 1b267f055a3615840b151c317952119e, type: 3}
   BlurBG: {fileID: 1061096143}
   answerButtons:
   - {fileID: 73977796}
@@ -2208,6 +2209,22 @@ MonoBehaviour:
   - {fileID: 1490102247}
   - {fileID: 206160653}
   finishAudioSource: {fileID: 1749078138}
+  audioSource: {fileID: 835022141}
+  initialClips:
+  - {fileID: 8300000, guid: ada787905e908fb4ea867f15ca8b428a, type: 3}
+  hurrianClips:
+  - {fileID: 8300000, guid: e5391b8d2ce25144787a0f1f4bba7bc1, type: 3}
+  - {fileID: 8300000, guid: 07f7b5f5f5c77894bb3feee98efe40b6, type: 3}
+  - {fileID: 8300000, guid: ef630e11005da3644967893881188e97, type: 3}
+  - {fileID: 8300000, guid: 3f70458871762ff46b7181b90fe3387f, type: 3}
+  tagtuyotClips:
+  - {fileID: 8300000, guid: a4cebd43d7ae448458457fc84548f390, type: 3}
+  - {fileID: 8300000, guid: 6543180b094d8244088aed958024bb35, type: 3}
+  - {fileID: 8300000, guid: 6f3d03cde86fd5a4bb46600d5bd8f237, type: 3}
+  panloobClips:
+  - {fileID: 8300000, guid: 2bf08ec74ccbfad4fb3f65778a99330e, type: 3}
+  - {fileID: 8300000, guid: 6f60a4b53ee5faf4b8129e95c8881a16, type: 3}
+  - {fileID: 8300000, guid: 6f3d03cde86fd5a4bb46600d5bd8f237, type: 3}
   ArtifactImageButton: {fileID: 1372994287}
   ArtifactUseButton: {fileID: 2124812661}
   ArtifactButton: {fileID: 2124812661}
@@ -2370,8 +2387,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 988ae98e8f108e24ea2a99a067b99fc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  civilizations: []
-  useSceneNamePrefix: 1
 --- !u!1 &1402779267
 GameObject:
   m_ObjectHideFlags: 0
@@ -3916,11 +3931,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 988ae98e8f108e24ea2a99a067b99fc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  civilizations:
-  - civilizationName: Akkadian
-    artifactAchievements:
-    - Tablet
-  useSceneNamePrefix: 1
 --- !u!1 &2136483673
 GameObject:
   m_ObjectHideFlags: 0

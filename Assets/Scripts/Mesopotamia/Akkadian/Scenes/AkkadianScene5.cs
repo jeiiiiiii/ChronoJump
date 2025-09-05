@@ -33,6 +33,9 @@ public class AkkadianScene5 : MonoBehaviour
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
 
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;
+
     void Start()
     {
         // Ensure SaveLoadManager exists
@@ -47,7 +50,7 @@ public class AkkadianScene5 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Matapos bumagsak ang Dinastiyang Ur dahil sa pagsalakay ng mga Amorite at Hurrian, hindi nagtagal ang katahimikan sa Mesopotamia"
+                line = " Matapos bumagsak ang Dinastiyang Ur dahil sa pagsalakay ng mga Amorite at Hurrian, hindi nagtagal ang katahimikan sa Mesopotamia."
             },
             new DialogueLine
             {
@@ -151,6 +154,12 @@ public class AkkadianScene5 : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+        if (audioSource != null && dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+        {
+            audioSource.clip = dialogueClips[currentDialogueIndex];
+            audioSource.Play();
+        }
+
         switch (currentDialogueIndex)
         {
             case 0:
@@ -161,12 +170,13 @@ public class AkkadianScene5 : MonoBehaviour
                 PlayercharacterRenderer.sprite = PlayerReflective;
                 break;
             case 2:
-                ChronocharacterRenderer.sprite = SargonWise;
-                break;
-            case 3:
                 ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
+            case 3:
+                ChronocharacterRenderer.sprite = SargonWise;
+                break;
             case 4:
+                ChronocharacterRenderer.sprite = ChronoSmile;
                 PlayercharacterRenderer.sprite = PlayerEager;
                 break;
         }
