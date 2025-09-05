@@ -50,7 +50,7 @@ public class QuizTimeManager : MonoBehaviour
 
         // Countdown
         currentTime -= Time.deltaTime;
-        timerText.text = "Oras: " + Mathf.Ceil(currentTime).ToString();
+        timerText.text = "Time: " + Mathf.Ceil(currentTime).ToString();
 
         // Warning color when time low
         if (currentTime <= 3f)
@@ -79,15 +79,18 @@ public class QuizTimeManager : MonoBehaviour
         // Setup answer buttons
         for (int i = 0; i < answerButtons.Length; i++)
         {
+            Button btn = answerButtons[i];
             int choiceIndex = i;
-            TextMeshProUGUI btnText = answerButtons[i].GetComponentInChildren<TextMeshProUGUI>();
+
+            TextMeshProUGUI btnText = btn.GetComponentInChildren<TextMeshProUGUI>();
             btnText.text = currentQuestion.choices[choiceIndex];
 
-            answerButtons[i].interactable = true;
+            btn.interactable = true;
+            btn.image.color = Color.white; // Reset color
 
             // Clear and re-add listener
-            answerButtons[i].onClick.RemoveAllListeners();
-            answerButtons[i].onClick.AddListener(() => OnAnswerSelected(choiceIndex, answerButtons[choiceIndex]));
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(() => OnAnswerSelected(choiceIndex, btn));
         }
 
         // Reset next button
@@ -112,17 +115,32 @@ public class QuizTimeManager : MonoBehaviour
     {
         if (selectedAnswerIndex != -1)
         {
-            if (selectedAnswerIndex == questions[currentQuestionIndex].correctAnswerIndex)
+            int correctIndex = questions[currentQuestionIndex].correctAnswerIndex;
+
+            // Highlight correct answer green
+            answerButtons[correctIndex].image.color = Color.green;
+
+            if (selectedAnswerIndex == correctIndex)
             {
                 score++;
             }
             else
             {
+                // Highlight wrong answer red
+                answerButtons[selectedAnswerIndex].image.color = Color.red;
                 wrongAnswers.Add(currentQuestionIndex);
+            }
+
+            // Disable all buttons after confirming
+            foreach (Button btn in answerButtons)
+            {
+                btn.interactable = false;
             }
         }
 
-        NextQuestion();
+        // Next button now moves to next question
+        nextButton.onClick.RemoveAllListeners();
+        nextButton.onClick.AddListener(NextQuestion);
     }
 
     void NextQuestion()
@@ -142,6 +160,11 @@ public class QuizTimeManager : MonoBehaviour
 
     void TimeUp()
     {
+        if (currentTime < 3f)
+            timerText.color = Color.red;
+        else
+            timerText.color = Color.white;
+
         foreach (Button btn in answerButtons)
         {
             btn.interactable = false;
@@ -163,6 +186,13 @@ public class QuizTimeManager : MonoBehaviour
     {
         isQuizActive = false;
 
+        foreach (Button btn in answerButtons)
+        {
+            btn.gameObject.SetActive(false);
+        }
+
+        questionText.gameObject.SetActive(false);
+
         string result = "Tapos na ang Quiz!\n";
         result += "Score: " + score + " / " + questions.Length + "\n\n";
 
@@ -171,10 +201,11 @@ public class QuizTimeManager : MonoBehaviour
             result += "Maling Sagot:\n";
             foreach (int idx in wrongAnswers)
             {
-                result += "- " + questions[idx].questionText + "\n";
-                int correctIdx = questions[idx].correctAnswerIndex;
-                string correctChoice = questions[idx].choices[correctIdx];
-                result += "   ✔ Tamang sagot: " + correctChoice + "\n";
+                var q = questions[idx];
+                int correctIdx = q.correctAnswerIndex;
+                string correctChoice = q.choices[correctIdx];
+                result += $"{idx + 1}. {q.questionText}";
+                result += $" Tamang sagot: {correctChoice}\n";
             }
         }
         else
@@ -183,6 +214,7 @@ public class QuizTimeManager : MonoBehaviour
         }
 
         resultText.text = result;
+        timerText.gameObject.SetActive(false);
 
         nextButton.onClick.RemoveAllListeners();
         nextButton.interactable = true;

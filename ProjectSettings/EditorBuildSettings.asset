@@ -219,23 +219,32 @@ EditorBuildSettings:
     path: Assets/Scenes/Creator's Mode/Scenes/Creator'sModeScene.unity
     guid: e1c9d2e7ebd8d3b4ab7b9142c1e9efdc
   - enabled: 1
-    path: Assets/Scenes/Creator's Mode/Scenes/CreateNewAddTitleScene.unity
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/CreateNewAddTitleScene.unity
     guid: 7f357b201a4dfa24dbdd9e68cbffe6e9
   - enabled: 1
-    path: Assets/Scenes/Creator's Mode/Scenes/CreateNewAddCharacterScene.unity
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/CreateNewAddCharacterScene.unity
     guid: 357e741c5be7fdd4992a931ca068ff51
   - enabled: 1
-    path: Assets/Scenes/Creator's Mode/Scenes/CreateNewAddFrameScene.unity
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/CreateNewAddFrameScene.unity
     guid: 8b608b7bc0a09a044bc5bc95e1997de3
   - enabled: 1
-    path: Assets/Scenes/Creator's Mode/Scenes/CreateNewAddQuizScene.unity
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/CreateNewAddQuizScene.unity
     guid: d249c26fd57abc94c94ad7cc8bff7e31
   - enabled: 1
-    path: Assets/Scenes/Creator's Mode/Scenes/ReviewQuestionsScene.unity
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/ReviewQuestionsScene.unity
     guid: ffb8c2f88cde7974187a1123f090124e
   - enabled: 1
-    path: Assets/Scenes/Creator's Mode/Scenes/QuizTime.unity
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/QuizTime.unity
     guid: fcced35b482819647bb29852002f9885
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/GameScene.unity
+    guid: ad8951210a6100042aef4b88de4fc246
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/CreateNewAddDialogueScene.unity
+    guid: d4a43289e8ff212419e9af3cce6d066b
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/ViewCreatedScenes/ViewCreatedStoriesScene.unity
+    guid: 17da965ac3450e34da0d044184755292
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

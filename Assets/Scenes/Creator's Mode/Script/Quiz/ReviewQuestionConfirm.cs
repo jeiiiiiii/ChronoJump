@@ -49,6 +49,10 @@ public class ReviewQuestionConfirm : MonoBehaviour
     }
     public void Save()
     {
-        SceneManager.LoadScene("QuizTime");
+        SceneManager.LoadScene("Creator'sModeScene");
+    }
+    public void SaveAndPublish()
+    {
+        SceneManager.LoadScene("Gamescene");
     }
 }

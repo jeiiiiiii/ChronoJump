@@ -13,6 +13,11 @@ public class AddFrame : MonoBehaviour
     }
     public void Next()
     {
-        SceneManager.LoadScene("CreateNewAddQuizScene");
+        SceneManager.LoadScene("CreateNewAddDialogueScene");
     }
+    public void Game()
+    {
+        SceneManager.LoadScene("GameScene");
+    }
+    
 }
