@@ -331,22 +331,40 @@ public class BabylonianFirstRecallChallenges : MonoBehaviour
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
 
-                if (isShowingHammurabiDialogue)
+                if (isShowingHammurabiDialogue) // ✅ Correct branch
                 {
-                    if (finishAudioSource != null)
-                        finishAudioSource.Play();
                     nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
-                }
-                else
-                {
-                    nextButton.onClick.AddListener(() =>
+
+                    // Calculate dialogue audio duration
+                    float dialogueDelay = 0f;
+                    if (audioSource != null && audioSource.clip != null)
+                        dialogueDelay = audioSource.clip.length;
+                    else
+                        dialogueDelay = 2f;
+
+                    // Play congrats audio AFTER dialogue finishes
+                    Invoke(nameof(PlayCongratsAudio), dialogueDelay);
+
+                    // Calculate total delay (dialogue + congrats + buffer)
+                    float congratsDelay = 0f;
+                    if (finishAudioSource != null && finishAudioSource.clip != null)
+                        congratsDelay = finishAudioSource.clip.length;
+                    else
+                        congratsDelay = 2f;
+
+                    float totalDelay = dialogueDelay + congratsDelay + 1f;
+                    Invoke(nameof(LoadNextScene), totalDelay);
+                    }
+                    else // ❌ Wrong answers → reset back to question
+                    {
+                        nextButton.onClick.AddListener(() =>
                     {
                         currentDialogueIndex = 0;
                         ShowDialogue();
                     });
-                }
+                    }
             }
+
             else
             {
                 nextButton.gameObject.SetActive(true);
@@ -387,19 +405,7 @@ public class BabylonianFirstRecallChallenges : MonoBehaviour
             nextButton.onClick.AddListener(() =>
             {
                 currentDialogueIndex++;
-                if (currentDialogueIndex < dialogueLines.Length - 1)
-                {
-                    ShowDialogue();
-                }
-                else
-                {
-                    ShowDialogue();
-                    nextButton.onClick.RemoveAllListeners();
-                    nextButton.onClick.AddListener(() =>
-                    {
-                        SceneManager.LoadScene("BabylonianSceneTwo");
-                    });
-                }
+                ShowDialogue();
             });
         }
         else
@@ -490,6 +496,14 @@ public class BabylonianFirstRecallChallenges : MonoBehaviour
     void LoadGameOverScene()
     {
         SceneManager.LoadScene("GameOver");
+    }
+
+    void PlayCongratsAudio()
+    {
+        if (finishAudioSource != null && finishAudioSource.clip != null)
+        {
+            finishAudioSource.Play();
+        }
     }
 
     void LoadNextScene()

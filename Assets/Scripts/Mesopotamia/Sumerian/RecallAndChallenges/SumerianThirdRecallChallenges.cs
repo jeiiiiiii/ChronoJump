@@ -305,14 +305,43 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
             {
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(() =>
+
+                if (isShowingTheocracyDialogue) // ✅ correct answer flow
                 {
-                    if (finishAudioSource != null)
-                        finishAudioSource.Play();
                     nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f); // 2 seconds delay, adjust as needed
-                });
+
+                    // 1. Dialogue audio delay
+                    float dialogueDelay = 0f;
+                    if (audioSource != null && audioSource.clip != null)
+                        dialogueDelay = audioSource.clip.length;
+                    else
+                        dialogueDelay = 2f;
+
+                    // 2. Play congrats after dialogue
+                    Invoke(nameof(PlayCongratsAudio), dialogueDelay);
+
+                    // 3. Congrats delay
+                    float congratsDelay = 0f;
+                    if (finishAudioSource != null && finishAudioSource.clip != null)
+                        congratsDelay = finishAudioSource.clip.length;
+                    else
+                        congratsDelay = 2f;
+
+                    // 4. Load next scene after total delay
+                    float totalDelay = dialogueDelay + congratsDelay + 1f;
+                    Invoke(nameof(LoadNextScene), totalDelay);
+                }
+                else
+                {
+                    // Wrong answers → cycle back through dialogue
+                    nextButton.onClick.AddListener(() =>
+                    {
+                        currentDialogueIndex = 0;
+                        ShowDialogue();
+                    });
+                }
             }
+
             else
             {
                 nextButton.gameObject.SetActive(true);
@@ -457,6 +486,13 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
     {
         SceneManager.LoadScene("GameOver");
     }
+
+    void PlayCongratsAudio()
+    {
+        if (finishAudioSource != null)
+            finishAudioSource.Play();
+    }
+
     void LoadNextScene()
     {
         SceneManager.LoadScene("SumerianSceneFive");

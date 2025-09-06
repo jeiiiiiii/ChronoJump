@@ -338,10 +338,35 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
 
                 if (isShowingCuneiformDialogue)
                 {
-                    if (finishAudioSource != null)
-                        finishAudioSource.Play();
                     nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
+    
+                    // Calculate dialogue audio duration
+                    float dialogueDelay = 0f;
+                    if (audioSource != null && audioSource.clip != null)
+                    {
+                        dialogueDelay = audioSource.clip.length;
+                    }
+                    else
+                    {
+                        dialogueDelay = 2f; // Default if no dialogue audio
+                    }
+    
+                    // Play congrats audio AFTER dialogue finishes
+                    Invoke(nameof(PlayCongratsAudio), dialogueDelay);
+    
+                    // Calculate total delay (dialogue + congrats + buffer)
+                    float congratsDelay = 0f;
+                    if (finishAudioSource != null && finishAudioSource.clip != null)
+                    {
+                        congratsDelay = finishAudioSource.clip.length;
+                    }
+                    else
+                    {
+                        congratsDelay = 2f; // Default if no congrats audio
+                    }
+    
+                        float totalDelay = dialogueDelay + congratsDelay + 1f; // Total time + buffer
+                        Invoke(nameof(LoadNextScene), totalDelay);
                 }
                 else
                 {
@@ -497,6 +522,12 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
     void LoadGameOverScene()
     {
         SceneManager.LoadScene("GameOver");
+    }
+
+    void PlayCongratsAudio()
+    {
+        if (finishAudioSource != null)
+            finishAudioSource.Play();
     }
 
     void LoadNextScene()

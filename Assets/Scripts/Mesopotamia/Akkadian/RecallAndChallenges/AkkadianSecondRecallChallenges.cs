@@ -352,27 +352,46 @@ public class AkkadianSecondRecallChallenges : MonoBehaviour
         }
         else
         {
-            if (currentDialogueIndex == dialogueLines.Length - 1)
+           if (currentDialogueIndex == dialogueLines.Length - 1)
             {
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
 
-                if (isShowingHurrianDialogue)
+                if (isShowingHurrianDialogue) // ✅ Correct branch for right answer
                 {
-                    if (finishAudioSource != null)
-                        finishAudioSource.Play();
                     nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
+
+                    // Calculate dialogue audio duration
+                    float dialogueDelay = 0f;
+                    if (audioSource != null && audioSource.clip != null)
+                        dialogueDelay = audioSource.clip.length;
+                    else
+                        dialogueDelay = 2f; // default if no dialogue audio
+
+                    // Play congrats audio AFTER dialogue finishes
+                    Invoke(nameof(PlayCongratsAudio), dialogueDelay);
+
+                    // Calculate total delay (dialogue + congrats + buffer)
+                    float congratsDelay = 0f;
+                    if (finishAudioSource != null && finishAudioSource.clip != null)
+                        congratsDelay = finishAudioSource.clip.length;
+                    else
+                        congratsDelay = 2f; // default if no congrats audio
+
+                    float totalDelay = dialogueDelay + congratsDelay + 1f;
+                    Invoke(nameof(LoadNextScene), totalDelay);
                 }
                 else
                 {
-                    nextButton.onClick.AddListener(() =>
-                    {
-                        currentDialogueIndex = 0;
-                        ShowDialogue();
-                    });
+                // For wrong answers, keep looping back
+                nextButton.onClick.AddListener(() =>
+                {
+                    currentDialogueIndex = 0;
+                    ShowDialogue();
+                });
                 }
             }
+
             else
             {
                 nextButton.gameObject.SetActive(true);
@@ -412,19 +431,7 @@ public class AkkadianSecondRecallChallenges : MonoBehaviour
             nextButton.onClick.AddListener(() =>
             {
                 currentDialogueIndex++;
-                if (currentDialogueIndex < dialogueLines.Length - 1)
-                {
-                    ShowDialogue();
-                }
-                else
-                {
-                    ShowDialogue();
-                    nextButton.onClick.RemoveAllListeners();
-                    nextButton.onClick.AddListener(() =>
-                    {
-                        SceneManager.LoadScene("AkkadianSceneFive");
-                    });
-                }
+                ShowDialogue();
             });
         }
         else
@@ -519,6 +526,12 @@ public class AkkadianSecondRecallChallenges : MonoBehaviour
     void LoadGameOverScene()
     {
         SceneManager.LoadScene("GameOver");
+    }
+
+    void PlayCongratsAudio()
+    {
+        if (finishAudioSource != null)
+            finishAudioSource.Play();
     }
     
     void LoadNextScene()

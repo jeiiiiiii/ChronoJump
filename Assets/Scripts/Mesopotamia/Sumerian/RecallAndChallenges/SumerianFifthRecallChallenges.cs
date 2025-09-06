@@ -302,14 +302,52 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
             {
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(() =>
+
+                if (isShowingItaguyodAngKatarunganDialogue) 
                 {
-                    if (finishAudioSource != null)
-                        finishAudioSource.Play();
+                    nextButton.interactable = false;
+
+                    // Calculate dialogue audio duration
+                    float dialogueDelay = 0f;
+                    if (audioSource != null && audioSource.clip != null)
+                    {
+                        dialogueDelay = audioSource.clip.length;
+                    }
+                    else
+                    {
+                        dialogueDelay = 2f; // Default if no dialogue audio
+                    }
+
+                    // Play congrats audio AFTER dialogue finishes
+                    Invoke(nameof(PlayCongratsAudio), dialogueDelay);
+
+                    // Calculate total delay (dialogue + congrats + buffer)
+                    float congratsDelay = 0f;
+                    if (finishAudioSource != null && finishAudioSource.clip != null)
+                    {
+                        congratsDelay = finishAudioSource.clip.length;
+                    }
+                    else
+                    {
+                        congratsDelay = 2f; // Default if no congrats audio
+                    }
+
+                    float totalDelay = dialogueDelay + congratsDelay + 1f; // Add buffer
+                    Invoke(nameof(LoadNextScene), totalDelay);
+                }
+                else
+                {
+                    // Wrong answer logic → short delay
+                    nextButton.onClick.AddListener(() =>
+                {
+                if (finishAudioSource != null)
+                    finishAudioSource.Play();
                     nextButton.interactable = false;
                     Invoke(nameof(LoadNextScene), 2f);
                 });
             }
+            }   
+
             else
             {
                 nextButton.gameObject.SetActive(true);
@@ -353,20 +391,7 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
             nextButton.onClick.AddListener(() =>
             {
                 currentDialogueIndex++;
-                if (currentDialogueIndex < dialogueLines.Length - 1)
-                {
-                    ShowDialogue();
-                }
-                else
-                {
-                    // Show the last line
-                    ShowDialogue();
-                    nextButton.onClick.RemoveAllListeners();
-                    nextButton.onClick.AddListener(() =>
-                    {
-                        SceneManager.LoadScene("SumerianSceneSeven");
-                    });
-                }
+                ShowDialogue();
             });
         }
         else
@@ -459,6 +484,12 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
     void LoadGameOverScene()
     {
         SceneManager.LoadScene("GameOver");
+    }
+
+    void PlayCongratsAudio()
+    {
+        if (finishAudioSource != null)
+            finishAudioSource.Play();
     }
 
     void LoadNextScene()

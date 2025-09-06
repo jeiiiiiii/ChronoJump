@@ -345,22 +345,40 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
 
-                if (isShowingPersianDialogue)
+                if (isShowingPersianDialogue) // ✅ Correct branch
                 {
-                    if (finishAudioSource != null)
-                        finishAudioSource.Play();
                     nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
+
+                    // Calculate dialogue audio duration
+                    float dialogueDelay = 0f;
+                    if (audioSource != null && audioSource.clip != null)
+                        dialogueDelay = audioSource.clip.length;
+                    else
+                        dialogueDelay = 2f;
+
+                    // Play congrats audio AFTER dialogue finishes
+                    Invoke(nameof(PlayCongratsAudio), dialogueDelay);
+
+                    // Calculate total delay (dialogue + congrats + buffer)
+                    float congratsDelay = 0f;
+                    if (finishAudioSource != null && finishAudioSource.clip != null)
+                        congratsDelay = finishAudioSource.clip.length;
+                    else    
+                        congratsDelay = 2f;
+
+                    float totalDelay = dialogueDelay + congratsDelay + 1f;
+                    Invoke(nameof(LoadNextScene), totalDelay);
                 }
-                else
+                else // ❌ Wrong answers → reset back to question
                 {
                     nextButton.onClick.AddListener(() =>
-                    {
-                        currentDialogueIndex = 0;
-                        ShowDialogue();
-                    });
+                {
+                    currentDialogueIndex = 0;
+                    ShowDialogue();
+                });
                 }
             }
+
             else
             {
                 nextButton.gameObject.SetActive(true);
@@ -401,19 +419,7 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
             nextButton.onClick.AddListener(() =>
             {
                 currentDialogueIndex++;
-                if (currentDialogueIndex < dialogueLines.Length - 1)
-                {
-                    ShowDialogue();
-                }
-                else
-                {
-                    ShowDialogue();
-                    nextButton.onClick.RemoveAllListeners();
-                    nextButton.onClick.AddListener(() =>
-                    {
-                        SceneManager.LoadScene("AssyrianSceneFive");
-                    });
-                }
+                ShowDialogue();
             });
         }
         else
@@ -519,6 +525,12 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
     void LoadGameOverScene()
     {
         SceneManager.LoadScene("GameOver");
+    }
+
+    void PlayCongratsAudio()
+    {
+        if (finishAudioSource != null)
+            finishAudioSource.Play();
     }
 
     void LoadNextScene()

@@ -858,7 +858,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 57c224d8c6d7fb342981c78d06a49698, type: 3}
   - {fileID: 8300000, guid: a93eea39856f1b443bad897be1dfc3f5, type: 3}
   - {fileID: 8300000, guid: f855b2f461c4ecb42ad17c6095af746e, type: 3}
-  - {fileID: 0}
   UrukClips:
   - {fileID: 8300000, guid: 09d951080629e7b4bbaa9fcf9a81d561, type: 3}
   - {fileID: 8300000, guid: b8ce90437752c59488d1a852a594023f, type: 3}
@@ -1873,6 +1872,7 @@ RectTransform:
   - {fileID: 1832608732}
   - {fileID: 1810599431}
   - {fileID: 389675049}
+  - {fileID: 1809755593}
   - {fileID: 1182573917}
   m_Father: {fileID: 1661655817}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3337,6 +3337,41 @@ Transform:
   - {fileID: 922267911}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1809755592
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1809755593}
+  m_Layer: 5
+  m_Name: DialogueAudio
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1809755593
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1809755592}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 922267911}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1810599430
 GameObject:
   m_ObjectHideFlags: 0

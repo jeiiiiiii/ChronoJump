@@ -372,22 +372,51 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
 
-                if (isShowingSargonDialogue)
+                if (isShowingSargonDialogue) // ✅ Correct flag for this script
+                {
+                    nextButton.interactable = false;
+
+                    // Calculate dialogue audio duration
+                    float dialogueDelay = 0f;
+                    if (audioSource != null && audioSource.clip != null)
+                    {
+                        dialogueDelay = audioSource.clip.length;
+                    }
+                    else
+                    {
+                        dialogueDelay = 2f; // Default if no dialogue audio
+                    }
+
+                    // Play congrats audio AFTER dialogue finishes
+                    Invoke(nameof(PlayCongratsAudio), dialogueDelay);
+
+                    // Calculate total delay (dialogue + congrats + buffer)
+                    float congratsDelay = 0f;
+                    if (finishAudioSource != null && finishAudioSource.clip != null)
+                    {
+                        congratsDelay = finishAudioSource.clip.length;
+                    }
+                    else
+                    {
+                        congratsDelay = 2f; // Default if no congrats audio
+                    }
+
+                    float totalDelay = dialogueDelay + congratsDelay + 1f; // Total time + buffer
+                    Invoke(nameof(LoadNextScene), totalDelay);
+                }
+                else
+                {
+                    // For wrong answers, keep original logic
+                    nextButton.onClick.AddListener(() =>
                 {
                     if (finishAudioSource != null)
                         finishAudioSource.Play();
                     nextButton.interactable = false;
                     Invoke(nameof(LoadNextScene), 2f);
-                }
-                else
-                {
-                    nextButton.onClick.AddListener(() =>
-                    {
-                        currentDialogueIndex = 0;
-                        ShowDialogue();
-                    });
+                });
                 }
             }
+
             else
             {
                 nextButton.gameObject.SetActive(true);
@@ -427,19 +456,7 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
             nextButton.onClick.AddListener(() =>
             {
                 currentDialogueIndex++;
-                if (currentDialogueIndex < dialogueLines.Length - 1)
-                {
-                    ShowDialogue();
-                }
-                else
-                {
-                    ShowDialogue();
-                    nextButton.onClick.RemoveAllListeners();
-                    nextButton.onClick.AddListener(() =>
-                    {
-                        SceneManager.LoadScene("AkkadianSceneThree");
-                    });
-                }
+                ShowDialogue();
             });
         }
         else
@@ -519,6 +536,12 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
     void LoadGameOverScene()
     {
         SceneManager.LoadScene("GameOver");
+    }
+
+    void PlayCongratsAudio()
+    {
+        if (finishAudioSource != null)
+            finishAudioSource.Play();
     }
 
     void LoadNextScene()
