@@ -27,6 +27,7 @@ public class SaveLoadUI : MonoBehaviour
         public GameObject slotPanel;
         public Button loadButton;
         public Button saveButton;
+        public Button deleteButton;
         public TextMeshProUGUI slotText;
         public TextMeshProUGUI timestampText;
         public TextMeshProUGUI sceneText;
@@ -91,6 +92,11 @@ public class SaveLoadUI : MonoBehaviour
                 
                 // NEW: Check if we should disable save buttons
                 CheckSaveButtonAvailability(i);
+            }
+
+            if (saveSlots[i].deleteButton != null)
+            {
+            saveSlots[i].deleteButton.onClick.AddListener(() => ShowDeleteConfirmation(slotNumber));
             }
 
             if (saveSlots[i].slotText != null)
@@ -209,7 +215,7 @@ public class SaveLoadUI : MonoBehaviour
         dialogBoxImage.color = new Color(0.15f, 0.15f, 0.15f, 0.98f); // Darker, more opaque dialog box
         
         RectTransform dialogRect = dialogBox.GetComponent<RectTransform>();
-        dialogRect.sizeDelta = new Vector2(600, 300); // INCREASED SIZE from 400x200 to 600x300
+        dialogRect.sizeDelta = new Vector2(700, 400); // INCREASED SIZE from 400x200 to 600x300
         dialogRect.anchoredPosition = Vector2.zero;
 
         // Add rounded corners effect (optional visual enhancement)
@@ -225,10 +231,11 @@ public class SaveLoadUI : MonoBehaviour
         confirmationText.color = Color.white;
         confirmationText.alignment = TextAlignmentOptions.Center;
         confirmationText.fontStyle = FontStyles.Bold; // Make it bold for better visibility
+        confirmationText.enableWordWrapping = true;
         
         RectTransform textRect = textObj.GetComponent<RectTransform>();
-        textRect.sizeDelta = new Vector2(540, 150); // INCREASED from 360x100 to 540x150
-        textRect.anchoredPosition = new Vector2(0, 30); // Moved up slightly
+        textRect.sizeDelta = new Vector2(640, 220); // INCREASED from 360x100 to 540x150
+        textRect.anchoredPosition = new Vector2(0, 50); // Moved up slightly
 
         // Create Yes button - ENLARGED
         GameObject yesButtonObj = new GameObject("YesButton");
@@ -240,7 +247,7 @@ public class SaveLoadUI : MonoBehaviour
         
         RectTransform yesButtonRect = yesButtonObj.GetComponent<RectTransform>();
         yesButtonRect.sizeDelta = new Vector2(150, 50); // INCREASED from 120x40 to 150x50
-        yesButtonRect.anchoredPosition = new Vector2(-90, -80); // Adjusted position
+        yesButtonRect.anchoredPosition = new Vector2(-90, -120); // Adjusted position
 
         // Yes button text - ENLARGED
         GameObject yesTextObj = new GameObject("YesText");
@@ -267,7 +274,7 @@ public class SaveLoadUI : MonoBehaviour
         
         RectTransform noButtonRect = noButtonObj.GetComponent<RectTransform>();
         noButtonRect.sizeDelta = new Vector2(150, 50); // INCREASED from 120x40 to 150x50
-        noButtonRect.anchoredPosition = new Vector2(90, -80); // Adjusted position
+        noButtonRect.anchoredPosition = new Vector2(90, -120); // Adjusted position
 
         // No button text - ENLARGED
         GameObject noTextObj = new GameObject("NoText");
@@ -321,6 +328,8 @@ public class SaveLoadUI : MonoBehaviour
 
                 if (saveSlots[i].loadButton != null)
                     saveSlots[i].loadButton.interactable = true;
+                if (saveSlots[i].deleteButton != null)
+                    saveSlots[i].deleteButton.interactable = true;
             }
             else
             {
@@ -343,6 +352,8 @@ public class SaveLoadUI : MonoBehaviour
 
                 if (saveSlots[i].loadButton != null)
                     saveSlots[i].loadButton.interactable = false;
+                if (saveSlots[i].deleteButton != null)
+                    saveSlots[i].deleteButton.interactable = false;
             }
 
             // NEW: Always check save button availability regardless of slot state
@@ -453,6 +464,41 @@ public class SaveLoadUI : MonoBehaviour
         }
     }
 
+    // NEW METHOD: Show delete confirmation dialog
+    void ShowDeleteConfirmation(int slotNumber)
+    {
+        var existingSaveData = SaveLoadManager.Instance.GetSaveData(slotNumber);
+    
+        if (existingSaveData == null)
+        {
+            Debug.Log($"No save data to delete in slot {slotNumber}");
+            return;
+        }
+
+        pendingSaveSlot = slotNumber; // Reuse this variable for delete operations
+    
+        if (confirmationPanel != null)
+        {
+            confirmationPanel.SetActive(true);
+        
+            // Show both buttons for delete confirmation
+            if (yesButton != null) yesButton.gameObject.SetActive(true);
+            if (noButton != null) 
+            {
+            noButton.gameObject.SetActive(true);
+            var noButtonText = noButton.GetComponentInChildren<TextMeshProUGUI>();
+            if (noButtonText != null) noButtonText.text = "No";
+            }
+        
+        // Set up delete confirmation text
+            confirmationText.text = $"Are you sure you want to delete this save?\n\nSLOT {slotNumber}:\n{GetFriendlySceneName(existingSaveData.currentScene)}\nSaved: {existingSaveData.timestamp}\n\nThis action cannot be undone!";
+        
+        // Change the Yes button callback to delete instead of save
+            yesButton.onClick.RemoveAllListeners();
+            yesButton.onClick.AddListener(ConfirmDelete);
+        }
+    }
+
     // Confirm save action
     void ConfirmSave()
     {
@@ -481,6 +527,32 @@ public class SaveLoadUI : MonoBehaviour
         
         pendingSaveSlot = -1;
         Debug.Log("Save cancelled by user");
+    }
+
+    // Confirm delete action
+    void ConfirmDelete()
+    {
+        if (pendingSaveSlot != -1)
+        {
+            SaveLoadManager.Instance.DeleteSave(pendingSaveSlot);
+            UpdateSlotDisplay();
+            Debug.Log($"Save deleted from Slot {pendingSaveSlot}");
+        }   
+    
+    // Hide confirmation panel
+        if (confirmationPanel != null)
+        {
+            confirmationPanel.SetActive(false);
+        }
+    
+    // Restore the Yes button callback for saving
+        if (yesButton != null)
+        {
+            yesButton.onClick.RemoveAllListeners();
+            yesButton.onClick.AddListener(ConfirmSave);
+        }
+    
+        pendingSaveSlot = -1;
     }
 
     public void SaveGame(int slotNumber)

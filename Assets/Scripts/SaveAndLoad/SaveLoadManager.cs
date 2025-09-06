@@ -22,14 +22,14 @@ public class SaveLoadManager : MonoBehaviour
         {
             currentScene = "";
             dialogueIndex = 0;
-            timestamp = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            timestamp = System.DateTime.Now.ToString("yyyy-MM-dd h:mm:tt");
         }
         
         public SaveData(string scene, int dialogue)
         {
             currentScene = scene;
             dialogueIndex = dialogue;
-            timestamp = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            timestamp = System.DateTime.Now.ToString("yyyy-MM-dd h:mm:tt");
         }
     }
 
