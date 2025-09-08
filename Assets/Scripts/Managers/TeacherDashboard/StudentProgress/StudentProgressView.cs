@@ -17,6 +17,15 @@ public class StudentProgressView : MonoBehaviour
     public GameObject fullLoadingSpinnerPrefab;
     public TextMeshProUGUI fullEmptyMessage;
 
+    // NEW: Reference to dashboard manager for passing to row views
+    private TeacherDashboardManager _dashboardManager;
+
+    // NEW: Method to set dashboard manager reference
+    public void SetDashboardManager(TeacherDashboardManager dashboardManager)
+    {
+        _dashboardManager = dashboardManager;
+    }
+
     public void ClearStudentLists()
     {
         if (landingStudentList != null)
@@ -43,7 +52,6 @@ public class StudentProgressView : MonoBehaviour
             }
         }
     }
-
 
     public void ShowLoadingState(bool viewAll = false)
     {
@@ -86,10 +94,12 @@ public class StudentProgressView : MonoBehaviour
         }
     }
 
-    private void AddStudentToList(StudentModel student, bool fullView)
+    private void AddStudentToList(StudentModel student, bool fullView, bool showRemoveButton = false)
     {
         Transform targetList = fullView ? fullStudentList : landingStudentList;
         GameObject prefabToUse = fullView ? fullStudentPrefab : landingStudentPrefab;
+
+        Debug.Log($"AddStudentToList: {student.studName}, fullView={fullView}, showRemoveButton={showRemoveButton}, dashboardManager={_dashboardManager != null}");
 
         if (targetList == null || prefabToUse == null)
         {
@@ -101,7 +111,12 @@ public class StudentProgressView : MonoBehaviour
         var studentRowComponent = studentRow.GetComponent<StudentProgressRowView>();
         if (studentRowComponent != null)
         {
-            studentRowComponent.SetupStudent(student);
+            // NEW: Pass the showRemoveButton and dashboard manager reference
+            studentRowComponent.SetupStudent(student, showRemoveButton, _dashboardManager);
+        }
+        else
+        {
+            Debug.LogWarning($"No StudentProgressRowView component found on prefab for {student.studName}");
         }
 
         studentRow.SetActive(true);
@@ -110,10 +125,17 @@ public class StudentProgressView : MonoBehaviour
     // For backward compatibility
     public void ShowStudentProgress(List<StudentModel> students)
     {
-        ShowStudentProgress(students, false);
+        ShowStudentProgress(students, false, false);
     }
 
+    // For backward compatibility
     public void ShowStudentProgress(List<StudentModel> students, bool viewAll)
+    {
+        ShowStudentProgress(students, viewAll, false);
+    }
+
+    // NEW: Updated method with delete mode parameter
+    public void ShowStudentProgress(List<StudentModel> students, bool viewAll, bool deleteMode)
     {
         ClearStudentLists();
         ClearLoadingState(viewAll);
@@ -132,7 +154,8 @@ public class StudentProgressView : MonoBehaviour
         {
             foreach (var student in students)
             {
-                AddStudentToList(student, true);
+                // NEW: In delete mode, show remove buttons when viewing all students
+                AddStudentToList(student, true, deleteMode);
             }
         }
         else
@@ -140,7 +163,8 @@ public class StudentProgressView : MonoBehaviour
             int count = Mathf.Min(5, students.Count);
             for (int i = 0; i < count; i++)
             {
-                AddStudentToList(students[i], false);
+                // Never show remove buttons in landing page view (summary view)
+                AddStudentToList(students[i], false, false);
             }
         }
     }
@@ -159,3 +183,4 @@ public class StudentProgressView : MonoBehaviour
         }
     }
 }
+

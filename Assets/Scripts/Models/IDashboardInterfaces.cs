@@ -15,9 +15,18 @@ public interface IDashboardView
 
 public interface IClassListView
 {
+    // Events for class actions (these should be properties, not fields)
+    System.Action<string, string> OnDeleteClassRequested { get; set; }
+    System.Action<string, string> OnEditClassRequested { get; set; }
+    
+    // Basic list management methods
     void ClearClassList();
     void AddClassToList(string classCode, string className, System.Action<string, string> onClassSelected);
+    void RemoveClassFromList(string classCode);
+    
+    // Selection management methods
     void SelectFirstClass();
+    void SelectClassByCode(string classCode);
 }
 
 public interface IStudentProgressView

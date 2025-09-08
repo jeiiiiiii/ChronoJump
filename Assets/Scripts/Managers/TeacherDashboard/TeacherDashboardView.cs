@@ -35,6 +35,7 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
 
     [Header("Student Progress Controls")]
     public GameObject viewAllProgressButton;
+    public GameObject deleteStudentButton; // NEW: Delete student button
 
     [Header("Leaderboard Controls")]
     public GameObject viewAllLeaderboardButton;
@@ -59,7 +60,8 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
     {
         SetActivePanel(studentProgressPage);
         SetViewAllProgressButtonVisible(false);
-    }   
+        SetDeleteStudentButtonVisible(false); // NEW: Hide delete button in full view
+    }
 
     public void ShowLeaderboardPage()
     {
@@ -166,6 +168,13 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
             viewAllLeaderboardButton.SetActive(visible);
     }
 
+    // NEW: Method to control delete student button visibility
+    public void SetDeleteStudentButtonVisible(bool visible)
+    {
+        if (deleteStudentButton != null)
+            deleteStudentButton.SetActive(visible);
+    }
+
     private void SetActivePanel(GameObject activePanel)
     {
         landingPage.SetActive(activePanel == landingPage);
@@ -174,7 +183,7 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
         leaderboardPage.SetActive(activePanel == leaderboardPage);
         createNewClassPanel.SetActive(false);
 
-        // ✅ Control newClassButton visibility
+        // Control newClassButton visibility
         if (newClassButton != null)
         {
             // Show only on landingPage and emptyLandingPage
@@ -182,16 +191,18 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
             newClassButton.SetActive(shouldShowNewClassButton);
         }
 
-        // ✅ Handle view-all buttons
+        // Handle view-all buttons
         if (activePanel == landingPage)
         {
             SetViewAllProgressButtonVisible(true);
             SetViewAllLeaderboardButtonVisible(true);
+            SetDeleteStudentButtonVisible(true); 
         }
         else
         {
             SetViewAllProgressButtonVisible(false);
             SetViewAllLeaderboardButtonVisible(false);
+            SetDeleteStudentButtonVisible(false); 
         }
     }
 }

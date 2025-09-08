@@ -16,8 +16,18 @@ public class StudentProgressRowView : MonoBehaviour
     public TextMeshProUGUI ProgressSuccessRate;
     public TextMeshProUGUI ProgressStudOverallScore;
     
-    public void SetupStudent(StudentModel student)
+    [Header("Delete Mode UI")]
+    public Button removeButton;
+    
+    private StudentModel _currentStudent;
+    private TeacherDashboardManager _dashboardManager;
+    
+    public void SetupStudent(StudentModel student, bool showRemoveButton = false, TeacherDashboardManager dashboardManager = null)
     {
+        // Store references
+        _currentStudent = student;
+        _dashboardManager = dashboardManager;
+        
         // Set basic student info
         if (studentNameText != null)
             studentNameText.text = student.studName;
@@ -34,6 +44,50 @@ public class StudentProgressRowView : MonoBehaviour
         {
             SetDefaultProgressData();
         }
+        
+        // NEW: Handle remove button visibility and setup
+        SetupRemoveButton(showRemoveButton);
+    }
+    
+    // NEW: Setup remove button
+    private void SetupRemoveButton(bool showRemoveButton)
+    {
+        if (removeButton != null)
+        {
+            Debug.Log($"Setting up remove button for {_currentStudent?.studName}, show: {showRemoveButton}");
+            removeButton.gameObject.SetActive(showRemoveButton);
+            
+            if (showRemoveButton)
+            {
+                // Clear previous listeners to avoid duplicates
+                removeButton.onClick.RemoveAllListeners();
+                // Add click listener
+                removeButton.onClick.AddListener(OnRemoveButtonClicked);
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"Remove button is null for student {_currentStudent?.studName}");
+        }
+    }
+    
+    // NEW: Handle remove button click
+    private void OnRemoveButtonClicked()
+    {
+        if (_dashboardManager != null && _currentStudent != null)
+        {
+            _dashboardManager.OnRemoveStudentClicked(_currentStudent);
+        }
+        else
+        {
+            Debug.LogWarning("Dashboard manager or student reference is missing!");
+        }
+    }
+    
+    // Keep existing method for backward compatibility
+    public void SetupStudent(StudentModel student)
+    {
+        SetupStudent(student, false, null);
     }
     
     private void SetProgressData(Dictionary<string, object> progressData)
@@ -72,7 +126,6 @@ public class StudentProgressRowView : MonoBehaviour
             if (progressBar != null)
                 progressBar.SetProgress(percentage);
         }
-
 
         // Set current story data if available
         if (progressData.ContainsKey("currentStory") && 

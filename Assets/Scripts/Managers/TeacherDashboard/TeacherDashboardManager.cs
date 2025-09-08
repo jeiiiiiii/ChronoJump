@@ -16,19 +16,58 @@ public class TeacherDashboardManager : MonoBehaviour
 
     [Header("State")]
     private DashboardState _dashboardState;
-    
+
     private string _previousSelectedClassCode;
-    
+
     private bool _isLoadingProgress = false;
     private bool _isLoadingLeaderboard = false;
     private bool _isViewingAllStudents = false;
     private bool _isViewingAllLeaderboard = false;
+    private bool _isInDeleteMode = false; // NEW: Track if we're in delete mode
 
+    [Header("Class Management")]
+    public ClassManager classManager;
+
+    [Header("Confirmation Dialog")]
+    public ConfirmationDialog confirmationDialog; // NEW: Reference to confirmation dialog
 
     private void Awake()
     {
         InitializeState();
         LoadTeacherData();
+
+        // NEW: Set dashboard manager reference in student progress view
+        if (studentProgressView != null)
+        {
+            studentProgressView.SetDashboardManager(this);
+        }
+
+        if (classManager != null)
+        {
+            classManager.OnClassDeleted += HandleClassDeleted;
+            classManager.OnClassEdited += HandleClassEdited;
+        }
+    }
+
+    private void HandleClassDeleted()
+    {
+        _dashboardState.cachedStudents.Clear();
+        _dashboardState.cachedLeaderboards.Clear();
+
+        if (_dashboardState.HasClasses)
+        {
+            SelectFirstClass();
+        }
+        else
+        {
+            dashboardView.ShowEmptyLandingPage();
+        }
+    }
+
+    private void HandleClassEdited()
+    {
+        // Refresh teacher data to get updated class names
+        RefreshDashboard();
     }
 
     private void InitializeState()
@@ -64,8 +103,8 @@ public class TeacherDashboardManager : MonoBehaviour
         if (_dashboardState.HasClasses)
         {
             SetupClassList();
-            
-            if (!string.IsNullOrEmpty(_previousSelectedClassCode) && 
+
+            if (!string.IsNullOrEmpty(_previousSelectedClassCode) &&
                 _dashboardState.teacherData.classCode.ContainsKey(_previousSelectedClassCode))
             {
                 RestoreClassSelection(_previousSelectedClassCode);
@@ -118,14 +157,14 @@ public class TeacherDashboardManager : MonoBehaviour
             classListView.SelectFirstClass();
         }
     }
-    
+
     private void RestoreClassSelection(string classCode)
     {
         if (_dashboardState.teacherData.classCode.ContainsKey(classCode))
         {
             var classData = _dashboardState.teacherData.classCode[classCode];
             string className = $"{classData[0]} - {classData[1]}";
-            
+
             OnClassSelected(classCode, className);
             classListView.SelectClassByCode(classCode);
         }
@@ -135,34 +174,34 @@ public class TeacherDashboardManager : MonoBehaviour
     {
         _dashboardState.selectedClassCode = classCode;
         _dashboardState.selectedClassName = className;
-        
+
         _previousSelectedClassCode = classCode;
 
         dashboardView.UpdateClassSelection(classCode, className);
 
         ShowLoadingStates();
-        
+
         LoadStudentLeaderboard(classCode);
-        LoadStudentProgress(classCode); 
+        LoadStudentProgress(classCode);
     }
 
     private void ShowLoadingStates()
     {
         if (studentProgressView != null)
         {
-            studentProgressView.ShowLoadingState(); 
+            studentProgressView.ShowLoadingState();
         }
-        
+
         if (studentLeaderboardView != null)
         {
             // Pass the correct view flag based on current state
-            studentLeaderboardView.ShowLoadingState(_isViewingAllLeaderboard); 
+            studentLeaderboardView.ShowLoadingState(_isViewingAllLeaderboard);
         }
     }
 
     private void LoadStudentProgress(string classCode)
     {
-        if (_isLoadingProgress) return; 
+        if (_isLoadingProgress) return;
 
         _isLoadingProgress = true;
         dashboardView.SetProgressEmptyMessages(false);
@@ -176,12 +215,13 @@ public class TeacherDashboardManager : MonoBehaviour
             if (cached.Count == 0)
             {
                 dashboardView.SetProgressEmptyMessages(true);
-                dashboardView.SetViewAllProgressButtonVisible(false); 
+                dashboardView.SetViewAllProgressButtonVisible(false);
             }
             else
             {
-                dashboardView.SetViewAllProgressButtonVisible(true);  
-                studentProgressView.ShowStudentProgress(cached, _isViewingAllStudents);
+                dashboardView.SetViewAllProgressButtonVisible(true);
+                // NEW: Pass delete mode state to the view
+                studentProgressView.ShowStudentProgress(cached, _isViewingAllStudents, _isInDeleteMode);
             }
             return;
         }
@@ -206,7 +246,8 @@ public class TeacherDashboardManager : MonoBehaviour
             else
             {
                 dashboardView.SetViewAllProgressButtonVisible(true);
-                studentProgressView.ShowStudentProgress(list, _isViewingAllStudents);
+                // NEW: Pass delete mode state to the view
+                studentProgressView.ShowStudentProgress(list, _isViewingAllStudents, _isInDeleteMode);
             }
         });
     }
@@ -227,11 +268,11 @@ public class TeacherDashboardManager : MonoBehaviour
             if (cached.Count == 0)
             {
                 dashboardView.SetLeaderboardEmptyMessages(true);
-                dashboardView.SetViewAllLeaderboardButtonVisible(false); 
+                dashboardView.SetViewAllLeaderboardButtonVisible(false);
             }
             else
             {
-                dashboardView.SetViewAllLeaderboardButtonVisible(true);  
+                dashboardView.SetViewAllLeaderboardButtonVisible(true);
                 // Pass the _isViewingAllLeaderboard flag to show in correct view
                 studentLeaderboardView.ShowStudentLeaderboard(cached, _isViewingAllLeaderboard);
             }
@@ -262,7 +303,6 @@ public class TeacherDashboardManager : MonoBehaviour
         });
     }
 
-
     private IEnumerator ShowDashboardAfterRender()
     {
         yield return new WaitForEndOfFrame();
@@ -289,10 +329,11 @@ public class TeacherDashboardManager : MonoBehaviour
     {
         SceneManager.LoadScene("TitleScreen");
     }
-    
+
     public void OnViewStudentProgressClickedFull()
     {
         _isViewingAllStudents = true;
+        _isInDeleteMode = false; 
         dashboardView.ShowStudentProgressPage();
 
         if (!_isLoadingProgress && !string.IsNullOrEmpty(_dashboardState.selectedClassCode))
@@ -301,41 +342,80 @@ public class TeacherDashboardManager : MonoBehaviour
         }
     }
 
- public void OnBackToLandingPageClicked()
-{
-    _isViewingAllStudents = false;
-    _isViewingAllLeaderboard = false;
-    dashboardView.ShowLandingPage();
-
-    if (!_isLoadingProgress && !string.IsNullOrEmpty(_dashboardState.selectedClassCode))
+    // NEW: Method for delete student button
+    public void OnDeleteStudentProgressClickedFull()
     {
-        LoadStudentProgress(_dashboardState.selectedClassCode);
+        _isViewingAllStudents = true;
+        _isInDeleteMode = true; 
+        dashboardView.ShowStudentProgressPage();
+
+        if (!_isLoadingProgress && !string.IsNullOrEmpty(_dashboardState.selectedClassCode))
+        {
+            LoadStudentProgress(_dashboardState.selectedClassCode);
+        }
     }
 
-    if (!_isLoadingLeaderboard && !string.IsNullOrEmpty(_dashboardState.selectedClassCode))
+    // NEW: Method called when a student's remove button is clicked
+    public void OnRemoveStudentClicked(StudentModel student)
     {
-        LoadStudentLeaderboard(_dashboardState.selectedClassCode);
+        if (confirmationDialog != null)
+        {
+            string title = "Remove Student";
+            string message = $"Are you sure you want to remove {student.studName} from the class? This action cannot be undone.";
+            
+            confirmationDialog.ShowDialog(title, message, 
+                () => ConfirmRemoveStudent(student), 
+                () => Debug.Log("Remove student cancelled"));
+        }
     }
 
-    StartCoroutine(ShowDashboardAfterRender());
-}
+    // NEW: Method called when removal is confirmed
+    private void ConfirmRemoveStudent(StudentModel student)
+    {
+        Debug.Log($"Removing student: {student.studName}");
+        // TODO: Implement actual removal logic here
+        // This would involve calling Firebase to remove the student from the class
+        // and then refreshing the dashboard
+        
+        // For now, just log the action
+        // In the future, you would call something like:
+        // FirebaseManager.Instance.RemoveStudentFromClass(_dashboardState.selectedClassCode, student.userId, OnStudentRemoved);
+    }
 
+    public void OnBackToLandingPageClicked()
+    {
+        _isViewingAllStudents = false;
+        _isViewingAllLeaderboard = false;
+        _isInDeleteMode = false; // NEW: Reset delete mode when going back
+        dashboardView.ShowLandingPage();
 
+        if (!_isLoadingProgress && !string.IsNullOrEmpty(_dashboardState.selectedClassCode))
+        {
+            LoadStudentProgress(_dashboardState.selectedClassCode);
+        }
+
+        if (!_isLoadingLeaderboard && !string.IsNullOrEmpty(_dashboardState.selectedClassCode))
+        {
+            LoadStudentLeaderboard(_dashboardState.selectedClassCode);
+        }
+
+        StartCoroutine(ShowDashboardAfterRender());
+    }
 
     public void RefreshDashboard()
     {
         _isLoadingProgress = false;
         _isLoadingLeaderboard = false;
-        
+
         LoadTeacherData();
     }
-    
+
     public void RefreshDashboardAndSelectClass(string newClassCode)
     {
         _previousSelectedClassCode = newClassCode;
         _isLoadingProgress = false;
         _isLoadingLeaderboard = false;
-        
+
         LoadTeacherData();
     }
 
@@ -344,6 +424,15 @@ public class TeacherDashboardManager : MonoBehaviour
         if (!string.IsNullOrEmpty(_dashboardState.selectedClassCode) && !_isLoadingLeaderboard)
         {
             LoadStudentLeaderboard(_dashboardState.selectedClassCode);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (classManager != null)
+        {
+            classManager.OnClassDeleted -= HandleClassDeleted;
+            classManager.OnClassEdited -= HandleClassEdited;
         }
     }
 }
