@@ -6,10 +6,10 @@ using SFB;
 public class ImageUploader : MonoBehaviour
 {
     public RawImage previewImage;
-
+    
     // Keep track of the last runtime texture to safely clean it up
     private Texture2D lastUploadedTexture;
-
+    
     public void UploadImage()
     {
         var extensions = new[] {
@@ -26,16 +26,16 @@ public class ImageUploader : MonoBehaviour
             Texture2D tex = new Texture2D(2, 2);
             if (tex.LoadImage(fileData))
             {
-                // ✅ Clean up previously uploaded texture (only if it was runtime-created)
+                // Clean up previously uploaded texture (only if it was runtime-created)
                 if (lastUploadedTexture != null)
                 {
                     Destroy(lastUploadedTexture);
                 }
 
-                // Apply new texture
+                // Apply new texture to preview
                 previewImage.texture = tex;
 
-                // Store globally for next scene
+                // Store TEMPORARILY - will be saved to story when "Next" is clicked
                 ImageStorage.UploadedTexture = tex;
 
                 // Keep reference for safe cleanup next time
@@ -44,9 +44,11 @@ public class ImageUploader : MonoBehaviour
                 // Adjust aspect ratio if using AspectRatioFitter
                 AspectRatioFitter fitter = previewImage.GetComponent<AspectRatioFitter>();
                 if (fitter != null)
+                {
                     fitter.aspectRatio = (float)tex.width / tex.height;
+                }
 
-                Debug.Log("Image uploaded successfully.");
+                Debug.Log("Image uploaded and ready to be saved.");
             }
             else
             {

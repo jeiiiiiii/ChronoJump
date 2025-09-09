@@ -5,7 +5,7 @@ public class LandingPage : MonoBehaviour
 {
     public void CreateNew()
     {
-        SceneManager.LoadScene("CreateNewAddTitleScene");
+        SceneManager.LoadScene("ViewCreatedStoriesScene");
     }
     public void CreatedStories()
     {
