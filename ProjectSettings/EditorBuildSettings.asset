@@ -49,6 +49,10 @@ EditorBuildSettings:
     guid: fe2c1de1f292ddf48859f994070e5c0a
   - enabled: 1
     path: Assets/Scenes/Mesopotamia/SumerianRecallChallenges/SumerianThirdRecallChallenges.unity
+    path: Assets/Scenes/SumerianRecallChallenges/SumerianArtifactScene.unity
+    guid: 3cf6039d7c3ff60488024c94b71b1d2d
+  - enabled: 1
+    path: Assets/Scenes/SumerianRecallChallenges/SumerianThirdRecallChallenges.unity
     guid: 1ccc39015d5f5a74191f8f2d7e235b65
   - enabled: 1
     path: Assets/Scenes/Mesopotamia/SumerianRecallChallenges/SumerianFourthRecallChallenges.unity
@@ -100,6 +104,25 @@ EditorBuildSettings:
     guid: a5444a08e2bd18245a19d9af7bcf6fd5
   - enabled: 1
     path: Assets/Scenes/Mesopotamia/BabylonianScene/BabylonianSceneTwo.unity
+    path: Assets/Scenes/CodexScene/AchievementsScene.unity
+    guid: d23ef5932a4552e4ca7777bb6c706dd2
+  - enabled: 1
+    path: Assets/Scenes/CodexScene/ArtifactsScene.unity
+    guid: 4f94fd0465587754f8ef3581a4868aad
+  - enabled: 1
+    path: Assets/Scenes/CodexScene/CodexScene.unity
+    guid: 87fa683d5bf0f1d40a4c54835ce63f15
+  - enabled: 1
+    path: Assets/Scenes/BabylonianScene/BabylonianSceneOne.unity
+    guid: a5444a08e2bd18245a19d9af7bcf6fd5
+  - enabled: 1
+    path: Assets/Scenes/AkkadianRecallChallenges/AkkadianArtifactScene.unity
+    guid: 90f3e9210b4993c45a78bc4ddfa9398c
+  - enabled: 1
+    path: Assets/Scenes/BabylonianRecallChallenges/BabylonianArtifactScene.unity
+    guid: 8257af7ecfc431f4b972999a5b014484
+  - enabled: 1
+    path: Assets/Scenes/BabylonianScene/BabylonianSceneTwo.unity
     guid: 6b0ac7e8b92de264fb8dbb31aa32bff3
   - enabled: 1
     path: Assets/Scenes/Mesopotamia/BabylonianScene/BabylonianSceneThree.unity
