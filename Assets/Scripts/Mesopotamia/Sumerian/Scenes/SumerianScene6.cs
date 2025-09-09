@@ -16,8 +16,11 @@ public class SumerianScene6 : MonoBehaviour
     [SerializeField] public Button nextButton;
     public Button backButton;
 
-    public int currentDialogueIndex = 0;
+    [Header("UI Buttons")]
+    public Button saveButton;
+    public Button homeButton;
 
+    public int currentDialogueIndex = 0;
     public DialogueLine[] dialogueLines;
 
     public SpriteRenderer PlayercharacterRenderer;
@@ -34,6 +37,21 @@ public class SumerianScene6 : MonoBehaviour
     public AudioClip[] dialogueClips;
 
     void Start()
+    {
+        // Ensure SaveLoadManager exists
+        if (SaveLoadManager.Instance == null)
+        {
+            GameObject saveLoadManager = new GameObject("SaveLoadManager");
+            saveLoadManager.AddComponent<SaveLoadManager>();
+        }
+
+        InitializeDialogueLines();
+        LoadDialogueIndex();
+        SetupButtons();
+        ShowDialogue();
+    }
+
+    void InitializeDialogueLines()
     {
         dialogueLines = new DialogueLine[]
         {
@@ -83,10 +101,98 @@ public class SumerianScene6 : MonoBehaviour
                 line = " Ngayon, gusto kong malaman... sa dami ng layunin ng batas, ano sa tingin mo ang pinakapuso nito?"
             },
         };
+    }
 
-        ShowDialogue();
-        nextButton.onClick.AddListener(ShowNextDialogue);
-        backButton.onClick.AddListener(ShowPreviousDialogue);
+    void LoadDialogueIndex()
+    {
+        // Check if this is a new game
+        if (PlayerPrefs.GetString("GameMode", "") == "NewGame")
+        {
+            currentDialogueIndex = 0;
+            PlayerPrefs.DeleteKey("GameMode");
+            Debug.Log("New game started - dialogue index reset to 0");
+            return;
+        }
+
+        // Check if loading from a save
+        if (PlayerPrefs.GetString("LoadedFromSave", "false") == "true")
+        {
+            if (PlayerPrefs.HasKey("LoadedDialogueIndex"))
+            {
+                currentDialogueIndex = PlayerPrefs.GetInt("LoadedDialogueIndex");
+                PlayerPrefs.DeleteKey("LoadedDialogueIndex");
+                Debug.Log($"Loaded from save file at dialogue index: {currentDialogueIndex}");
+            }
+
+            PlayerPrefs.SetString("LoadedFromSave", "false");
+        }
+        else
+        {
+            if (PlayerPrefs.HasKey("SumerianSceneSix_DialogueIndex"))
+            {
+                currentDialogueIndex = PlayerPrefs.GetInt("SumerianSceneSix_DialogueIndex");
+                Debug.Log($"Continuing from previous session at dialogue index: {currentDialogueIndex}");
+            }
+            else
+            {
+                currentDialogueIndex = 0;
+                Debug.Log("Starting from beginning");
+            }
+        }
+
+        // Ensure index stays within bounds
+        if (currentDialogueIndex >= dialogueLines.Length)
+            currentDialogueIndex = dialogueLines.Length - 1;
+        if (currentDialogueIndex < 0)
+            currentDialogueIndex = 0;
+    }
+
+    void SetupButtons()
+    {
+        // Next and Back
+        if (nextButton != null)
+            nextButton.onClick.AddListener(ShowNextDialogue);
+
+        if (backButton != null)
+            backButton.onClick.AddListener(ShowPreviousDialogue);
+
+        // Save Button
+        if (saveButton != null)
+        {
+            saveButton.onClick.AddListener(SaveAndLoad);
+        }
+        else
+        {
+            GameObject saveButtonObj = GameObject.Find("SaveBT");
+            if (saveButtonObj != null)
+            {
+                Button foundSaveButton = saveButtonObj.GetComponent<Button>();
+                if (foundSaveButton != null)
+                {
+                    foundSaveButton.onClick.AddListener(SaveAndLoad);
+                    Debug.Log("Save button found and connected!");
+                }
+            }
+        }
+
+        // Home Button
+        if (homeButton != null)
+        {
+            homeButton.onClick.AddListener(Home);
+        }
+        else
+        {
+            GameObject homeButtonObj = GameObject.Find("HomeBt");
+            if (homeButtonObj != null)
+            {
+                Button foundHomeButton = homeButtonObj.GetComponent<Button>();
+                if (foundHomeButton != null)
+                {
+                    foundHomeButton.onClick.AddListener(Home);
+                    Debug.Log("Home button found and connected!");
+                }
+            }
+        }
     }
 
     void ShowDialogue()
@@ -133,10 +239,10 @@ public class SumerianScene6 : MonoBehaviour
         }
     }
 
-
     void ShowNextDialogue()
     {
         currentDialogueIndex++;
+        SaveCurrentProgress();
 
         if (currentDialogueIndex >= dialogueLines.Length)
         {
@@ -147,19 +253,53 @@ public class SumerianScene6 : MonoBehaviour
 
         ShowDialogue();
     }
+
     void ShowPreviousDialogue()
     {
         if (currentDialogueIndex > 0)
         {
             currentDialogueIndex--;
+            SaveCurrentProgress();
             ShowDialogue();
         }
     }
-    
+
+    void SaveCurrentProgress()
+    {
+        PlayerPrefs.SetInt("SumerianSceneSix_DialogueIndex", currentDialogueIndex);
+        PlayerPrefs.SetString("CurrentScene", "SumerianSceneSix");
+        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        PlayerPrefs.Save();
+    }
+
+    public void SaveAndLoad()
+    {
+        PlayerPrefs.SetInt("SumerianSceneSix_DialogueIndex", currentDialogueIndex);
+        PlayerPrefs.SetString("LastScene", "SumerianSceneSix");
+
+        PlayerPrefs.DeleteKey("AccessMode");
+        PlayerPrefs.SetString("SaveSource", "StoryScene");
+        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        PlayerPrefs.Save();
+
+        if (SaveLoadManager.Instance != null)
+        {
+            SaveLoadManager.Instance.SetCurrentGameState("SumerianSceneSix", currentDialogueIndex);
+        }
+
+        Debug.Log($"Going to save menu with dialogue index: {currentDialogueIndex} from SumerianSceneSix");
+        SceneManager.LoadScene("SaveAndLoadScene");
+    }
+
     public void Home()
     {
+        SaveCurrentProgress();
         SceneManager.LoadScene("TitleScreen");
     }
+
+    public void ManualSave()
+    {
+        SaveCurrentProgress();
+        Debug.Log($"Manual save completed at dialogue {currentDialogueIndex}");
+    }
 }
-
-

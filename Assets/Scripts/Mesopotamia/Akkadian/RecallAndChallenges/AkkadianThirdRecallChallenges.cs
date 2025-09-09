@@ -25,6 +25,7 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
     public Sprite ChronoCheerful;
     public Sprite ChronoSad;
     public Sprite ChronoSmile;
+    public Sprite SargonThinking;
     public SpriteRenderer BlurBG;
 
     [System.Serializable]
@@ -42,6 +43,7 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
     public DialogueLine[] dialogueLines;
     private Answer[] answers;
     private bool hasAnswered = false;
+    private bool challengeCompleted = false;
 
     public Image[] heartImages;
     private bool isShowingBabyloniaDialogue = false;
@@ -51,6 +53,12 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
     public Button ArtifactImageButton;
     public Button ArtifactUseButton;
     public Button ArtifactButton;
+    
+    public AudioSource audioSource;
+    public AudioClip[] initialClips;
+    public AudioClip[] rehiyonClips;
+    public AudioClip[] BabyloniaClips;
+    public AudioClip[] EmpireClips;
 
 
     void Start()
@@ -93,7 +101,7 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
         {
             new DialogueLine
             {
-                characterName = "CHRONO",
+                characterName = "SARGON I",
                 line = " Ano ang nangyari matapos ang panandaliang pagbawi ng kapangyarihan ng lungsod-estado ng Ur?"
             },
         };
@@ -155,6 +163,11 @@ public void UseArtifactButton()
         },
         new DialogueLine
         {
+            characterName = "CHRONO",
+            line = " Tama. Sa halip na pagkakaisa, nauwi sa tunggalian ang mga lungsod sa timog."
+        },
+        new DialogueLine
+        {
             characterName = "PLAYER",
             line = " Sana ganoon din ang pamumuno sa panahon namin. May layunin, hindi lang kapangyarihan."
         },
@@ -170,6 +183,11 @@ public void UseArtifactButton()
         new DialogueLine
         {
             characterName = "PLAYER",
+            line = " Sinimulan na ang panahon ng Babylonia"
+        },
+        new DialogueLine
+        {
+            characterName = "PLAYER",
             line = " Hindi pa ito ang panahon ng Babylonia. Iba pang mga lungsod-estado ang namayani noon sa Mesopotamia."
         },
         new DialogueLine
@@ -181,6 +199,11 @@ public void UseArtifactButton()
 
     private DialogueLine[] EmpireLines = new DialogueLine[]
     {
+        new DialogueLine
+        {
+            characterName = "PLAYER",
+            line = " Naibalik ang Akkadian Empire"
+        },
         new DialogueLine
         {
             characterName = "PLAYER",
@@ -223,6 +246,27 @@ public void UseArtifactButton()
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+        if (audioSource != null)
+        {
+            AudioClip clipToPlay = null;
+
+            if (dialogueLines == rehiyonLines && rehiyonClips != null && currentDialogueIndex < rehiyonClips.Length)
+                clipToPlay = rehiyonClips[currentDialogueIndex];
+            else if (dialogueLines == BabyloniaLines && BabyloniaClips != null && currentDialogueIndex < BabyloniaClips.Length)
+                clipToPlay = BabyloniaClips[currentDialogueIndex];
+            else if (dialogueLines == EmpireLines && EmpireClips != null && currentDialogueIndex < EmpireClips.Length)
+                clipToPlay = EmpireClips[currentDialogueIndex];
+            else if (initialClips != null && currentDialogueIndex < initialClips.Length)
+                clipToPlay = initialClips[currentDialogueIndex];
+
+            if (clipToPlay != null)
+            {
+                audioSource.Stop();
+                audioSource.clip = clipToPlay;
+                audioSource.Play();
+            }
+        }
+
         if (dialogueLines == rehiyonLines)
         {
             switch (currentDialogueIndex)
@@ -231,6 +275,17 @@ public void UseArtifactButton()
                     AchievementUnlockedRenderer.SetActive(true);
                     PlayercharacterRenderer.sprite = PlayerEager;
                     ChronocharacterRenderer.sprite = ChronoCheerful;
+                    
+                    if (!challengeCompleted)
+                    {
+                        challengeCompleted = true;
+                        // Overwrite all existing saves to the next scene to prevent going back
+                        if (SaveLoadManager.Instance != null)
+                        {
+                            SaveLoadManager.Instance.OverwriteAllSavesAfterChallenge("AkkadianSceneSix", 0);
+                        }
+                    }
+                    
                     foreach (Button btn in answerButtons)
                     {
                         btn.interactable = false;
@@ -291,7 +346,7 @@ public void UseArtifactButton()
             {
                 case 0:
                     PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    ChronocharacterRenderer.sprite = SargonThinking;
                     break;
             }
         }
@@ -313,20 +368,37 @@ public void UseArtifactButton()
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
 
-                if (isShowingrehiyonDialogue)
+                if (isShowingrehiyonDialogue) // ✅ Correct branch
                 {
-                    if (finishAudioSource != null)
-                        finishAudioSource.Play();
                     nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
+
+                    // Calculate dialogue audio duration
+                    float dialogueDelay = 0f;
+                    if (audioSource != null && audioSource.clip != null)
+                        dialogueDelay = audioSource.clip.length;
+                    else
+                        dialogueDelay = 2f;
+
+                    // Play congrats audio AFTER dialogue finishes
+                    Invoke(nameof(PlayCongratsAudio), dialogueDelay);
+
+                    // Calculate total delay (dialogue + congrats + buffer)
+                    float congratsDelay = 0f;
+                    if (finishAudioSource != null && finishAudioSource.clip != null)
+                        congratsDelay = finishAudioSource.clip.length;
+                    else
+                        congratsDelay = 2f;
+
+                    float totalDelay = dialogueDelay + congratsDelay + 1f;
+                    Invoke(nameof(LoadNextScene), totalDelay);
                 }
-                else
+                else // ❌ Wrong answers → reset back to question
                 {
                     nextButton.onClick.AddListener(() =>
-                    {
-                        currentDialogueIndex = 0;
-                        ShowDialogue();
-                    });
+                {
+                    currentDialogueIndex = 0;
+                    ShowDialogue();
+                });
                 }
             }
             else
@@ -370,19 +442,7 @@ public void UseArtifactButton()
             nextButton.onClick.AddListener(() =>
             {
                 currentDialogueIndex++;
-                if (currentDialogueIndex < dialogueLines.Length - 1)
-                {
-                    ShowDialogue();
-                }
-                else
-                {
-                    ShowDialogue();
-                    nextButton.onClick.RemoveAllListeners();
-                    nextButton.onClick.AddListener(() =>
-                    {
-                        SceneManager.LoadScene("AkkadianSceneSix");
-                    });
-                }
+                ShowDialogue();
             });
         }
         else
@@ -461,6 +521,12 @@ public void UseArtifactButton()
     void LoadGameOverScene()
     {
         SceneManager.LoadScene("GameOver");
+    }
+
+    void PlayCongratsAudio()
+    {
+        if (finishAudioSource != null)
+            finishAudioSource.Play();
     }
 
     void LoadNextScene()

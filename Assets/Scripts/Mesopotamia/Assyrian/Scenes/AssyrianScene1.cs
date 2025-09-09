@@ -3,7 +3,6 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
 
-
 public class AssyrianScene1 : MonoBehaviour
 {
     [System.Serializable]
@@ -17,30 +16,60 @@ public class AssyrianScene1 : MonoBehaviour
     [SerializeField] public Button nextButton;
     public Button backButton;
 
-    public int currentDialogueIndex = 0;
+    [Header("UI Buttons")]
+    public Button saveButton;
+    public Button homeButton;
 
+    public int currentDialogueIndex = 0;
     public DialogueLine[] dialogueLines;
 
+    [Header("Sprites - Tiglath")]
     public SpriteRenderer TiglathFulldrawnSprite;
     public Sprite TiglathAssertive;
     public Sprite TiglathPrideful;
     public Sprite TiglathCold;
-    public SpriteRenderer PlayercharacterRenderer; // chibi
+
+    [Header("Sprites - Player")]
+    public SpriteRenderer PlayercharacterRenderer;
     public Sprite PlayerCurious;
     public Sprite PlayerEager;
     public Sprite PlayerSmile;
     public Sprite PlayerReflective;
     public Sprite PlayerEmbarassed;
-    public SpriteRenderer ChronocharacterRenderer; // chibi
+
+    [Header("Sprites - Chrono")]
+    public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
 
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;
+
     void Start()
+    {
+        // Ensure SaveLoadManager exists
+        if (SaveLoadManager.Instance == null)
+        {
+            GameObject saveLoadManager = new GameObject("SaveLoadManager");
+            saveLoadManager.AddComponent<SaveLoadManager>();
+        }
+
+        InitializeDialogueLines();
+
+        // Load saved progress
+        LoadDialogueIndex();
+
+        SetupButtons();
+        ShowDialogue();
+    }
+
+    void InitializeDialogueLines()
     {
         dialogueLines = new DialogueLine[]
         {
             new DialogueLine
-            {   characterName = "PLAYER",
+            {
+                characterName = "PLAYER",
                 line = " Saan na naman ako napunta? Ang taas ng mga gusali... parang may banta ng digmaan kahit saan."
             },
             new DialogueLine
@@ -66,14 +95,14 @@ public class AssyrianScene1 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "TIGLATH-PILISER I",
-                line = " Sino kayo? Mga tagalabas? Ang Nineveh ay hindi lugar para sa mga mahihina. Kami ay isinilang sa digmaan, at lumalaki sa pamumuno."//5
+                line = " Sino kayo? Mga tagalabas? Ang Nineveh ay hindi lugar para sa mga mahihina. Kami ay isinilang sa digmaan, at lumalaki sa pamumuno."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
                 line = " Haring Tiglath-Pileser I, kami’y mga tagapagmasid ng kasaysayan. Ipinapakita ko sa aking kasama ang iyong dakilang pamana, ang pagbubuo ng imperyo, at ang mahigpit mong panuntunan."
             },
-            new DialogueLine//7
+            new DialogueLine
             {
                 characterName = "TIGLATH-PILISER I",
                 line = " Kung gayon, saksihan ninyo kung paano ko pinagbuklod ang mga lupain mula silangan hanggang kanluran. Sinupil namin ang mga Hittite, at naabot ng aming mga hukbo ang baybayin ng Mediterranean."
@@ -86,43 +115,124 @@ public class AssyrianScene1 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "TIGLATH-PILISER I",
-                line = " Ang mga natalo ay nagbigay ng tributopilak, ginto, hayop, at minsan pati mga anak nilang lalaki."
+                line = " Ang mga natalo ay nagbigay ng tributo — pilak, ginto, hayop, at minsan pati mga anak nilang lalaki."
             },
-            new DialogueLine//10
+            new DialogueLine
             {
                 characterName = "PLAYER",
                 line = " Lahat ba ay sumang-ayon? O napilitan lang?"
             },
-            new DialogueLine//11
+            new DialogueLine
             {
                 characterName = "TIGLATH-PILISER I",
-                line = " Ang kapayapaan ay hindi regalo. Ito'y kinukuha sa pamamagitan ng takot. Ang mga lungsod na lumaban ay sinunog. Ang mga bihag ay pinako sa poste sa harap ng kanilang paderisang babala sa mga susunod."
+                line = " Ang kapayapaan ay hindi regalo. Ito'y kinukuha sa pamamagitan ng takot. Ang mga lungsod na lumaban ay sinunog. Ang mga bihag ay pinako sa poste sa harap ng kanilang pader — isang babala sa mga susunod."
             }
         };
-
-        ShowDialogue();
-        nextButton.onClick.AddListener(ShowNextDialogue);
-        backButton.onClick.AddListener(ShowPreviousDialogue);
     }
 
+    // === Load Dialogue Index Logic ===
+    void LoadDialogueIndex()
+    {
+        if (PlayerPrefs.GetString("GameMode", "") == "NewGame")
+        {
+            currentDialogueIndex = 0;
+            PlayerPrefs.DeleteKey("GameMode");
+            Debug.Log("New game started - dialogue index reset to 0");
+            return;
+        }
+
+        if (PlayerPrefs.GetString("LoadedFromSave", "false") == "true")
+        {
+            if (PlayerPrefs.HasKey("LoadedDialogueIndex"))
+            {
+                currentDialogueIndex = PlayerPrefs.GetInt("LoadedDialogueIndex");
+                PlayerPrefs.DeleteKey("LoadedDialogueIndex");
+                Debug.Log($"Loaded from save file at dialogue index: {currentDialogueIndex}");
+            }
+
+            PlayerPrefs.SetString("LoadedFromSave", "false");
+        }
+        else
+        {
+            if (PlayerPrefs.HasKey("AssyrianSceneOne_DialogueIndex"))
+            {
+                currentDialogueIndex = PlayerPrefs.GetInt("AssyrianSceneOne_DialogueIndex");
+                Debug.Log($"Continuing from previous session at dialogue index: {currentDialogueIndex}");
+            }
+            else
+            {
+                currentDialogueIndex = 0;
+                Debug.Log("Starting from beginning");
+            }
+        }
+
+        if (currentDialogueIndex >= dialogueLines.Length)
+            currentDialogueIndex = dialogueLines.Length - 1;
+        if (currentDialogueIndex < 0)
+            currentDialogueIndex = 0;
+    }
+
+    // === Setup Buttons ===
+    void SetupButtons()
+    {
+        if (nextButton != null)
+            nextButton.onClick.AddListener(ShowNextDialogue);
+
+        if (backButton != null)
+            backButton.onClick.AddListener(ShowPreviousDialogue);
+
+        if (saveButton != null)
+            saveButton.onClick.AddListener(SaveAndLoad);
+        else
+        {
+            GameObject saveButtonObj = GameObject.Find("SaveBT");
+            if (saveButtonObj != null)
+            {
+                Button foundSaveButton = saveButtonObj.GetComponent<Button>();
+                if (foundSaveButton != null)
+                    foundSaveButton.onClick.AddListener(SaveAndLoad);
+            }
+        }
+
+        if (homeButton != null)
+            homeButton.onClick.AddListener(Home);
+        else
+        {
+            GameObject homeButtonObj = GameObject.Find("HomeBt");
+            if (homeButtonObj != null)
+            {
+                Button foundHomeButton = homeButtonObj.GetComponent<Button>();
+                if (foundHomeButton != null)
+                    foundHomeButton.onClick.AddListener(Home);
+            }
+        }
+    }
+
+    // === Show Dialogue ===
     void ShowDialogue()
     {
         TiglathFulldrawnSprite.enabled = false;
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+        if (audioSource != null && dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+        {
+            audioSource.clip = dialogueClips[currentDialogueIndex];
+            audioSource.Play();
+        }
+
         switch (currentDialogueIndex)
         {
             case 0:
-                PlayercharacterRenderer.enabled = PlayerCurious;
-                ChronocharacterRenderer.enabled = ChronoSmile;
+                PlayercharacterRenderer.sprite = PlayerCurious;
+                ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
             case 1:
-                ChronocharacterRenderer.enabled = ChronoThinking;
+                ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 2:
                 PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.enabled = ChronoSmile;
+                ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
             case 3:
                 ChronocharacterRenderer.sprite = ChronoThinking;
@@ -153,9 +263,12 @@ public class AssyrianScene1 : MonoBehaviour
                 break;
         }
     }
+
+    // === Next Dialogue ===
     void ShowNextDialogue()
     {
         currentDialogueIndex++;
+        SaveCurrentProgress();
 
         if (currentDialogueIndex >= dialogueLines.Length)
         {
@@ -166,19 +279,55 @@ public class AssyrianScene1 : MonoBehaviour
         ShowDialogue();
     }
 
+    // === Previous Dialogue ===
     void ShowPreviousDialogue()
     {
         if (currentDialogueIndex > 0)
         {
             currentDialogueIndex--;
+            SaveCurrentProgress();
             ShowDialogue();
         }
     }
-    
+
+    // === Save & Load ===
+    public void SaveAndLoad()
+    {
+        PlayerPrefs.SetInt("AssyrianSceneOne_DialogueIndex", currentDialogueIndex);
+        PlayerPrefs.SetString("LastScene", "AssyrianSceneOne");
+
+        PlayerPrefs.DeleteKey("AccessMode");
+        PlayerPrefs.SetString("SaveSource", "StoryScene");
+        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        PlayerPrefs.Save();
+
+        if (SaveLoadManager.Instance != null)
+            SaveLoadManager.Instance.SetCurrentGameState("AssyrianSceneOne", currentDialogueIndex);
+
+        Debug.Log($"Going to save menu with dialogue index: {currentDialogueIndex}");
+        SceneManager.LoadScene("SaveAndLoadScene");
+    }
+
+    // === Save Current Progress Only ===
+    void SaveCurrentProgress()
+    {
+        PlayerPrefs.SetInt("AssyrianSceneOne_DialogueIndex", currentDialogueIndex);
+        PlayerPrefs.SetString("CurrentScene", "AssyrianSceneOne");
+        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        PlayerPrefs.Save();
+    }
+
+    // === Go Home ===
     public void Home()
     {
+        SaveCurrentProgress();
         SceneManager.LoadScene("TitleScreen");
     }
+
+    // === Manual Save ===
+    public void ManualSave()
+    {
+        SaveCurrentProgress();
+        Debug.Log($"Manual save completed at dialogue {currentDialogueIndex}");
+    }
 }
-
-

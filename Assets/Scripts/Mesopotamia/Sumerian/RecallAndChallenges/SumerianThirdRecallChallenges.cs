@@ -28,12 +28,19 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
     public DialogueLine[] dialogueLines;
     private Answer[] answers;
     private bool hasAnswered = false;
+    public bool challengeCompleted = false;
 
     public Image[] heartImages;
     private bool isShowingOligarkiyaDialogue = false;
     private bool isShowingMonarkiyaDialogue = false;
     private bool isShowingTheocracyDialogue = false;
     public AudioSource finishAudioSource;
+
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;      // default
+    public AudioClip[] theocracyClips;     // Theocracy dialogue
+    public AudioClip[] oligarkiyaClips;    // Oligarkiya dialogue
+    public AudioClip[] monarkiyaClips;     // Monarkiya dialogue
 
     public SpriteRenderer PlayercharacterRenderer;
     public SpriteRenderer ChronocharacterRenderer;
@@ -44,6 +51,7 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
     public Sprite PlayerEmbarassed;
     public Sprite ChronoCheerful;
     public Sprite ChronoSad;
+    public Sprite ChronoThinking;
     public Sprite PatesiFormal;
     public Sprite PatesiWise;
     public Sprite PatesiDisappointed;
@@ -71,7 +79,7 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
         new DialogueLine
         {
             characterName = " PLAYER",
-            line = " Theocracy… Ang pamahalaang pinamumunuan ng isang pinunong-pari."
+            line = " Theocracy...?"
         },
         new DialogueLine
         {
@@ -164,6 +172,27 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+        if (audioSource != null)
+        {
+            AudioClip clipToPlay = null;
+
+            if (dialogueLines == Theocracy && theocracyClips != null && currentDialogueIndex < theocracyClips.Length)
+                clipToPlay = theocracyClips[currentDialogueIndex];
+            else if (dialogueLines == Oligarkiya && oligarkiyaClips != null && currentDialogueIndex < oligarkiyaClips.Length)
+                clipToPlay = oligarkiyaClips[currentDialogueIndex];
+            else if (dialogueLines == Monarkiya && monarkiyaClips != null && currentDialogueIndex < monarkiyaClips.Length)
+                clipToPlay = monarkiyaClips[currentDialogueIndex];
+            else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+                clipToPlay = dialogueClips[currentDialogueIndex];
+
+            if (clipToPlay != null)
+            {
+                audioSource.Stop();
+                audioSource.clip = clipToPlay;
+                audioSource.Play();
+            }
+        }
+
     if (dialogueLines == Theocracy)
         {
             switch (currentDialogueIndex)
@@ -171,6 +200,17 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
                 case 0:
                     PlayercharacterRenderer.sprite = PlayerSmile;
                     ChronocharacterRenderer.sprite = PatesiFormal;
+                    
+                    if (!challengeCompleted)
+                    {
+                        challengeCompleted = true;
+                        // Overwrite all existing saves to the next scene to prevent going back
+                        if (SaveLoadManager.Instance != null)
+                        {
+                            SaveLoadManager.Instance.OverwriteAllSavesAfterChallenge("SumerianSceneFive", 0);
+                        }
+                    }
+
                     foreach (Button btn in answerButtons)
                     {
                         btn.interactable = false;
@@ -214,7 +254,7 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
                     ChronocharacterRenderer.sprite = PatesiDisappointed;
                     break;
                 case 3:
-                    ChronocharacterRenderer.sprite = PatesiFormal;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
                     break;
             }
         }
@@ -233,7 +273,7 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
                     ChronocharacterRenderer.sprite = PatesiDisappointed;
                     break;
                 case 3:
-                    ChronocharacterRenderer.sprite = PatesiFormal;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
                     break;
             }
         }
@@ -265,14 +305,43 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
             {
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(() =>
+
+                if (isShowingTheocracyDialogue) // ✅ correct answer flow
                 {
-                    if (finishAudioSource != null)
-                        finishAudioSource.Play();
                     nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f); // 2 seconds delay, adjust as needed
-                });
+
+                    // 1. Dialogue audio delay
+                    float dialogueDelay = 0f;
+                    if (audioSource != null && audioSource.clip != null)
+                        dialogueDelay = audioSource.clip.length;
+                    else
+                        dialogueDelay = 2f;
+
+                    // 2. Play congrats after dialogue
+                    Invoke(nameof(PlayCongratsAudio), dialogueDelay);
+
+                    // 3. Congrats delay
+                    float congratsDelay = 0f;
+                    if (finishAudioSource != null && finishAudioSource.clip != null)
+                        congratsDelay = finishAudioSource.clip.length;
+                    else
+                        congratsDelay = 2f;
+
+                    // 4. Load next scene after total delay
+                    float totalDelay = dialogueDelay + congratsDelay + 1f;
+                    Invoke(nameof(LoadNextScene), totalDelay);
+                }
+                else
+                {
+                    // Wrong answers → cycle back through dialogue
+                    nextButton.onClick.AddListener(() =>
+                    {
+                        currentDialogueIndex = 0;
+                        ShowDialogue();
+                    });
+                }
             }
+
             else
             {
                 nextButton.gameObject.SetActive(true);
@@ -417,6 +486,13 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
     {
         SceneManager.LoadScene("GameOver");
     }
+
+    void PlayCongratsAudio()
+    {
+        if (finishAudioSource != null)
+            finishAudioSource.Play();
+    }
+
     void LoadNextScene()
     {
         SceneManager.LoadScene("SumerianSceneFive");

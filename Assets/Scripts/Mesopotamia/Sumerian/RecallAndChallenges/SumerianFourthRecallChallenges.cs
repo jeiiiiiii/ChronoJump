@@ -28,14 +28,22 @@ public class SumerianFourthRecallChallenges : MonoBehaviour
     public DialogueLine[] dialogueLines;
     private Answer[] answers;
     private bool hasAnswered = false;
+    private bool challengeCompleted = false;
 
     public Image[] heartImages;
     private bool isShowingApoyDialogue = false;
     private bool isShowingLayagDialogue = false;
     private bool isShowingGulongDialogue = false;
-    public AudioSource finishAudioSource;
     public SpriteRenderer PlayercharacterRenderer;
     public SpriteRenderer ChronocharacterRenderer;
+    public AudioSource finishAudioSource;
+
+    // 🔹 Voice Narration
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;
+    public AudioClip[] gulongClips;
+    public AudioClip[] apoyClips;
+    public AudioClip[] layagClips;
 
     public Sprite PlayerSmile;
     public Sprite PlayerReflective;
@@ -43,6 +51,7 @@ public class SumerianFourthRecallChallenges : MonoBehaviour
     public Sprite PlayerEmbarassed;
     public Sprite ChronoCheerful;
     public Sprite ChronoSad;
+    public Sprite ChronoThinking;
     public Sprite PatesiFormal;
     public Sprite IshmaSmirking;
     public SpriteRenderer BlurBG;
@@ -69,12 +78,12 @@ public class SumerianFourthRecallChallenges : MonoBehaviour
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Gulong! Gawa ng Sumerian"
+            line = " Gulong!"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Tama! Napakatinding ambag ng simpleng hugis-bilog sa kasaysayan ng tao. Saan man makarating ang gulong, may progreso.”"
+            line = " Tama! Napakatinding ambag ng simpleng hugis-bilog sa kasaysayan ng tao. Saan man makarating ang gulong, may progreso."
         },
         new DialogueLine
         {
@@ -95,12 +104,7 @@ public class SumerianFourthRecallChallenges : MonoBehaviour
         },
         new DialogueLine
         {
-            characterName = "ISHMA",
-            line = " Isipin mo ang mga bagay na talagang nakapagpabilis sa ating paglalakbay. Ang apoy ay nagbibigay ng init at liwanag, ngunit ano ang talagang nagpapagalaw sa mga karwahe at sasakyan?"
-        },
-        new DialogueLine
-        {
-            characterName = "ISHMA",
+            characterName = "CHRONO",
             line = " Pumiling muli!"
         },
     };
@@ -157,6 +161,27 @@ public class SumerianFourthRecallChallenges : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+        if (audioSource != null)
+        {
+            AudioClip clipToPlay = null;
+
+            if (dialogueLines == Gulong && gulongClips != null && currentDialogueIndex < gulongClips.Length)
+                clipToPlay = gulongClips[currentDialogueIndex];
+            else if (dialogueLines == Apoy && apoyClips != null && currentDialogueIndex < apoyClips.Length)
+                clipToPlay = apoyClips[currentDialogueIndex];
+            else if (dialogueLines == Layag && layagClips != null && currentDialogueIndex < layagClips.Length)
+                clipToPlay = layagClips[currentDialogueIndex];
+            else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+                clipToPlay = dialogueClips[currentDialogueIndex];
+
+            if (clipToPlay != null)
+            {
+                audioSource.Stop();
+                audioSource.clip = clipToPlay;
+                audioSource.Play();
+            }
+        }
+
     if (dialogueLines == Gulong)
         {
             switch (currentDialogueIndex)
@@ -164,6 +189,17 @@ public class SumerianFourthRecallChallenges : MonoBehaviour
                 case 0:
                     PlayercharacterRenderer.sprite = PlayerSmile;
                     ChronocharacterRenderer.sprite = PatesiFormal;
+                    
+                    if (!challengeCompleted)
+                    {
+                        challengeCompleted = true;
+                        // Overwrite all existing saves to the next scene to prevent going back
+                        if (SaveLoadManager.Instance != null)
+                        {
+                            SaveLoadManager.Instance.OverwriteAllSavesAfterChallenge("SumerianSceneSix", 0);
+                        }
+                    }
+                    
                     foreach (Button btn in answerButtons)
                     {
                         btn.interactable = false;
@@ -200,11 +236,8 @@ public class SumerianFourthRecallChallenges : MonoBehaviour
                 case 1:
                     PlayercharacterRenderer.sprite = PlayerEmbarassed;
                     break;
-                case 2:
-                    ChronocharacterRenderer.sprite = IshmaSmirking;
-                    break;
                 case 3:
-                    ChronocharacterRenderer.sprite = PatesiFormal;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
                     break;
             }
         }
@@ -223,7 +256,7 @@ public class SumerianFourthRecallChallenges : MonoBehaviour
                     ChronocharacterRenderer.sprite = IshmaSmirking;
                     break;
                 case 3:
-                    ChronocharacterRenderer.sprite = PatesiFormal;
+                    ChronocharacterRenderer.sprite = ChronoThinking;
                     break;
             }
         }
@@ -256,14 +289,43 @@ public class SumerianFourthRecallChallenges : MonoBehaviour
             {
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(() =>
+
+                if (isShowingGulongDialogue) // ✅ Correct answer flow
                 {
-                    if (finishAudioSource != null)
-                        finishAudioSource.Play();
                     nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f); // 2 seconds delay, adjust as needed
-                });
+
+                    // 1. Dialogue audio delay
+                    float dialogueDelay = 0f;
+                    if (audioSource != null && audioSource.clip != null)
+                        dialogueDelay = audioSource.clip.length;
+                    else
+                        dialogueDelay = 2f;
+
+                    // 2. Play congrats after dialogue
+                    Invoke(nameof(PlayCongratsAudio), dialogueDelay);
+
+                    // 3. Congrats delay
+                    float congratsDelay = 0f;
+                    if (finishAudioSource != null && finishAudioSource.clip != null)
+                        congratsDelay = finishAudioSource.clip.length;
+                    else
+                        congratsDelay = 2f;
+
+                    // 4. Load next scene after total delay
+                    float totalDelay = dialogueDelay + congratsDelay + 1f;
+                    Invoke(nameof(LoadNextScene), totalDelay);
+                }
+                else
+                {
+                    // Wrong answers just reset dialogue loop
+                    nextButton.onClick.AddListener(() =>
+                    {
+                        currentDialogueIndex = 0;
+                        ShowDialogue();
+                    });
+                }
             }
+
             else
             {
                 nextButton.gameObject.SetActive(true);
@@ -301,20 +363,7 @@ public class SumerianFourthRecallChallenges : MonoBehaviour
             nextButton.onClick.AddListener(() => 
             {
                 currentDialogueIndex++;
-                if (currentDialogueIndex < dialogueLines.Length - 1)
-                {
-                    ShowDialogue();
-                }
-                else
-                {
-                    // Show the last line
-                    ShowDialogue();
-                    nextButton.onClick.RemoveAllListeners();
-                    nextButton.onClick.AddListener(() =>
-                    {
-                        SceneManager.LoadScene("SumerianSceneSix");
-                    });
-                }
+                ShowDialogue();
             });
         }
         else
@@ -407,6 +456,12 @@ public class SumerianFourthRecallChallenges : MonoBehaviour
     void LoadGameOverScene()
     {
         SceneManager.LoadScene("GameOver");
+    }
+
+    void PlayCongratsAudio()
+    {
+        if (finishAudioSource != null)
+            finishAudioSource.Play();
     }
 
     void LoadNextScene()

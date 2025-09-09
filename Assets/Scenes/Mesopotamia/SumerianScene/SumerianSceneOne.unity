@@ -2412,6 +2412,8 @@ MonoBehaviour:
   dialogueText: {fileID: 991958766}
   nextButton: {fileID: 1312188699}
   backButton: {fileID: 1031469366}
+  saveButton: {fileID: 0}
+  homeButton: {fileID: 0}
   currentDialogueIndex: 0
   dialogueLines: []
   PlayercharacterRenderer: {fileID: 363254929}

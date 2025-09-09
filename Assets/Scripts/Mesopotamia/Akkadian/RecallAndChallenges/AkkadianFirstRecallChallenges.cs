@@ -42,6 +42,7 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
     public DialogueLine[] dialogueLines;
     private Answer[] answers;
     private bool hasAnswered = false;
+    private bool challengeCompleted = false;
 
     public Image[] heartImages;
     private bool isShowingUrNammuDialogue = false;
@@ -52,6 +53,12 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
     public Button ArtifactImageButton;
     public Button ArtifactUseButton;
     public Button ArtifactButton;
+
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;
+    public AudioClip[] SargonClips;
+    public AudioClip[] UrNammuClips;
+    public AudioClip[] HammurabiClips;
 
     void Start()
     {
@@ -92,7 +99,7 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
         {
             new DialogueLine
             {
-                characterName = "CHRONO",
+                characterName = "SARGON I",
                 line = " Sino ang pinunong nagtayo ng kauna-unahang imperyo sa daigdig?"
             },
         };
@@ -179,6 +186,11 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
         new DialogueLine
         {
             characterName = "PLAYER",
+            line = " Ur-Nammu?"
+        },
+        new DialogueLine
+        {
+            characterName = "PLAYER",
             line = " Si Ur-Nammu ay naging pinuno sa Ur pero mas huli siya. Isipin mo kung sino ang unang nagbuklod sa mga lungsod." },
         new DialogueLine
         {
@@ -188,6 +200,11 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
     };
     private DialogueLine[] HammurabiLines = new DialogueLine[]
     {
+        new DialogueLine
+        {
+            characterName = "PLAYER",
+            line = " Hammurabi?"
+        },
         new DialogueLine
         {
             characterName = "PLAYER",
@@ -229,6 +246,27 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+        if (audioSource != null)
+        {
+            AudioClip clipToPlay = null;
+
+            if (dialogueLines == SargonLines && SargonClips != null && currentDialogueIndex < SargonClips.Length)
+                clipToPlay = SargonClips[currentDialogueIndex];
+            else if (dialogueLines == UrNammuLines && UrNammuClips != null && currentDialogueIndex < UrNammuClips.Length)
+                clipToPlay = UrNammuClips[currentDialogueIndex];
+            else if (dialogueLines == HammurabiLines && HammurabiClips != null && currentDialogueIndex < HammurabiClips.Length)
+                clipToPlay = HammurabiClips[currentDialogueIndex];
+            else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+                clipToPlay = dialogueClips[currentDialogueIndex];
+
+            if (clipToPlay != null)
+            {
+                audioSource.Stop();
+                audioSource.clip = clipToPlay;
+                audioSource.Play();
+            }
+        }
+
         if (dialogueLines == SargonLines)
         {
             switch (currentDialogueIndex)
@@ -236,6 +274,17 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
                 case 0:
                     PlayercharacterRenderer.sprite = PlayerSmile;
                     ChronocharacterRenderer.sprite = ChronoCheerful;
+                    
+                    if (!challengeCompleted)
+                    {
+                        challengeCompleted = true;
+                        // Overwrite all existing saves to the next scene to prevent going back
+                        if (SaveLoadManager.Instance != null)
+                        {
+                            SaveLoadManager.Instance.OverwriteAllSavesAfterChallenge("AkkadianSceneThree", 0);
+                        }
+                    }
+
                     foreach (Button btn in answerButtons)
                     {
                         btn.interactable = false;
@@ -243,7 +292,7 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
                     break;
                 case 1:
                     PlayercharacterRenderer.sprite = PlayerEager;
-                    ChronocharacterRenderer.sprite = SargonProud;
+                    ChronocharacterRenderer.sprite = ChronoCheerful;
                     break;
                 case 2:
                     foreach (Button btn in answerButtons)
@@ -257,7 +306,6 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
                     }
                     BlurBG.gameObject.SetActive(false);
                     PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = SargonThinking;
                     break;
                 case 3:
                     ChronocharacterRenderer.sprite = ChronoThinking;
@@ -302,7 +350,7 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
             {
                 case 0:
                     PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    ChronocharacterRenderer.sprite = SargonThinking;
                     break;
             }
         }
@@ -324,22 +372,51 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
 
-                if (isShowingSargonDialogue)
+                if (isShowingSargonDialogue) // ✅ Correct flag for this script
+                {
+                    nextButton.interactable = false;
+
+                    // Calculate dialogue audio duration
+                    float dialogueDelay = 0f;
+                    if (audioSource != null && audioSource.clip != null)
+                    {
+                        dialogueDelay = audioSource.clip.length;
+                    }
+                    else
+                    {
+                        dialogueDelay = 2f; // Default if no dialogue audio
+                    }
+
+                    // Play congrats audio AFTER dialogue finishes
+                    Invoke(nameof(PlayCongratsAudio), dialogueDelay);
+
+                    // Calculate total delay (dialogue + congrats + buffer)
+                    float congratsDelay = 0f;
+                    if (finishAudioSource != null && finishAudioSource.clip != null)
+                    {
+                        congratsDelay = finishAudioSource.clip.length;
+                    }
+                    else
+                    {
+                        congratsDelay = 2f; // Default if no congrats audio
+                    }
+
+                    float totalDelay = dialogueDelay + congratsDelay + 1f; // Total time + buffer
+                    Invoke(nameof(LoadNextScene), totalDelay);
+                }
+                else
+                {
+                    // For wrong answers, keep original logic
+                    nextButton.onClick.AddListener(() =>
                 {
                     if (finishAudioSource != null)
                         finishAudioSource.Play();
                     nextButton.interactable = false;
                     Invoke(nameof(LoadNextScene), 2f);
-                }
-                else
-                {
-                    nextButton.onClick.AddListener(() =>
-                    {
-                        currentDialogueIndex = 0;
-                        ShowDialogue();
-                    });
+                });
                 }
             }
+
             else
             {
                 nextButton.gameObject.SetActive(true);
@@ -379,19 +456,7 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
             nextButton.onClick.AddListener(() =>
             {
                 currentDialogueIndex++;
-                if (currentDialogueIndex < dialogueLines.Length - 1)
-                {
-                    ShowDialogue();
-                }
-                else
-                {
-                    ShowDialogue();
-                    nextButton.onClick.RemoveAllListeners();
-                    nextButton.onClick.AddListener(() =>
-                    {
-                        SceneManager.LoadScene("AkkadianSceneThree");
-                    });
-                }
+                ShowDialogue();
             });
         }
         else
@@ -471,6 +536,12 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
     void LoadGameOverScene()
     {
         SceneManager.LoadScene("GameOver");
+    }
+
+    void PlayCongratsAudio()
+    {
+        if (finishAudioSource != null)
+            finishAudioSource.Play();
     }
 
     void LoadNextScene()

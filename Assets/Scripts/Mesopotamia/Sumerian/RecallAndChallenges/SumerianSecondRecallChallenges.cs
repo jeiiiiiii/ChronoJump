@@ -33,7 +33,15 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
     private bool isShowingDisyertoDialogue = false;
     private bool isShowingImbakNaUlanDialogue = false;
     private bool isShowingTigrisAndEuphratesDialogue = false;
+
     public AudioSource finishAudioSource;
+
+    // 🔹 ADDED - Audio for narration
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;           // for default dialogue
+    public AudioClip[] tigrisClips;             // for Tigris and Euphrates dialogue
+    public AudioClip[] disyertoClips;           // for Disyerto dialogue
+    public AudioClip[] imbakNaUlanClips;        // for Imbak na Ulan dialogue
 
     public SpriteRenderer PlayercharacterRenderer;
     public SpriteRenderer ChronocharacterRenderer;
@@ -66,6 +74,7 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
 
         ShowDialogue();
     }
+
     private DialogueLine[] TigrisAndEuphrates = new DialogueLine[]
     {
         new DialogueLine
@@ -163,6 +172,30 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
     {
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
+
+        // 🔹 ADDED - Play narration for current line
+        if (audioSource != null)
+        {
+            AudioClip clipToPlay = null;
+
+            if (dialogueLines == TigrisAndEuphrates && tigrisClips != null && currentDialogueIndex < tigrisClips.Length)
+                clipToPlay = tigrisClips[currentDialogueIndex];
+            else if (dialogueLines == Disyerto && disyertoClips != null && currentDialogueIndex < disyertoClips.Length)
+                clipToPlay = disyertoClips[currentDialogueIndex];
+            else if (dialogueLines == ImbakNaUlan && imbakNaUlanClips != null && currentDialogueIndex < imbakNaUlanClips.Length)
+                clipToPlay = imbakNaUlanClips[currentDialogueIndex];
+            else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+                clipToPlay = dialogueClips[currentDialogueIndex];
+
+            if (clipToPlay != null)
+            {
+                audioSource.Stop();
+                audioSource.clip = clipToPlay;
+                audioSource.Play();
+            }
+        }
+
+        // 🔹 (the rest of ShowDialogue stays the same below...)
         
     if (dialogueLines == TigrisAndEuphrates)
         {
@@ -261,13 +294,50 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
             {
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(() =>
+
+            if (isShowingTigrisAndEuphratesDialogue) // Use your correct dialogue flag
                 {
-                    if (finishAudioSource != null)
-                        finishAudioSource.Play();
                     nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f); // 2 seconds delay, adjust as needed
-                });
+
+                    // Calculate dialogue audio duration
+                    float dialogueDelay = 0f;
+                    if (audioSource != null && audioSource.clip != null)
+                {
+                    dialogueDelay = audioSource.clip.length;
+                }
+                    else
+                {
+                    dialogueDelay = 2f; // Default if no dialogue audio
+                }
+
+                    // Play congrats audio AFTER dialogue finishes
+                    Invoke(nameof(PlayCongratsAudio), dialogueDelay);
+
+                    // Calculate total delay (dialogue + congrats + buffer)
+                    float congratsDelay = 0f;
+                    if (finishAudioSource != null && finishAudioSource.clip != null)
+                {
+                    congratsDelay = finishAudioSource.clip.length;
+                }
+                    else
+                {
+                    congratsDelay = 2f; // Default if no congrats audio
+                }
+
+                    float totalDelay = dialogueDelay + congratsDelay + 1f; // Total time + buffer
+                    Invoke(nameof(LoadNextScene), totalDelay);
+            }
+            else
+            {
+                // For wrong answers, keep original logic
+                nextButton.onClick.AddListener(() =>
+            {
+                if (finishAudioSource != null)
+                    finishAudioSource.Play();
+                    nextButton.interactable = false;
+                    Invoke(nameof(LoadNextScene), 2f);
+            });
+            }
             }
             else
             {
@@ -293,7 +363,6 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
 
     void OnAnswerSelected(Answer selected)
     {
-
         if (selected.isCorrect)
         {
             isShowingTigrisAndEuphratesDialogue = true;
@@ -301,24 +370,13 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
             dialogueLines = TigrisAndEuphrates;
             ShowDialogue();
 
+            // Simple setup - let ShowDialogue() handle the final scene logic
             nextButton.gameObject.SetActive(true);
             nextButton.onClick.RemoveAllListeners();
             nextButton.onClick.AddListener(() =>
             {
                 currentDialogueIndex++;
-                if (currentDialogueIndex < dialogueLines.Length - 1)
-                {
-                    ShowDialogue();
-                }
-                else
-                {
-                    ShowDialogue();
-                    nextButton.onClick.RemoveAllListeners();
-                    nextButton.onClick.AddListener(() =>
-                    {
-                        SceneManager.LoadScene("SumerianSceneFour");
-                    });
-                }
+                ShowDialogue();
             });
         }
         else
@@ -411,6 +469,12 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
     void LoadGameOverScene()
     {
         SceneManager.LoadScene("GameOver");
+    }
+
+    void PlayCongratsAudio()
+    {
+        if (finishAudioSource != null)
+            finishAudioSource.Play();
     }
 
     void LoadNextScene()

@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-
 public class TitleScreen : MonoBehaviour
 {
     [Header("UI References")]
@@ -52,6 +51,12 @@ public class TitleScreen : MonoBehaviour
     // }
     public void StartGame()
     {
+        // Clear any previous save state and mark as new game
+        PlayerPrefs.DeleteKey("LastScene");
+        PlayerPrefs.DeleteKey("SaveSource");
+        PlayerPrefs.SetString("GameMode", "NewGame");
+        PlayerPrefs.Save();
+        
         SceneManager.LoadScene("ChapterSelect");
     }
 
@@ -59,6 +64,7 @@ public class TitleScreen : MonoBehaviour
     {
         SceneManager.LoadScene("Settings");
     }
+    
     public void LoadGame()
     {
         SceneManager.LoadScene("SaveAndLoad");
@@ -77,6 +83,13 @@ public class TitleScreen : MonoBehaviour
     public void Logout()
     {
         SceneManager.LoadScene("Login");
+        // NEW: Clear save source to indicate we're accessing for loading only
+        PlayerPrefs.DeleteKey("LastScene");
+        PlayerPrefs.DeleteKey("SaveSource");
+        PlayerPrefs.SetString("AccessMode", "LoadOnly"); // Mark that we're only here to load
+        PlayerPrefs.Save();
+        
+        Debug.Log("Accessing Save/Load scene for loading only - save buttons will be disabled");
+        SceneManager.LoadScene("SaveAndLoadScene");
     }
 }
-

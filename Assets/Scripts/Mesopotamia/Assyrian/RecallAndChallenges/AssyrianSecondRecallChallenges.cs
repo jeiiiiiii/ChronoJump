@@ -28,6 +28,7 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
     public DialogueLine[] dialogueLines;
     private Answer[] answers;
     private bool hasAnswered = false;
+    private bool challengeCompleted = false;
 
     public Image[] heartImages;
     private bool isShowingHammurabiDialogue = false;
@@ -51,6 +52,12 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
     public Button ArtifactImageButton;
     public Button ArtifactUseButton;
     public Button ArtifactButton;
+
+    public AudioSource audioSource;
+    public AudioClip[] HammurabiClips;
+    public AudioClip[] NebuchadnezzarClips;
+    public AudioClip[] AshurbanipalClips;
+    public AudioClip[] dialogueClips;
 
     private bool artifactPowerActivated = false;
 
@@ -192,6 +199,27 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+        if (audioSource != null)
+        {
+            AudioClip clipToPlay = null;
+
+            if (dialogueLines == AshurbanipalLines && AshurbanipalClips != null && currentDialogueIndex < AshurbanipalClips.Length)
+                clipToPlay = AshurbanipalClips[currentDialogueIndex];
+            else if (dialogueLines == HammurabiLines && HammurabiClips != null && currentDialogueIndex < HammurabiClips.Length)
+                clipToPlay = HammurabiClips[currentDialogueIndex];
+            else if (dialogueLines == NebuchadnezzarLines && NebuchadnezzarClips != null && currentDialogueIndex < NebuchadnezzarClips.Length)
+                clipToPlay = NebuchadnezzarClips[currentDialogueIndex];
+            else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+                clipToPlay = dialogueClips[currentDialogueIndex];
+
+            if (clipToPlay != null)
+            {
+                audioSource.Stop();
+                audioSource.clip = clipToPlay;
+                audioSource.Play();
+            }
+        }
+
         if (dialogueLines == AshurbanipalLines)
         {
             switch (currentDialogueIndex)
@@ -199,6 +227,17 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
                 case 0:
                     PlayercharacterRenderer.sprite = PlayerEager;
                     ChronocharacterRenderer.sprite = ChronoSmile;
+                    
+                    if (!challengeCompleted)
+                    {
+                        challengeCompleted = true;
+                        // Overwrite all existing saves to the next scene to prevent going back
+                        if (SaveLoadManager.Instance != null)
+                        {
+                            SaveLoadManager.Instance.OverwriteAllSavesAfterChallenge("AssyrianSceneThree", 0);
+                        }
+                    }
+
                     foreach (Button btn in answerButtons)
                     {
                         btn.interactable = false;
@@ -289,22 +328,40 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
 
-                if (isShowingAshurbanipalDialogue)
+                if (isShowingAshurbanipalDialogue) // ✅ Correct branch
                 {
-                    if (finishAudioSource != null)
-                        finishAudioSource.Play();
                     nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
+
+                    // Calculate dialogue audio duration
+                    float dialogueDelay = 0f;
+                    if (audioSource != null && audioSource.clip != null)
+                        dialogueDelay = audioSource.clip.length;
+                    else
+                        dialogueDelay = 2f;
+
+                    // Play congrats AFTER dialogue finishes
+                    Invoke(nameof(PlayCongratsAudio), dialogueDelay);
+
+                    // Calculate total delay (dialogue + congrats + buffer)
+                    float congratsDelay = 0f;
+                    if (finishAudioSource != null && finishAudioSource.clip != null)
+                        congratsDelay = finishAudioSource.clip.length;
+                    else
+                        congratsDelay = 2f;
+
+                    float totalDelay = dialogueDelay + congratsDelay + 1f;
+                    Invoke(nameof(LoadNextScene), totalDelay);
                 }
-                else
+                else // ❌ Wrong answers → reset back to question
                 {
                     nextButton.onClick.AddListener(() =>
-                    {
-                        currentDialogueIndex = 0;
-                        ShowDialogue();
-                    });
+                {
+                    currentDialogueIndex = 0;
+                    ShowDialogue();
+                });
                 }
             }
+
             else
             {
                 nextButton.gameObject.SetActive(true);
@@ -345,19 +402,7 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
             nextButton.onClick.AddListener(() =>
             {
                 currentDialogueIndex++;
-                if (currentDialogueIndex < dialogueLines.Length - 1)
-                {
-                    ShowDialogue();
-                }
-                else
-                {
-                    ShowDialogue();
-                    nextButton.onClick.RemoveAllListeners();
-                    nextButton.onClick.AddListener(() =>
-                    {
-                        SceneManager.LoadScene("AssyrianSceneThree");
-                    });
-                }
+                ShowDialogue();
             });
         }
         else
@@ -442,6 +487,14 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
     void LoadGameOverScene()
     {
         SceneManager.LoadScene("GameOver");
+    }
+
+    void PlayCongratsAudio()
+    {
+        if (finishAudioSource != null && finishAudioSource.clip != null)
+        {
+            finishAudioSource.Play();
+        }
     }
 
     void LoadNextScene()

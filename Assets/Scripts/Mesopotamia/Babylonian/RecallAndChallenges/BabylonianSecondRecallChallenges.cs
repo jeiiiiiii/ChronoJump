@@ -28,6 +28,7 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
     public DialogueLine[] dialogueLines;
     private Answer[] answers;
     private bool hasAnswered = false;
+    private bool challengeCompleted = false;
 
     public Image[] heartImages;
     private bool isShowingKatarunganDialogue = false;
@@ -48,9 +49,16 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
     public Sprite ChronoSad;
     public Sprite ChronoSmile;
     public SpriteRenderer BlurBG;
-        public Button ArtifactImageButton;
+    public Button ArtifactImageButton;
     public Button ArtifactUseButton;
     public Button ArtifactButton;
+
+    public AudioSource audioSource;
+
+    public AudioClip[] dialogueClips;
+    public AudioClip[] KodigoClips;
+    public AudioClip[] KatarunganClips;
+    public AudioClip[] KalakalanClips;
 
     void Start()
     {
@@ -188,6 +196,27 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
+        if (audioSource != null)
+        {
+            AudioClip clipToPlay = null;
+
+            if (dialogueLines == KodigoLines && KodigoClips != null && currentDialogueIndex < KodigoClips.Length)
+                clipToPlay = KodigoClips[currentDialogueIndex];
+            else if (dialogueLines == KatarunganLines && KatarunganClips != null && currentDialogueIndex < KatarunganClips.Length)
+                clipToPlay = KatarunganClips[currentDialogueIndex];
+            else if (dialogueLines == KalakalanLines && KalakalanClips != null && currentDialogueIndex < KalakalanClips.Length)
+                clipToPlay = KalakalanClips[currentDialogueIndex];
+            else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+                clipToPlay = dialogueClips[currentDialogueIndex];
+
+            if (clipToPlay != null)
+            {
+                audioSource.Stop();
+                audioSource.clip = clipToPlay;
+                audioSource.Play();
+            }
+        }
+
         if (dialogueLines == KodigoLines)
         {
             switch (currentDialogueIndex)
@@ -195,6 +224,17 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
                 case 0:
                     PlayercharacterRenderer.sprite = PlayerEager;
                     ChronocharacterRenderer.sprite = ChronoSmile;
+                    
+                    if (!challengeCompleted)
+                    {
+                        challengeCompleted = true;
+                        // Overwrite all existing saves to the next scene to prevent going back
+                        if (SaveLoadManager.Instance != null)
+                        {
+                            SaveLoadManager.Instance.OverwriteAllSavesAfterChallenge("BabylonianSceneThree", 0);
+                        }
+                    }
+                    
                     foreach (Button btn in answerButtons)
                     {
                         btn.interactable = false;
@@ -287,15 +327,32 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
 
-                if (isShowingKodigoDialogue)
+                if (isShowingKodigoDialogue) // ✅ Correct branch
                 {
-                    if (finishAudioSource != null)
-                        finishAudioSource.Play();
                     nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
-                }
-                else
-                {
+
+                    // Calculate dialogue audio duration
+                    float dialogueDelay = 0f;
+                    if (audioSource != null && audioSource.clip != null)
+                        dialogueDelay = audioSource.clip.length;
+                    else
+                        dialogueDelay = 2f;
+
+                    // Play congrats audio AFTER dialogue finishes
+                    Invoke(nameof(PlayCongratsAudio), dialogueDelay);
+
+                    // Calculate total delay (dialogue + congrats + buffer)
+                    float congratsDelay = 0f;
+                    if (finishAudioSource != null && finishAudioSource.clip != null)
+                        congratsDelay = finishAudioSource.clip.length;
+                    else
+                        congratsDelay = 2f;
+
+                    float totalDelay = dialogueDelay + congratsDelay + 1f;
+                    Invoke(nameof(LoadNextScene), totalDelay);
+                    }
+                    else // ❌ Wrong answers → reset back to question
+                    {
                     nextButton.onClick.AddListener(() =>
                     {
                         currentDialogueIndex = 0;
@@ -303,6 +360,7 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
                     });
                 }
             }
+
             else
             {
                 nextButton.gameObject.SetActive(true);
@@ -343,19 +401,7 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
             nextButton.onClick.AddListener(() =>
             {
                 currentDialogueIndex++;
-                if (currentDialogueIndex < dialogueLines.Length - 1)
-                {
-                    ShowDialogue();
-                }
-                else
-                {
-                    ShowDialogue();
-                    nextButton.onClick.RemoveAllListeners();
-                    nextButton.onClick.AddListener(() =>
-                    {
-                        SceneManager.LoadScene("BabylonianSceneThree");
-                    });
-                }
+                ShowDialogue(); 
             });
         }
         else
@@ -448,6 +494,15 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
     {
         SceneManager.LoadScene("GameOver");
     }
+
+    void PlayCongratsAudio()
+    {
+        if (finishAudioSource != null && finishAudioSource.clip != null)
+        {
+            finishAudioSource.Play();
+        }
+    }
+
     void LoadNextScene()
     {
     SceneManager.LoadScene("BabylonianSceneThree");

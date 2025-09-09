@@ -16,6 +16,10 @@ public class BabylonianScene5 : MonoBehaviour
     [SerializeField] public Button nextButton;
     public Button backButton;
 
+    [Header("UI Buttons")]
+    public Button saveButton;
+    public Button homeButton;
+
     public int currentDialogueIndex = 0;
 
     public DialogueLine[] dialogueLines;
@@ -34,81 +38,184 @@ public class BabylonianScene5 : MonoBehaviour
     public Sprite ChronoSmile;
     public Sprite ChronoCheerful;
     public Sprite ChronoSad;
+    
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;
+
     void Start()
     {
-        dialogueLines = new DialogueLine[]
-        {
-            new DialogueLine
-            {
-                characterName = "CHRONO",
-                line = " Chrono... sino kaya itong nililok nila? Parang sobrang mahalaga sa kanila."
-            },
-            new DialogueLine
-            {
-                characterName = "CHRONO",
-                line = " Isa siya sa pinakakilalang nilalang ng mga taga-Babylonia. Dito nakasentro ang kanilang pananampalataya."
-            },
-            new DialogueLine
-            {
-                characterName = "PLAYER",
-                line = " May mga nag-aalay pa ng pagkain… para ba ito sa isang tao? O sa isang espiritu?"
-            },
-            new DialogueLine
-            {
-                characterName = "HAMMURABI",
-                line = " Hindi siya karaniwang nilalang. Siya si Marduk — ang diyos na nagbigay ng lakas at direksyon sa aming pamahalaan."
-            },
-            new DialogueLine
-            {
-                characterName = "PLAYER",
-                line = " Diyos?! Siya ang sentro ng paniniwala ninyo?"
-            },
-            new DialogueLine
-            {
-                characterName = "HAMMURABI",
-                line = " Oo. Sa panahon ng pagsasama-sama ng mga lungsod sa ilalim ng Babylonia, kailangan naming kilalanin ang isang diyos na magbubuklod sa mga tao."
-            },
-            new DialogueLine
-            {
-                characterName = "HAMMURABI",
-                line = " Pinili naming itaas si Marduk bilang pangunahing diyos. Siya ang sagisag ng kaayusan at tagumpay." // 5
-            },
-            new DialogueLine
-            {
-                characterName = "CHRONO",
-                line = " Sa mga sinaunang kwento, tinalo ni Marduk ang mga puwersa ng kaguluhan at nilikha ang mundo mula sa kaguluhan. Isa sa mga akdang isinulat noon ay Enuma Elish, na naglalarawan ng kanyang kapangyarihan."
-            },
-            new DialogueLine
-            {
-                characterName = "PLAYER",
-                line = " Ah, kaya pala parang may respeto at takot ang mga tao sa paligid… Hindi lang ito estatwa. Para sa kanila, ito ang kinatawan ng lakas na higit pa sa tao."
-            },
-            new DialogueLine
-            {
-                characterName = "HAMMURABI",
-                line = " Walang pamahalaan kung walang gabay. At walang gabay kung walang pananampalataya. Sa tulong ni Marduk, naitaguyod ko ang pagkakaisa sa buong Babylonia."
-            },
-            new DialogueLine
-            {
-                characterName = "CHRONO",
-                line = " Ang pananampalataya nila kay Marduk ay naging isang mahalagang bahagi ng kultura at pagkakakilanlan ng imperyo. Hindi lang ito tungkol sa paniniwala — ito rin ay patunay ng pagkakabuklod ng mga tao."
-            },
-            new DialogueLine
-            {
-                characterName = "PLAYER ",
-                line = " Ang galing… iba talaga kapag may paniniwalang pinanghahawakan. Parang mas nagiging buo ang pagkatao ng isang bayan."
-            },
-        };
+    // Ensure SaveLoadManager exists
+    if (SaveLoadManager.Instance == null)
+    {
+        GameObject saveLoadManager = new GameObject("SaveLoadManager");
+        saveLoadManager.AddComponent<SaveLoadManager>();
+    }
 
-        ShowDialogue();
-        nextButton.onClick.AddListener(ShowNextDialogue);
-        backButton.onClick.AddListener(ShowPreviousDialogue);
+    InitializeDialogueLines();
+
+    // Load saved progress
+    LoadDialogueIndex();
+
+    SetupButtons();
+    ShowDialogue();
+    }
+
+    void InitializeDialogueLines()
+    {
+    dialogueLines = new DialogueLine[]
+    {
+        new DialogueLine
+        {
+            characterName = "CHRONO",
+            line = " Chrono... sino kaya itong nililok nila? Parang sobrang mahalaga sa kanila."
+        },
+        new DialogueLine
+        {
+            characterName = "CHRONO",
+            line = " Isa siya sa pinakakilalang nilalang ng mga taga-Babylonia. Dito nakasentro ang kanilang pananampalataya."
+        },
+        new DialogueLine
+        {
+            characterName = "PLAYER",
+            line = " May mga nag-aalay pa ng pagkain… para ba ito sa isang tao? O sa isang espiritu?"
+        },
+        new DialogueLine
+        {
+            characterName = "HAMMURABI",
+            line = " Hindi siya karaniwang nilalang. Siya si Marduk — ang diyos na nagbigay ng lakas at direksyon sa aming pamahalaan."
+        },
+        new DialogueLine
+        {
+            characterName = "PLAYER",
+            line = " Diyos?! Siya ang sentro ng paniniwala ninyo?"
+        },
+        new DialogueLine
+        {
+            characterName = "HAMMURABI",
+            line = " Oo. Sa panahon ng pagsasama-sama ng mga lungsod sa ilalim ng Babylonia, kailangan naming kilalanin ang isang diyos na magbubuklod sa mga tao."
+        },
+        new DialogueLine
+        {
+            characterName = "HAMMURABI",
+            line = " Pinili naming itaas si Marduk bilang pangunahing diyos. Siya ang sagisag ng kaayusan at tagumpay." // 5
+        },
+        new DialogueLine
+        {
+            characterName = "CHRONO",
+            line = " Sa mga sinaunang kwento, tinalo ni Marduk ang mga puwersa ng kaguluhan at nilikha ang mundo mula sa kaguluhan. Isa sa mga akdang isinulat noon ay Enuma Elish, na naglalarawan ng kanyang kapangyarihan."
+        },
+        new DialogueLine
+        {
+            characterName = "PLAYER",
+            line = " Ah, kaya pala parang may respeto at takot ang mga tao sa paligid… Hindi lang ito estatwa. Para sa kanila, ito ang kinatawan ng lakas na higit pa sa tao."
+        },
+        new DialogueLine
+        {
+            characterName = "HAMMURABI",
+            line = " Walang pamahalaan kung walang gabay. At walang gabay kung walang pananampalataya. Sa tulong ni Marduk, naitaguyod ko ang pagkakaisa sa buong Babylonia."
+        },
+        new DialogueLine
+        {
+            characterName = "CHRONO",
+            line = " Ang pananampalataya nila kay Marduk ay naging isang mahalagang bahagi ng kultura at pagkakakilanlan ng imperyo. Hindi lang ito tungkol sa paniniwala — ito rin ay patunay ng pagkakabuklod ng mga tao."
+         },
+        new DialogueLine
+         {
+            characterName = "PLAYER ",
+            line = " Ang galing… iba talaga kapag may paniniwalang pinanghahawakan. Parang mas nagiging buo ang pagkatao ng isang bayan."
+         },
+        };
+    }
+
+
+    // === Load Dialogue Index Logic ===
+    void LoadDialogueIndex()
+    {
+        if (PlayerPrefs.GetString("GameMode", "") == "NewGame")
+        {
+            currentDialogueIndex = 0;
+            PlayerPrefs.DeleteKey("GameMode");
+            Debug.Log("New game started - dialogue index reset to 0");
+            return;
+        }
+
+        if (PlayerPrefs.GetString("LoadedFromSave", "false") == "true")
+        {
+            if (PlayerPrefs.HasKey("LoadedDialogueIndex"))
+            {
+                currentDialogueIndex = PlayerPrefs.GetInt("LoadedDialogueIndex");
+                PlayerPrefs.DeleteKey("LoadedDialogueIndex");
+                Debug.Log($"Loaded from save file at dialogue index: {currentDialogueIndex}");
+            }
+
+            PlayerPrefs.SetString("LoadedFromSave", "false");
+        }
+        else
+        {
+            if (PlayerPrefs.HasKey("BabylonianSceneFive_DialogueIndex"))
+            {
+                currentDialogueIndex = PlayerPrefs.GetInt("BabylonianSceneFive_DialogueIndex");
+                Debug.Log($"Continuing from previous session at dialogue index: {currentDialogueIndex}");
+            }
+            else
+            {
+                currentDialogueIndex = 0;
+                Debug.Log("Starting from beginning");
+            }
+        }
+
+        if (currentDialogueIndex >= dialogueLines.Length)
+            currentDialogueIndex = dialogueLines.Length - 1;
+        if (currentDialogueIndex < 0)
+            currentDialogueIndex = 0;
+    }
+
+    // === Setup Buttons ===
+    void SetupButtons()
+    {
+        if (nextButton != null)
+            nextButton.onClick.AddListener(ShowNextDialogue);
+
+        if (backButton != null)
+            backButton.onClick.AddListener(ShowPreviousDialogue);
+
+        if (saveButton != null)
+            saveButton.onClick.AddListener(SaveAndLoad);
+        else
+        {
+            GameObject saveButtonObj = GameObject.Find("SaveBT");
+            if (saveButtonObj != null)
+            {
+                Button foundSaveButton = saveButtonObj.GetComponent<Button>();
+                if (foundSaveButton != null)
+                    foundSaveButton.onClick.AddListener(SaveAndLoad);
+            }
+        }
+
+        if (homeButton != null)
+            homeButton.onClick.AddListener(Home);
+        else
+        {
+            GameObject homeButtonObj = GameObject.Find("HomeBt");
+            if (homeButtonObj != null)
+            {
+                Button foundHomeButton = homeButtonObj.GetComponent<Button>();
+                if (foundHomeButton != null)
+                    foundHomeButton.onClick.AddListener(Home);
+            }
+        }
     }
 
     void ShowDialogue()
     {
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
+
+        if (audioSource != null && dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+        {
+            audioSource.clip = dialogueClips[currentDialogueIndex];
+            audioSource.Play();
+        }
 
         switch (currentDialogueIndex)
         {
@@ -133,26 +240,29 @@ public class BabylonianScene5 : MonoBehaviour
                 PlayercharacterRenderer.sprite = PlayerReflective;
                 break;
             case 6:
-                ChronocharacterRenderer.sprite = ChronoThinking;
+                ChronocharacterRenderer.sprite = HammurabiExplaining;
                 break;
             case 7:
+                ChronocharacterRenderer.sprite = ChronoThinking;
                 PlayercharacterRenderer.sprite = PlayerReflective;
                 break;
             case 8:
-                ChronocharacterRenderer.sprite = HammurabiWise;
-                break;
-            case 9:
                 ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
+            case 9:
+                ChronocharacterRenderer.sprite = HammurabiWise;
+                break;
             case 10:
+                ChronocharacterRenderer.sprite = ChronoThinking;
                 PlayercharacterRenderer.sprite = PlayerSmile;
                 break;
         }
-
     }
+
     void ShowNextDialogue()
     {
         currentDialogueIndex++;
+        SaveCurrentProgress();
 
         if (currentDialogueIndex >= dialogueLines.Length)
         {
@@ -169,14 +279,47 @@ public class BabylonianScene5 : MonoBehaviour
         if (currentDialogueIndex > 0)
         {
             currentDialogueIndex--;
+            SaveCurrentProgress();
             ShowDialogue();
         }
     }
-    
+
+    // === Save & Load ===
+    public void SaveAndLoad()
+    {
+        PlayerPrefs.SetInt("BabylonianSceneFive_DialogueIndex", currentDialogueIndex);
+        PlayerPrefs.SetString("LastScene", "BabylonianSceneFive");
+
+        PlayerPrefs.DeleteKey("AccessMode");
+        PlayerPrefs.SetString("SaveSource", "StoryScene");
+        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        PlayerPrefs.Save();
+
+        if (SaveLoadManager.Instance != null)
+            SaveLoadManager.Instance.SetCurrentGameState("BabylonianSceneFive", currentDialogueIndex);
+
+        Debug.Log($"Going to save menu with dialogue index: {currentDialogueIndex}");
+        SceneManager.LoadScene("SaveAndLoadScene");
+    }
+
+    // === Save Current Progress Only ===
+    void SaveCurrentProgress()
+    {
+        PlayerPrefs.SetInt("BabylonianSceneFive_DialogueIndex", currentDialogueIndex);
+        PlayerPrefs.SetString("CurrentScene", "BabylonianSceneFive");
+        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        PlayerPrefs.Save();
+    }
+
     public void Home()
     {
+        SaveCurrentProgress();
         SceneManager.LoadScene("TitleScreen");
     }
+
+    public void ManualSave()
+    {
+        SaveCurrentProgress();
+        Debug.Log($"Manual save completed at dialogue {currentDialogueIndex}");
+    }
 }
-
-

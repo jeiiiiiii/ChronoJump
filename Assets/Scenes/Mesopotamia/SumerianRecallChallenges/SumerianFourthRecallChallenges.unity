@@ -1095,6 +1095,139 @@ RectTransform:
   m_AnchoredPosition: {x: -685, y: 477}
   m_SizeDelta: {x: 86.5, y: 78.78}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &244225170
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 244225171}
+  - component: {fileID: 244225172}
+  m_Layer: 5
+  m_Name: DialogueAudio
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &244225171
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 244225170}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 922267911}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!82 &244225172
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 244225170}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &355097129
 GameObject:
   m_ObjectHideFlags: 0
@@ -1613,6 +1746,7 @@ RectTransform:
   - {fileID: 162030416}
   - {fileID: 1240278855}
   - {fileID: 85017232}
+  - {fileID: 244225171}
   m_Father: {fileID: 1661655817}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2280,15 +2414,32 @@ MonoBehaviour:
   - {fileID: 508173604}
   - {fileID: 1490102247}
   - {fileID: 206160653}
-  finishAudioSource: {fileID: 162030415}
   PlayercharacterRenderer: {fileID: 81652815}
   ChronocharacterRenderer: {fileID: 355097131}
+  finishAudioSource: {fileID: 162030415}
+  audioSource: {fileID: 244225172}
+  dialogueClips:
+  - {fileID: 8300000, guid: 9f22c7dd7c1e2264d8fbae590718096d, type: 3}
+  gulongClips:
+  - {fileID: 8300000, guid: 7a1242e771a470b4b89b9a29133489d1, type: 3}
+  - {fileID: 8300000, guid: 5614db07f7ef47c479ae1cf1d62ca841, type: 3}
+  - {fileID: 8300000, guid: 512e44b013ca8924282c52e62402c459, type: 3}
+  apoyClips:
+  - {fileID: 8300000, guid: 563b6812e1026544d8626b020e963470, type: 3}
+  - {fileID: 8300000, guid: bebbc7722581f6f48949f492179d05cd, type: 3}
+  - {fileID: 8300000, guid: 39c57c50131805e458b893014cf4c252, type: 3}
+  layagClips:
+  - {fileID: 8300000, guid: 514ac8cb8b3c58a479a0c09cbecb5016, type: 3}
+  - {fileID: 8300000, guid: c400a25964ef8404691d6ff0c0fde7cb, type: 3}
+  - {fileID: 8300000, guid: 4765ad280a3d9e743ae69dcc314e3ab9, type: 3}
+  - {fileID: 8300000, guid: 39c57c50131805e458b893014cf4c252, type: 3}
   PlayerSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}
   PlayerReflective: {fileID: -6828170361931683543, guid: 41872a0e55450ef43b535aba6363171a, type: 3}
   PlayerEager: {fileID: 5428063399545322546, guid: c517d75299d0ddb4cb6eed3374b7a5b3, type: 3}
   PlayerEmbarassed: {fileID: 21300000, guid: f1f43dbd9447c5f468698952cbd6a509, type: 3}
   ChronoCheerful: {fileID: -4788844467492341420, guid: 2d820e03f038071438b5607182311759, type: 3}
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
+  ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   PatesiFormal: {fileID: 8262088842231230576, guid: 44517f0f0872c2a4a89a735d4945961b, type: 3}
   IshmaSmirking: {fileID: -8185647323617709461, guid: 7cc93e3b623b8144f89529f5558c64f7, type: 3}
   BlurBG: {fileID: 1061096143}

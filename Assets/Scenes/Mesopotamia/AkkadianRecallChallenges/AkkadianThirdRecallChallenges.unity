@@ -649,6 +649,7 @@ MonoBehaviour:
   ChronoCheerful: {fileID: -4788844467492341420, guid: 2d820e03f038071438b5607182311759, type: 3}
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
+  SargonThinking: {fileID: -3581579875758752137, guid: 1b267f055a3615840b151c317952119e, type: 3}
   BlurBG: {fileID: 1061096143}
   answerButtons:
   - {fileID: 40675570}
@@ -666,6 +667,22 @@ MonoBehaviour:
   ArtifactImageButton: {fileID: 1359895873}
   ArtifactUseButton: {fileID: 1902764357}
   ArtifactButton: {fileID: 1902764357}
+  audioSource: {fileID: 1769111433}
+  initialClips:
+  - {fileID: 8300000, guid: 0a97eb14971281c4e8ec4565578db95d, type: 3}
+  rehiyonClips:
+  - {fileID: 8300000, guid: cc11324981b7ae54e954c97ed2a7712b, type: 3}
+  - {fileID: 8300000, guid: 8fff201b3866a53418a25f1a9daa70c8, type: 3}
+  - {fileID: 8300000, guid: 7bcaf55fe01fcaf4495b84e21f78dd23, type: 3}
+  - {fileID: 8300000, guid: 75e310956351362459dda88822f1cb1a, type: 3}
+  BabyloniaClips:
+  - {fileID: 8300000, guid: 8de866a864e081246acae76b07b3e70e, type: 3}
+  - {fileID: 8300000, guid: 35f7c0387b1d33a468b37f1b56ae699c, type: 3}
+  - {fileID: 8300000, guid: 88cd65429ebdabc4f8f26d3e2f8738d7, type: 3}
+  EmpireClips:
+  - {fileID: 8300000, guid: 8601b6fab1b1c0e42838965e823e4dfa, type: 3}
+  - {fileID: 8300000, guid: 059676914a451ca44bcabe41f4b377bb, type: 3}
+  - {fileID: 8300000, guid: 88cd65429ebdabc4f8f26d3e2f8738d7, type: 3}
 --- !u!1 &406098304
 GameObject:
   m_ObjectHideFlags: 0
@@ -1811,6 +1828,7 @@ RectTransform:
   - {fileID: 1832608732}
   - {fileID: 1810599431}
   - {fileID: 389675049}
+  - {fileID: 1769111432}
   m_Father: {fileID: 1661655817}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2619,8 +2637,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 988ae98e8f108e24ea2a99a067b99fc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  civilizations: []
-  useSceneNamePrefix: 1
 --- !u!114 &1359895873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3484,6 +3500,139 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1769111431
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1769111432}
+  - component: {fileID: 1769111433}
+  m_Layer: 5
+  m_Name: DialogueAudio
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1769111432
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1769111431}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 922267911}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!82 &1769111433
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1769111431}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1810599430
 GameObject:
   m_ObjectHideFlags: 0
@@ -3803,11 +3952,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 988ae98e8f108e24ea2a99a067b99fc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  civilizations:
-  - civilizationName: Akkadian
-    artifactAchievements:
-    - Tablet
-  useSceneNamePrefix: 1
 --- !u!114 &1902764357
 MonoBehaviour:
   m_ObjectHideFlags: 0

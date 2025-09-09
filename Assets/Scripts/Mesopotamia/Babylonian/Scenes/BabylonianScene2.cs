@@ -16,6 +16,10 @@ public class BabylonianScene2 : MonoBehaviour
     [SerializeField] public Button nextButton;
     public Button backButton;
 
+    [Header("UI Buttons")]
+    public Button saveButton;
+    public Button homeButton;
+
     public int currentDialogueIndex = 0;
 
     public DialogueLine[] dialogueLines;
@@ -32,7 +36,26 @@ public class BabylonianScene2 : MonoBehaviour
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
+
+    public AudioSource audioSource;
+    public AudioClip[] dialogueClips;
+
     void Start()
+    {
+        // Ensure SaveLoadManager exists
+        if (SaveLoadManager.Instance == null)
+        {
+            GameObject saveLoadManager = new GameObject("SaveLoadManager");
+            saveLoadManager.AddComponent<SaveLoadManager>();
+        }
+
+        InitializeDialogueLines();
+        LoadDialogueIndex();
+        SetupButtons();
+        ShowDialogue();
+    }
+
+    void InitializeDialogueLines()
     {
         dialogueLines = new DialogueLine[]
         {
@@ -79,7 +102,7 @@ public class BabylonianScene2 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "HAMMURABI",
-                line = " Kung sinaktan mo ang iba, may kapalit na parusa. Tinatawag itong prinsipyo ng mata sa mata, ngipin sa ngipin o Lex Talionis . Ibig sabihin, ang ginawa mo sa iba ay maaaring mangyari rin sa iyo."
+                line = " Kung sinaktan mo ang iba, may kapalit na parusa. Tinatawag itong prinsipyo ng mata sa mata, ngipin sa ngipin. Ibig sabihin, ang ginawa mo sa iba ay maaaring mangyari rin sa iyo."
             },
             new DialogueLine
             {
@@ -97,16 +120,99 @@ public class BabylonianScene2 : MonoBehaviour
                 line = " Ang isang lipunan ay hindi lalago kung walang batas. Ang Kodigo na ito ay ginawa hindi lang para magparusa, kundi para ituro kung ano ang tama."
             },
         };
+    }
 
-        ShowDialogue();
-        nextButton.onClick.AddListener(ShowNextDialogue);
-        backButton.onClick.AddListener(ShowPreviousDialogue);
+    void LoadDialogueIndex()
+    {
+    // Check if this is a new game
+    if (PlayerPrefs.GetString("GameMode", "") == "NewGame")
+    {
+        currentDialogueIndex = 0;
+        PlayerPrefs.DeleteKey("GameMode");
+        Debug.Log("New game started - dialogue index reset to 0");
+        return;
+    }
+
+    // Check if this is a load operation from save file
+    if (PlayerPrefs.GetString("LoadedFromSave", "false") == "true")
+    {
+        if (PlayerPrefs.HasKey("LoadedDialogueIndex"))
+        {
+            currentDialogueIndex = PlayerPrefs.GetInt("LoadedDialogueIndex");
+            PlayerPrefs.DeleteKey("LoadedDialogueIndex");
+            Debug.Log($"Loaded from save file at dialogue index: {currentDialogueIndex}");
+        }
+
+        // Clear the load flag
+        PlayerPrefs.SetString("LoadedFromSave", "false");
+    }
+    else
+    {
+        // Check for regular scene progression (not from load)
+        if (PlayerPrefs.HasKey("BabylonianSceneTwo_DialogueIndex"))
+        {
+            currentDialogueIndex = PlayerPrefs.GetInt("BabylonianSceneTwo_DialogueIndex");
+            Debug.Log($"Continuing from previous session at dialogue index: {currentDialogueIndex}");
+        }
+        else
+        {
+            currentDialogueIndex = 0;
+            Debug.Log("Starting from beginning");
+        }
+    }
+
+    // Ensure index is within bounds
+    if (currentDialogueIndex >= dialogueLines.Length)
+        currentDialogueIndex = dialogueLines.Length - 1;
+    if (currentDialogueIndex < 0)
+        currentDialogueIndex = 0;
+    }
+
+    void SetupButtons()
+    {
+        if (nextButton != null)
+            nextButton.onClick.AddListener(ShowNextDialogue);
+
+        if (backButton != null)
+            backButton.onClick.AddListener(ShowPreviousDialogue);
+
+        if (saveButton != null)
+            saveButton.onClick.AddListener(SaveAndLoad);
+        else
+        {
+            GameObject saveButtonObj = GameObject.Find("SaveBT");
+            if (saveButtonObj != null)
+            {
+                Button foundSaveButton = saveButtonObj.GetComponent<Button>();
+                if (foundSaveButton != null)
+                    foundSaveButton.onClick.AddListener(SaveAndLoad);
+            }
+        }
+
+        if (homeButton != null)
+            homeButton.onClick.AddListener(Home);
+        else
+        {
+            GameObject homeButtonObj = GameObject.Find("HomeBt");
+            if (homeButtonObj != null)
+            {
+                Button foundHomeButton = homeButtonObj.GetComponent<Button>();
+                if (foundHomeButton != null)
+                    foundHomeButton.onClick.AddListener(Home);
+            }
+        }
     }
 
     void ShowDialogue()
     {
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
+
+        if (audioSource != null && dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
+        {
+            audioSource.clip = dialogueClips[currentDialogueIndex];
+            audioSource.Play();
+        }
 
         switch (currentDialogueIndex)
         {
@@ -149,11 +255,12 @@ public class BabylonianScene2 : MonoBehaviour
                 ChronocharacterRenderer.sprite = HammurabiWise;
                 break;
         }
-
     }
+
     void ShowNextDialogue()
     {
         currentDialogueIndex++;
+        SaveCurrentProgress();
 
         if (currentDialogueIndex >= dialogueLines.Length)
         {
@@ -170,14 +277,43 @@ public class BabylonianScene2 : MonoBehaviour
         if (currentDialogueIndex > 0)
         {
             currentDialogueIndex--;
+            SaveCurrentProgress();
             ShowDialogue();
         }
     }
-    
+
+    public void SaveAndLoad()
+    {
+        PlayerPrefs.SetInt("BabylonianSceneTwo_DialogueIndex", currentDialogueIndex);
+        PlayerPrefs.SetString("LastScene", "BabylonianSceneTwo");
+        PlayerPrefs.DeleteKey("AccessMode");
+        PlayerPrefs.SetString("SaveSource", "StoryScene");
+        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        PlayerPrefs.Save();
+
+        if (SaveLoadManager.Instance != null)
+            SaveLoadManager.Instance.SetCurrentGameState("BabylonianSceneTwo", currentDialogueIndex);
+
+        SceneManager.LoadScene("SaveAndLoadScene");
+    }
+
+    void SaveCurrentProgress()
+    {
+        PlayerPrefs.SetInt("BabylonianSceneTwo_DialogueIndex", currentDialogueIndex);
+        PlayerPrefs.SetString("CurrentScene", "BabylonianSceneTwo");
+        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        PlayerPrefs.Save();
+    }
+
     public void Home()
     {
+        SaveCurrentProgress();
         SceneManager.LoadScene("TitleScreen");
     }
+
+    public void ManualSave()
+    {
+        SaveCurrentProgress();
+        Debug.Log($"Manual save completed at dialogue {currentDialogueIndex}");
+    }
 }
-
-
