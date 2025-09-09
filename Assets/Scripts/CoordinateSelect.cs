@@ -5,9 +5,18 @@ using UnityEngine.UI;
 
 public class CoordinateSelect : MonoBehaviour
 {
-    public void BacktoChapterSelect()
+
+    public void LoadChapters()
     {
         SceneManager.LoadScene("ChapterSelect");
+    }
+    public void LoadCodexScene()
+    {
+        SceneManager.LoadScene("CodexScene");
+    }
+    public void LoadAchievementScene()
+    {
+        SceneManager.LoadScene("AchievementsScene");
     }
 
     public void LoadSumerian()

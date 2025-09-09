@@ -92,8 +92,5 @@ public class TitleScreen : MonoBehaviour
         PlayerPrefs.DeleteKey("SaveSource");
         PlayerPrefs.SetString("AccessMode", "LoadOnly"); // Mark that we're only here to load
         PlayerPrefs.Save();
-        
-        Debug.Log("Accessing Save/Load scene for loading only - save buttons will be disabled");
-        SceneManager.LoadScene("SaveAndLoadScene");
     }
 }
