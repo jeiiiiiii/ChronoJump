@@ -1,16 +1,30 @@
-using Firebase;
 using Firebase.Auth;
 using Firebase.Firestore;
-using Firebase.Extensions;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using System.Linq;
 
 public class FirebaseManager : MonoBehaviour
 {
     public static FirebaseManager Instance { get; private set; }
 
-    public FirebaseAuth Auth { get; private set; }
-    public FirebaseFirestore DB { get; private set; }
+    // Core Firebase service
+    private IFirebaseService _firebaseService;
+
+    // Services (make them public so other managers can use them directly)
+    public AuthService AuthService { get; private set; }
+    public UserService UserService { get; private set; }
+    public TeacherService TeacherService { get; private set; }
+    public ClassService ClassService { get; private set; }
+    public StudentService StudentService { get; private set; }
+
+    // Public Firebase references
+    public FirebaseAuth Auth => _firebaseService?.Auth;
+    public FirebaseFirestore DB => _firebaseService?.DB;
+    public FirebaseUser CurrentUser => _firebaseService?.CurrentUser;
+    public UserAccountModel CurrentUserData => _firebaseService?.CurrentUserData;
 
     private void Awake()
     {
@@ -23,178 +37,133 @@ public class FirebaseManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        InitializeFirebase();
+        InitializeServices();
     }
 
-    private void InitializeFirebase()
+    private async void InitializeServices()
     {
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
+        _firebaseService = new FirebaseService();
+        
+        bool initialized = await _firebaseService.InitializeAsync();
+        if (!initialized)
         {
-            if (task.Result == DependencyStatus.Available)
-            {
-                Auth = FirebaseAuth.DefaultInstance;
-                DB = FirebaseFirestore.DefaultInstance;
+            Debug.LogError("Failed to initialize Firebase services");
+            return;
+        }
 
-                Debug.Log("✅ Firebase initialized successfully!");
-            }
-            else
-            {
-                Debug.LogError($"❌ Could not resolve Firebase dependencies: {task.Result}");
-            }
-        });
+        // Initialize once here
+        AuthService = new AuthService(_firebaseService);
+        UserService = new UserService(_firebaseService);
+        TeacherService = new TeacherService(_firebaseService);
+        ClassService = new ClassService(_firebaseService, TeacherService);
+        StudentService = new StudentService(_firebaseService);
+
+        Debug.Log("✅ All Firebase services initialized successfully!");
     }
-
-    public FirebaseUser CurrentUser => Auth.CurrentUser;
-    public UserAccountModel CurrentUserData { get; private set; }
 
     public void SignIn(string email, string password, Action<bool, string> callback)
     {
-        Auth.SignInWithEmailAndPasswordAsync(email, password).ContinueWithOnMainThread(task =>
+        AuthService?.SignIn(email, password, callback);
+    }
+
+    // Original SignUp method without code parameter
+    public void SignUp(string email, string password, string displayName, bool isTeacher, Action<bool, string> callback)
+    {
+        AuthService?.SignUp(email, password, displayName, isTeacher, callback);
+    }
+
+    // New SignUp method with code parameter
+    public void SignUp(string email, string password, string displayName, bool isTeacher, string code, Action<bool, string> callback)
+    {
+        AuthService?.SignUp(email, password, displayName, isTeacher, code, callback);
+    }
+
+    // Code validation methods
+    public void ValidateTeacherCode(string code, Action<bool> callback)
+    {
+        if (string.IsNullOrEmpty(code))
         {
-            if (task.IsCanceled)
-            {
-                Debug.LogError("SignIn was canceled.");
-                callback(false, "SignIn was canceled.");
-                return;
-            }
+            callback?.Invoke(false);
+            return;
+        }
 
-            if (task.IsFaulted)
+        // Check if the code exists in the teacherCodes collection
+        DB.Collection("teacherCodes").Document(code).GetSnapshotAsync().ContinueWith(task =>
+        {
+            UnityDispatcher.RunOnMainThread(() =>
             {
-                Debug.LogError("SignIn failed: " + task.Exception);
-                callback(false, "Your email or password is incorrect.");
-                return;
-            }
-
-            var authResult = task.Result;
-            FirebaseUser user = authResult.User;
-            callback(true, "Login successful");
+                if (task.IsCompletedSuccessfully && task.Result.Exists)
+                {
+                    callback?.Invoke(true);
+                }
+                else
+                {
+                    callback?.Invoke(false);
+                }
+            });
         });
     }
 
-    public void SignUp(string email, string password, string displayName, bool isTeacher, Action<bool, string> callback)
+    public void ValidateClassCode(string classCode, Action<bool> callback)
     {
-        Auth.CreateUserWithEmailAndPasswordAsync(email, password).ContinueWithOnMainThread(task =>
+        if (string.IsNullOrEmpty(classCode))
         {
-            if (task.IsCanceled)
-            {
-                Debug.LogError("SignUp was canceled.");
-                callback(false, "SignUp was canceled.");
-                return;
-            }
+            callback?.Invoke(false);
+            return;
+        }
 
-            if (task.IsFaulted)
+        DB.Collection("classes")
+        .WhereEqualTo("classCode", classCode)
+        .Limit(1)
+        .GetSnapshotAsync()
+        .ContinueWith((Task<QuerySnapshot> task) =>
+        {
+            UnityDispatcher.RunOnMainThread(() =>
             {
-                string errorMessage = "Unknown error eccurred. Please try again.";
-
-                foreach (var inner in task.Exception.Flatten().InnerExceptions)
+                if (task.IsCompletedSuccessfully && task.Result != null && task.Result.Count > 0)
                 {
-                    if (inner is FirebaseException firebaseEx)
+                    var doc = task.Result.Documents.FirstOrDefault(); // ✅ safe access
+                    if (doc != null)
                     {
-                        var errorCode = (AuthError)firebaseEx.ErrorCode;
-                        switch (errorCode)
-                        {
-                            case AuthError.EmailAlreadyInUse:
-                                errorMessage = "This email is already in use.";
-                                break;
-                            case AuthError.InvalidEmail:
-                                errorMessage = "The email address is badly formatted.";
-                                break;
-                            case AuthError.WeakPassword:
-                                errorMessage = "The password is too weak.";
-                                break;
-                            default:
-                                errorMessage = firebaseEx.Message;
-                                break;
-                        }
-                    }
-                }
-
-                Debug.LogError("SignUp failed: " + task.Exception);
-                callback(false, errorMessage);
-                return;
-            }
-
-            var authResult = task.Result;
-            FirebaseUser user = authResult.User;
-
-            UserProfile profile = new UserProfile
-            {
-                DisplayName = displayName,
-            };
-            user.UpdateUserProfileAsync(profile).ContinueWithOnMainThread(updateTask =>
-            {
-                if (updateTask.IsCanceled || updateTask.IsFaulted)
-                {
-                    Debug.LogError("Failed to update user profile: " + updateTask.Exception);
-                    callback(false, "Failed to update user profile. Please try again.");
-                    return;
-                }
-                Debug.Log($"User {displayName} registered successfully with email: {email}");
-
-                DocumentReference docRef = DB.Collection("userAccounts").Document(user.UserId);
-                var userData = new
-                {
-                    displayName = user.DisplayName,
-                    email = user.Email,
-                    role = isTeacher ? "teacher" : "student"
-                };
-                Debug.Log($"Saving user data for {displayName}...");
-
-                docRef.SetAsync(userData).ContinueWithOnMainThread(setTask =>
-                {
-                    if (setTask.IsCanceled || setTask.IsFaulted)
-                    {
-                        Debug.LogError("Failed to save user data: " + setTask.Exception);
-                        callback(false, "Failed to save user data. Please try again.");
+                        var classData = doc.ToDictionary();
+                        bool isActive = classData.ContainsKey("isActive") ? (bool)classData["isActive"] : true;
+                        callback?.Invoke(isActive);
                         return;
                     }
+                }
 
-                    Debug.Log($"User data for {displayName} saved successfully.");
-                    callback(true, "Registration successful");
-                });
+                callback?.Invoke(false);
             });
         });
     }
 
     public void GetUserData(Action<UserAccountModel> callback)
     {
-        if (CurrentUser == null)
-        {
-            Debug.LogError("No current user signed in.");
-            callback(null);
-            return;
-        }
+        UserService?.GetUserData(callback);
+    }
 
-        
-        DocumentReference docRef = DB.Collection("userAccounts").Document(CurrentUser.UserId);
-        docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
-        {
-            
-            if (task.IsCanceled || task.IsFaulted)
-            {
-                Debug.LogError("Failed to get user data: " + task.Exception);
-                callback(null);
-                return;
-            }
+    public void GetTeacherData(string userId, Action<TeacherModel> callback)
+    {
+        TeacherService?.GetTeacherData(userId, callback);
+    }
 
-            DocumentSnapshot snapshot = task.Result;
-            if (snapshot.Exists)
-            {
-                UserAccountModel userData = new UserAccountModel();
-                userData.userID = snapshot.Id;
-                userData.displayName = snapshot.GetValue<string>("displayName");
-                userData.email = snapshot.GetValue<string>("email");
-                userData.role = snapshot.GetValue<string>("role");
-                callback(userData);
-            }
-            else
-            {
-                Debug.LogWarning("User document does not exist.");
-                callback(null);
-            }
-        });
+    public void CreateClass(string className, string classLevel, Action<bool, string> callback)
+    {
+        ClassService?.CreateClass(className, classLevel, callback);
+    }
+
+    public async Task<string> GenerateUniqueClassCode()
+    {
+        return await ClassService?.GenerateUniqueClassCode();
+    }
+
+    public void GetStudentsInClass(string classCode, Action<List<StudentModel>> callback)
+    {
+        StudentService?.GetStudentsInClass(classCode, callback);
+    }
+
+    public void GetStudentLeaderboard(string classCode, Action<List<LeaderboardStudentModel>> callback)
+    {
+        StudentService?.GetStudentLeaderboard(classCode, callback);
     }
 }
-
-
-

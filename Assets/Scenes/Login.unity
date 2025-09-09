@@ -396,7 +396,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 326049506}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
@@ -1204,7 +1204,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u200B"
+  m_text: "Janeganda123*\u200B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0503ee5058edc194380db47a75efeb12, type: 2}
   m_sharedMaterial: {fileID: -7154655490135454373, guid: 0503ee5058edc194380db47a75efeb12, type: 2}
@@ -1827,7 +1827,7 @@ MonoBehaviour:
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.7411765, g: 0.79607844, b: 0.8627451, a: 0.7529412}
-  m_Text: 
+  m_Text: Janeganda123*
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
@@ -1937,7 +1937,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u200B"
+  m_text: "janedelacruz@gmail.com\u200B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0503ee5058edc194380db47a75efeb12, type: 2}
   m_sharedMaterial: {fileID: -7154655490135454373, guid: 0503ee5058edc194380db47a75efeb12, type: 2}
@@ -3279,7 +3279,7 @@ MonoBehaviour:
   feedbackText: {fileID: 503129445}
   isTeacherToggle: {fileID: 1234386359}
   errorMessagePanel: {fileID: 1167801663}
-  backButton: {fileID: 977228234}
+  backButton: {fileID: 1992185083}
 --- !u!1 &1692138768
 GameObject:
   m_ObjectHideFlags: 0
@@ -3483,7 +3483,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1694504919}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
@@ -3752,7 +3752,7 @@ MonoBehaviour:
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.7418654, g: 0.7952775, b: 0.86415094, a: 0.7529412}
-  m_Text: 
+  m_Text: janedelacruz@gmail.com
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0

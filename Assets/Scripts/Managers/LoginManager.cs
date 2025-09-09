@@ -12,18 +12,22 @@ public class LoginManager : MonoBehaviour
     public Toggle isTeacherToggle;
     public GameObject errorMessagePanel;
     public Button backButton;
+
+    // Navigate to the registration scene
     public void RegisterButtonClicked()
     {
         SceneManager.LoadScene("Register");
     }
 
+    // Navigate back to the landing page and reset error messages
     public void BackButtonClicked()
     {
         SceneManager.LoadScene("LandingPage");
         errorMessagePanel.SetActive(false);
         feedbackText.text = string.Empty;
     }
-    
+
+    // Validate input fields and attempt to log in the user, handling role verification and errors    
     public void LoginButtonClicked()
     {
         string email = emailField.text.Trim();
@@ -109,6 +113,7 @@ public class LoginManager : MonoBehaviour
         });
     }
 
+    // Close the error message panel and clear feedback text
     public void ErrorBackButtonClicked()
     {
         errorMessagePanel.SetActive(false);
