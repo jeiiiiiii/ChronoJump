@@ -15,4 +15,8 @@ public class AddCharacter : MonoBehaviour
     {
         SceneManager.LoadScene("CreateNewAddFrameScene");
     }
+    public void Try()
+    {
+        SceneManager.LoadScene("GameScene");
+    }
 }

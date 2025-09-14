@@ -10,7 +10,7 @@ public class ViewStoriesBackgroundManager : MonoBehaviour
     }
     
     [SerializeField] private StorySlot[] storySlots = new StorySlot[6];
-    [SerializeField] private GameObject storyActionPopup; // The Edit/View/Delete popup
+    [SerializeField] private GameObject storyActionPopup;
     
     void Start()
     {
@@ -25,7 +25,7 @@ public class ViewStoriesBackgroundManager : MonoBehaviour
     
     void UpdateAllStoryBackgrounds()
     {
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < storySlots.Length; i++)
         {
             UpdateStorySlot(i);
         }
@@ -41,12 +41,9 @@ public class ViewStoriesBackgroundManager : MonoBehaviour
 
         if (hasBackground && background != null)
         {
-            // Story has content - show background
             slot.backgroundImage.texture = background;
             slot.backgroundImage.gameObject.SetActive(true);
 
-
-            // Adjust aspect ratio
             AspectRatioFitter fitter = slot.backgroundImage.GetComponent<AspectRatioFitter>();
             if (fitter != null)
             {
@@ -55,9 +52,7 @@ public class ViewStoriesBackgroundManager : MonoBehaviour
         }
         else
         {
-            // Story is empty - show empty indicator
             slot.backgroundImage.gameObject.SetActive(false);
-
 
         }
     }

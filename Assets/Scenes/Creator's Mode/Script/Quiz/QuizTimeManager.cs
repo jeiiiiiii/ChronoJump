@@ -220,7 +220,7 @@ public class QuizTimeManager : MonoBehaviour
         nextButton.interactable = true;
         nextButton.onClick.AddListener(() =>
         {
-            SceneManager.LoadScene("ReviewScene");
+            SceneManager.LoadScene("Creator'sModeScene");
         });
     }
 }

@@ -9,10 +9,10 @@ public class AddDialogue : MonoBehaviour
     }
     public void Back()
     {
-        SceneManager.LoadScene("CreateNewAddTitleScene");
+        SceneManager.LoadScene("CreateNewAddFrameScene");
     }
     public void Next()
     {
-        SceneManager.LoadScene("CreateNewAddQuizScene");
+        SceneManager.LoadScene("ReviewDialogueScene");
     }
 }

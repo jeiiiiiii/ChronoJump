@@ -12,6 +12,8 @@ public class ReviewQuestionManager : MonoBehaviour
     public TMP_InputField questionInput;
     public TMP_InputField[] choiceInputs;
     public Toggle[] choiceToggles;
+    public Button saveButton;
+public Button cancelButton;
     private int editingIndex = -1;
 
     [Header("Delete Popup")]
@@ -24,6 +26,9 @@ public class ReviewQuestionManager : MonoBehaviour
     {
         Debug.Log("ReviewQuestionManager started — rebuilding list");
         RebuildList();
+
+        if (saveButton != null) saveButton.onClick.AddListener(SaveEdit);
+        if (cancelButton != null) cancelButton.onClick.AddListener(CancelEdit);
     }
 
     public void RebuildList()
@@ -41,21 +46,24 @@ public class ReviewQuestionManager : MonoBehaviour
 
     // --- Edit ---
     public void OnEditQuestion(int index)
-    {
-        editingIndex = index;
-        var q = AddQuiz.quizQuestions[index];
-
-        // Fill fields with existing data
-        questionInput.text = q.questionText;
-
-        for (int i = 0; i < 4; i++)
         {
-            choiceInputs[i].text = q.choices[i];
-            choiceToggles[i].isOn = (i == q.correctAnswerIndex); // ✅ Make sure your Question class uses "correctIndex"
-        }
+            Debug.Log("✏ Editing question at index: " + index);
+            editPanel.SetActive(true);
+            Debug.Log("Panel active state: " + editPanel.activeSelf);
+            editingIndex = index;
+            var q = AddQuiz.quizQuestions[index];
 
-        editPanel.SetActive(true);
-    }
+            // Fill fields with existing data
+            questionInput.text = q.questionText;
+
+            for (int i = 0; i < 4; i++)
+            {
+                choiceInputs[i].text = q.choices[i];
+                choiceToggles[i].isOn = (i == q.correctAnswerIndex); // ✅ Make sure your Question class uses "correctIndex"
+            }
+
+            editPanel.SetActive(true);
+        }
 
     public void CancelEdit()
     {
@@ -107,15 +115,16 @@ public class ReviewQuestionManager : MonoBehaviour
     {
         if (index >= 0 && index < AddQuiz.quizQuestions.Count)
         {
-            Debug.Log("🗑 Deleted question: " + AddQuiz.quizQuestions[index].questionText);
-            AddQuiz.quizQuestions.RemoveAt(index);
-            RebuildList();
+            deleteIndex = index;
+            deletePanel.SetActive(true);
         }
     }
+
     public void ConfirmDelete()
     {
         if (deleteIndex >= 0)
         {
+            Debug.Log("🗑 Deleted question: " + AddQuiz.quizQuestions[deleteIndex].questionText);
             AddQuiz.quizQuestions.RemoveAt(deleteIndex);
             deleteIndex = -1;
             RebuildList();
@@ -125,6 +134,8 @@ public class ReviewQuestionManager : MonoBehaviour
 
     public void CancelDelete()
     {
+        deleteIndex = -1;
         deletePanel.SetActive(false);
     }
+
 }

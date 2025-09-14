@@ -14,4 +14,19 @@ public static class DialogueStorage
     {
         dialogues.Clear();
     }
+
+    public static void DeleteDialogue(int index)
+    {
+        if (index >= 0 && index < dialogues.Count)
+            dialogues.RemoveAt(index);
+    }
+
+    public static void EditDialogue(int index, string newName, string newText)
+    {
+        if (index >= 0 && index < dialogues.Count)
+        {
+            dialogues[index].characterName = newName;
+            dialogues[index].dialogueText = newText;
+        }
+    }
 }

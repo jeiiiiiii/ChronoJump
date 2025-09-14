@@ -5,16 +5,45 @@ using SFB;
 
 public class ImageUploader : MonoBehaviour
 {
-    public RawImage previewImage;
-    
-    // Keep track of the last runtime texture to safely clean it up
-    private Texture2D lastUploadedTexture;
-    
-    public void UploadImage()
+    [Header("Character Previews")]
+    public RawImage previewImage1; // left character
+    public RawImage previewImage2; // right character
+
+    [Header("Background Preview")]
+    public RawImage previewBackground; // background image slot
+
+    private Texture2D lastUploadedTexture1;
+    private Texture2D lastUploadedTexture2;
+    private Texture2D lastUploadedBackground;
+
+    // Upload for first character slot
+    public void UploadImage1()
+    {
+        UploadAndSetImage(ref lastUploadedTexture1, previewImage1, 1);
+    }
+
+    // Upload for second character slot
+    public void UploadImage2()
+    {
+        UploadAndSetImage(ref lastUploadedTexture2, previewImage2, 2);
+    }
+
+    // Upload for background slot
+    // Upload for background slot
+    public void UploadBackground()
+    {
+        UploadAndSetImage(ref ImageStorage.UploadedTexture, previewBackground, 3);
+        // Save into current story slot
+        ImageStorage.SaveCurrentImageToStory();
+    }
+
+
+    // Shared logic so we don't repeat code
+    private void UploadAndSetImage(ref Texture2D lastTexture, RawImage targetPreview, int slot)
     {
         var extensions = new[] {
-            new ExtensionFilter("Image files", "jpg", "jpeg", "png", "bmp", "gif")
-        };
+        new ExtensionFilter("Image files", "jpg", "jpeg", "png", "bmp", "gif")
+    };
 
         var paths = StandaloneFileBrowser.OpenFilePanel("Select Image", "", extensions, false);
 
@@ -22,37 +51,37 @@ public class ImageUploader : MonoBehaviour
         {
             byte[] fileData = File.ReadAllBytes(paths[0]);
 
-            // Create new texture for this upload
             Texture2D tex = new Texture2D(2, 2);
             if (tex.LoadImage(fileData))
             {
-                // Clean up previously uploaded texture (only if it was runtime-created)
-                if (lastUploadedTexture != null)
-                {
-                    Destroy(lastUploadedTexture);
-                }
+                if (lastTexture != null)
+                    Destroy(lastTexture);
 
-                // Apply new texture to preview
-                previewImage.texture = tex;
+                // Assign to preview
+                targetPreview.texture = tex;
+                lastTexture = tex;
 
-                // Store TEMPORARILY - will be saved to story when "Next" is clicked
-                ImageStorage.UploadedTexture = tex;
+                // ✅ Save globally
+                if (slot == 1)
+                    ImageStorage.uploadedTexture1 = tex;
+                else if (slot == 2)
+                    ImageStorage.uploadedTexture2 = tex;
+                else if (slot == 3)
+                    ImageStorage.UploadedTexture = tex; // background slot
 
-                // Keep reference for safe cleanup next time
-                lastUploadedTexture = tex;
+                // Save into current story (important for ViewCreatedStoriesScene)
+                ImageStorage.SaveCurrentImageToStory();
 
-                // Adjust aspect ratio if using AspectRatioFitter
-                AspectRatioFitter fitter = previewImage.GetComponent<AspectRatioFitter>();
+                // Fix aspect ratio
+                AspectRatioFitter fitter = targetPreview.GetComponent<AspectRatioFitter>();
                 if (fitter != null)
-                {
                     fitter.aspectRatio = (float)tex.width / tex.height;
-                }
 
-                Debug.Log("Image uploaded and ready to be saved.");
+                Debug.Log("Image uploaded to " + targetPreview.name);
             }
             else
             {
-                Debug.LogError("Failed to load image. Please select a valid image file.");
+                Debug.LogError("Failed to load image. Please select a valid file.");
             }
         }
     }

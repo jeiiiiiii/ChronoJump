@@ -7,7 +7,6 @@ public class StorySelector : MonoBehaviour
     
     // Reference to the popup panel (assign in inspector)
     [SerializeField] private GameObject actionPopup;
-    [SerializeField] private StoryActionHandler actionHandler;
     
     public void OnStoryClicked()
     {
@@ -32,11 +31,6 @@ public class StorySelector : MonoBehaviour
         {
             actionPopup.SetActive(true);
             
-            // Set which story the popup is for
-            if (actionHandler != null)
-            {
-                actionHandler.SetCurrentStory(storyIndex);
-            }
         }
     }
     

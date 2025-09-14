@@ -667,8 +667,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   storyIndex: 5
-  actionPopup: {fileID: 0}
-  actionHandler: {fileID: 0}
+  actionPopup: {fileID: 712203315}
 --- !u!1 &379809873
 GameObject:
   m_ObjectHideFlags: 0
@@ -1256,6 +1255,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 495884681}
   m_CullTransparentMesh: 1
+--- !u!1 &640960864
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 640960865}
+  m_Layer: 5
+  m_Name: GameObject (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &640960865
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 640960864}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1062734595}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &696368642
 GameObject:
   m_ObjectHideFlags: 0
@@ -1403,8 +1437,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   storyIndex: 4
-  actionPopup: {fileID: 0}
-  actionHandler: {fileID: 0}
+  actionPopup: {fileID: 712203315}
 --- !u!1 &712203315
 GameObject:
   m_ObjectHideFlags: 0
@@ -1503,8 +1536,6 @@ MonoBehaviour:
   viewButton: {fileID: 1508610267}
   deleteButton: {fileID: 473585897}
   backButton: {fileID: 12868503}
-  editSceneName: CreateNewAddTitleScene
-  viewSceneName: ViewCreatedStoriesScene
   deleteConfirmPopup: {fileID: 1776210997}
   confirmDeleteButton: {fileID: 1699382871}
   cancelDeleteButton: {fileID: 898160366}
@@ -2184,8 +2215,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   storyIndex: 3
-  actionPopup: {fileID: 0}
-  actionHandler: {fileID: 0}
+  actionPopup: {fileID: 712203315}
 --- !u!1 &1021894908
 GameObject:
   m_ObjectHideFlags: 0
@@ -2268,7 +2298,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1021894911}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 712203319}
+        m_TargetAssemblyTypeName: StoryActionHandler, Assembly-CSharp
+        m_MethodName: EditStory
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1021894911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2422,6 +2464,7 @@ RectTransform:
   - {fileID: 251918700}
   - {fileID: 712203316}
   - {fileID: 379809874}
+  - {fileID: 640960865}
   m_Father: {fileID: 1541456320}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2775,8 +2818,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   storyIndex: 1
-  actionPopup: {fileID: 0}
-  actionHandler: {fileID: 0}
+  actionPopup: {fileID: 712203315}
 --- !u!1 &1302380417
 GameObject:
   m_ObjectHideFlags: 0
@@ -3132,8 +3174,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   storyIndex: 2
-  actionPopup: {fileID: 0}
-  actionHandler: {fileID: 0}
+  actionPopup: {fileID: 712203315}
 --- !u!1 &1508610265
 GameObject:
   m_ObjectHideFlags: 0
@@ -3216,7 +3257,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1508610268}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 712203319}
+        m_TargetAssemblyTypeName: StoryActionHandler, Assembly-CSharp
+        m_MethodName: ViewStory
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1508610268
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3677,7 +3730,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   storyIndex: 0
   actionPopup: {fileID: 712203315}
-  actionHandler: {fileID: 0}
 --- !u!1 &1699382869
 GameObject:
   m_ObjectHideFlags: 0

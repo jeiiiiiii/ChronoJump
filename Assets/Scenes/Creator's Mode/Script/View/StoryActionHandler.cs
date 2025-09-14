@@ -12,11 +12,9 @@ public class StoryActionHandler : MonoBehaviour
     [SerializeField] private Button backButton;
     
     [Header("Scene Names")]
-    [SerializeField] private string editSceneName = "CreateNewAddFrameScene";
-    [SerializeField] private string viewSceneName = "ViewCreatedStoriesScene"; // Scene for viewing/playing story
     
     [Header("Delete Confirmation")]
-    [SerializeField] private GameObject deleteConfirmPopup; // Optional: confirmation popup
+    [SerializeField] private GameObject deleteConfirmPopup; 
     [SerializeField] private Button confirmDeleteButton;
     [SerializeField] private Button cancelDeleteButton;
     
@@ -52,19 +50,43 @@ public class StoryActionHandler : MonoBehaviour
         backgroundManager = FindObjectOfType<ViewStoriesBackgroundManager>();
     }
     
+    public void OnStoryButtonClicked(int storyIndex)
+    {
+        // Check if this slot actually has content
+        if (storyIndex < 0 || storyIndex >= ImageStorage.HasBackground.Length)
+            return;
+
+        bool hasContent = ImageStorage.HasBackground[storyIndex];
+
+        if (!hasContent)
+        {
+            Debug.Log("Story button clicked but it's empty (index " + storyIndex + ")");
+            return; // do nothing if the slot is empty
+        }
+
+        // Otherwise, set the current story and open the action popup
+        SetCurrentStory(storyIndex);
+
+        if (actionPopup != null)
+            actionPopup.SetActive(true);
+
+        Debug.Log("Story button clicked. Current story index = " + storyIndex);
+    }
+
+
     public void SetCurrentStory(int storyIndex)
     {
         currentStoryIndex = storyIndex;
-        
-        // Update button states based on story content
         UpdateButtonStates();
     }
     
     void UpdateButtonStates()
     {
+        if (currentStoryIndex < 0 || currentStoryIndex >= ImageStorage.HasBackground.Length)
+            return;
+
         bool hasContent = ImageStorage.HasBackground[currentStoryIndex];
         
-        // Enable/disable buttons based on story state
         if (viewButton != null)
             viewButton.interactable = hasContent;
             
@@ -77,24 +99,18 @@ public class StoryActionHandler : MonoBehaviour
     
     public void EditStory()
     {
-        if (currentStoryIndex < 0) return;
+        // if (currentStoryIndex < 0) return;
         
-        // Set the story to edit
-        ImageStorage.CurrentStoryIndex = currentStoryIndex;
-        
-        // Load the editing scene
-        SceneManager.LoadScene(editSceneName);
+        // ImageStorage.CurrentStoryIndex = currentStoryIndex;
+        SceneManager.LoadScene("CreateNewAddTitleScene");
     }
     
     public void ViewStory()
     {
-        if (currentStoryIndex < 0) return;
+        // if (currentStoryIndex < 0) return;
         
-        // Set the story to view
-        ImageStorage.CurrentStoryIndex = currentStoryIndex;
-        
-        // Load the viewing scene
-        SceneManager.LoadScene(viewSceneName);
+        // ImageStorage.CurrentStoryIndex = currentStoryIndex;
+        SceneManager.LoadScene("GameScene");
     }
     
     public void ShowDeleteConfirmation()
@@ -105,41 +121,37 @@ public class StoryActionHandler : MonoBehaviour
         }
         else
         {
-            // No confirmation popup, delete immediately
             DeleteStory();
         }
     }
     
     public void DeleteStory()
     {
-        if (currentStoryIndex < 0) return;
+        if (currentStoryIndex < 0) 
+        {
+            Debug.LogWarning("DeleteStory called but no current story is selected!");
+            return;
+        }
         
-        // Clear the story data
         if (ImageStorage.StoryBackgrounds[currentStoryIndex] != null)
         {
-            // Destroy the texture to free memory
             Destroy(ImageStorage.StoryBackgrounds[currentStoryIndex]);
         }
         
         ImageStorage.StoryBackgrounds[currentStoryIndex] = null;
         ImageStorage.HasBackground[currentStoryIndex] = false;
         
-        // If this was the current story being edited, clear it
         if (ImageStorage.CurrentStoryIndex == currentStoryIndex)
         {
             ImageStorage.CurrentStoryIndex = -1;
             ImageStorage.UploadedTexture = null;
         }
         
-        // Close popups
         CloseDeleteConfirmation();
         ClosePopup();
         
-        // Refresh the display
         if (backgroundManager != null)
-        {
             backgroundManager.RefreshBackgrounds();
-        }
         
         Debug.Log($"Story {currentStoryIndex + 1} deleted successfully.");
     }
@@ -147,17 +159,14 @@ public class StoryActionHandler : MonoBehaviour
     public void ClosePopup()
     {
         if (actionPopup != null)
-        {
             actionPopup.SetActive(false);
-        }
+
         currentStoryIndex = -1;
     }
     
     public void CloseDeleteConfirmation()
     {
         if (deleteConfirmPopup != null)
-        {
             deleteConfirmPopup.SetActive(false);
-        }
     }
 }

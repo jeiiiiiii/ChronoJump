@@ -197,10 +197,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/AkkadianArtifactScene.unity
     guid: 90f3e9210b4993c45a78bc4ddfa9398c
-    path: Assets/Scenes/LandingPage.unity
-    guid: 992ab1e475830d34791aafd3d9bf20d3
-    path: Assets/Scenes/LandingPage.unity
-    guid: 992ab1e475830d34791aafd3d9bf20d3
   - enabled: 1
     path: Assets/Scenes/Mesopotamia/BabylonianRecallChallenges/BabylonianArtifactScene.unity
     guid: 8257af7ecfc431f4b972999a5b014484
@@ -370,13 +366,13 @@ EditorBuildSettings:
     path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/CreateNewAddCharacterScene.unity
     guid: 357e741c5be7fdd4992a931ca068ff51
   - enabled: 1
-    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/CreateNewAddDialogueScene.unity
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/Dialogue/CreateNewAddDialogueScene.unity
     guid: d4a43289e8ff212419e9af3cce6d066b
   - enabled: 1
     path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/CreateNewAddFrameScene.unity
     guid: 8b608b7bc0a09a044bc5bc95e1997de3
   - enabled: 1
-    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/CreateNewAddQuizScene.unity
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/Questions/CreateNewAddQuizScene.unity
     guid: d249c26fd57abc94c94ad7cc8bff7e31
   - enabled: 1
     path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/AkkadianArtifactScene.unity
@@ -406,7 +402,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/QuizTime.unity
     guid: fcced35b482819647bb29852002f9885
   - enabled: 1
-    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/ReviewQuestionsScene.unity
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/Questions/ReviewQuestionsScene.unity
     guid: ffb8c2f88cde7974187a1123f090124e
   - enabled: 1
     path: Assets/Scenes/SaveAndLoad.unity
@@ -430,10 +426,10 @@ EditorBuildSettings:
     path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/CreateNewAddFrameScene.unity
     guid: 8b608b7bc0a09a044bc5bc95e1997de3
   - enabled: 1
-    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/CreateNewAddQuizScene.unity
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/Questions/CreateNewAddQuizScene.unity
     guid: d249c26fd57abc94c94ad7cc8bff7e31
   - enabled: 1
-    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/ReviewQuestionsScene.unity
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/Questions/ReviewQuestionsScene.unity
     guid: ffb8c2f88cde7974187a1123f090124e
   - enabled: 1
     path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/QuizTime.unity
@@ -442,17 +438,16 @@ EditorBuildSettings:
     path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/GameScene.unity
     guid: ad8951210a6100042aef4b88de4fc246
   - enabled: 1
-    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/CreateNewAddDialogueScene.unity
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/Dialogue/CreateNewAddDialogueScene.unity
     guid: d4a43289e8ff212419e9af3cce6d066b
   - enabled: 1
     path: Assets/Scenes/Creator's Mode/Scenes/ViewCreatedScenes/ViewCreatedStoriesScene.unity
     guid: 17da965ac3450e34da0d044184755292
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/Dialogue/ReviewDialogueScene.unity
+    guid: d0a15b20c276fef4db939e0d5beb7599
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-    path: Assets/Scenes/TeacherDashboard.unity
-    guid: d95f7f5b706b40b4298c59133fd9d860
-  m_configObjects: {}
-    path: Assets/Scenes/TeacherDashboard.unity
-    guid: d95f7f5b706b40b4298c59133fd9d860
-  m_configObjects: {}
+    guid: {fileID: 0}
+    path: {fileID: 0}
   m_UseUCBPForAssetBundles: 0

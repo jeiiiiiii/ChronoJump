@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public static class ImageStorage
 {
@@ -6,6 +7,9 @@ public static class ImageStorage
     
     // Store multiple story backgrounds (saved when "Next" is clicked)
     public static Texture2D[] StoryBackgrounds = new Texture2D[6]; // For 6 stories
+
+    public static Texture2D uploadedTexture1;
+    public static Texture2D uploadedTexture2;
     
     // Track which stories have backgrounds
     public static bool[] HasBackground = new bool[6];

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "282729152512",
+    "project_id": "chronojump-1a0d1",
+    "storage_bucket": "chronojump-1a0d1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:282729152512:android:7e7108433a4a8d86d8d8e5",
+        "android_client_info": {
+          "package_name": "com.capstonegods.chronojump"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "282729152512-8ge5qam7l41nsc2d7gdnhafr2uc77nsv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsVEDNDPkBxQsjiHIP3D_Vx8ckw9ewf5c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "282729152512-8ge5qam7l41nsc2d7gdnhafr2uc77nsv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
