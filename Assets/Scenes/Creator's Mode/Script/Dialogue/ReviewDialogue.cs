@@ -31,10 +31,11 @@ public class ReviewDialogueManager : MonoBehaviour
             Destroy(child.gameObject);
 
         // Populate with current dialogues
-        for (int i = 0; i < DialogueStorage.dialogues.Count; i++)
-        {
+        var allDialogues = DialogueStorage.GetAllDialogues();
+        for (int i = 0; i < allDialogues.Count; i++)
+{
             int index = i; // local copy for buttons
-            DialogueLine line = DialogueStorage.dialogues[i];
+            DialogueLine line = allDialogues[i];
 
             GameObject item = Instantiate(dialogueItemPrefab, contentParent);
 
@@ -91,9 +92,8 @@ public class ReviewDialogueManager : MonoBehaviour
 
     public void SaveEditedDialogue(int index, string newCharacter, string newDialogue)
     {
-        DialogueStorage.dialogues[index].characterName = newCharacter;
-        DialogueStorage.dialogues[index].dialogueText = newDialogue;
-
+        DialogueStorage.EditDialogue(index, newCharacter, newDialogue);
+        
         Destroy(currentEditPanel);
         RefreshList();
     }

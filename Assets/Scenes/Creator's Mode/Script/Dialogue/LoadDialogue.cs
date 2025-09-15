@@ -14,13 +14,29 @@ public class DialoguePlayer : MonoBehaviour
 
     void Start()
     {
-        dialogues = DialogueStorage.dialogues;
+        dialogues = DialogueStorage.GetAllDialogues();
         if (dialogues.Count > 0)
         {
             ShowDialogue(0);
         }
 
         nextButton.onClick.AddListener(NextDialogue);
+
+        var story = StoryManager.Instance.currentStory;
+        if (story == null) return;
+
+        // Load background
+        if (!string.IsNullOrEmpty(story.backgroundPath))
+        {
+            // Load texture from path and apply
+        }
+
+        // Load dialogues
+        story.dialogues = DialogueStorage.GetAllDialogues();
+
+
+        // Load quizzes
+        AddQuiz.quizQuestions = story.quizQuestions;
     }
 
     void ShowDialogue(int index)

@@ -19,8 +19,6 @@ public class Question
     }
 }
 
-
-
 public class AddQuiz : MonoBehaviour
 {
     [Header("TMP Input Fields")]
@@ -40,34 +38,59 @@ public class AddQuiz : MonoBehaviour
     public Button addQuestionButton;
     public Button nextButton;
 
-    public static List<Question> quizQuestions = new List<Question>();
+    // Reference to current story’s quiz list
+    public static List<Question> quizQuestions;
 
     void Start()
     {
         addQuestionButton.onClick.AddListener(AddQuestion);
         nextButton.onClick.AddListener(GoNext);
 
-        // Ensure only one toggle can be active at once (manual radio button logic)
+        // Ensure only one toggle can be active at once
         toggle1.onValueChanged.AddListener((isOn) => { if (isOn) UncheckOthers(0); });
         toggle2.onValueChanged.AddListener((isOn) => { if (isOn) UncheckOthers(1); });
         toggle3.onValueChanged.AddListener((isOn) => { if (isOn) UncheckOthers(2); });
         toggle4.onValueChanged.AddListener((isOn) => { if (isOn) UncheckOthers(3); });
+
+        var story = StoryManager.Instance.currentStory;
+        if (story == null)
+        {
+            // Auto-create a story if none exists
+            story = StoryManager.Instance.CreateNewStory("Default Story");
+            Debug.LogWarning("⚠️ No current story found. Created a new one: " + story.storyTitle);
+        }
+
+        // Make sure the story has its own quiz list
+        if (story.quizQuestions == null)
+            story.quizQuestions = new List<Question>();
+
+        quizQuestions = story.quizQuestions;
+
+        Debug.Log($"📖 Ready to add quiz for story '{story.storyTitle}'. Current questions: {quizQuestions.Count}");
     }
 
     void AddQuestion()
     {
-        string qText = questionInput.text;
-        string[] choices = new string[4];
-        choices[0] = choice1Input.text;
-        choices[1] = choice2Input.text;
-        choices[2] = choice3Input.text;
-        choices[3] = choice4Input.text;
+        var story = StoryManager.Instance.currentStory;
+        if (story == null)
+        {
+            Debug.LogError("❌ No active story. Cannot add question.");
+            return;
+        }
 
+        string qText = questionInput.text.Trim();
         if (string.IsNullOrEmpty(qText))
         {
             Debug.LogWarning("⚠ Question cannot be empty!");
             return;
         }
+
+        string[] choices = {
+            choice1Input.text.Trim(),
+            choice2Input.text.Trim(),
+            choice3Input.text.Trim(),
+            choice4Input.text.Trim()
+        };
 
         int correctIndex = GetCorrectAnswerIndex();
         if (correctIndex == -1)
@@ -79,18 +102,13 @@ public class AddQuiz : MonoBehaviour
         Question newQ = new Question(qText, choices, correctIndex);
         quizQuestions.Add(newQ);
 
-        Debug.Log($"✅ Added Question: {qText} (Correct: {choices[correctIndex]})");
+        Debug.Log($"✅ Added Question to '{story.storyTitle}': {qText} (Correct: {choices[correctIndex]})");
+
+        // Save to JSON immediately
+        StoryManager.Instance.SaveStories();
 
         // Reset inputs
-        questionInput.text = "";
-        choice1Input.text = "";
-        choice2Input.text = "";
-        choice3Input.text = "";
-        choice4Input.text = "";
-        toggle1.isOn = false;
-        toggle2.isOn = false;
-        toggle3.isOn = false;
-        toggle4.isOn = false;
+        ResetInputs();
     }
 
     int GetCorrectAnswerIndex()
@@ -104,15 +122,34 @@ public class AddQuiz : MonoBehaviour
 
     void UncheckOthers(int keepIndex)
     {
-        if (keepIndex != 0) toggle1.isOn = false;
-        if (keepIndex != 1) toggle2.isOn = false;
-        if (keepIndex != 2) toggle3.isOn = false;
-        if (keepIndex != 3) toggle4.isOn = false;
+        toggle1.isOn = keepIndex == 0;
+        toggle2.isOn = keepIndex == 1;
+        toggle3.isOn = keepIndex == 2;
+        toggle4.isOn = keepIndex == 3;
+    }
+
+    void ResetInputs()
+    {
+        questionInput.text = "";
+        choice1Input.text = "";
+        choice2Input.text = "";
+        choice3Input.text = "";
+        choice4Input.text = "";
+        toggle1.isOn = false;
+        toggle2.isOn = false;
+        toggle3.isOn = false;
+        toggle4.isOn = false;
     }
 
     void GoNext()
     {
-        Debug.Log("➡ Moving to review scene. Total Questions: " + quizQuestions.Count);
+        if (quizQuestions == null)
+        {
+            Debug.LogWarning("⚠ Cannot go next, no quiz loaded.");
+            return;
+        }
+
+        Debug.Log($"➡ Moving to review scene. Total Questions: {quizQuestions.Count}");
         SceneManager.LoadScene("ReviewQuestionsScene");
     }
 

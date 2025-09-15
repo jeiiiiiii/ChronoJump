@@ -16,6 +16,25 @@ public class ImageUploader : MonoBehaviour
     private Texture2D lastUploadedTexture2;
     private Texture2D lastUploadedBackground;
 
+    private void Start()
+    {
+        var story = StoryManager.Instance.currentStory;
+        if (story == null) return;
+
+        // Load background
+        if (!string.IsNullOrEmpty(story.backgroundPath))
+        {
+            // Load texture from path and apply
+        }
+
+        // Load dialogues
+        // DialogueStorage.dialogues = story.dialogues;
+
+        // Load quizzes
+        AddQuiz.quizQuestions = story.quizQuestions;
+    }
+
+
     // Upload for first character slot
     public void UploadImage1()
     {

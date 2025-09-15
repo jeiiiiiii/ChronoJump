@@ -1,9 +1,9 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
 using System;
-
 public class ReviewQuestionConfirm : MonoBehaviour
 {
     public Image BlurBGImage;
@@ -42,7 +42,7 @@ public class ReviewQuestionConfirm : MonoBehaviour
     {
         SceneManager.LoadScene("Creator'sModeScene");
     }
-    
+
     public void Backk()
     {
         SceneManager.LoadScene("CreateNewAddQuizScene");
@@ -55,4 +55,31 @@ public class ReviewQuestionConfirm : MonoBehaviour
     {
         SceneManager.LoadScene("Gamescene");
     }
+
+    // Save in Json file
+    public void SaveCurrentStory()
+    {
+        if (StoryManager.Instance.currentStory == null)
+            StoryManager.Instance.currentStory = new StoryData();
+
+        var s = StoryManager.Instance.currentStory;
+
+    // Fill with data from your scene
+        if (string.IsNullOrEmpty(s.storyId))
+            s.storyId = System.Guid.NewGuid().ToString(); // only if new
+
+        s.dialogues = DialogueStorage.GetAllDialogues();
+        s.quizQuestions = StoryManager.Instance.currentStory.quizQuestions;
+        s.backgroundPath = s.backgroundPath; // already stored inside story
+
+        // Add or replace in list
+        var index = StoryManager.Instance.allStories.FindIndex(st => st.storyId == s.storyId);
+        if (index >= 0)
+            StoryManager.Instance.allStories[index] = s;
+        else
+            StoryManager.Instance.allStories.Add(s);
+
+        StoryManager.Instance.SaveStories();
+    }
+
 }

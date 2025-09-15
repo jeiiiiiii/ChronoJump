@@ -724,6 +724,7 @@ MonoBehaviour:
   - backgroundImage: {fileID: 55026925}
   - backgroundImage: {fileID: 1994588322}
   storyActionPopup: {fileID: 712203315}
+  currentBackgroundImage: {fileID: 0}
 --- !u!1 &400035749
 GameObject:
   m_ObjectHideFlags: 0
@@ -3812,7 +3813,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1699382872}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 712203319}
+        m_TargetAssemblyTypeName: StoryActionHandler, Assembly-CSharp
+        m_MethodName: DeleteStory
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1699382872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4077,7 +4090,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1776210998
 RectTransform:
   m_ObjectHideFlags: 0

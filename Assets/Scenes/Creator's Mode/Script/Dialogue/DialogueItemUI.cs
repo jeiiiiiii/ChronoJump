@@ -27,13 +27,19 @@ public class DialogueItemUI : MonoBehaviour
 
     void OnEditClicked()
     {
-        manager.OpenEditPopup(dialogueIndex, DialogueStorage.dialogues[dialogueIndex]);
+var dialogues = DialogueStorage.GetAllDialogues();
+    if (dialogueIndex < 0 || dialogueIndex >= dialogues.Count)
+        return;
+    manager.OpenEditPopup(dialogueIndex, dialogues[dialogueIndex]);
     }
 
 
     void OnDeleteClicked()
     {
-        DialogueStorage.DeleteDialogue(dialogueIndex);
-        manager.RefreshList();
+var dialogues = DialogueStorage.GetAllDialogues();
+    if (dialogueIndex < 0 || dialogueIndex >= dialogues.Count)
+        return;
+    DialogueStorage.DeleteDialogue(dialogueIndex);
+    manager.RefreshList();
     }
 }

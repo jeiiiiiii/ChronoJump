@@ -14,7 +14,7 @@ public class StoryActionHandler : MonoBehaviour
     [Header("Scene Names")]
     
     [Header("Delete Confirmation")]
-    [SerializeField] private GameObject deleteConfirmPopup; 
+    [SerializeField] private GameObject deleteConfirmPopup;
     [SerializeField] private Button confirmDeleteButton;
     [SerializeField] private Button cancelDeleteButton;
     
