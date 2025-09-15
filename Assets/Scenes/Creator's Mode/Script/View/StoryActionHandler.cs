@@ -99,17 +99,17 @@ public class StoryActionHandler : MonoBehaviour
     
     public void EditStory()
     {
-        // if (currentStoryIndex < 0) return;
+        if (currentStoryIndex < 0) return;
         
-        // ImageStorage.CurrentStoryIndex = currentStoryIndex;
+        ImageStorage.CurrentStoryIndex = currentStoryIndex;
         SceneManager.LoadScene("CreateNewAddTitleScene");
     }
     
     public void ViewStory()
     {
-        // if (currentStoryIndex < 0) return;
+        if (currentStoryIndex < 0) return;
         
-        // ImageStorage.CurrentStoryIndex = currentStoryIndex;
+        ImageStorage.CurrentStoryIndex = currentStoryIndex;
         SceneManager.LoadScene("GameScene");
     }
     
