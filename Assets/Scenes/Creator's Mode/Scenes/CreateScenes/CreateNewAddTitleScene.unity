@@ -167,6 +167,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c936de42b27809b4cae985ce8b8ed897, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  titleInputField: {fileID: 1407393049}
+  descriptionInputField: {fileID: 519112738}
 --- !u!1 &296298970
 GameObject:
   m_ObjectHideFlags: 0
@@ -666,8 +668,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 35, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 6.799988, y: -10.108}
+  m_SizeDelta: {x: -56.4, y: -20.215}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &681244578
 MonoBehaviour:
@@ -754,7 +756,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -3.897644, y: 2.1581726, z: 49.637573, w: 17.265305}
+  m_margin: {x: -3.897644, y: 2.1581726, z: -2.0580444, w: 17.265305}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1231,8 +1233,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 17.502014, y: 0}
-  m_SizeDelta: {x: -34.995, y: 0}
+  m_AnchoredPosition: {x: 6.9299927, y: 0}
+  m_SizeDelta: {x: -56.14, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &894803796
 MonoBehaviour:
@@ -1708,8 +1710,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 35, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -1.6400146, y: -10.11}
+  m_SizeDelta: {x: -73.27, y: -20.211}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1508432370
 MonoBehaviour:
@@ -1816,7 +1818,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 19.423462, z: 64.744354, w: 15.107117}
+  m_margin: {x: 0, y: 6.7900696, z: -3.4761658, w: 15.107117}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -2053,7 +2055,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 208165087}
         m_TargetAssemblyTypeName: AddTitle, Assembly-CSharp
-        m_MethodName: Next
+        m_MethodName: OnNextButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

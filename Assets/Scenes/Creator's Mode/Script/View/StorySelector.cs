@@ -8,6 +8,14 @@ public class StorySelector : MonoBehaviour
     // Reference to the popup panel (assign in inspector)
     [SerializeField] private GameObject actionPopup;
 
+    void Start()
+    {
+        if (StoryManager.Instance.GetCurrentStory() == null)
+        {
+            StoryManager.Instance.CreateNewStory();
+        }
+    }
+
     public void OnStoryClicked()
     {
         // Check if story exists or is empty

@@ -113,17 +113,17 @@ public class StoryManager : MonoBehaviour
     // ✅ Uses parameterless StoryData constructor now
     public StoryData CreateNewStory(string title = null)
     {
-        var s = new StoryData(); // storyId auto-generated
+        var s = new StoryData();
 
         if (!string.IsNullOrEmpty(title))
             s.storyTitle = title;
         else
-            s.storyTitle = $"Story {allStories.Count + 1}";
+            s.storyTitle = "";
 
         allStories.Add(s);
         currentStoryIndex = allStories.Count - 1;
-        
-        Debug.Log($"✅ Created new story: '{s.storyTitle}' (Index: {currentStoryIndex})");
+
+        Debug.Log($"✅ Created new story: '{(string.IsNullOrEmpty(s.storyTitle) ? "<empty>" : s.storyTitle)}' (Index: {currentStoryIndex})");
         return s;
     }
 

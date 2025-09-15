@@ -15,13 +15,24 @@ public class ReviewDialogueManager : MonoBehaviour
     [Header("Edit Popup References")]
     public GameObject editPopup;               // The popup panel prefab
     public TMP_InputField nameInputField;      // Input for character name
-    public TMP_InputField textInputField;      // Input for dialogue text
+    public TMP_InputField textInputField;      // Input for dialogue texts
     public Button saveEditButton;              // Save button inside popup
     public Button cancelEditButton;            // Cancel button inside popup
+
+    [Header("Delete Popup References")]
+    public GameObject deletePopup;             // The popup panel prefab
+    public Button deleteYesButton;             // Yes button inside popup
+    public Button deleteNoButton;              // No button inside popup
+
+    private int pendingDeleteIndex = -1;       // Store which dialogue is pending delete
 
     void Start()
     {
         RefreshList();
+
+        // Make sure popups start hidden
+        if (editPopup != null) editPopup.SetActive(false);
+        if (deletePopup != null) deletePopup.SetActive(false);
     }
 
     public void RefreshList()
@@ -33,7 +44,7 @@ public class ReviewDialogueManager : MonoBehaviour
         // Populate with current dialogues
         var allDialogues = DialogueStorage.GetAllDialogues();
         for (int i = 0; i < allDialogues.Count; i++)
-{
+        {
             int index = i; // local copy for buttons
             DialogueLine line = allDialogues[i];
 
@@ -51,8 +62,7 @@ public class ReviewDialogueManager : MonoBehaviour
 
             deleteBtn.onClick.AddListener(() =>
             {
-                DialogueStorage.DeleteDialogue(index);
-                RefreshList();
+                OpenDeletePopup(index);
             });
 
             editBtn.onClick.AddListener(() =>
@@ -70,7 +80,7 @@ public class ReviewDialogueManager : MonoBehaviour
         nameInputField.text = line.characterName;
         textInputField.text = line.dialogueText;
 
-        // Reset listeners to avoid duplicate calls
+        // Reset listeners
         saveEditButton.onClick.RemoveAllListeners();
         cancelEditButton.onClick.RemoveAllListeners();
 
@@ -89,11 +99,38 @@ public class ReviewDialogueManager : MonoBehaviour
         });
     }
 
+    public void OpenDeletePopup(int index)
+    {
+        pendingDeleteIndex = index;
+        deletePopup.SetActive(true);
+
+        // Reset listeners
+        deleteYesButton.onClick.RemoveAllListeners();
+        deleteNoButton.onClick.RemoveAllListeners();
+
+        // Yes → confirm delete
+        deleteYesButton.onClick.AddListener(() =>
+        {
+            if (pendingDeleteIndex >= 0)
+            {
+                DialogueStorage.DeleteDialogue(pendingDeleteIndex);
+                RefreshList();
+            }
+            pendingDeleteIndex = -1;
+            deletePopup.SetActive(false);
+        });
+
+        // No → cancel
+        deleteNoButton.onClick.AddListener(() =>
+        {
+            pendingDeleteIndex = -1;
+            deletePopup.SetActive(false);
+        });
+    }
 
     public void SaveEditedDialogue(int index, string newCharacter, string newDialogue)
     {
         DialogueStorage.EditDialogue(index, newCharacter, newDialogue);
-        
         Destroy(currentEditPanel);
         RefreshList();
     }

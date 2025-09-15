@@ -23,6 +23,11 @@ public class StoryActionHandler : MonoBehaviour
     
     void Start()
     {
+
+        if (StoryManager.Instance.GetCurrentStory() == null)
+        {
+            StoryManager.Instance.CreateNewStory("");
+        }
         // Set up button listeners
         if (editButton != null)
             editButton.onClick.AddListener(EditStory);
