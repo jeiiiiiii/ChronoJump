@@ -8,6 +8,8 @@ public class StoryData
     public string storyTitle;       // display title
     public string storyDescription;  // Description
     public string backgroundPath;   // saved background image path
+    public string character1Path; // Character 1 image path
+    public string character2Path;   // Character 2 image path
 
     public List<DialogueLine> dialogues;
     public List<Question> quizQuestions;

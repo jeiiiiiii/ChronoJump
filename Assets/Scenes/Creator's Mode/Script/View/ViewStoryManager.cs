@@ -63,18 +63,30 @@ public class ViewStoriesBackgroundManager : MonoBehaviour
         if (index < 0 || index >= storySlots.Length) return;
 
         var slot = storySlots[index];
-        Texture2D background = ImageStorage.GetBackgroundForStory(index);
-        bool hasBackground = ImageStorage.HasBackground[index];
 
-        if (hasBackground && background != null)
+        // ✅ Pull the story from StoryManager instead of ImageStorage
+        var stories = StoryManager.Instance.allStories;
+        if (index >= stories.Count)
         {
-            slot.backgroundImage.texture = background;
-            slot.backgroundImage.gameObject.SetActive(true);
+            slot.backgroundImage.gameObject.SetActive(false);
+            return;
+        }
 
-            AspectRatioFitter fitter = slot.backgroundImage.GetComponent<AspectRatioFitter>();
-            if (fitter != null)
+        StoryData story = stories[index];
+        if (story != null && !string.IsNullOrEmpty(story.backgroundPath))
+        {
+            Texture2D background = StoryManager.Instance.LoadBackground(story.backgroundPath);
+            if (background != null)
             {
-                fitter.aspectRatio = (float)background.width / background.height;
+                slot.backgroundImage.texture = background;
+                slot.backgroundImage.gameObject.SetActive(true);
+
+                // ✅ Maintain aspect ratio
+                AspectRatioFitter fitter = slot.backgroundImage.GetComponent<AspectRatioFitter>();
+                if (fitter != null)
+                {
+                    fitter.aspectRatio = (float)background.width / background.height;
+                }
             }
         }
         else
@@ -82,6 +94,7 @@ public class ViewStoriesBackgroundManager : MonoBehaviour
             slot.backgroundImage.gameObject.SetActive(false);
         }
     }
+
 
     public void RefreshBackgrounds()
     {
@@ -95,26 +108,75 @@ public class ViewStoriesBackgroundManager : MonoBehaviour
 
     public void OnEditStory(int storyIndex)
     {
-        if (storyIndex >= 0 && storyIndex < StoryManager.Instance.allStories.Count)
-        {
-            // ✅ Set the currentStory before switching scene
-            StoryManager.Instance.currentStory = StoryManager.Instance.allStories[storyIndex];
+        var stories = StoryManager.Instance.allStories;
 
-            // Load the edit scene (replace "EditSceneName" with your scene name)
-            UnityEngine.SceneManagement.SceneManager.LoadScene("Creator'sModeScene");
+        if (storyIndex >= 0 && storyIndex < stories.Count)
+        {
+            StoryData story = stories[storyIndex];
+
+            if (story != null)
+            {
+                // ✅ Set the current story
+                StoryManager.Instance.currentStory = story;
+
+                // ✅ Remember which slot is being edited
+                ImageStorage.CurrentStoryIndex = storyIndex;
+
+                // ✅ Save to persistence so it survives reload
+                StoryManager.Instance.SaveStories();
+
+                // ✅ Load your editing scene
+                UnityEngine.SceneManagement.SceneManager.LoadScene("CreateNewAddTitleScene");
+            }
+            else
+            {
+                Debug.LogWarning($"❌ Tried to edit story at slot {storyIndex}, but it's empty.");
+            }
+        }
+        else
+        {
+            Debug.LogError($"❌ Invalid story index: {storyIndex}");
         }
     }
-    
+
+
     public void OnViewStory(int storyIndex)
     {
         if (storyIndex >= 0 && storyIndex < StoryManager.Instance.allStories.Count)
         {
-            // ✅ Set currentStory for the View scene
             StoryManager.Instance.currentStory = StoryManager.Instance.allStories[storyIndex];
+
+            // ✅ update preview before leaving
+            UpdatePreviewBackground(StoryManager.Instance.currentStory);
 
             UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene");
         }
     }
+    
+    private void UpdatePreviewBackground(StoryData story)
+    {
+        if (story == null || string.IsNullOrEmpty(story.backgroundPath)) return;
 
+        Texture2D tex = StoryManager.Instance.LoadBackground(story.backgroundPath);
+        if (tex != null && currentBackgroundImage != null)
+        {
+            currentBackgroundImage.sprite = Sprite.Create(
+                tex,
+                new Rect(0, 0, tex.width, tex.height),
+                new Vector2(0.5f, 0.5f)
+            );
+        }
+    }
+
+    public bool StoryExistsAt(int index)
+    {
+        var stories = StoryManager.Instance.stories; // <-- adjust to .allStories if needed
+
+        if (index < 0 || index >= stories.Count)
+            return false;
+
+        StoryData story = stories[index];
+        return story != null && !string.IsNullOrEmpty(story.backgroundPath);
+    }
 
 }

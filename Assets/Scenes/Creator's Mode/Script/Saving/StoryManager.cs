@@ -123,9 +123,12 @@ public class StoryManager : MonoBehaviour
         allStories.Add(s);
         currentStoryIndex = allStories.Count - 1;
 
+        SaveStories(); // ✅ Save immediately
+
         Debug.Log($"✅ Created new story: '{(string.IsNullOrEmpty(s.storyTitle) ? "<empty>" : s.storyTitle)}' (Index: {currentStoryIndex})");
         return s;
     }
+
 
     // ✅ Debug method to check current state
     public void DebugCurrentState()
@@ -199,11 +202,15 @@ public class StoryManager : MonoBehaviour
         File.WriteAllBytes(filePath, tex.EncodeToPNG());
 
         if (story != null)
+        {
             story.backgroundPath = filePath;
+            SaveStories();
+        }
 
         Debug.Log("✅ Background saved to: " + filePath);
         return filePath;
     }
+
 
     public Texture2D LoadBackground(string filePath)
     {

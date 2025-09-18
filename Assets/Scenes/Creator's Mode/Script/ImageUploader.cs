@@ -16,23 +16,58 @@ public class ImageUploader : MonoBehaviour
     private Texture2D lastUploadedTexture2;
     private Texture2D lastUploadedBackground;
 
-    private void Start()
+private void Start()
+{
+    var story = StoryManager.Instance.currentStory;
+    if (story == null) return;
+
+    // ✅ Load background if path exists
+    if (!string.IsNullOrEmpty(story.backgroundPath))
     {
-        var story = StoryManager.Instance.currentStory;
-        if (story == null) return;
-
-        // Load background
-        if (!string.IsNullOrEmpty(story.backgroundPath))
+        Texture2D tex = ImageStorage.LoadImage(story.backgroundPath);
+        if (tex != null)
         {
-            // Load texture from path and apply
+            previewBackground.texture = tex;
+
+            // Fix aspect ratio so it displays properly
+            AspectRatioFitter fitter = previewBackground.GetComponent<AspectRatioFitter>();
+            if (fitter != null)
+                fitter.aspectRatio = (float)tex.width / tex.height;
         }
-
-        // Load dialogues
-        // DialogueStorage.dialogues = story.dialogues;
-
-        // Load quizzes
-        AddQuiz.quizQuestions = story.quizQuestions;
     }
+
+    // TODO: If you want characters to also persist, add similar logic here:
+    if (!string.IsNullOrEmpty(story.character1Path))
+    {
+        Texture2D tex1 = ImageStorage.LoadImage(story.character1Path);
+        if (tex1 != null)
+        {
+            previewImage1.texture = tex1;
+            var fitter = previewImage1.GetComponent<AspectRatioFitter>();
+            if (fitter != null)
+                fitter.aspectRatio = (float)tex1.width / tex1.height;
+        }
+    }
+
+    if (!string.IsNullOrEmpty(story.character2Path))
+    {
+        Texture2D tex2 = ImageStorage.LoadImage(story.character2Path);
+        if (tex2 != null)
+        {
+            previewImage2.texture = tex2;
+            var fitter = previewImage2.GetComponent<AspectRatioFitter>();
+            if (fitter != null)
+                fitter.aspectRatio = (float)tex2.width / tex2.height;
+        }
+    }
+
+    // // ✅ Load dialogues
+    // DialogueStorage.dialogues = story.dialogues;
+
+    // ✅ Load quizzes
+    // AddQuiz.quizQuestions = story.quizQuestions;
+}
+
 
 
     // Upload for first character slot
@@ -104,4 +139,6 @@ public class ImageUploader : MonoBehaviour
             }
         }
     }
+
+    
 }

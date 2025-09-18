@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class ViewCreatedStoriesScene : MonoBehaviour
 {
@@ -18,13 +18,12 @@ public class ViewCreatedStoriesScene : MonoBehaviour
     {
         UpdateAllStoryBackgrounds();
 
-        // Make sure popup is initially hidden
         if (storyActionPopup != null)
         {
             storyActionPopup.SetActive(false);
         }
 
-        // ✅ SAFETY CHECKS
+        // ✅ Load current story background
         if (StoryManager.Instance != null && StoryManager.Instance.currentStory != null)
         {
             string path = StoryManager.Instance.currentStory.backgroundPath;
@@ -61,24 +60,29 @@ public class ViewCreatedStoriesScene : MonoBehaviour
         if (index < 0 || index >= storySlots.Length) return;
 
         var slot = storySlots[index];
-        Texture2D background = ImageStorage.GetBackgroundForStory(index);
-        bool hasBackground = ImageStorage.HasBackground[index];
-
-        if (hasBackground && background != null)
+        if (index < StoryManager.Instance.allStories.Count)
         {
-            slot.backgroundImage.texture = background;
-            slot.backgroundImage.gameObject.SetActive(true);
-
-            AspectRatioFitter fitter = slot.backgroundImage.GetComponent<AspectRatioFitter>();
-            if (fitter != null)
+            var story = StoryManager.Instance.allStories[index];
+            if (!string.IsNullOrEmpty(story.backgroundPath))
             {
-                fitter.aspectRatio = (float)background.width / background.height;
+                Texture2D background = StoryManager.Instance.LoadBackground(story.backgroundPath);
+                if (background != null)
+                {
+                    slot.backgroundImage.texture = background;
+                    slot.backgroundImage.gameObject.SetActive(true);
+
+                    AspectRatioFitter fitter = slot.backgroundImage.GetComponent<AspectRatioFitter>();
+                    if (fitter != null)
+                    {
+                        fitter.aspectRatio = (float)background.width / background.height;
+                    }
+                    return;
+                }
             }
         }
-        else
-        {
-            slot.backgroundImage.gameObject.SetActive(false);
-        }
+
+        // If no background, hide slot
+        slot.backgroundImage.gameObject.SetActive(false);
     }
 
     public void RefreshBackgrounds()
@@ -95,11 +99,8 @@ public class ViewCreatedStoriesScene : MonoBehaviour
     {
         if (storyIndex >= 0 && storyIndex < StoryManager.Instance.allStories.Count)
         {
-            // ✅ Set the currentStory before switching scene
             StoryManager.Instance.currentStory = StoryManager.Instance.allStories[storyIndex];
-
-            // Load the edit scene (replace "EditSceneName" with your scene name)
-            UnityEngine.SceneManagement.SceneManager.LoadScene("Creator'sModeScene");
+            SceneManager.LoadScene("Creator'sModeScene");
         }
     }
 
@@ -107,9 +108,8 @@ public class ViewCreatedStoriesScene : MonoBehaviour
     {
         if (storyIndex >= 0 && storyIndex < StoryManager.Instance.allStories.Count)
         {
-            // ✅ Set currentStory for the View scene
             StoryManager.Instance.currentStory = StoryManager.Instance.allStories[storyIndex];
-            UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene");
+            SceneManager.LoadScene("GameScene");
         }
     }
 }
