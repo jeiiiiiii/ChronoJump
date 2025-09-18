@@ -2,6 +2,10 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Firebase.Firestore;
+using Firebase.Extensions; // <- required for ContinueWithOnMainThread
+using System.Linq;        // <- required for FirstOrDefault
+using System.Collections.Generic;
 
 public class LoginManager : MonoBehaviour
 {
@@ -12,6 +16,13 @@ public class LoginManager : MonoBehaviour
     public Toggle isTeacherToggle;
     public GameObject errorMessagePanel;
     public Button backButton;
+
+    private FirebaseFirestore _firestore;
+
+    private void Awake()
+    {
+        _firestore = FirebaseFirestore.DefaultInstance;
+    }
 
     // Navigate to the registration scene
     public void RegisterButtonClicked()
@@ -95,8 +106,92 @@ public class LoginManager : MonoBehaviour
                     else if (!isTeacherToggle.isOn && !isTeacher)
                     {
                         Debug.Log($"User {userData.displayName} logged in as student.");
-                        feedbackText.text = message;
-                        SceneManager.LoadScene("TitleScreen");
+                        feedbackText.text = "Loading student profile...";
+
+                        _firestore.Collection("students")
+                            .WhereEqualTo("userId", userData.userId)
+                            .Limit(1)
+                            .GetSnapshotAsync()
+                            .ContinueWithOnMainThread(task =>
+                            {
+                                if (task.IsFaulted)
+                                {
+                                    errorMessagePanel.SetActive(true);
+                                    feedbackText.text = "Failed to fetch student profile.";
+                                    return;
+                                }
+
+                                QuerySnapshot snapshot = task.Result;
+
+                                if (snapshot.Count == 0)
+                                {
+                                    errorMessagePanel.SetActive(true);
+                                    feedbackText.text = "No student profile found.";
+                                    return;
+                                }
+
+                                DocumentSnapshot studDoc = snapshot.Documents.FirstOrDefault();
+
+                                if (studDoc == null || !studDoc.Exists)
+                                {
+                                    errorMessagePanel.SetActive(true);
+                                    feedbackText.text = "No student profile found.";
+                                    return;
+                                }
+
+                                StudentModel studentModel = studDoc.ConvertTo<StudentModel>();
+
+                                // Create StudentState with proper initialization
+                                var studentState = new StudentState(
+                                    studentModel.studId,
+                                    studentModel.userId,
+                                    studentModel
+                                );
+
+                                // Ensure GameProgressManager exists
+                                if (GameProgressManager.Instance == null)
+                                {
+                                    GameObject gameManagerGO = new GameObject("GameProgressManager");
+                                    gameManagerGO.AddComponent<GameProgressManager>();
+                                    DontDestroyOnLoad(gameManagerGO);
+                                    
+                                    Debug.Log("Created GameProgressManager instance for student login");
+                                }
+
+                                // Initialize the student's game progress if it doesn't exist
+                                if (studentState.GameProgress == null)
+                                {
+                                    Debug.Log("No GameProgress found for student, creating new one");
+                                    studentState.SetGameProgress(new GameProgressModel
+                                    {
+                                        currentHearts = 3,
+                                        unlockedChapters = new List<string> { "CH001" },
+                                        unlockedStories = new List<string> { "ST001" },
+                                        unlockedAchievements = new List<string>(),
+                                        unlockedArtifacts = new List<string>(),
+                                        unlockedCodex = new Dictionary<string, object>(),
+                                        unlockedCivilizations = new List<string> { "Sumerian" },
+                                        lastUpdated = Timestamp.GetCurrentTimestamp(),
+                                        isRemoved = false
+                                    });
+                                }
+
+                                feedbackText.text = "Loading game progress...";
+
+                                // Set the student state and wait for initialization to complete
+                                GameProgressManager.Instance.SetStudentState(studentState, () => {
+                                    // This callback runs when GameProgressManager is fully initialized
+                                    Debug.Log($"Student {studentState.StudentId} fully initialized, navigating to TitleScreen");
+                                    
+                                    // Migrate any old PlayerPrefs data
+                                    GameProgressManager.Instance.MigrateFromPlayerPrefs();
+                                    
+                                    feedbackText.text = "Welcome back!";
+                                    
+                                    // Now it's safe to load the TitleScreen
+                                    SceneManager.LoadScene("TitleScreen");
+                                });
+                            });
                     }
                     else if (isTeacherToggle.isOn && !isTeacher)
                     {
@@ -120,6 +215,3 @@ public class LoginManager : MonoBehaviour
         feedbackText.text = string.Empty;
     }
 }
-
-
-

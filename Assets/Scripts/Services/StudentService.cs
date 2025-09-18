@@ -73,7 +73,6 @@ public class StudentService
             teachId = GetFieldValue(document, "teachId"),
             userId = GetFieldValue(document, "userId"),
             studName = GetFieldValue(document, "studName"),
-            studProfilePic = GetFieldValue(document, "studProfilePic"),
             classCode = GetFieldValue(document, "classCode")
         };
     }

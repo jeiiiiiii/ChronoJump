@@ -55,14 +55,20 @@ public class TitleScreen : MonoBehaviour
     }
     public void StartGame()
     {
-        // Clear any previous save state and mark as new game
-        PlayerPrefs.DeleteKey("LastScene");
-        PlayerPrefs.DeleteKey("SaveSource");
-        PlayerPrefs.SetString("GameMode", "NewGame");
-        PlayerPrefs.Save();
-        
+        if (GameProgressManager.Instance.CurrentStudentState == null)
+        {
+            Debug.LogError("No student is loaded in GameProgressManager. Cannot start a new game.");
+            return;
+        }
+
+        // Start a fresh game for the current student
+        GameProgressManager.Instance.StartNewGame();
+
+        // Go to Chapter Select scene
         SceneManager.LoadScene("ChapterSelect");
     }
+
+
 
     public void Settings()
     {

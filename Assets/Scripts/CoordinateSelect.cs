@@ -1,84 +1,201 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+/// <summary>
+/// Handles coordinate/map selection screen navigation and UI feedback.
+/// Delegates actual civilization loading to CivilizationLoader.
+/// </summary>
 public class CoordinateSelect : MonoBehaviour
 {
+    [Header("UI Feedback")]
+    [SerializeField] private GameObject lockedMessagePanel;
+    [SerializeField] private Text lockedMessageText;
+    [SerializeField] private float messageDisplayTime = 3f;
 
+    [Header("Civilization Loader")]
+    [SerializeField] private CivilizationLoader civilizationLoader;
+
+    private void Start()
+    {
+        // Find CivilizationLoader if not assigned
+        if (civilizationLoader == null)
+        {
+            civilizationLoader = FindFirstObjectByType<CivilizationLoader>();
+        }
+    }
+
+    #region Scene Navigation
     public void LoadChapters()
     {
         SceneManager.LoadScene("ChapterSelect");
     }
+
     public void LoadCodexScene()
     {
         SceneManager.LoadScene("CodexScene");
     }
+
     public void LoadAchievementScene()
     {
         SceneManager.LoadScene("AchievementsScene");
     }
+    #endregion
 
+    #region Civilization Loading with UI Feedback
     public void LoadSumerian()
     {
-        // Clear any existing progress data to start fresh
-        ClearProgressForNewGame();
-        
-        // Load the starting scene
-        SceneManager.LoadScene("SumerianSceneOne");
+        if (CanLoadWithFeedback("Sumerian"))
+        {
+            ClearProgressForNewGame();
+            civilizationLoader.LoadSumerian();
+        }
     }
 
     public void LoadAkkadian()
     {
-        ClearProgressForNewGame();
-        SceneManager.LoadScene("AkkadianSceneOne"); // Replace with actual scene name
+        if (CanLoadWithFeedback("Akkadian"))
+        {
+            ClearProgressForNewGame();
+            civilizationLoader.LoadAkkadian();
+        }
     }
 
     public void LoadAssyrian()
     {
-        ClearProgressForNewGame();
-        SceneManager.LoadScene("AssyrianSceneOne"); // Replace with actual scene name
+        if (CanLoadWithFeedback("Assyrian"))
+        {
+            ClearProgressForNewGame();
+            civilizationLoader.LoadAssyrian();
+        }
     }
 
     public void LoadBabylonian()
     {
-        ClearProgressForNewGame();
-        SceneManager.LoadScene("BabylonianSceneOne"); // Replace with actual scene name
+        if (CanLoadWithFeedback("Babylonian"))
+        {
+            ClearProgressForNewGame();
+            civilizationLoader.LoadBabylonian();
+        }
     }
 
+    public void LoadIndus()
+    {
+        if (CanLoadWithFeedback("Indus"))
+        {
+            ClearProgressForNewGame();
+            civilizationLoader.LoadIndus();
+        }
+    }
+    #endregion
+
+    #region Helper Methods
+    /// <summary>
+    /// Checks if civilization can be loaded and provides UI feedback if not.
+    /// </summary>
+    private bool CanLoadWithFeedback(string civName)
+    {
+        // Check if GameProgressManager is available
+        if (GameProgressManager.Instance == null || GameProgressManager.Instance.CurrentStudentState == null)
+        {
+            ShowErrorMessage("Please log in first before accessing civilizations.");
+            return false;
+        }
+
+        // Use CivilizationLoader's method to check availability
+        if (civilizationLoader == null || !civilizationLoader.CanLoadCivilization(civName))
+        {
+            ShowCivilizationLockedMessage(civName);
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Shows UI feedback when a civilization is locked.
+    /// </summary>
+    private void ShowCivilizationLockedMessage(string civName)
+    {
+        string message = $"Complete previous civilizations to unlock {civName}!";
+        ShowMessage(message);
+    }
+
+    /// <summary>
+    /// Shows error messages for system issues.
+    /// </summary>
+    private void ShowErrorMessage(string message)
+    {
+        ShowMessage(message);
+    }
+
+    /// <summary>
+    /// Generic method to show messages in UI.
+    /// </summary>
+    private void ShowMessage(string message)
+    {
+        if (lockedMessagePanel != null)
+        {
+            lockedMessagePanel.SetActive(true);
+            
+            if (lockedMessageText != null)
+            {
+                lockedMessageText.text = message;
+            }
+            
+            // Auto-hide after specified time
+            CancelInvoke(nameof(HideMessage));
+            Invoke(nameof(HideMessage), messageDisplayTime);
+        }
+        
+        Debug.Log($"UI Message: {message}");
+    }
+
+    /// <summary>
+    /// Hides the message panel.
+    /// </summary>
+    private void HideMessage()
+    {
+        if (lockedMessagePanel != null)
+        {
+            lockedMessagePanel.SetActive(false);
+        }
+    }
+
+    /// <summary>
+    /// Clears dialogue progress when starting a new game.
+    /// This is CoordinateSelect's specific responsibility.
+    /// </summary>
     private void ClearProgressForNewGame()
     {
-        // Clear all dialogue progress for starting fresh
-        PlayerPrefs.DeleteKey("SumerianSceneOne_DialogueIndex");
-        PlayerPrefs.DeleteKey("SumerianSceneTwo_DialogueIndex");
-        PlayerPrefs.DeleteKey("SumerianSceneThree_DialogueIndex");
-        PlayerPrefs.DeleteKey("SumerianSceneFour_DialogueIndex");
-        PlayerPrefs.DeleteKey("SumerianSceneFive_DialogueIndex");
-        PlayerPrefs.DeleteKey("SumerianSceneSix_DialogueIndex");
-        PlayerPrefs.DeleteKey("SumerianSceneSeven_DialogueIndex");
-        PlayerPrefs.DeleteKey("AkkadianSceneOne_DialogueIndex");
-        PlayerPrefs.DeleteKey("AkkadianSceneTwo_DialogueIndex");
-        PlayerPrefs.DeleteKey("AkkadianSceneThree_DialogueIndex");
-        PlayerPrefs.DeleteKey("AkkadianSceneFour_DialogueIndex");
-        PlayerPrefs.DeleteKey("AkkadianSceneFive_DialogueIndex");
-        PlayerPrefs.DeleteKey("AkkadianSceneSix_DialogueIndex");
-        PlayerPrefs.DeleteKey("BabylonianSceneOne_DialogueIndex");
-        PlayerPrefs.DeleteKey("BabylonianSceneTwo_DialogueIndex");
-        PlayerPrefs.DeleteKey("BabylonianSceneThree_DialogueIndex");
-        PlayerPrefs.DeleteKey("BabylonianSceneFour_DialogueIndex");
-        PlayerPrefs.DeleteKey("BabylonianSceneFive_DialogueIndex");
-        PlayerPrefs.DeleteKey("BabylonianSceneSix_DialogueIndex");
-        PlayerPrefs.DeleteKey("BabylonianSceneSeven_DialogueIndex");
-        PlayerPrefs.DeleteKey("AssyrianSceneOne_DialogueIndex");
-        PlayerPrefs.DeleteKey("AssyrianSceneTwo_DialogueIndex");
-        PlayerPrefs.DeleteKey("AssyrianSceneThree_DialogueIndex");
-        PlayerPrefs.DeleteKey("AssyrianSceneFour_DialogueIndex");
-        PlayerPrefs.DeleteKey("AssyrianSceneFive_DialogueIndex");
+        // Clear dialogue progress for all scenes
+        string[] sceneKeys = {
+            "SumerianSceneOne_DialogueIndex", "SumerianSceneTwo_DialogueIndex", 
+            "SumerianSceneThree_DialogueIndex", "SumerianSceneFour_DialogueIndex",
+            "SumerianSceneFive_DialogueIndex", "SumerianSceneSix_DialogueIndex",
+            "SumerianSceneSeven_DialogueIndex",
+            "AkkadianSceneOne_DialogueIndex", "AkkadianSceneTwo_DialogueIndex",
+            "AkkadianSceneThree_DialogueIndex", "AkkadianSceneFour_DialogueIndex",
+            "AkkadianSceneFive_DialogueIndex", "AkkadianSceneSix_DialogueIndex",
+            "BabylonianSceneOne_DialogueIndex", "BabylonianSceneTwo_DialogueIndex",
+            "BabylonianSceneThree_DialogueIndex", "BabylonianSceneFour_DialogueIndex",
+            "BabylonianSceneFive_DialogueIndex", "BabylonianSceneSix_DialogueIndex",
+            "BabylonianSceneSeven_DialogueIndex",
+            "AssyrianSceneOne_DialogueIndex", "AssyrianSceneTwo_DialogueIndex",
+            "AssyrianSceneThree_DialogueIndex", "AssyrianSceneFour_DialogueIndex",
+            "AssyrianSceneFive_DialogueIndex",
+            "IndusSceneOne_DialogueIndex", "IndusSceneTwo_DialogueIndex"
+        };
+
+        foreach (string key in sceneKeys)
+        {
+            PlayerPrefs.DeleteKey(key);
+        }
+
+        // Clear scene navigation data
         PlayerPrefs.DeleteKey("CurrentScene");
         PlayerPrefs.DeleteKey("LastScene");
         PlayerPrefs.DeleteKey("SaveTimestamp");
-        
-        // Clear any load flags
         PlayerPrefs.DeleteKey("LoadedDialogueIndex");
         PlayerPrefs.DeleteKey("LoadedFromSave");
         
@@ -86,7 +203,7 @@ public class CoordinateSelect : MonoBehaviour
         PlayerPrefs.SetString("GameMode", "NewGame");
         PlayerPrefs.Save();
         
-        Debug.Log("Starting new game - all progress cleared");
+        Debug.Log("Starting new game - all dialogue progress cleared");
     }
-
+    #endregion
 }
