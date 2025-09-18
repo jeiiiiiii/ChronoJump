@@ -5,7 +5,7 @@ public static class PlayerAchievementManager
     public static void UnlockAchievement(string achievementNameOrId)
     {
         // Allow both ID ("AC001") or Name ("Scribe")
-        AchievementData data = null;
+        AchievementModel data = null;
 
         if (AchievementRegistry.AchievementsById.ContainsKey(achievementNameOrId))
             data = AchievementRegistry.AchievementsById[achievementNameOrId];
@@ -32,7 +32,7 @@ public static class PlayerAchievementManager
 
     public static bool IsAchievementUnlocked(string achievementNameOrId)
     {
-        AchievementData data = null;
+        AchievementModel data = null;
 
         if (AchievementRegistry.AchievementsById.ContainsKey(achievementNameOrId))
             data = AchievementRegistry.AchievementsById[achievementNameOrId];

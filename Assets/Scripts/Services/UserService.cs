@@ -124,24 +124,29 @@ public class UserService
                     { "dateUpdated", FieldValue.ServerTimestamp }
                 };
 
-                // Leaderboard data (auto-ID)
+                // Leaderboard data (doc ID = studId)
                 var leaderboardData = new Dictionary<string, object>
                 {
-                    { "classCode", classCode },
-                    { "dateUpdated", FieldValue.ServerTimestamp },
-                    { "displayName", user.DisplayName },
+                    { "displayName", user.DisplayName ?? "Unknown" },
+                    { "classCode", classCode ?? "" },
                     { "overallScore", "0" },
-                    { "studId", studId }
+                    { "perQuizFirstScores", new Dictionary<string, object>() }, 
+                    { "isRemoved", false },
+                    { "dateUpdated", FieldValue.ServerTimestamp }
                 };
 
-                // Progress data (same studId)
+                // Progress data (doc ID = studId)
                 var progressData = new Dictionary<string, object>
                 {
+                    { "overallScore", "0" },
+                    { "successRate", "0%" },
+                    { "perQuizBestScores", new Dictionary<string, object>() },
+                    { "passedQuizzes", new List<string>() },
                     { "currentStory", null },
                     { "dateUpdated", FieldValue.ServerTimestamp },
-                    { "overallScore", "0" },
-                    { "successRate", "0%" }
+                    { "isRemoved", false}
                 };
+
 
                 // Save student profile
                 studentRef.SetAsync(studentData).ContinueWithOnMainThread(studentTask =>
@@ -153,8 +158,10 @@ public class UserService
                         return;
                     }
 
-                    // Save leaderboard (auto-ID)
-                    _firebaseService.DB.Collection("studentLeaderboards").AddAsync(leaderboardData);
+                    // Save leaderboard (studId)
+                    DocumentReference leaderboardRef = _firebaseService.DB.Collection("studentLeaderboards").Document(studId);
+                    leaderboardRef.SetAsync(leaderboardData);
+
 
                     // Save progress (studId)
                     DocumentReference progressRef = _firebaseService.DB.Collection("studentProgress").Document(studId);

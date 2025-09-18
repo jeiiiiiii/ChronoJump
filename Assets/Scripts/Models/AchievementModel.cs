@@ -1,5 +1,5 @@
 [System.Serializable]
-public class AchievementData
+public class AchievementModel
 {
     public string Id;       
     public string Name;      
