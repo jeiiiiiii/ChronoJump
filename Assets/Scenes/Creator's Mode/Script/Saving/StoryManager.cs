@@ -2,12 +2,33 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
 
+[System.Serializable]
+public class PublishedStory
+{
+    public string storyId;
+    public string storyTitle;
+    public string classCode;
+    public string className;
+    public string publishDate;
+    
+    public PublishedStory(StoryData story, string classCode, string className)
+    {
+        this.storyId = story.storyId;
+        this.storyTitle = story.storyTitle;
+        this.classCode = classCode;
+        this.className = className;
+        this.publishDate = System.DateTime.Now.ToString("MMM dd, yyyy");
+    }
+}
+
 public class StoryManager : MonoBehaviour
 {
     public static StoryManager Instance;
 
     // Main list of stories
     public List<StoryData> allStories = new List<StoryData>();
+
+    public List<PublishedStory> publishedStories = new List<PublishedStory>();
 
     // ✅ Alias so other scripts using .stories will still work
     public List<StoryData> stories => allStories;
@@ -173,19 +194,29 @@ public class StoryManager : MonoBehaviour
             string json = File.ReadAllText(path);
             StoryListWrapper wrapper = JsonUtility.FromJson<StoryListWrapper>(json);
             allStories = wrapper.stories ?? new List<StoryData>();
-            Debug.Log($"✅ Loaded {allStories.Count} stories");
+            Debug.Log($"Loaded {allStories.Count} stories");
         }
         else
         {
             allStories = new List<StoryData>();
-            Debug.Log("⚠️ No saved stories found, starting fresh.");
+            Debug.Log("No saved stories found, starting fresh.");
         }
+    
+        // Also load published stories
+        LoadPublishedStories();
     }
 
     [System.Serializable]
     private class StoryListWrapper
     {
         public List<StoryData> stories;
+    }
+
+
+    [System.Serializable]
+    class PublishedStoryWrapper
+    {
+        public List<PublishedStory> publishedStories;
     }
 
     // --- BACKGROUND HANDLING ---
@@ -224,5 +255,57 @@ public class StoryManager : MonoBehaviour
         Texture2D tex = new Texture2D(2, 2);
         tex.LoadImage(bytes);
         return tex;
+    }
+
+    public void PublishStory(StoryData story, string classCode, string className)
+    {
+        // Check if story is already published to this class
+        var existing = publishedStories.Find(p => p.storyId == story.storyId && p.classCode == classCode);
+        if (existing != null)
+        {
+            Debug.LogWarning($"Story '{story.storyTitle}' is already published to class {className}");
+            return;
+        }
+    
+        var publishedStory = new PublishedStory(story, classCode, className);
+        publishedStories.Add(publishedStory);
+        SavePublishedStories();
+    
+        Debug.Log($"Published story '{story.storyTitle}' to class {className}");
+    }
+
+    public void DeletePublishedStory(string storyId, string classCode)
+    {      
+        publishedStories.RemoveAll(p => p.storyId == storyId && p.classCode == classCode);
+        SavePublishedStories();
+        Debug.Log($"Deleted published story with ID: {storyId}");
+    }
+
+    public List<PublishedStory> GetPublishedStoriesForClass(string classCode)
+    {
+        return publishedStories.FindAll(p => p.classCode == classCode);
+    }
+
+    private void SavePublishedStories()
+    {
+        string json = JsonUtility.ToJson(new PublishedStoryWrapper { publishedStories = publishedStories }, true);
+        File.WriteAllText(Path.Combine(Application.persistentDataPath, "published_stories.json"), json);
+        Debug.Log("Published stories saved");
+    }
+
+    private void LoadPublishedStories()
+    {
+        string path = Path.Combine(Application.persistentDataPath, "published_stories.json");
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            PublishedStoryWrapper wrapper = JsonUtility.FromJson<PublishedStoryWrapper>(json);
+            publishedStories = wrapper.publishedStories ?? new List<PublishedStory>();
+            Debug.Log($"Loaded {publishedStories.Count} published stories");
+        }
+        else
+        {
+            publishedStories = new List<PublishedStory>();
+        }
     }
 }

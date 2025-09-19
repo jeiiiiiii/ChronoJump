@@ -53,7 +53,10 @@ public class ReviewQuestionConfirm : MonoBehaviour
     }
     public void SaveAndPublish()
     {
-        SceneManager.LoadScene("Gamescene");
+        // Save the current story first
+        SaveCurrentStory();
+    
+        SceneManager.LoadScene("StoryPublish");
     }
 
     // Save in Json file

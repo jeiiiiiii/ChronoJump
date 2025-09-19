@@ -42,6 +42,7 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
 
     [Header("Others")]
     public GameObject newClassButton;
+    public GameObject publishedStoriesButton;
 
     public void ShowLandingPage()
     {
@@ -183,12 +184,11 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
         leaderboardPage.SetActive(activePanel == leaderboardPage);
         createNewClassPanel.SetActive(false);
 
-        // Control newClassButton visibility
+        // Control newClassButton visibility (if it should still be conditional)
         if (newClassButton != null)
         {
-            // Show only on landingPage and emptyLandingPage
-            bool shouldShowNewClassButton = (activePanel == landingPage || activePanel == emptyLandingPage);
-            newClassButton.SetActive(shouldShowNewClassButton);
+            bool shouldShowNewClass = (activePanel == landingPage || activePanel == emptyLandingPage);
+            newClassButton.SetActive(shouldShowNewClass);
         }
 
         // Handle view-all buttons
@@ -199,7 +199,7 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
             SetDeleteStudentButtonVisible(true); 
         }
         else
-        {
+        {   
             SetViewAllProgressButtonVisible(false);
             SetViewAllLeaderboardButtonVisible(false);
             SetDeleteStudentButtonVisible(false); 

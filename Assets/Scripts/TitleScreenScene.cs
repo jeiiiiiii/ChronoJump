@@ -81,7 +81,7 @@ public class TitleScreen : MonoBehaviour
 
     public void CreatorMode()
     {
-        SceneManager.LoadScene("CreatorMode");
+        SceneManager.LoadScene("Creator'sModeScene");
     }
     
     public void Logout()

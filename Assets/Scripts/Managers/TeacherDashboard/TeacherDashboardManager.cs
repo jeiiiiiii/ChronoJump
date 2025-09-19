@@ -50,25 +50,46 @@ public class TeacherDashboardManager : MonoBehaviour
     }
 
     private void HandleClassDeleted()
-    {
-        _dashboardState.cachedStudents.Clear();
-        _dashboardState.cachedLeaderboards.Clear();
+{
+    // Get the deleted class code before clearing cache
+    string deletedClassCode = _dashboardState.selectedClassCode;
+    
+    _dashboardState.cachedStudents.Clear();
+    _dashboardState.cachedLeaderboards.Clear();
 
-        if (_dashboardState.HasClasses)
-        {
-            SelectFirstClass();
-        }
-        else
-        {
-            dashboardView.ShowEmptyLandingPage();
-        }
+    // NEW: Notify ClassDataSync about the deletion
+    if (ClassDataSync.Instance != null && !string.IsNullOrEmpty(deletedClassCode))
+    {
+        ClassDataSync.Instance.NotifyClassDeleted(deletedClassCode);
     }
+
+    if (_dashboardState.HasClasses)
+    {
+        SelectFirstClass();
+    }
+    else
+    {
+        dashboardView.ShowEmptyLandingPage();
+    }
+}
 
     private void HandleClassEdited()
+{
+    // NEW: Notify ClassDataSync about the edit
+    if (ClassDataSync.Instance != null && !string.IsNullOrEmpty(_dashboardState.selectedClassCode))
     {
-        // Refresh teacher data to get updated class names
-        RefreshDashboard();
+        // Get the updated class name
+        if (_dashboardState.teacherData?.classCode?.ContainsKey(_dashboardState.selectedClassCode) == true)
+        {
+            var classData = _dashboardState.teacherData.classCode[_dashboardState.selectedClassCode];
+            string newClassName = classData[1]; // className is at index 1
+            ClassDataSync.Instance.NotifyClassEdited(_dashboardState.selectedClassCode, newClassName);
+        }
     }
+    
+    // Refresh teacher data to get updated class names
+    RefreshDashboard();
+}
 
     private void InitializeState()
     {
@@ -90,31 +111,40 @@ public class TeacherDashboardManager : MonoBehaviour
     }
 
     private void OnTeacherDataLoaded(TeacherModel teacherData)
+{
+    if (teacherData == null)
     {
-        if (teacherData == null)
+        Debug.LogError("No teacher data found.");
+        return;
+    }
+
+    _dashboardState.teacherData = teacherData;
+    
+    // NEW: Update ClassDataSync with the loaded class data
+    if (ClassDataSync.Instance != null && teacherData.classCode != null)
+    {
+        // Update the cached data in ClassDataSync but don't trigger events to avoid loops
+        var cachedData = new Dictionary<string, List<string>>(teacherData.classCode);
+        ClassDataSync.Instance.UpdateCachedData(cachedData);
+    }
+    
+    UpdateDashboardView();
+
+    if (_dashboardState.HasClasses)
+    {
+        SetupClassList();
+
+        if (!string.IsNullOrEmpty(_previousSelectedClassCode) &&
+            _dashboardState.teacherData.classCode.ContainsKey(_previousSelectedClassCode))
         {
-            Debug.LogError("No teacher data found.");
-            return;
+            RestoreClassSelection(_previousSelectedClassCode);
         }
-
-        _dashboardState.teacherData = teacherData;
-        UpdateDashboardView();
-
-        if (_dashboardState.HasClasses)
+        else
         {
-            SetupClassList();
-
-            if (!string.IsNullOrEmpty(_previousSelectedClassCode) &&
-                _dashboardState.teacherData.classCode.ContainsKey(_previousSelectedClassCode))
-            {
-                RestoreClassSelection(_previousSelectedClassCode);
-            }
-            else
-            {
-                SelectFirstClass();
-            }
+            SelectFirstClass();
         }
     }
+}
 
     private void UpdateDashboardView()
     {
@@ -330,6 +360,12 @@ public class TeacherDashboardManager : MonoBehaviour
         SceneManager.LoadScene("TitleScreen");
     }
 
+    public void OnPublishedStoriesClicked()
+    {
+        Debug.Log("Published Stories button clicked!");
+        SceneManager.LoadScene("StoryPublish"); // Make sure this matches your scene name exactly
+    }
+
     public void OnViewStudentProgressClickedFull()
     {
         _isViewingAllStudents = true;
@@ -409,6 +445,29 @@ public class TeacherDashboardManager : MonoBehaviour
 
         LoadTeacherData();
     }
+
+    private void EnsureClassDataSync()
+{
+    // Make sure ClassDataSync exists
+    if (ClassDataSync.Instance == null)
+    {
+        GameObject syncObject = new GameObject("ClassDataSync");
+        syncObject.AddComponent<ClassDataSync>();
+        Debug.Log("Created ClassDataSync instance in TeacherDashboard");
+    }
+}
+
+public void OnClassCreatedSuccessfully(string classCode, string className, string classLevel)
+{
+    // This should be called from your CreateClassView after successful class creation
+    if (ClassDataSync.Instance != null)
+    {
+        ClassDataSync.Instance.NotifyClassCreated(classCode, className, classLevel);
+    }
+    
+    // Refresh dashboard to show the new class
+    RefreshDashboard();
+}
 
     public void RefreshDashboardAndSelectClass(string newClassCode)
     {
