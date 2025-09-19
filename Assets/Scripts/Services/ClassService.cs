@@ -18,11 +18,28 @@ public class ClassService
         _teacherService = teacherService;
     }
 
+    #region Helpers: Build update data
+
+    private Dictionary<string, object> GetRemovedData() => new()
+    {
+        { "isRemoved", true },
+        { "dateRemoved", Timestamp.GetCurrentTimestamp() }
+    };
+
+    private Dictionary<string, object> GetRestoreData() => new()
+    {
+        { "isRemoved", false },
+        { "dateRestored", Timestamp.GetCurrentTimestamp() }
+    };
+
+    #endregion
+
+    #region Class Management
+
     public void CreateClass(string className, string classLevel, Action<bool, string> callback)
     {
         if (_firebaseService.CurrentUser == null)
         {
-            Debug.LogError("No current user signed in.");
             callback(false, "No user signed in.");
             return;
         }
@@ -31,7 +48,6 @@ public class ClassService
         {
             if (teacherData == null)
             {
-                Debug.LogError("No teacher data found for current user.");
                 callback(false, "No teacher data found.");
                 return;
             }
@@ -42,284 +58,348 @@ public class ClassService
 
     private void CreateClassWithTeacherData(string className, string classLevel, string teacherId, Action<bool, string> callback)
     {
-        GenerateUniqueClassCode().ContinueWithOnMainThread(codeTask =>
+        _ = GenerateUniqueClassCode().ContinueWithOnMainThread(async codeTask =>
         {
-            if (codeTask.IsCanceled || codeTask.IsFaulted)
+            if (codeTask.IsFaulted || codeTask.IsCanceled)
             {
-                Debug.LogError("Failed to generate class code: " + codeTask.Exception);
-                callback(false, "Failed to generate class code. Please try again.");
+                callback(false, "Failed to generate class code.");
                 return;
             }
 
             string classCode = codeTask.Result;
-            SaveNewClass(className, classLevel, classCode, teacherId, callback);
+            await SaveNewClass(className, classLevel, classCode, teacherId, callback);
         });
     }
 
-    private void SaveNewClass(string className, string classLevel, string classCode, string teacherId, Action<bool, string> callback)
+    private async Task SaveNewClass(string className, string classLevel, string classCode, string teacherId, Action<bool, string> callback)
     {
-        var newClass = new
+        try
         {
-            className = className,
-            classLevel = classLevel,
-            classCode = classCode,
-            teachId = teacherId,
-            dateCreated = Timestamp.GetCurrentTimestamp()
-        };
-
-        _firebaseService.DB.Collection("classes").AddAsync(newClass)
-            .ContinueWithOnMainThread(task =>
+            var newClass = new
             {
-                if (task.IsCanceled || task.IsFaulted)
-                {
-                    Debug.LogError("Failed to create class: " + task.Exception);
-                    callback(false, "Failed to create class. Please try again.");
-                    return;
-                }
+                className,
+                classLevel,
+                classCode,
+                teachId = teacherId,
+                dateCreated = Timestamp.GetCurrentTimestamp()
+            };
 
-                Debug.Log($"Class {className} created successfully with code: {classCode}");
-                callback(true, classCode);
-            });
+            await _firebaseService.DB.Collection("classes").AddAsync(newClass);
+            Debug.Log($"[ClassService] Created class {className} with code {classCode}");
+            callback(true, classCode);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[ClassService] Failed to create class: {ex.Message}");
+            callback(false, "Failed to create class. Please try again.");
+        }
     }
 
-    public void DeleteClass(string classCode, Action<bool, string> callback)
+    public async void DeleteClass(string classCode, Action<bool, string> callback)
     {
-        // First, get the class document to delete
-        GetClassByCode(classCode).ContinueWithOnMainThread(getClassTask =>
+        try
         {
-            if (getClassTask.IsCanceled || getClassTask.IsFaulted || getClassTask.Result == null)
+            var classDoc = await GetClassByCode(classCode);
+            if (classDoc == null)
             {
-                Debug.LogError("Failed to find class: " + getClassTask.Exception);
                 callback(false, "Class not found.");
                 return;
             }
 
-            string classDocumentId = getClassTask.Result.Id;
-            
-            // Delete all students and their complete data first
-            DeleteCompleteStudentData(classCode).ContinueWithOnMainThread(deleteStudentsTask =>
-            {
-                if (deleteStudentsTask.IsCanceled || deleteStudentsTask.IsFaulted)
-                {
-                    Debug.LogError("Failed to delete student data: " + deleteStudentsTask.Exception);
-                    callback(false, "Failed to delete student data. Please try again.");
-                    return;
-                }
+            await MarkCompleteStudentDataAsRemoved(classCode);
 
-                // Now delete the class document
-                _firebaseService.DB.Collection("classes").Document(classDocumentId).DeleteAsync()
-                    .ContinueWithOnMainThread(deleteClassTask =>
-                    {
-                        if (deleteClassTask.IsCanceled || deleteClassTask.IsFaulted)
-                        {
-                            Debug.LogError("Failed to delete class: " + deleteClassTask.Exception);
-                            callback(false, "Failed to delete class. Please try again.");
-                            return;
-                        }
-
-                        Debug.Log($"Class {classCode} and all student data deleted successfully.");
-                        callback(true, "Class and all student data deleted successfully.");
-                    });
-            });
-        });
+            await classDoc.Reference.DeleteAsync();
+            Debug.Log($"[ClassService] Class {classCode} deleted and all student data marked as removed.");
+            callback(true, "Class deleted and all student data marked as removed.");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[ClassService] DeleteClass error: {ex.Message}");
+            callback(false, "Failed to delete class.");
+        }
     }
 
-    public void EditClassName(string classCode, string newClassName, Action<bool, string> callback)
+    public async void EditClassName(string classCode, string newClassName, Action<bool, string> callback)
     {
-        GetClassByCode(classCode).ContinueWithOnMainThread(getClassTask =>
+        try
         {
-            if (getClassTask.IsCanceled || getClassTask.IsFaulted || getClassTask.Result == null)
+            var classDoc = await GetClassByCode(classCode);
+            if (classDoc == null)
             {
-                Debug.LogError("Failed to find class: " + getClassTask.Exception);
                 callback(false, "Class not found.");
                 return;
             }
 
-            string classDocumentId = getClassTask.Result.Id;
-            
-            // Update the class name
             var updateData = new Dictionary<string, object>
             {
                 { "className", newClassName },
                 { "dateModified", Timestamp.GetCurrentTimestamp() }
             };
 
-            _firebaseService.DB.Collection("classes").Document(classDocumentId).UpdateAsync(updateData)
-                .ContinueWithOnMainThread(updateTask =>
-                {
-                    if (updateTask.IsCanceled || updateTask.IsFaulted)
-                    {
-                        Debug.LogError("Failed to update class name: " + updateTask.Exception);
-                        callback(false, "Failed to update class name. Please try again.");
-                        return;
-                    }
-
-                    Debug.Log($"Class name updated successfully to: {newClassName}");
-                    callback(true, "Class name updated successfully.");
-                });
-        });
+            await classDoc.Reference.UpdateAsync(updateData);
+            Debug.Log($"[ClassService] Class name updated to: {newClassName}");
+            callback(true, "Class name updated successfully.");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[ClassService] EditClassName error: {ex.Message}");
+            callback(false, "Failed to update class name.");
+        }
     }
 
     private async Task<DocumentSnapshot> GetClassByCode(string classCode)
     {
-        QuerySnapshot snapshot = await _firebaseService.DB.Collection("classes")
+        var snapshot = await _firebaseService.DB.Collection("classes")
             .WhereEqualTo("classCode", classCode)
             .Limit(1)
             .GetSnapshotAsync();
 
-        return snapshot.Count > 0 ? snapshot.Documents.FirstOrDefault() : null;
+        return snapshot.Count > 0 ? snapshot.Documents.First() : null;
     }
 
-    private async Task DeleteCompleteStudentData(string classCode)
+    #endregion
+
+    #region Student Soft Delete / Restore
+
+    private async Task MarkCompleteStudentDataAsRemoved(string classCode)
+    {
+        var studentsSnapshot = await _firebaseService.DB.Collection("students")
+            .WhereEqualTo("classCode", classCode)
+            .WhereEqualTo("isRemoved", false)
+            .GetSnapshotAsync();
+
+        var tasks = studentsSnapshot.Documents.Select(studentDoc =>
+            MarkStudentAndRelatedDataAsRemoved(studentDoc));
+
+        await Task.WhenAll(tasks);
+    }
+
+    public async Task MarkStudentAndRelatedDataAsRemoved(DocumentSnapshot studentDoc)
+    {
+        var data = studentDoc.ToDictionary();
+        string userId = data.ContainsKey("userId") ? data["userId"]?.ToString() : null;
+        string studId = studentDoc.Id; // use the Firestore document ID as studId
+
+        Debug.Log($"[ClassService] Starting removal process for student - userId: {userId}, studId: {studId}");
+
+        var tasks = new List<Task>();
+        
+        // Create separate data for each update to avoid race conditions
+        tasks.Add(studentDoc.Reference.UpdateAsync(GetRemovedData()));
+
+        if (!string.IsNullOrEmpty(userId))
+        {
+            Debug.Log($"[ClassService] Adding user account removal task for userId: {userId}");
+            tasks.Add(MarkUserAccountAsRemoved(userId));
+        }
+
+        if (!string.IsNullOrEmpty(studId))
+        {
+            Debug.Log($"[ClassService] Adding progress and leaderboard removal tasks for studId: {studId}");
+            tasks.Add(MarkStudentProgressAsRemoved(studId));
+            tasks.Add(MarkStudentLeaderboardAsRemoved(studId));
+        }
+
+        Debug.Log($"[ClassService] Executing {tasks.Count} removal tasks");
+        await Task.WhenAll(tasks);
+        Debug.Log($"[ClassService] Completed all removal tasks for student");
+    }
+
+    private async Task MarkUserAccountAsRemoved(string userId)
     {
         try
         {
-            // Step 1: Get all students in this class
-            QuerySnapshot studentsSnapshot = await _firebaseService.DB.Collection("students")
+            Debug.Log($"[ClassService] Marking user account {userId} as removed");
+            await _firebaseService.DB.Collection("userAccounts").Document(userId).UpdateAsync(GetRemovedData());
+            Debug.Log($"[ClassService] Successfully marked user account {userId} as removed");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[ClassService] Failed to mark user account {userId} as removed: {ex.Message}");
+            Debug.LogError($"[ClassService] Stack trace: {ex.StackTrace}");
+        }
+    }
+
+   private async Task MarkStudentProgressAsRemoved(string studId)
+{
+    try
+    {
+        Debug.Log($"[ClassService] Marking student progress {studId} as removed");
+        var progressDoc = await _firebaseService.DB.Collection("studentProgress").Document(studId).GetSnapshotAsync();
+
+        if (progressDoc.Exists)
+        {
+            await progressDoc.Reference.UpdateAsync(GetRemovedData());
+            Debug.Log($"[ClassService] Successfully marked student progress {studId} as removed");
+        }
+        else
+        {
+            Debug.LogWarning($"[ClassService] No progress document found for {studId}, skipping");
+        }
+    }
+    catch (Exception ex)
+    {
+        Debug.LogError($"[ClassService] Failed to mark progress for {studId}: {ex.Message}");
+    }
+}
+
+private async Task MarkStudentLeaderboardAsRemoved(string studId)
+{
+    try
+    {
+        Debug.Log($"[ClassService] Marking leaderboard {studId} as removed");
+        var leaderboardDoc = await _firebaseService.DB.Collection("studentLeaderboards").Document(studId).GetSnapshotAsync();
+
+        if (leaderboardDoc.Exists)
+        {
+            await leaderboardDoc.Reference.UpdateAsync(GetRemovedData());
+            Debug.Log($"[ClassService] Successfully marked leaderboard {studId} as removed");
+        }
+        else
+        {
+            Debug.LogWarning($"[ClassService] No leaderboard document found for {studId}, skipping");
+        }
+    }
+    catch (Exception ex)
+    {
+        Debug.LogError($"[ClassService] Failed to mark leaderboard for {studId}: {ex.Message}");
+    }
+}
+
+
+
+    public async void MarkStudentAsRemoved(string userId, string classCode, Action<bool> callback)
+    {
+        try
+        {
+            Debug.Log($"[ClassService] Starting MarkStudentAsRemoved for userId: {userId}, classCode: {classCode}");
+            
+            var query = await _firebaseService.DB.Collection("students")
+                .WhereEqualTo("userId", userId)
                 .WhereEqualTo("classCode", classCode)
+                .Limit(1)
                 .GetSnapshotAsync();
 
-            Debug.Log($"Found {studentsSnapshot.Count} students to delete in class {classCode}");
-
-            var deleteTasks = new List<Task>();
-
-            // Step 2: For each student, delete all their associated data
-            foreach (var studentDoc in studentsSnapshot.Documents)
+            if (query.Count == 0)
             {
-                var studentData = studentDoc.ToDictionary();
-                string userId = studentData.ContainsKey("userId") ? studentData["userId"].ToString() : null;
-                string studId = studentData.ContainsKey("studId") ? studentData["studId"].ToString() : null;
-
-                Debug.Log($"Processing student deletion - UserId: {userId}, StudId: {studId}");
-
-                if (!string.IsNullOrEmpty(userId))
-                {
-                    // Delete from userAccounts collection using userId as document ID
-                    deleteTasks.Add(DeleteUserAccount(userId));
-                    
-                    // Delete from Firebase Auth using userId
-                    deleteTasks.Add(DeleteFromFirebaseAuth(userId));
-                }
-
-                if (!string.IsNullOrEmpty(studId))
-                {
-                    // Delete from studentProgress collection using studId as document ID
-                    deleteTasks.Add(DeleteStudentProgress(studId));
-                    
-                    // Delete from studentLeaderboards collection using studId as document ID
-                    deleteTasks.Add(DeleteStudentLeaderboards(studId));
-                }
-
-                // Delete the student document itself
-                deleteTasks.Add(studentDoc.Reference.DeleteAsync());
+                Debug.LogWarning($"[ClassService] No student found with userId: {userId} and classCode: {classCode}");
+                callback(false);
+                return;
             }
 
-            // Wait for all deletion tasks to complete
-            await Task.WhenAll(deleteTasks);
-            Debug.Log($"Successfully deleted all data for {studentsSnapshot.Count} students from class {classCode}");
+            Debug.Log($"[ClassService] Found student document, proceeding with removal");
+            await MarkStudentAndRelatedDataAsRemoved(query.Documents.First());
+            Debug.Log($"[ClassService] Student {userId} removed from class {classCode}");
+            callback(true);
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Error deleting complete student data: {ex.Message}");
-            throw;
+            Debug.LogError($"[ClassService] MarkStudentAsRemoved error: {ex.Message}");
+            Debug.LogError($"[ClassService] Stack trace: {ex.StackTrace}");
+            callback(false);
         }
     }
 
-    private async Task DeleteUserAccount(string userId)
+    public async void RestoreStudent(string studId, Action<bool, string> callback)
     {
         try
         {
-            await _firebaseService.DB.Collection("userAccounts").Document(userId).DeleteAsync();
-            Debug.Log($"Deleted userAccount for userId: {userId}");
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"Failed to delete userAccount for userId {userId}: {ex.Message}");
-            // Don't throw - we want to continue with other deletions
-        }
-    }
-
-    private async Task DeleteFromFirebaseAuth(string userId)
-    {
-        try
-        {
-            var function = Firebase.Functions.FirebaseFunctions.DefaultInstance
-                .GetHttpsCallable("deleteUser");
-
-            var result = await function.CallAsync(new Dictionary<string, object>
+            var studentDoc = await _firebaseService.DB.Collection("students").Document(studId).GetSnapshotAsync();
+            if (!studentDoc.Exists)
             {
-                { "userId", userId }
-            });
-
-            Debug.Log($"Successfully requested deletion of user {userId}. Result: {result?.Data}");
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"Failed to delete from Firebase Auth for userId {userId}: {ex.Message}\n{ex.StackTrace}");
-            if (ex.InnerException != null)
-            {
-                Debug.LogError($"Inner exception: {ex.InnerException.Message}");
+                callback(false, "Student not found.");
+                return;
             }
-        }
-    }
 
+            var data = studentDoc.ToDictionary();
+            if (!data.TryGetValue("isRemoved", out var removedObj) || !(bool)removedObj)
+            {
+                callback(false, "Student is not marked as removed.");
+                return;
+            }
 
-
-
-    private async Task DeleteStudentProgress(string studId)
-    {
-        try
-        {
-            await _firebaseService.DB.Collection("studentProgress").Document(studId).DeleteAsync();
-            Debug.Log($"Deleted studentProgress for studId: {studId}");
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"Failed to delete studentProgress for studId {studId}: {ex.Message}");
-            // Don't throw - we want to continue with other deletions
-        }
-    }
-
-    private async Task DeleteStudentLeaderboards(string studId)
-    {
-        try
-        {
-            await _firebaseService.DB.Collection("studentLeaderboards").Document(studId).DeleteAsync();
-            Debug.Log($"Deleted studentLeaderboards for studId: {studId}");
+            await RestoreStudentData(studId);
+            Debug.Log($"[ClassService] Student {studId} restored");
+            callback(true, "Student restored successfully.");
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Failed to delete studentLeaderboards for studId {studId}: {ex.Message}");
-            // Don't throw - we want to continue with other deletions
+            Debug.LogError($"[ClassService] RestoreStudent error: {ex.Message}");
+            callback(false, "Failed to restore student.");
         }
     }
+
+    private async Task RestoreStudentData(string studId)
+    {
+        var tasks = new List<Task>();
+
+        var studentDoc = await _firebaseService.DB.Collection("students").Document(studId).GetSnapshotAsync();
+        if (studentDoc.Exists)
+        {
+            var data = studentDoc.ToDictionary();
+            string userId = data.ContainsKey("userId") ? data["userId"]?.ToString() : null;
+
+            // Create separate restore data for each operation
+            tasks.Add(studentDoc.Reference.UpdateAsync(GetRestoreData()));
+
+            if (!string.IsNullOrEmpty(userId))
+                tasks.Add(_firebaseService.DB.Collection("userAccounts").Document(userId).UpdateAsync(GetRestoreData()));
+
+            tasks.Add(_firebaseService.DB.Collection("studentProgress").Document(studId).UpdateAsync(GetRestoreData()));
+
+            var leaderboardQuery = await _firebaseService.DB.Collection("studentLeaderboards")
+                .WhereEqualTo("studId", studId)
+                .GetSnapshotAsync();
+
+            // Create separate restore data for each leaderboard document
+            foreach (var doc in leaderboardQuery.Documents)
+            {
+                tasks.Add(doc.Reference.UpdateAsync(GetRestoreData()));
+            }
+
+            await Task.WhenAll(tasks);
+        }
+    }
+
+    #endregion
+
+    #region Utility
 
     public async Task<string> GenerateUniqueClassCode()
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         var random = new System.Random();
-        string classCode;
-        bool exists = true;
 
+        string classCode;
         do
         {
             classCode = new string(Enumerable.Repeat(chars, 8)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
-
-            exists = await DoesClassCodeExist(classCode);
         }
-        while (exists);
+        while (await DoesClassCodeExist(classCode));
 
         return classCode;
     }
 
     private async Task<bool> DoesClassCodeExist(string classCode)
     {
-        QuerySnapshot snapshot = await _firebaseService.DB.Collection("classes")
+        var snapshot = await _firebaseService.DB.Collection("classes")
             .WhereEqualTo("classCode", classCode)
             .Limit(1)
             .GetSnapshotAsync();
 
         return snapshot.Count > 0;
     }
+
+    public async Task<List<DocumentSnapshot>> GetActiveStudentsForClass(string classCode)
+    {
+        var snapshot = await _firebaseService.DB.Collection("students")
+            .WhereEqualTo("classCode", classCode)
+            .WhereEqualTo("isRemoved", false)
+            .GetSnapshotAsync();
+
+        return snapshot.Documents.ToList();
+    }
+
+    #endregion
 }

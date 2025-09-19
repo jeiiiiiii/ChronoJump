@@ -43,7 +43,7 @@ public class FirebaseManager : MonoBehaviour
     private async void InitializeServices()
     {
         _firebaseService = new FirebaseService();
-        
+
         bool initialized = await _firebaseService.InitializeAsync();
         if (!initialized)
         {
@@ -166,4 +166,10 @@ public class FirebaseManager : MonoBehaviour
     {
         StudentService?.GetStudentLeaderboard(classCode, callback);
     }
+    
+    public void MarkStudentAsRemoved(string userId, string classCode, Action<bool> callback)
+    {
+        ClassService?.MarkStudentAsRemoved(userId, classCode, callback);
+    }
+
 }

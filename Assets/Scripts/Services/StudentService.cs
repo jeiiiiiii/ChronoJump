@@ -73,7 +73,8 @@ public class StudentService
             teachId = GetFieldValue(document, "teachId"),
             userId = GetFieldValue(document, "userId"),
             studName = GetFieldValue(document, "studName"),
-            classCode = GetFieldValue(document, "classCode")
+            classCode = GetFieldValue(document, "classCode"),
+            isRemoved = document.ContainsField("isRemoved") ? document.GetValue<bool>("isRemoved") : false,
         };
     }
 
@@ -209,6 +210,7 @@ public class StudentService
                     string studId = data.ContainsKey("studId") ? data["studId"]?.ToString() : "";
                     string displayName = data.ContainsKey("displayName") ? data["displayName"]?.ToString() : "Unknown Student";
                     string classCodeFromDoc = data.ContainsKey("classCode") ? data["classCode"]?.ToString() : "";
+                    bool isRemoved = data.ContainsKey("isRemoved") && data["isRemoved"] is bool b && b;
                     
                     int overallScore = 0;
                     if (data.ContainsKey("overallScore"))
@@ -221,7 +223,7 @@ public class StudentService
                             overallScore = parsedScore;
                     }
 
-                    students.Add(new LeaderboardStudentModel(studId, displayName, overallScore, classCodeFromDoc));
+                    students.Add(new LeaderboardStudentModel(studId, displayName, overallScore, classCodeFromDoc, isRemoved));
                 }
 
                 callback(students);

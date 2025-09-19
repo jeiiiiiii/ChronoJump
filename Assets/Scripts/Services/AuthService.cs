@@ -14,30 +14,60 @@ public class AuthService
     }
 
     public void SignIn(string email, string password, Action<bool, string> callback)
-    {
-        _firebaseService.Auth.SignInWithEmailAndPasswordAsync(email, password)
-            .ContinueWithOnMainThread(task =>
+{
+    _firebaseService.Auth.SignInWithEmailAndPasswordAsync(email, password)
+        .ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCanceled)
             {
-                if (task.IsCanceled)
+                Debug.LogError("SignIn was canceled.");
+                callback(false, "SignIn was canceled.");
+                return;
+            }
+
+            if (task.IsFaulted)
+            {
+                Debug.Log("SignIn failed.");
+                callback(false, "Your email or password is incorrect.");
+                return;
+            }
+
+            var authResult = task.Result;
+            FirebaseUser user = authResult.User;
+
+            // 🔎 Now check Firestore for isRemoved flag
+            var db = Firebase.Firestore.FirebaseFirestore.DefaultInstance;
+            db.Collection("userAccounts").Document(user.UserId).GetSnapshotAsync().ContinueWithOnMainThread(docTask =>
+            {
+                if (docTask.IsCanceled || docTask.IsFaulted)
                 {
-                    Debug.LogError("SignIn was canceled.");
-                    callback(false, "SignIn was canceled.");
+                    callback(false, "Error verifying account.");
                     return;
                 }
 
-                if (task.IsFaulted)
+                var snapshot = docTask.Result;
+                if (!snapshot.Exists)
                 {
-                    Debug.Log("SignIn failed.");
-                    callback(false, "Your email or password is incorrect.");
+                    callback(false, "Account does not exist in records.");
                     return;
                 }
 
-                var authResult = task.Result;
-                FirebaseUser user = authResult.User;
-                Debug.Log($"User {user.DisplayName} signed in successfully");
-                callback(true, "Login successful");
+                // ✅ Check if isRemoved is true
+                if (snapshot.ContainsField("isRemoved") && snapshot.GetValue<bool>("isRemoved"))
+                {
+                    callback(false, "This account has been removed.");
+                    
+                    // Optionally, also sign them out immediately
+                    _firebaseService.Auth.SignOut();
+                }
+                else
+                {
+                    callback(true, "Login successful");
+                }
             });
-    }
+        });
+}
+
 
     // Original SignUp method for backward compatibility
     public void SignUp(string email, string password, string displayName, bool isTeacher, Action<bool, string> callback)

@@ -9,6 +9,7 @@ public class StudentModel
     [FirestoreProperty] public string userId { get; set; }
     [FirestoreProperty] public string studName { get; set; }
     [FirestoreProperty] public string classCode { get; set; }
+    [FirestoreProperty] public bool isRemoved { get; set; }
 
     public Dictionary<string, object> studentProgress { get; set; }
 }

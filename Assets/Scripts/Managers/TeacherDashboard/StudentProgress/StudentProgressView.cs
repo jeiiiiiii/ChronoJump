@@ -140,7 +140,18 @@ public class StudentProgressView : MonoBehaviour
         ClearStudentLists();
         ClearLoadingState(viewAll);
 
-        if (students == null || students.Count == 0)
+        if (students == null)
+        {
+            SetEmptyMessage(true, viewAll);
+            return;
+        }
+
+        students = students
+            .Where(s => !s.isRemoved)
+            .OrderBy(s => s.studName)
+            .ToList();
+
+        if (students.Count == 0)
         {
             SetEmptyMessage(true, viewAll);
             return;
@@ -148,13 +159,10 @@ public class StudentProgressView : MonoBehaviour
 
         SetEmptyMessage(false, viewAll);
 
-        students = students.OrderBy(s => s.studName).ToList();
-
         if (viewAll)
         {
             foreach (var student in students)
             {
-                // NEW: In delete mode, show remove buttons when viewing all students
                 AddStudentToList(student, true, deleteMode);
             }
         }
@@ -163,11 +171,11 @@ public class StudentProgressView : MonoBehaviour
             int count = Mathf.Min(5, students.Count);
             for (int i = 0; i < count; i++)
             {
-                // Never show remove buttons in landing page view (summary view)
                 AddStudentToList(students[i], false, false);
             }
         }
     }
+
 
     private void SetEmptyMessage(bool active, bool viewAll)
     {

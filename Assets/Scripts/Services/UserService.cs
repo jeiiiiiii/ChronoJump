@@ -31,7 +31,8 @@ public class UserService
             { "displayName", user.DisplayName },
             { "email", user.Email },
             { "role", isTeacher ? "teacher" : "student" },
-            { "createdAt", FieldValue.ServerTimestamp }
+            { "createdAt", FieldValue.ServerTimestamp },
+            { "isRemoved", false}
         };
 
         Debug.Log($"Saving user data for {user.DisplayName}...");
@@ -65,9 +66,10 @@ public class UserService
         {
             { "teachFirstName", ExtractFirstName(user.DisplayName) },
             { "teachLastName", ExtractLastName(user.DisplayName) },
-            { "title", "Teacher" },    
+            { "title", "Teacher" },
             { "userId", user.UserId },
             { "dateUpdated", FieldValue.ServerTimestamp },
+            { "isRemoved", false}
         };
 
         _firebaseService.DB.Collection("teachers").AddAsync(teacherData).ContinueWithOnMainThread(task =>
@@ -104,7 +106,7 @@ public class UserService
                 DocumentSnapshot classDoc = snapshot.Documents.FirstOrDefault();
 
                 string teacherId = "";
-                if (classDoc != null && classDoc.TryGetValue("teacherId", out string fetchedTeacherId))
+                if (classDoc != null && classDoc.TryGetValue("teachId", out string fetchedTeacherId))
                 {
                     teacherId = fetchedTeacherId;
                 }
@@ -118,10 +120,10 @@ public class UserService
                 {
                     { "classCode", classCode },
                     { "studName", user.DisplayName },
-                    { "studProfilePic", "" },
                     { "teachId", teacherId },
                     { "userId", user.UserId },
-                    { "dateUpdated", FieldValue.ServerTimestamp }
+                    { "dateUpdated", FieldValue.ServerTimestamp },
+                    { "isRemoved", false},
                 };
 
                 // Leaderboard data (doc ID = studId)
@@ -147,7 +149,6 @@ public class UserService
                     { "isRemoved", false}
                 };
 
-
                 // Save student profile
                 studentRef.SetAsync(studentData).ContinueWithOnMainThread(studentTask =>
                 {
@@ -158,10 +159,8 @@ public class UserService
                         return;
                     }
 
-                    // Save leaderboard (studId)
-                    DocumentReference leaderboardRef = _firebaseService.DB.Collection("studentLeaderboards").Document(studId);
-                    leaderboardRef.SetAsync(leaderboardData);
-
+                    // Save leaderboard (auto-ID)
+                    _firebaseService.DB.Collection("studentLeaderboards").AddAsync(leaderboardData);
 
                     // Save progress (studId)
                     DocumentReference progressRef = _firebaseService.DB.Collection("studentProgress").Document(studId);
