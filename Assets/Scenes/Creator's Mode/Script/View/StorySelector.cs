@@ -60,7 +60,13 @@ void CreateNewStory()
 
     var stories = StoryManager.Instance.allStories;
 
-    StoryData newStory = new StoryData();
+    // ✅ Create a clean new story object
+    StoryData newStory = new StoryData
+    {
+        backgroundPath = string.Empty,
+        character1Path = string.Empty,
+        character2Path = string.Empty
+    };
 
     // ✅ If slot already exists, overwrite. Otherwise, expand list.
     if (storyIndex < stories.Count)
@@ -82,14 +88,15 @@ void CreateNewStory()
     // ✅ Persist immediately
     StoryManager.Instance.SaveStories();
 
-    // ✅ Clear temporary uploads
-    ImageStorage.UploadedTexture = null;
-    ImageStorage.uploadedTexture1 = null;
-    ImageStorage.uploadedTexture2 = null;
+    // ✅ Clear ALL temporary uploads so old images don’t leak into new story
+    ImageStorage.UploadedTexture = null;   // background
+    ImageStorage.uploadedTexture1 = null;  // character 1
+    ImageStorage.uploadedTexture2 = null;  // character 2
 
     // ✅ Load the creation scene
     SceneManager.LoadScene("CreateNewAddTitleScene");
 }
+
 
 
     public void OnSelectStory(int index)

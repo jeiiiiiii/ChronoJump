@@ -63,37 +63,39 @@ public class ViewStoriesBackgroundManager : MonoBehaviour
         if (index < 0 || index >= storySlots.Length) return;
 
         var slot = storySlots[index];
+        var stories = StoryManager.Instance.stories;
 
-        // ✅ Pull the story from StoryManager instead of ImageStorage
-        var stories = StoryManager.Instance.allStories;
-        if (index >= stories.Count)
+        if (index >= stories.Count || stories[index] == null || string.IsNullOrEmpty(stories[index].backgroundPath))
         {
+            // 🔹 Clear texture & hide slot
+            slot.backgroundImage.texture = null;
             slot.backgroundImage.gameObject.SetActive(false);
             return;
         }
 
         StoryData story = stories[index];
-        if (story != null && !string.IsNullOrEmpty(story.backgroundPath))
-        {
-            Texture2D background = StoryManager.Instance.LoadBackground(story.backgroundPath);
-            if (background != null)
-            {
-                slot.backgroundImage.texture = background;
-                slot.backgroundImage.gameObject.SetActive(true);
+        Texture2D background = StoryManager.Instance.LoadBackground(story.backgroundPath);
 
-                // ✅ Maintain aspect ratio
-                AspectRatioFitter fitter = slot.backgroundImage.GetComponent<AspectRatioFitter>();
-                if (fitter != null)
-                {
-                    fitter.aspectRatio = (float)background.width / background.height;
-                }
+        if (background != null)
+        {
+            slot.backgroundImage.texture = background;
+            slot.backgroundImage.gameObject.SetActive(true);
+
+            AspectRatioFitter fitter = slot.backgroundImage.GetComponent<AspectRatioFitter>();
+            if (fitter != null)
+            {
+                fitter.aspectRatio = (float)background.width / background.height;
             }
         }
         else
         {
+            // 🔹 If path exists but file is missing
+            slot.backgroundImage.texture = null;
             slot.backgroundImage.gameObject.SetActive(false);
         }
     }
+
+
 
 
     public void RefreshBackgrounds()

@@ -117,17 +117,12 @@ public class QuizTimeManager : MonoBehaviour
         {
             int correctIndex = questions[currentQuestionIndex].correctAnswerIndex;
 
-            // Highlight correct answer green
-            answerButtons[correctIndex].image.color = Color.green;
-
             if (selectedAnswerIndex == correctIndex)
             {
                 score++;
             }
             else
             {
-                // Highlight wrong answer red
-                answerButtons[selectedAnswerIndex].image.color = Color.red;
                 wrongAnswers.Add(currentQuestionIndex);
             }
 
@@ -204,7 +199,7 @@ public class QuizTimeManager : MonoBehaviour
                 var q = questions[idx];
                 int correctIdx = q.correctAnswerIndex;
                 string correctChoice = q.choices[correctIdx];
-                result += $"{idx + 1}. {q.questionText}";
+                result += $"{idx + 1}. Ang sagot mo: {q.questionText} - ";
                 result += $" Tamang sagot: {correctChoice}\n";
             }
         }

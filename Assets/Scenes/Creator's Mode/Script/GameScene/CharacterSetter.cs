@@ -16,35 +16,43 @@ public class CharacterSetter : MonoBehaviour
         }
 
         // ✅ Character 1
-        if (ImageStorage.uploadedTexture1 != null)
-        {
-            SetCharacterImage(characterImageOne, ImageStorage.uploadedTexture1);
-        }
-        else if (!string.IsNullOrEmpty(story.character1Path))
+        if (!string.IsNullOrEmpty(story.character1Path))
         {
             Texture2D tex1 = ImageStorage.LoadImage(story.character1Path);
             if (tex1 != null)
             {
-                ImageStorage.uploadedTexture1 = tex1; // keep in memory
                 SetCharacterImage(characterImageOne, tex1);
             }
         }
+        else if (ImageStorage.uploadedTexture1 != null)
+        {
+            // Use temporary uploaded image only if no saved path
+            SetCharacterImage(characterImageOne, ImageStorage.uploadedTexture1);
+        }
+        else
+        {
+            characterImageOne.gameObject.SetActive(false); // hide if none
+        }
 
         // ✅ Character 2
-        if (ImageStorage.uploadedTexture2 != null)
-        {
-            SetCharacterImage(characterImageTwo, ImageStorage.uploadedTexture2);
-        }
-        else if (!string.IsNullOrEmpty(story.character2Path))
+        if (!string.IsNullOrEmpty(story.character2Path))
         {
             Texture2D tex2 = ImageStorage.LoadImage(story.character2Path);
             if (tex2 != null)
             {
-                ImageStorage.uploadedTexture2 = tex2; // keep in memory
                 SetCharacterImage(characterImageTwo, tex2);
             }
         }
+        else if (ImageStorage.uploadedTexture2 != null)
+        {
+            SetCharacterImage(characterImageTwo, ImageStorage.uploadedTexture2);
+        }
+        else
+        {
+            characterImageTwo.gameObject.SetActive(false); // hide if none
+        }
     }
+
 
     private void SetCharacterImage(RawImage image, Texture2D texture)
     {

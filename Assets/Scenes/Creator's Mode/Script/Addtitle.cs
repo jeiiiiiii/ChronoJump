@@ -48,7 +48,7 @@ public class AddTitle : MonoBehaviour
     }
     public void Back()
     {
-        SceneManager.LoadScene("Creator'sModeScene");
+        SceneManager.LoadScene("ViewCreatedStoriesScene");
     }
 
 }

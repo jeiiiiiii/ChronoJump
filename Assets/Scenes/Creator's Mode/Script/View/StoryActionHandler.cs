@@ -110,22 +110,55 @@ public void OnStoryButtonClicked(int storyIndex)
 
         if (currentStoryIndex < 0 || currentStoryIndex >= stories.Count)
         {
-            Debug.LogWarning("DeleteStory called but no current story is selected!");
+            Debug.LogWarning("DeleteStory called but no valid story is selected!");
             return;
         }
 
-        // Remove story from persistence
-        stories.RemoveAt(currentStoryIndex);
+        // Get the story to delete
+        StoryData storyToDelete = stories[currentStoryIndex];
+
+        // Optional: Delete files
+        if (storyToDelete != null)
+        {
+            TryDeleteFile(storyToDelete.backgroundPath);
+            TryDeleteFile(storyToDelete.character1Path);
+            TryDeleteFile(storyToDelete.character2Path);
+        }
+
+        // Remove from persistence
+        stories[currentStoryIndex] = null;
         StoryManager.Instance.SaveStories();
 
-        // Reset current selection
-        StoryManager.Instance.currentStory = null;
-        currentStoryIndex = -1;
+        // Reset selection
+        if (StoryManager.Instance.currentStory == storyToDelete)
+            StoryManager.Instance.currentStory = null;
 
+        // Clear temp uploads
+        if (ImageStorage.CurrentStoryIndex == currentStoryIndex)
+        {
+            ImageStorage.UploadedTexture = null;
+            ImageStorage.uploadedTexture1 = null;
+            ImageStorage.uploadedTexture2 = null;
+        }
+
+        // Refresh UI immediately
+        FindObjectOfType<ViewCreatedStoriesScene>()?.RefreshBackgrounds();
+
+        // Close popups
         CloseDeleteConfirmation();
         ClosePopup();
 
-        Debug.Log("Story deleted successfully.");
+        Debug.Log($"🗑 Story at slot {currentStoryIndex} deleted successfully.");
+    }
+
+
+    private void TryDeleteFile(string path)
+    {
+        if (!string.IsNullOrEmpty(path) && System.IO.File.Exists(path))
+        {
+            System.IO.File.Delete(path);
+            Debug.Log($"🗑 Deleted file: {path}");
+        }
     }
 
     public void ClosePopup()

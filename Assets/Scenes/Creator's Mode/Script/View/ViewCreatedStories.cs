@@ -112,4 +112,9 @@ public class ViewCreatedStoriesScene : MonoBehaviour
             SceneManager.LoadScene("GameScene");
         }
     }
+
+        public void MainMenu()
+    {
+        SceneManager.LoadScene("Creator'sModeScene");
+    }
 }
