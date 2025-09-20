@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using TMPro;
+
 
 public class StudentLeaderboardView : MonoBehaviour, IStudentLeaderboardView
 {
@@ -45,7 +47,7 @@ public class StudentLeaderboardView : MonoBehaviour, IStudentLeaderboardView
         ClearLoadingState(viewAll);
         // Clear leaderboard content first (like StudentProgressView does)
         ClearLeaderboard();
-        
+
         if (!viewAll)
             ClearLoadingState(true); // also clear full just in case
         else
@@ -158,21 +160,31 @@ public class StudentLeaderboardView : MonoBehaviour, IStudentLeaderboardView
     }
 
     // New overload with viewAll flag
+    // New overload with viewAll flag
     public void ShowStudentLeaderboard(List<LeaderboardStudentModel> students, bool viewAll)
     {
         ClearLeaderboard();
         ClearLoadingState(viewAll);
 
-        if (students == null || students.Count == 0)
+        if (students == null)
+        {
+            SetEmptyMessage(true, viewAll);
+            return;
+        }
+
+        // 🚨 Filter out removed students before sorting
+        students = students
+            .Where(s => !s.isRemoved)
+            .OrderByDescending(s => s.overallScore) // higher score first
+            .ToList();
+
+        if (students.Count == 0)
         {
             SetEmptyMessage(true, viewAll);
             return;
         }
 
         SetEmptyMessage(false, viewAll);
-
-        // Sort descending by score
-        students.Sort((a, b) => b.overallScore.CompareTo(a.overallScore));
 
         if (viewAll)
         {
@@ -190,6 +202,7 @@ public class StudentLeaderboardView : MonoBehaviour, IStudentLeaderboardView
             }
         }
     }
+
 
     // -----------------------
     // Empty message handling

@@ -31,7 +31,8 @@ public class UserService
             { "displayName", user.DisplayName },
             { "email", user.Email },
             { "role", isTeacher ? "teacher" : "student" },
-            { "createdAt", FieldValue.ServerTimestamp }
+            { "createdAt", FieldValue.ServerTimestamp },
+            { "isRemoved", false}
         };
 
         Debug.Log($"Saving user data for {user.DisplayName}...");
@@ -65,9 +66,10 @@ public class UserService
         {
             { "teachFirstName", ExtractFirstName(user.DisplayName) },
             { "teachLastName", ExtractLastName(user.DisplayName) },
-            { "title", "Teacher" },    
+            { "title", "Teacher" },
             { "userId", user.UserId },
             { "dateUpdated", FieldValue.ServerTimestamp },
+            { "isRemoved", false}
         };
 
         _firebaseService.DB.Collection("teachers").AddAsync(teacherData).ContinueWithOnMainThread(task =>
@@ -104,7 +106,7 @@ public class UserService
                 DocumentSnapshot classDoc = snapshot.Documents.FirstOrDefault();
 
                 string teacherId = "";
-                if (classDoc != null && classDoc.TryGetValue("teacherId", out string fetchedTeacherId))
+                if (classDoc != null && classDoc.TryGetValue("teachId", out string fetchedTeacherId))
                 {
                     teacherId = fetchedTeacherId;
                 }
@@ -118,29 +120,33 @@ public class UserService
                 {
                     { "classCode", classCode },
                     { "studName", user.DisplayName },
-                    { "studProfilePic", "" },
                     { "teachId", teacherId },
                     { "userId", user.UserId },
+                    { "dateUpdated", FieldValue.ServerTimestamp },
+                    { "isRemoved", false},
+                };
+
+                // Leaderboard data (doc ID = studId)
+                var leaderboardData = new Dictionary<string, object>
+                {
+                    { "displayName", user.DisplayName ?? "Unknown" },
+                    { "classCode", classCode ?? "" },
+                    { "overallScore", "0" },
+                    { "perQuizFirstScores", new Dictionary<string, object>() }, 
+                    { "isRemoved", false },
                     { "dateUpdated", FieldValue.ServerTimestamp }
                 };
 
-                // Leaderboard data (auto-ID)
-                var leaderboardData = new Dictionary<string, object>
-                {
-                    { "classCode", classCode },
-                    { "dateUpdated", FieldValue.ServerTimestamp },
-                    { "displayName", user.DisplayName },
-                    { "overallScore", "0" },
-                    { "studId", studId }
-                };
-
-                // Progress data (same studId)
+                // Progress data (doc ID = studId)
                 var progressData = new Dictionary<string, object>
                 {
+                    { "overallScore", "0" },
+                    { "successRate", "0%" },
+                    { "perQuizBestScores", new Dictionary<string, object>() },
+                    { "passedQuizzes", new List<string>() },
                     { "currentStory", null },
                     { "dateUpdated", FieldValue.ServerTimestamp },
-                    { "overallScore", "0" },
-                    { "successRate", "0%" }
+                    { "isRemoved", false}
                 };
 
                 // Save student profile

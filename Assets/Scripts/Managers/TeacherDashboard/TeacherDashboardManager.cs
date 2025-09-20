@@ -23,20 +23,19 @@ public class TeacherDashboardManager : MonoBehaviour
     private bool _isLoadingLeaderboard = false;
     private bool _isViewingAllStudents = false;
     private bool _isViewingAllLeaderboard = false;
-    private bool _isInDeleteMode = false; // NEW: Track if we're in delete mode
+    private bool _isInDeleteMode = false;
 
     [Header("Class Management")]
     public ClassManager classManager;
 
     [Header("Confirmation Dialog")]
-    public ConfirmationDialog confirmationDialog; // NEW: Reference to confirmation dialog
+    public ConfirmationDialog confirmationDialog;
 
     private void Awake()
     {
         InitializeState();
         LoadTeacherData();
 
-        // NEW: Set dashboard manager reference in student progress view
         if (studentProgressView != null)
         {
             studentProgressView.SetDashboardManager(this);
@@ -71,6 +70,8 @@ public class TeacherDashboardManager : MonoBehaviour
         {
             dashboardView.ShowEmptyLandingPage();
         }
+        // ✅ Always refresh after deletion so teacherData is up-to-date
+        RefreshDashboard();
     }
 
     private void HandleClassEdited()
@@ -249,63 +250,96 @@ public class TeacherDashboardManager : MonoBehaviour
 
         if (studentLeaderboardView != null)
         {
-            // Pass the correct view flag based on current state
             studentLeaderboardView.ShowLoadingState(_isViewingAllLeaderboard);
         }
     }
 
-    private void LoadStudentProgress(string classCode)
+    private List<StudentModel> FilterActiveStudents(List<StudentModel> students)
     {
-        if (_isLoadingProgress) return;
-
-        _isLoadingProgress = true;
-        dashboardView.SetProgressEmptyMessages(false);
-
-        if (_dashboardState.cachedStudents.ContainsKey(classCode))
-        {
-            _isLoadingProgress = false;
-            var cached = _dashboardState.cachedStudents[classCode];
-            studentProgressView.ClearLoadingState();
-
-            if (cached.Count == 0)
-            {
-                dashboardView.SetProgressEmptyMessages(true);
-                dashboardView.SetViewAllProgressButtonVisible(false);
-            }
-            else
-            {
-                dashboardView.SetViewAllProgressButtonVisible(true);
-                // NEW: Pass delete mode state to the view
-                studentProgressView.ShowStudentProgress(cached, _isViewingAllStudents, _isInDeleteMode);
-            }
-            return;
-        }
-
-        studentProgressView.ShowLoadingState();
-
-        FirebaseManager.Instance.GetStudentsInClass(classCode, students =>
-        {
-            _isLoadingProgress = false;
-
-            var list = students ?? new List<StudentModel>();
-            _dashboardState.currentStudents = list;
-            _dashboardState.cachedStudents[classCode] = list;
-
-            studentProgressView.ClearLoadingState();
-
-            if (list.Count == 0)
-            {
-                dashboardView.SetProgressEmptyMessages(true);
-                dashboardView.SetViewAllProgressButtonVisible(false);
-            }
-            else
-            {
-                dashboardView.SetViewAllProgressButtonVisible(true);
-                // NEW: Pass delete mode state to the view
-                studentProgressView.ShowStudentProgress(list, _isViewingAllStudents, _isInDeleteMode);
-            }
-        });
+        if (students == null) return new List<StudentModel>();
+        return students.Where(student => student != null && !student.isRemoved).ToList();
     }
+
+    private List<LeaderboardStudentModel> FilterActiveLeaderboardStudents(List<LeaderboardStudentModel> leaderboardStudents)
+    {
+        if (leaderboardStudents == null) return new List<LeaderboardStudentModel>();
+        return leaderboardStudents.Where(student => student != null && !student.isRemoved).ToList();
+    }
+
+    private void LoadStudentProgress(string classCode)
+{
+    if (_isLoadingProgress) return;
+
+    _isLoadingProgress = true;
+    dashboardView.SetProgressEmptyMessages(false);
+
+    if (_dashboardState.cachedStudents.ContainsKey(classCode))
+    {
+        _isLoadingProgress = false;
+        var cached = _dashboardState.cachedStudents[classCode];
+        var activeStudents = FilterActiveStudents(cached);
+
+        studentProgressView.ClearLoadingState();
+
+        if (activeStudents.Count == 0)
+        {
+            // NEW: Check if we're in delete mode and automatically navigate back
+            if (_isInDeleteMode && _isViewingAllStudents)
+            {
+                Debug.Log("No more students to delete. Returning to landing page.");
+                OnBackToLandingPageClicked();
+                return;
+            }
+
+            dashboardView.SetProgressEmptyMessages(true);
+            dashboardView.SetViewAllProgressButtonVisible(false);
+            dashboardView.SetDeleteStudentButtonVisible(false);
+        }
+        else
+        {
+            dashboardView.SetViewAllProgressButtonVisible(true);
+            dashboardView.SetDeleteStudentButtonVisible(true);
+            studentProgressView.ShowStudentProgress(activeStudents, _isViewingAllStudents, _isInDeleteMode);
+        }
+        return;
+    }
+
+    studentProgressView.ShowLoadingState();
+
+    FirebaseManager.Instance.GetStudentsInClass(classCode, students =>
+    {
+        _isLoadingProgress = false;
+
+        var allStudents = students ?? new List<StudentModel>();
+        _dashboardState.cachedStudents[classCode] = allStudents;
+
+        var activeStudents = FilterActiveStudents(allStudents);
+        _dashboardState.currentStudents = activeStudents;
+
+        studentProgressView.ClearLoadingState();
+
+        if (activeStudents.Count == 0)
+        {
+            // NEW: Check if we're in delete mode and automatically navigate back
+            if (_isInDeleteMode && _isViewingAllStudents)
+            {
+                Debug.Log("No more students to delete. Returning to landing page.");
+                OnBackToLandingPageClicked();
+                return;
+            }
+
+            dashboardView.SetProgressEmptyMessages(true);
+            dashboardView.SetViewAllProgressButtonVisible(false);
+            dashboardView.SetDeleteStudentButtonVisible(false);
+        }
+        else
+        {
+            dashboardView.SetViewAllProgressButtonVisible(true);
+            dashboardView.SetDeleteStudentButtonVisible(true);
+            studentProgressView.ShowStudentProgress(activeStudents, _isViewingAllStudents, _isInDeleteMode);
+        }
+    });
+}
 
     private void LoadStudentLeaderboard(string classCode)
     {
@@ -317,10 +351,11 @@ public class TeacherDashboardManager : MonoBehaviour
         if (_dashboardState.cachedLeaderboards.ContainsKey(classCode))
         {
             _isLoadingLeaderboard = false;
-            var cached = _dashboardState.cachedLeaderboards[classCode];
+            var cachedActiveLeaderboard = _dashboardState.cachedLeaderboards[classCode];
+
             studentLeaderboardView.ClearLeaderboard();
 
-            if (cached.Count == 0)
+            if (cachedActiveLeaderboard.Count == 0)
             {
                 dashboardView.SetLeaderboardEmptyMessages(true);
                 dashboardView.SetViewAllLeaderboardButtonVisible(false);
@@ -328,8 +363,7 @@ public class TeacherDashboardManager : MonoBehaviour
             else
             {
                 dashboardView.SetViewAllLeaderboardButtonVisible(true);
-                // Pass the _isViewingAllLeaderboard flag to show in correct view
-                studentLeaderboardView.ShowStudentLeaderboard(cached, _isViewingAllLeaderboard);
+                studentLeaderboardView.ShowStudentLeaderboard(cachedActiveLeaderboard, _isViewingAllLeaderboard);
             }
             return;
         }
@@ -340,10 +374,11 @@ public class TeacherDashboardManager : MonoBehaviour
         {
             _isLoadingLeaderboard = false;
 
-            var list = leaderboardData ?? new List<LeaderboardStudentModel>();
-            _dashboardState.cachedLeaderboards[classCode] = list;
+            var allLeaderboardData = leaderboardData ?? new List<LeaderboardStudentModel>();
+            var activeLeaderboard = FilterActiveLeaderboardStudents(allLeaderboardData);
+            _dashboardState.cachedLeaderboards[classCode] = activeLeaderboard;
 
-            if (list.Count == 0)
+            if (activeLeaderboard.Count == 0)
             {
                 studentLeaderboardView.ClearLeaderboard();
                 dashboardView.SetLeaderboardEmptyMessages(true);
@@ -352,8 +387,7 @@ public class TeacherDashboardManager : MonoBehaviour
             else
             {
                 dashboardView.SetViewAllLeaderboardButtonVisible(true);
-                // Pass the _isViewingAllLeaderboard flag to show in correct view
-                studentLeaderboardView.ShowStudentLeaderboard(list, _isViewingAllLeaderboard);
+                studentLeaderboardView.ShowStudentLeaderboard(activeLeaderboard, _isViewingAllLeaderboard);
             }
         });
     }
@@ -394,7 +428,7 @@ public class TeacherDashboardManager : MonoBehaviour
     public void OnViewStudentProgressClickedFull()
     {
         _isViewingAllStudents = true;
-        _isInDeleteMode = false; 
+        _isInDeleteMode = false;
         dashboardView.ShowStudentProgressPage();
 
         if (!_isLoadingProgress && !string.IsNullOrEmpty(_dashboardState.selectedClassCode))
@@ -403,11 +437,10 @@ public class TeacherDashboardManager : MonoBehaviour
         }
     }
 
-    // NEW: Method for delete student button
     public void OnDeleteStudentProgressClickedFull()
     {
         _isViewingAllStudents = true;
-        _isInDeleteMode = true; 
+        _isInDeleteMode = true;
         dashboardView.ShowStudentProgressPage();
 
         if (!_isLoadingProgress && !string.IsNullOrEmpty(_dashboardState.selectedClassCode))
@@ -416,38 +449,48 @@ public class TeacherDashboardManager : MonoBehaviour
         }
     }
 
-    // NEW: Method called when a student's remove button is clicked
     public void OnRemoveStudentClicked(StudentModel student)
     {
         if (confirmationDialog != null)
         {
             string title = "Remove Student";
             string message = $"Are you sure you want to remove {student.studName} from the class? This action cannot be undone.";
-            
-            confirmationDialog.ShowDialog(title, message, 
-                () => ConfirmRemoveStudent(student), 
+
+            confirmationDialog.ShowDialog(title, message,
+                () => ConfirmRemoveStudent(student),
                 () => Debug.Log("Remove student cancelled"));
         }
     }
 
-    // NEW: Method called when removal is confirmed
     private void ConfirmRemoveStudent(StudentModel student)
     {
         Debug.Log($"Removing student: {student.studName}");
-        // TODO: Implement actual removal logic here
-        // This would involve calling Firebase to remove the student from the class
-        // and then refreshing the dashboard
-        
-        // For now, just log the action
-        // In the future, you would call something like:
-        // FirebaseManager.Instance.RemoveStudentFromClass(_dashboardState.selectedClassCode, student.userId, OnStudentRemoved);
+
+        FirebaseManager.Instance.MarkStudentAsRemoved(student.userId, _dashboardState.selectedClassCode,
+            success =>
+            {
+                if (success)
+                {
+                    Debug.Log($"Student {student.studName} marked as removed successfully");
+
+                    _dashboardState.cachedStudents.Remove(_dashboardState.selectedClassCode);
+                    _dashboardState.cachedLeaderboards.Remove(_dashboardState.selectedClassCode);
+
+                    LoadStudentProgress(_dashboardState.selectedClassCode);
+                    LoadStudentLeaderboard(_dashboardState.selectedClassCode);
+                }
+                else
+                {
+                    Debug.LogError($"Failed to remove student {student.studName}");
+                }
+            });
     }
 
     public void OnBackToLandingPageClicked()
     {
         _isViewingAllStudents = false;
         _isViewingAllLeaderboard = false;
-        _isInDeleteMode = false; // NEW: Reset delete mode when going back
+        _isInDeleteMode = false;
         dashboardView.ShowLandingPage();
 
         if (!_isLoadingProgress && !string.IsNullOrEmpty(_dashboardState.selectedClassCode))

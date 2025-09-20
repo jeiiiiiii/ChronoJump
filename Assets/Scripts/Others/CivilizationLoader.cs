@@ -1,34 +1,82 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Simple civilization scene loader that focuses only on scene loading.
+/// UI management and progress clearing are handled by other classes.
+/// </summary>
 public class CivilizationLoader : MonoBehaviour
 {
-    public void LoadAkkadian()
-    {
-        if (PlayerProgressManager.IsCivilizationUnlocked("Akkadian"))
-        {
-            SceneManager.LoadScene("AkkadianSceneOne");
-        }
-    }
+    [Header("Scene Names")]
+    [SerializeField] private string sumerianStartScene = "SumerianSceneOne";
+    [SerializeField] private string akkadianStartScene = "AkkadianSceneOne";
+    [SerializeField] private string babylonianStartScene = "BabylonianSceneOne";
+    [SerializeField] private string assyrianStartScene = "AssyrianSceneOne";
+    [SerializeField] private string indusStartScene = "IndusSceneOne";
 
     public void LoadSumerian()
     {
-        SceneManager.LoadScene("SumerianSceneOne");
+        LoadCivilizationScene("Sumerian", sumerianStartScene);
+    }
+
+    public void LoadAkkadian()
+    {
+        LoadCivilizationScene("Akkadian", akkadianStartScene);
     }
 
     public void LoadBabylonian()
     {
-        if (PlayerProgressManager.IsCivilizationUnlocked("Babylonian"))
-        {
-            SceneManager.LoadScene("BabylonianSceneOne");
-        }
+        LoadCivilizationScene("Babylonian", babylonianStartScene);
     }
 
     public void LoadAssyrian()
     {
-        if (PlayerProgressManager.IsCivilizationUnlocked("Assyrian"))
+        LoadCivilizationScene("Assyrian", assyrianStartScene);
+    }
+
+    public void LoadIndus()
+    {
+        LoadCivilizationScene("Indus", indusStartScene);
+    }
+
+    /// <summary>
+    /// Core method that handles civilization scene loading with proper checks.
+    /// This is the single point of truth for loading civilizations.
+    /// </summary>
+    private void LoadCivilizationScene(string civName, string sceneName)
+    {
+        // Check if GameProgressManager is available
+        if (GameProgressManager.Instance == null || GameProgressManager.Instance.CurrentStudentState == null)
         {
-            SceneManager.LoadScene("AssyrianSceneOne");
+            Debug.LogError($"Cannot load {civName}: No student logged in or GameProgressManager not available!");
+            // Let other systems handle the UI feedback (like CoordinateSelect)
+            return;
         }
+
+        // Check if civilization is unlocked
+        if (!GameProgressManager.Instance.IsCivilizationUnlocked(civName))
+        {
+            Debug.LogWarning($"Civilization {civName} is locked for student {GameProgressManager.Instance.CurrentStudentState.StudentId}");
+            // Let other systems handle the UI feedback
+            return;
+        }
+
+        // All checks passed - load the scene
+        Debug.Log($"Loading {civName} civilization for student {GameProgressManager.Instance.CurrentStudentState.StudentId}");
+        SceneManager.LoadScene(sceneName);
+    }
+
+    /// <summary>
+    /// Public method to check if a civilization can be loaded.
+    /// Other classes can use this for UI updates without duplicating logic.
+    /// </summary>
+    public bool CanLoadCivilization(string civName)
+    {
+        if (GameProgressManager.Instance == null || GameProgressManager.Instance.CurrentStudentState == null)
+        {
+            return false;
+        }
+
+        return GameProgressManager.Instance.IsCivilizationUnlocked(civName);
     }
 }

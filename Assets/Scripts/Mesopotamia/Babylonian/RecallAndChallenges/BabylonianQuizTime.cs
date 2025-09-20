@@ -299,6 +299,15 @@ public class QuizTimeManagerBabylonian : MonoBehaviour
         resultTextUI.text = resultText;
         ScoreTextUI.text = ScoreText;
 
+        // Saving to firebase
+        bool passed = GameState.score >= 8; 
+        GameProgressManager.Instance.RecordQuizAttempt(
+            "CH001_ST003",
+            GameState.score,
+            quizQuestions.Length,
+            passed
+        );
+
         if (GameState.score <= 7)
         {
             nextButton.onClick.RemoveAllListeners();
