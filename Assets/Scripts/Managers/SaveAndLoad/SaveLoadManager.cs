@@ -73,11 +73,13 @@ public class SaveLoadManager : MonoBehaviour
 
     private void CaptureCurrentGameState()
     {
-        currentGameScene = PlayerPrefs.GetString("LastScene", "");
+        string studentId = GameProgressManager.Instance?.CurrentStudentState?.StudentId ?? "default";
+
+        currentGameScene = PlayerPrefs.GetString(studentId + "_LastScene", "");
         
         if (!string.IsNullOrEmpty(currentGameScene))
         {
-            string prefKey = GetDialogueIndexKey(currentGameScene);
+            string prefKey = studentId + "_" + GetDialogueIndexKey(currentGameScene);
             currentGameDialogueIndex = PlayerPrefs.GetInt(prefKey, 0);
             Debug.Log($"Captured game state - Scene: {currentGameScene}, Dialogue: {currentGameDialogueIndex}");
         }
@@ -86,6 +88,7 @@ public class SaveLoadManager : MonoBehaviour
             Debug.LogWarning("No scene information found when entering save menu");
         }
     }
+
 
     #region Firebase Save Operations
 
@@ -110,41 +113,47 @@ public class SaveLoadManager : MonoBehaviour
     }
 
     private void LoadSaveSlotFromFirebase(int slotNumber, string studentId)
+{
+    string documentId = $"{studentId}_slot_{slotNumber}";
+    
+    db.Collection("saveData").Document(documentId).GetSnapshotAsync().ContinueWith(task =>
     {
-        string documentId = $"{studentId}_slot_{slotNumber}";
-        
-        db.Collection("saveData").Document(documentId).GetSnapshotAsync().ContinueWith(task =>
+        if (task.IsCompletedSuccessfully && task.Result.Exists)
         {
-            if (task.IsCompletedSuccessfully && task.Result.Exists)
+            var firebaseSave = task.Result.ConvertTo<SaveData>();
+            
+            // Convert Firebase SaveData to Local SaveData and save to file
+            var localSave = new LocalSaveData(firebaseSave.currentScene, firebaseSave.dialogueIndex)
             {
-                var firebaseSave = task.Result.ConvertTo<SaveData>();
-                
-                // Convert Firebase SaveData to Local SaveData and save to file
-                var localSave = new LocalSaveData(firebaseSave.currentScene, firebaseSave.dialogueIndex)
-                {
-                    timestamp = firebaseSave.timestamp
-                };
-                
-                // Save to local file for UI display
-                string json = JsonUtility.ToJson(localSave, true);
-                string filePath = GetSaveFilePath(slotNumber);
-                
-                try
-                {
-                    File.WriteAllText(filePath, json);
-                    Debug.Log($"Synced save slot {slotNumber} from Firebase to local file");
-                }
-                catch (System.Exception e)
-                {
-                    Debug.LogError($"Failed to sync save slot {slotNumber} to local: {e.Message}");
-                }
-            }
-            else
+                timestamp = firebaseSave.timestamp
+            };
+
+            // ✅ Sync into PlayerPrefs as well (per student)
+            PlayerPrefs.SetString(studentId + "_LastScene", firebaseSave.currentScene);
+            PlayerPrefs.SetInt(studentId + "_" + GetDialogueIndexKey(firebaseSave.currentScene), firebaseSave.dialogueIndex);
+            PlayerPrefs.Save();
+
+            // Save to local file for UI display
+            string json = JsonUtility.ToJson(localSave, true);
+            string filePath = GetSaveFilePath(slotNumber);
+            
+            try
             {
-                Debug.Log($"No Firebase save found for slot {slotNumber}");
+                File.WriteAllText(filePath, json);
+                Debug.Log($"Synced save slot {slotNumber} from Firebase to local file and PlayerPrefs");
             }
-        });
-    }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Failed to sync save slot {slotNumber} to local: {e.Message}");
+            }
+        }
+        else
+        {
+            Debug.Log($"No Firebase save found for slot {slotNumber}");
+        }
+    });
+}
+
 
     /// <summary>
     /// Save to both local file and Firebase
@@ -269,42 +278,45 @@ public class SaveLoadManager : MonoBehaviour
     }
 
     public bool LoadGame(int slotNumber)
+{
+    string filePath = GetSaveFilePath(slotNumber);
+
+    if (!File.Exists(filePath))
     {
-        string filePath = GetSaveFilePath(slotNumber);
-
-        if (!File.Exists(filePath))
-        {
-            Debug.LogWarning($"Save file for slot {slotNumber} does not exist");
-            return false;
-        }
-
-        try
-        {
-            string json = File.ReadAllText(filePath);
-            LocalSaveData saveData = JsonUtility.FromJson<LocalSaveData>(json);
-
-            PlayerPrefs.SetInt("LoadedDialogueIndex", saveData.dialogueIndex);
-            PlayerPrefs.SetString("LoadedFromSave", "true");
-            PlayerPrefs.Save();
-
-            Debug.Log($"Loading game - Scene: {saveData.currentScene}, Dialogue Index: {saveData.dialogueIndex}");
-
-            // Reload GameProgressManager progress
-            if (GameProgressManager.Instance != null)
-            {
-                GameProgressManager.Instance.RefreshProgress(keepScores: true);
-            }
-
-
-            SceneManager.LoadScene(saveData.currentScene);
-            return true;
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Failed to load game: {e.Message}");
-            return false;
-        }
+        Debug.LogWarning($"Save file for slot {slotNumber} does not exist");
+        return false;
     }
+
+    try
+    {
+        string json = File.ReadAllText(filePath);
+        LocalSaveData saveData = JsonUtility.FromJson<LocalSaveData>(json);
+
+        // ✅ Use student-specific PlayerPrefs keys
+        string studentId = GameProgressManager.Instance?.CurrentStudentState?.StudentId ?? "default";
+        PlayerPrefs.SetInt(studentId + "_LoadedDialogueIndex", saveData.dialogueIndex);
+        PlayerPrefs.SetString(studentId + "_LoadedFromSave", "true");
+        PlayerPrefs.Save();
+
+        Debug.Log($"Loading game for student {studentId} - Scene: {saveData.currentScene}, Dialogue Index: {saveData.dialogueIndex}");
+
+        // Reload GameProgressManager progress (keep scores)
+        if (GameProgressManager.Instance != null)
+        {
+            GameProgressManager.Instance.RefreshProgress(keepScores: true);
+        }
+
+        // Load the saved scene
+        SceneManager.LoadScene(saveData.currentScene);
+        return true;
+    }
+    catch (System.Exception e)
+    {
+        Debug.LogError($"Failed to load game: {e.Message}");
+        return false;
+    }
+}
+
 
     #region Firebase Save Slot Management
 
