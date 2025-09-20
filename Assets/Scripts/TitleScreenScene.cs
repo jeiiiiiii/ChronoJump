@@ -99,18 +99,5 @@ public void Classroom()
     SceneManager.LoadScene("TeacherDashboard");
 }
 
-public void CreatorMode()
-{
-    SceneManager.LoadScene("CreatorMode");
-}
 
-public void Logout()
-{
-    SceneManager.LoadScene("Login");
-    // NEW: Clear save source to indicate we're accessing for loading only
-    PlayerPrefs.DeleteKey("LastScene");
-    PlayerPrefs.DeleteKey("SaveSource");
-    PlayerPrefs.SetString("AccessMode", "LoadOnly"); // Mark that we're only here to load
-    PlayerPrefs.Save();
-}
 }
