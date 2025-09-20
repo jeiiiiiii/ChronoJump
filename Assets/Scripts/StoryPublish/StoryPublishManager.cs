@@ -362,7 +362,11 @@ public class StoryPublishManager : MonoBehaviour
     private void OnDashboardClicked()
     {
         Debug.Log("Dashboard button clicked in Story Publish");
-        
+    
+        // Disable the button to prevent multiple clicks
+        if (dashboardButton != null)
+            dashboardButton.interactable = false;
+    
         if (SceneNavigationManager.Instance != null)
         {
             SceneNavigationManager.Instance.GoToTeacherDashboard();

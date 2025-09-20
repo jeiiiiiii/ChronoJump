@@ -71,7 +71,7 @@ public class TitleScreen : MonoBehaviour
     
     public void LoadGame()
     {
-        SceneManager.LoadScene("SaveAndLoad");
+        SceneManager.LoadScene("SaveAndLoadScene");
     }
 
     public void Classroom()

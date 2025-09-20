@@ -18,25 +18,48 @@ public class TeacherService
     {
         try
         {
-            var teacherDoc = await GetTeacherDocument(userId);
-            if (teacherDoc == null)
+            // Check if we're still in a valid context
+            if (Application.isPlaying == false) 
             {
-                Debug.LogWarning("No teacher data found for userId: " + userId);
-                callback(null);
                 return;
             }
 
-            LogTeacherDocumentFields(teacherDoc);
-            
+            var teacherDoc = await GetTeacherDocument(userId);
+        
+            // Check again after async operation
+            if (Application.isPlaying == false) 
+            {
+                return;
+            }
+
+            if (teacherDoc == null)
+            {
+                // Only log if we're still in play mode
+                if (Application.isPlaying)
+                    Debug.LogWarning("No teacher data found for userId: " + userId);
+                callback?.Invoke(null);
+                return;
+            }
+
+            if (Application.isPlaying)
+                LogTeacherDocumentFields(teacherDoc);
+        
             var classCodes = await GetTeacherClassCodes(teacherDoc.Id);
+        
+            // Final check before callback
+            if (Application.isPlaying == false) 
+            {
+                return;
+            }
+
             var teacherData = MapDocumentToTeacher(teacherDoc, classCodes);
-            
-            callback(teacherData);
+            callback?.Invoke(teacherData);
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Error getting teacher data: {ex.Message}");
-            callback(null);
+            if (Application.isPlaying)
+                Debug.LogError($"Error getting teacher data: {ex.Message}");
+            callback?.Invoke(null);
         }
     }
 
