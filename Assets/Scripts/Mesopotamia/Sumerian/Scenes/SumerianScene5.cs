@@ -125,29 +125,29 @@ public class SumerianScene5 : MonoBehaviour
     // --- LoadDialogueIndex to handle New Game / Load Save / Continue ---
     void LoadDialogueIndex()
     {
-        if (PlayerPrefs.GetString("GameMode", "") == "NewGame")
+        if (StudentPrefs.GetString("GameMode", "") == "NewGame")
         {
             currentDialogueIndex = 0;
-            PlayerPrefs.DeleteKey("GameMode");
+            StudentPrefs.DeleteKey("GameMode");
             Debug.Log("New game started - dialogue index reset to 0");
             return;
         }
 
-        if (PlayerPrefs.GetString("LoadedFromSave", "false") == "true")
+        if (StudentPrefs.GetString("LoadedFromSave", "false") == "true")
         {
-            if (PlayerPrefs.HasKey("LoadedDialogueIndex"))
+            if (StudentPrefs.HasKey("LoadedDialogueIndex"))
             {
-                currentDialogueIndex = PlayerPrefs.GetInt("LoadedDialogueIndex");
-                PlayerPrefs.DeleteKey("LoadedDialogueIndex");
+                currentDialogueIndex = StudentPrefs.GetInt("LoadedDialogueIndex");
+                StudentPrefs.DeleteKey("LoadedDialogueIndex");
                 Debug.Log($"Loaded from save file at dialogue index: {currentDialogueIndex}");
             }
-            PlayerPrefs.SetString("LoadedFromSave", "false");
+            StudentPrefs.SetString("LoadedFromSave", "false");
         }
         else
         {
-            if (PlayerPrefs.HasKey("SumerianSceneFive_DialogueIndex"))
+            if (StudentPrefs.HasKey("SumerianSceneFive_DialogueIndex"))
             {
-                currentDialogueIndex = PlayerPrefs.GetInt("SumerianSceneFive_DialogueIndex");
+                currentDialogueIndex = StudentPrefs.GetInt("SumerianSceneFive_DialogueIndex");
                 Debug.Log($"Continuing from previous session at dialogue index: {currentDialogueIndex}");
             }
             else
@@ -285,21 +285,21 @@ public class SumerianScene5 : MonoBehaviour
 
     void SaveCurrentProgress()
     {
-        PlayerPrefs.SetInt("SumerianSceneFive_DialogueIndex", currentDialogueIndex);
-        PlayerPrefs.SetString("CurrentScene", "SumerianSceneFive");
-        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-        PlayerPrefs.Save();
+        StudentPrefs.SetInt("SumerianSceneFive_DialogueIndex", currentDialogueIndex);
+        StudentPrefs.SetString("CurrentScene", "SumerianSceneFive");
+        StudentPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        StudentPrefs.Save();
     }
 
     public void SaveAndLoad()
     {
-        PlayerPrefs.SetInt("SumerianSceneFive_DialogueIndex", currentDialogueIndex);
-        PlayerPrefs.SetString("LastScene", "SumerianSceneFive");
+        StudentPrefs.SetInt("SumerianSceneFive_DialogueIndex", currentDialogueIndex);
+        StudentPrefs.SetString("LastScene", "SumerianSceneFive");
 
-        PlayerPrefs.DeleteKey("AccessMode");
-        PlayerPrefs.SetString("SaveSource", "StoryScene");
-        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-        PlayerPrefs.Save();
+        StudentPrefs.DeleteKey("AccessMode");
+        StudentPrefs.SetString("SaveSource", "StoryScene");
+        StudentPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        StudentPrefs.Save();
 
         if (SaveLoadManager.Instance != null)
         {

@@ -82,27 +82,27 @@ public class AkkadianScene4 : MonoBehaviour
 
     void LoadDialogueIndex()
     {
-        if (PlayerPrefs.GetString("GameMode", "") == "NewGame")
+        if (StudentPrefs.GetString("GameMode", "") == "NewGame")
         {
             currentDialogueIndex = 0;
-            PlayerPrefs.DeleteKey("GameMode");
+            StudentPrefs.DeleteKey("GameMode");
             return;
         }
 
-        if (PlayerPrefs.GetString("LoadedFromSave", "false") == "true")
+        if (StudentPrefs.GetString("LoadedFromSave", "false") == "true")
         {
-            if (PlayerPrefs.HasKey("LoadedDialogueIndex"))
+            if (StudentPrefs.HasKey("LoadedDialogueIndex"))
             {
-                currentDialogueIndex = PlayerPrefs.GetInt("LoadedDialogueIndex");
-                PlayerPrefs.DeleteKey("LoadedDialogueIndex");
+                currentDialogueIndex = StudentPrefs.GetInt("LoadedDialogueIndex");
+                StudentPrefs.DeleteKey("LoadedDialogueIndex");
             }
-            PlayerPrefs.SetString("LoadedFromSave", "false");
+            StudentPrefs.SetString("LoadedFromSave", "false");
         }
         else
         {
-            if (PlayerPrefs.HasKey("AkkadianSceneFour_DialogueIndex"))
+            if (StudentPrefs.HasKey("AkkadianSceneFour_DialogueIndex"))
             {
-                currentDialogueIndex = PlayerPrefs.GetInt("AkkadianSceneFour_DialogueIndex");
+                currentDialogueIndex = StudentPrefs.GetInt("AkkadianSceneFour_DialogueIndex");
             }
             else
             {
@@ -212,12 +212,12 @@ public class AkkadianScene4 : MonoBehaviour
 
     public void SaveAndLoad()
     {
-        PlayerPrefs.SetInt("AkkadianSceneFour_DialogueIndex", currentDialogueIndex);
-        PlayerPrefs.SetString("LastScene", "AkkadianSceneFour");
-        PlayerPrefs.DeleteKey("AccessMode");
-        PlayerPrefs.SetString("SaveSource", "StoryScene");
-        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-        PlayerPrefs.Save();
+        StudentPrefs.SetInt("AkkadianSceneFour_DialogueIndex", currentDialogueIndex);
+        StudentPrefs.SetString("LastScene", "AkkadianSceneFour");
+        StudentPrefs.DeleteKey("AccessMode");
+        StudentPrefs.SetString("SaveSource", "StoryScene");
+        StudentPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        StudentPrefs.Save();
 
         if (SaveLoadManager.Instance != null)
             SaveLoadManager.Instance.SetCurrentGameState("AkkadianSceneFour", currentDialogueIndex);
@@ -227,10 +227,10 @@ public class AkkadianScene4 : MonoBehaviour
 
     void SaveCurrentProgress()
     {
-        PlayerPrefs.SetInt("AkkadianSceneFour_DialogueIndex", currentDialogueIndex);
-        PlayerPrefs.SetString("CurrentScene", "AkkadianSceneFour");
-        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-        PlayerPrefs.Save();
+        StudentPrefs.SetInt("AkkadianSceneFour_DialogueIndex", currentDialogueIndex);
+        StudentPrefs.SetString("CurrentScene", "AkkadianSceneFour");
+        StudentPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        StudentPrefs.Save();
     }
 
     public void Home()

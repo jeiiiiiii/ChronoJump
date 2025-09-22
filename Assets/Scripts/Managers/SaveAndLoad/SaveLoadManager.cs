@@ -73,14 +73,13 @@ public class SaveLoadManager : MonoBehaviour
 
     private void CaptureCurrentGameState()
     {
-        string studentId = GameProgressManager.Instance?.CurrentStudentState?.StudentId ?? "default";
-
-        currentGameScene = PlayerPrefs.GetString(studentId + "_LastScene", "");
+        // Use StudentPrefs instead of student-specific PlayerPrefs keys
+        currentGameScene = StudentPrefs.GetString("LastScene", "");
         
         if (!string.IsNullOrEmpty(currentGameScene))
         {
-            string prefKey = studentId + "_" + GetDialogueIndexKey(currentGameScene);
-            currentGameDialogueIndex = PlayerPrefs.GetInt(prefKey, 0);
+            string prefKey = GetDialogueIndexKey(currentGameScene);
+            currentGameDialogueIndex = StudentPrefs.GetInt(prefKey, 0);
             Debug.Log($"Captured game state - Scene: {currentGameScene}, Dialogue: {currentGameDialogueIndex}");
         }
         else
@@ -89,12 +88,8 @@ public class SaveLoadManager : MonoBehaviour
         }
     }
 
-
     #region Firebase Save Operations
 
-    /// <summary>
-    /// Load save slots from Firebase and sync with local files
-    /// </summary>
     private void LoadSaveSlotsFromFirebase()
     {
         if (GameProgressManager.Instance?.CurrentStudentState == null)
@@ -105,7 +100,6 @@ public class SaveLoadManager : MonoBehaviour
 
         string studentId = GameProgressManager.Instance.CurrentStudentState.StudentId;
         
-        // Load all 4 save slots from Firebase
         for (int slot = 1; slot <= 4; slot++)
         {
             LoadSaveSlotFromFirebase(slot, studentId);
@@ -113,51 +107,44 @@ public class SaveLoadManager : MonoBehaviour
     }
 
     private void LoadSaveSlotFromFirebase(int slotNumber, string studentId)
-{
-    string documentId = $"{studentId}_slot_{slotNumber}";
-    
-    db.Collection("saveData").Document(documentId).GetSnapshotAsync().ContinueWith(task =>
     {
-        if (task.IsCompletedSuccessfully && task.Result.Exists)
+        string documentId = $"{studentId}_slot_{slotNumber}";
+        
+        db.Collection("saveData").Document(documentId).GetSnapshotAsync().ContinueWith(task =>
         {
-            var firebaseSave = task.Result.ConvertTo<SaveData>();
-            
-            // Convert Firebase SaveData to Local SaveData and save to file
-            var localSave = new LocalSaveData(firebaseSave.currentScene, firebaseSave.dialogueIndex)
+            if (task.IsCompletedSuccessfully && task.Result.Exists)
             {
-                timestamp = firebaseSave.timestamp
-            };
+                var firebaseSave = task.Result.ConvertTo<SaveData>();
+                
+                var localSave = new LocalSaveData(firebaseSave.currentScene, firebaseSave.dialogueIndex)
+                {
+                    timestamp = firebaseSave.timestamp
+                };
 
-            // ✅ Sync into PlayerPrefs as well (per student)
-            PlayerPrefs.SetString(studentId + "_LastScene", firebaseSave.currentScene);
-            PlayerPrefs.SetInt(studentId + "_" + GetDialogueIndexKey(firebaseSave.currentScene), firebaseSave.dialogueIndex);
-            PlayerPrefs.Save();
+                StudentPrefs.SetString("LastScene", firebaseSave.currentScene);
+                StudentPrefs.SetInt(GetDialogueIndexKey(firebaseSave.currentScene), firebaseSave.dialogueIndex);
+                StudentPrefs.Save();
 
-            // Save to local file for UI display
-            string json = JsonUtility.ToJson(localSave, true);
-            string filePath = GetSaveFilePath(slotNumber);
-            
-            try
-            {
-                File.WriteAllText(filePath, json);
-                Debug.Log($"Synced save slot {slotNumber} from Firebase to local file and PlayerPrefs");
+                string json = JsonUtility.ToJson(localSave, true);
+                string filePath = GetSaveFilePath(slotNumber);
+                
+                try
+                {
+                    File.WriteAllText(filePath, json);
+                    Debug.Log($"Synced save slot {slotNumber} from Firebase to local file and StudentPrefs");
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"Failed to sync save slot {slotNumber} to local: {e.Message}");
+                }
             }
-            catch (System.Exception e)
+            else
             {
-                Debug.LogError($"Failed to sync save slot {slotNumber} to local: {e.Message}");
+                Debug.Log($"No Firebase save found for slot {slotNumber}");
             }
-        }
-        else
-        {
-            Debug.Log($"No Firebase save found for slot {slotNumber}");
-        }
-    });
-}
+        });
+    }
 
-
-    /// <summary>
-    /// Save to both local file and Firebase
-    /// </summary>
     public void SaveGame(int slotNumber)
     {
         LocalSaveData saveData;
@@ -183,13 +170,9 @@ public class SaveLoadManager : MonoBehaviour
             }
         }
 
-        // Save to local file (for UI display)
         SaveToLocalFile(slotNumber, saveData);
-        
-        // Save to Firebase (for persistence across devices)
         SaveToFirebase(slotNumber, saveData);
 
-        // Commit GameProgressManager progress
         if (GameProgressManager.Instance != null)
         {
             GameProgressManager.Instance.CommitProgress();
@@ -223,7 +206,6 @@ public class SaveLoadManager : MonoBehaviour
         string studentId = GameProgressManager.Instance.CurrentStudentState.StudentId;
         string documentId = $"{studentId}_slot_{slotNumber}";
 
-        // Convert Local SaveData to Firebase SaveData
         var firebaseSave = new SaveData(
             studentId,
             localSave.currentScene,
@@ -233,7 +215,6 @@ public class SaveLoadManager : MonoBehaviour
         {
             timestamp = localSave.timestamp
         };
-
 
         db.Collection("saveData").Document(documentId).SetAsync(firebaseSave).ContinueWith(task =>
         {
@@ -258,10 +239,7 @@ public class SaveLoadManager : MonoBehaviour
         {
             if (HasSaveFile(slot))
             {
-                // Update local file
                 SaveToLocalFile(slot, newSaveData);
-                
-                // Update Firebase
                 SaveToFirebase(slot, newSaveData);
                 
                 Debug.Log($"Overwritten save slot {slot} after challenge completion - Scene: {nextSceneName}, Dialogue: {nextDialogueIndex}");
@@ -270,7 +248,6 @@ public class SaveLoadManager : MonoBehaviour
         
         Debug.Log($"All existing saves have been updated to prevent challenge replay exploit");
 
-        // Commit progress when overwriting saves
         if (GameProgressManager.Instance != null)
         {
             GameProgressManager.Instance.CommitProgress();
@@ -278,54 +255,45 @@ public class SaveLoadManager : MonoBehaviour
     }
 
     public bool LoadGame(int slotNumber)
-{
-    string filePath = GetSaveFilePath(slotNumber);
-
-    if (!File.Exists(filePath))
     {
-        Debug.LogWarning($"Save file for slot {slotNumber} does not exist");
-        return false;
-    }
+        string filePath = GetSaveFilePath(slotNumber);
 
-    try
-    {
-        string json = File.ReadAllText(filePath);
-        LocalSaveData saveData = JsonUtility.FromJson<LocalSaveData>(json);
-
-        // ✅ Use student-specific PlayerPrefs keys
-        string studentId = GameProgressManager.Instance?.CurrentStudentState?.StudentId ?? "default";
-        PlayerPrefs.SetInt(studentId + "_LoadedDialogueIndex", saveData.dialogueIndex);
-        PlayerPrefs.SetString(studentId + "_LoadedFromSave", "true");
-        PlayerPrefs.Save();
-
-        Debug.Log($"Loading game for student {studentId} - Scene: {saveData.currentScene}, Dialogue Index: {saveData.dialogueIndex}");
-
-        // Reload GameProgressManager progress (keep scores)
-        if (GameProgressManager.Instance != null)
+        if (!File.Exists(filePath))
         {
-            GameProgressManager.Instance.RefreshProgress(keepScores: true);
+            Debug.LogWarning($"Save file for slot {slotNumber} does not exist");
+            return false;
         }
 
-        // Load the saved scene
-        SceneManager.LoadScene(saveData.currentScene);
-        return true;
-    }
-    catch (System.Exception e)
-    {
-        Debug.LogError($"Failed to load game: {e.Message}");
-        return false;
-    }
-}
+        try
+        {
+            string json = File.ReadAllText(filePath);
+            LocalSaveData saveData = JsonUtility.FromJson<LocalSaveData>(json);
 
+            StudentPrefs.SetInt("LoadedDialogueIndex", saveData.dialogueIndex);
+            StudentPrefs.SetString("LoadedFromSave", "true");
+            StudentPrefs.Save();
+
+            Debug.Log($"Loading game - Scene: {saveData.currentScene}, Dialogue Index: {saveData.dialogueIndex}");
+
+            if (GameProgressManager.Instance != null)
+            {
+                GameProgressManager.Instance.RefreshProgress(keepScores: true);
+            }
+
+            SceneManager.LoadScene(saveData.currentScene);
+            return true;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Failed to load game: {e.Message}");
+            return false;
+        }
+    }
 
     #region Firebase Save Slot Management
 
-    /// <summary>
-    /// Delete save from both local and Firebase
-    /// </summary>
     public void DeleteSave(int slotNumber)
     {
-        // Delete local file
         string filePath = GetSaveFilePath(slotNumber);
         if (File.Exists(filePath))
         {
@@ -340,7 +308,6 @@ public class SaveLoadManager : MonoBehaviour
             }
         }
 
-        // Delete from Firebase
         DeleteFromFirebase(slotNumber);
     }
 
@@ -368,9 +335,6 @@ public class SaveLoadManager : MonoBehaviour
         });
     }
 
-    /// <summary>
-    /// Check if save exists in Firebase (for cross-device sync)
-    /// </summary>
     public void CheckFirebaseSaveExists(int slotNumber, System.Action<bool> callback)
     {
         if (GameProgressManager.Instance?.CurrentStudentState == null)
@@ -414,7 +378,7 @@ public class SaveLoadManager : MonoBehaviour
         var sumerianScene7 = FindFirstObjectByType<SumerianScene7>();
         if (sumerianScene7 != null) return sumerianScene7.currentDialogueIndex;
 
-        return 0; // Default
+        return 0;
     }
 
     private string GetDialogueIndexKey(string sceneName)
@@ -497,9 +461,20 @@ public class SaveLoadManager : MonoBehaviour
         return File.Exists(GetSaveFilePath(slotNumber));
     }
 
+    // -----------------------------
+    // Student-specific save path
+    // -----------------------------
     private string GetSaveFilePath(int slotNumber)
     {
-        return Path.Combine(Application.persistentDataPath, $"savegame_slot_{slotNumber}.json");
+        string studentId = GameProgressManager.Instance?.CurrentStudentState?.StudentId ?? "DefaultStudent";
+        string studentFolder = Path.Combine(Application.persistentDataPath, studentId);
+
+        if (!Directory.Exists(studentFolder))
+        {
+            Directory.CreateDirectory(studentFolder);
+        }
+
+        return Path.Combine(studentFolder, $"savegame_slot_{slotNumber}.json");
     }
 
     public void SetCurrentGameState(string sceneName, int dialogueIndex)
@@ -508,4 +483,118 @@ public class SaveLoadManager : MonoBehaviour
         currentGameDialogueIndex = dialogueIndex;
         Debug.Log($"Manually set game state - Scene: {sceneName}, Dialogue: {dialogueIndex}");
     }
+
+    // -----------------------------
+    // Clear local data helpers
+    // -----------------------------
+    public void ClearLocalDataForStudent(string studentId)
+    {
+        if (string.IsNullOrEmpty(studentId)) return;
+
+        string studentFolder = Path.Combine(Application.persistentDataPath, studentId);
+        DeleteDirectoryRecursive(studentFolder);
+        Debug.Log($"Cleared local saves for student {studentId}");
+    }
+
+    public void ClearOtherStudentsLocalData(string keepStudentId)
+    {
+        if (!Directory.Exists(Application.persistentDataPath)) return;
+
+        foreach (string dir in Directory.GetDirectories(Application.persistentDataPath))
+        {
+            string folderName = Path.GetFileName(dir);
+            if (folderName != keepStudentId)
+            {
+                DeleteDirectoryRecursive(dir);
+                Debug.Log($"Removed old local saves for {folderName}");
+            }
+        }
+    }
+
+    private void DeleteDirectoryRecursive(string dirPath)
+    {
+        if (!Directory.Exists(dirPath)) return;
+
+        foreach (var f in Directory.GetFiles(dirPath, "*", SearchOption.AllDirectories))
+        {
+            File.SetAttributes(f, FileAttributes.Normal);
+        }
+
+        Directory.Delete(dirPath, true);
+    }
+
+    #region Migration Helper
+    public void MigrateFromLegacyStudentPlayerPrefs()
+    {
+        if (GameProgressManager.Instance?.CurrentStudentState == null)
+        {
+            Debug.LogWarning("No student logged in, cannot migrate PlayerPrefs");
+            return;
+        }
+
+        string studentId = GameProgressManager.Instance.CurrentStudentState.StudentId;
+        Debug.Log($"Migrating legacy student-specific PlayerPrefs to StudentPrefs for {studentId}");
+
+        string legacyLastSceneKey = $"{studentId}_LastScene";
+        if (PlayerPrefs.HasKey(legacyLastSceneKey) && !StudentPrefs.HasKey("LastScene"))
+        {
+            string lastScene = PlayerPrefs.GetString(legacyLastSceneKey, "");
+            if (!string.IsNullOrEmpty(lastScene))
+            {
+                StudentPrefs.SetString("LastScene", lastScene);
+                PlayerPrefs.DeleteKey(legacyLastSceneKey);
+                Debug.Log($"Migrated LastScene: {lastScene}");
+            }
+        }
+
+        string[] sceneKeys = {
+            "SumerianSceneOne_DialogueIndex", "SumerianSceneTwo_DialogueIndex", "SumerianSceneThree_DialogueIndex",
+            "SumerianSceneFour_DialogueIndex", "SumerianSceneFive_DialogueIndex", "SumerianSceneSix_DialogueIndex",
+            "SumerianSceneSeven_DialogueIndex", "AkkadianSceneOne_DialogueIndex", "AkkadianSceneTwo_DialogueIndex",
+            "AkkadianSceneThree_DialogueIndex", "AkkadianSceneFour_DialogueIndex", "AkkadianSceneFive_DialogueIndex",
+            "AkkadianSceneSix_DialogueIndex", "BabylonianSceneOne_DialogueIndex", "BabylonianSceneTwo_DialogueIndex",
+            "BabylonianSceneThree_DialogueIndex", "BabylonianSceneFour_DialogueIndex", "BabylonianSceneFive_DialogueIndex",
+            "BabylonianSceneSix_DialogueIndex", "BabylonianSceneSeven_DialogueIndex", "AssyrianSceneOne_DialogueIndex",
+            "AssyrianSceneTwo_DialogueIndex", "AssyrianSceneThree_DialogueIndex", "AssyrianSceneFour_DialogueIndex",
+            "AssyrianSceneFive_DialogueIndex"
+        };
+
+        foreach (string sceneKey in sceneKeys)
+        {
+            string legacyKey = $"{studentId}_{sceneKey}";
+            if (PlayerPrefs.HasKey(legacyKey) && !StudentPrefs.HasKey(sceneKey))
+            {
+                int dialogueIndex = PlayerPrefs.GetInt(legacyKey, 0);
+                if (dialogueIndex > 0)
+                {
+                    StudentPrefs.SetInt(sceneKey, dialogueIndex);
+                    PlayerPrefs.DeleteKey(legacyKey);
+                    Debug.Log($"Migrated {sceneKey}: {dialogueIndex}");
+                }
+            }
+        }
+
+        string legacyLoadedDialogueKey = $"{studentId}_LoadedDialogueIndex";
+        if (PlayerPrefs.HasKey(legacyLoadedDialogueKey) && !StudentPrefs.HasKey("LoadedDialogueIndex"))
+        {
+            int loadedDialogue = PlayerPrefs.GetInt(legacyLoadedDialogueKey, 0);
+            StudentPrefs.SetInt("LoadedDialogueIndex", loadedDialogue);
+            PlayerPrefs.DeleteKey(legacyLoadedDialogueKey);
+            Debug.Log($"Migrated LoadedDialogueIndex: {loadedDialogue}");
+        }
+
+        string legacyLoadedFromSaveKey = $"{studentId}_LoadedFromSave";
+        if (PlayerPrefs.HasKey(legacyLoadedFromSaveKey) && !StudentPrefs.HasKey("LoadedFromSave"))
+        {
+            string loadedFromSave = PlayerPrefs.GetString(legacyLoadedFromSaveKey, "false");
+            StudentPrefs.SetString("LoadedFromSave", loadedFromSave);
+            PlayerPrefs.DeleteKey(legacyLoadedFromSaveKey);
+            Debug.Log($"Migrated LoadedFromSave: {loadedFromSave}");
+        }
+
+        StudentPrefs.Save();
+        PlayerPrefs.Save();
+        Debug.Log("SaveLoadManager legacy PlayerPrefs migration completed");
+    }
+    #endregion
 }

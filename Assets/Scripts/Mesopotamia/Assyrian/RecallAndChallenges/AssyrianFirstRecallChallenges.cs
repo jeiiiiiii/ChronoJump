@@ -488,8 +488,8 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
     {
         ArtifactButton.onClick.AddListener(() =>
         {
-            PlayerPrefs.SetInt("UseAssyrianArtifactUsed", 1);
-            PlayerPrefs.Save();
+            StudentPrefs.SetInt("UseAssyrianArtifactUsed", 1);
+            StudentPrefs.Save();
             
             GameState.hearts++;
             UpdateHeartsUI();

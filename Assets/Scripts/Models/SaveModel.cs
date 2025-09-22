@@ -1,5 +1,5 @@
-using System;
 using Firebase.Firestore;
+using System.Collections.Generic;
 
 [FirestoreData]
 public class SaveData
@@ -13,12 +13,12 @@ public class SaveData
 
     public SaveData() {}
 
-    public SaveData(string studId, string scene, int dialogue, GameProgressModel progress)
+    public SaveData(string studentId, string scene, int dialogue, GameProgressModel progress)
     {
-        studentId = studId;
-        currentScene = scene;
-        dialogueIndex = dialogue;
-        gameProgress = progress;
-        timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        this.studentId = studentId;
+        this.currentScene = scene;
+        this.dialogueIndex = dialogue;
+        this.timestamp = System.DateTime.Now.ToString("yyyy-MM-dd h:mm:tt");
+        this.gameProgress = progress;
     }
 }

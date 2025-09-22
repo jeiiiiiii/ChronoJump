@@ -14,8 +14,6 @@ public Button creatermodeButton;
 public Button logoutButton;
 public TextMeshProUGUI educatorsModeText;
 
-
-
 private void Awake()
 {
     FirebaseManager.Instance.GetUserData(userData =>
@@ -53,6 +51,7 @@ private void Awake()
             }
         });
 }
+
 public void StartGame()
 {
     if (GameProgressManager.Instance.CurrentStudentState == null)
@@ -77,12 +76,11 @@ public void StartGame()
     {
         SceneManager.LoadScene("Login");
         // NEW: Clear save source to indicate we're accessing for loading only
-        PlayerPrefs.DeleteKey("LastScene");
-        PlayerPrefs.DeleteKey("SaveSource");
-        PlayerPrefs.SetString("AccessMode", "LoadOnly"); // Mark that we're only here to load
-        PlayerPrefs.Save();
+        StudentPrefs.DeleteKey("LastScene");
+        StudentPrefs.DeleteKey("SaveSource");
+        StudentPrefs.SetString("AccessMode", "LoadOnly"); // Mark that we're only here to load
+        StudentPrefs.Save();
     }
-
 
 public void Settings()
 {
@@ -91,6 +89,12 @@ public void Settings()
 
 public void LoadGame()
 {
+    // NEW: Clear save source and set access mode for load-only access
+    StudentPrefs.DeleteKey("LastScene");
+    StudentPrefs.DeleteKey("SaveSource");
+    StudentPrefs.SetString("AccessMode", "LoadOnly"); // Mark that we're only here to load
+    StudentPrefs.Save();
+    
     SceneManager.LoadScene("SaveAndLoadScene");
 }
 
@@ -98,6 +102,4 @@ public void Classroom()
 {
     SceneManager.LoadScene("TeacherDashboard");
 }
-
-
 }

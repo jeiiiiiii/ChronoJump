@@ -108,10 +108,10 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
     }
     public void UseArtifactButton()
     {
-        if (PlayerPrefs.GetInt("UseAkkadianArtifactUsed", 0) == 0)
+        if (StudentPrefs.GetInt("UseAkkadianArtifactUsed", 0) == 0)
         {
-            PlayerPrefs.SetInt("UseAkkadianArtifactUsed", 1);
-            PlayerPrefs.Save();
+            StudentPrefs.SetInt("UseAkkadianArtifactUsed", 1);
+            StudentPrefs.Save();
 
             dialogueLines = new DialogueLine[]
             {

@@ -478,8 +478,8 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
         ArtifactButton.onClick.AddListener(() =>
         {
             // Make sure this key matches exactly
-            PlayerPrefs.SetInt("UseBabylonianArtifactUsed", 1);
-            PlayerPrefs.Save();
+            StudentPrefs.SetInt("UseBabylonianArtifactUsed", 1);
+            StudentPrefs.Save();
 
             answerButtons[1].interactable = false;
 

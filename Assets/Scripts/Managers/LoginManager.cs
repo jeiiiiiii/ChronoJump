@@ -178,19 +178,24 @@ public class LoginManager : MonoBehaviour
 
                                 feedbackText.text = "Loading game progress...";
 
-                                // Set the student state and wait for initialization to complete
                                 GameProgressManager.Instance.SetStudentState(studentState, () => {
-                                    // This callback runs when GameProgressManager is fully initialized
-                                    Debug.Log($"Student {studentState.StudentId} fully initialized, navigating to TitleScreen");
-                                    
-                                    // Migrate any old PlayerPrefs data
-                                    GameProgressManager.Instance.MigrateFromPlayerPrefs();
-                                    
-                                    feedbackText.text = "Welcome back!";
-                                    
-                                    // Now it's safe to load the TitleScreen
-                                    SceneManager.LoadScene("TitleScreen");
-                                });
+                                // This callback runs when GameProgressManager is fully initialized
+                                Debug.Log($"Student {studentState.StudentId} fully initialized, navigating to TitleScreen");
+
+                                // Migrate any old PlayerPrefs data
+                                GameProgressManager.Instance.MigrateFromLegacyPlayerPrefs();
+                                SaveLoadManager.Instance?.MigrateFromLegacyStudentPlayerPrefs();
+
+                                // Clear other students' local data, keep only this student's folder
+                                SaveLoadManager.Instance?.ClearOtherStudentsLocalData(studentState.StudentId);
+
+                                errorMessagePanel.SetActive(true);
+                                feedbackText.text = "Welcome back!";
+                                
+                                // Now it's safe to load the TitleScreen
+                                SceneManager.LoadScene("TitleScreen");
+                            });
+
                             });
                     }
                     else if (isTeacherToggle.isOn && !isTeacher)

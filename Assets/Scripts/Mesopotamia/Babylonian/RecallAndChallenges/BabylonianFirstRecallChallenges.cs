@@ -482,8 +482,8 @@ public class BabylonianFirstRecallChallenges : MonoBehaviour
     {
         ArtifactButton.onClick.AddListener(() =>
         {
-            PlayerPrefs.SetInt("UseBabylonianArtifactUsed", 1);
-            PlayerPrefs.Save();
+            StudentPrefs.SetInt("UseBabylonianArtifactUsed", 1);
+            StudentPrefs.Save();
 
             answerButtons[0].interactable = false;
 

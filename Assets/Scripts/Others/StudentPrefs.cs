@@ -6,6 +6,8 @@ using UnityEngine;
 /// </summary>
 public static class StudentPrefs
 {
+    private const string DefaultStudentId = "DefaultStudent";
+
     /// <summary>
     /// Gets the current student ID. 
     /// Replace this with however you track the logged-in student.
@@ -14,11 +16,19 @@ public static class StudentPrefs
     {
         get
         {
-            // Example: If you're using Firebase, replace with FirebaseManager.Instance.CurrentUserId
-            // Make sure this returns a unique string for each student.
-            return FirebaseManager.Instance != null && !string.IsNullOrEmpty(FirebaseManager.Instance.CurrentUserId)
-                ? FirebaseManager.Instance.CurrentUserId
-                : "DefaultStudent"; // fallback if no student logged in
+            string id = (FirebaseManager.Instance != null &&
+                         FirebaseManager.Instance.CurrentUser != null &&
+                         !string.IsNullOrEmpty(FirebaseManager.Instance.CurrentUser.UserId))
+                ? FirebaseManager.Instance.CurrentUser.UserId
+                : DefaultStudentId;
+
+            if (id == DefaultStudentId)
+            {
+                Debug.LogWarning("[StudentPrefs] WARNING: Using DefaultStudent. " +
+                                 "No logged-in user detected. Data may be shared globally!");
+            }
+
+            return id;
         }
     }
 
@@ -35,12 +45,17 @@ public static class StudentPrefs
     // ---------------------------
     public static void SetString(string key, string value)
     {
-        PlayerPrefs.SetString(BuildKey(key), value);
+        string fullKey = BuildKey(key);
+        PlayerPrefs.SetString(fullKey, value);
+        Debug.Log($"[StudentPrefs] SAVED string for student '{CurrentStudentId}': {fullKey} = {value}");
     }
 
     public static string GetString(string key, string defaultValue = "")
     {
-        return PlayerPrefs.GetString(BuildKey(key), defaultValue);
+        string fullKey = BuildKey(key);
+        string value = PlayerPrefs.GetString(fullKey, defaultValue);
+        Debug.Log($"[StudentPrefs] LOADED string for student '{CurrentStudentId}': {fullKey} = {value}");
+        return value;
     }
 
     // ---------------------------
@@ -48,12 +63,17 @@ public static class StudentPrefs
     // ---------------------------
     public static void SetInt(string key, int value)
     {
-        PlayerPrefs.SetInt(BuildKey(key), value);
+        string fullKey = BuildKey(key);
+        PlayerPrefs.SetInt(fullKey, value);
+        Debug.Log($"[StudentPrefs] SAVED int for student '{CurrentStudentId}': {fullKey} = {value}");
     }
 
     public static int GetInt(string key, int defaultValue = 0)
     {
-        return PlayerPrefs.GetInt(BuildKey(key), defaultValue);
+        string fullKey = BuildKey(key);
+        int value = PlayerPrefs.GetInt(fullKey, defaultValue);
+        Debug.Log($"[StudentPrefs] LOADED int for student '{CurrentStudentId}': {fullKey} = {value}");
+        return value;
     }
 
     // ---------------------------
@@ -61,12 +81,17 @@ public static class StudentPrefs
     // ---------------------------
     public static void SetFloat(string key, float value)
     {
-        PlayerPrefs.SetFloat(BuildKey(key), value);
+        string fullKey = BuildKey(key);
+        PlayerPrefs.SetFloat(fullKey, value);
+        Debug.Log($"[StudentPrefs] SAVED float for student '{CurrentStudentId}': {fullKey} = {value}");
     }
 
     public static float GetFloat(string key, float defaultValue = 0f)
     {
-        return PlayerPrefs.GetFloat(BuildKey(key), defaultValue);
+        string fullKey = BuildKey(key);
+        float value = PlayerPrefs.GetFloat(fullKey, defaultValue);
+        Debug.Log($"[StudentPrefs] LOADED float for student '{CurrentStudentId}': {fullKey} = {value}");
+        return value;
     }
 
     // ---------------------------
@@ -74,12 +99,17 @@ public static class StudentPrefs
     // ---------------------------
     public static bool HasKey(string key)
     {
-        return PlayerPrefs.HasKey(BuildKey(key));
+        string fullKey = BuildKey(key);
+        bool exists = PlayerPrefs.HasKey(fullKey);
+        Debug.Log($"[StudentPrefs] CHECK key for student '{CurrentStudentId}': {fullKey} exists? {exists}");
+        return exists;
     }
 
     public static void DeleteKey(string key)
     {
-        PlayerPrefs.DeleteKey(BuildKey(key));
+        string fullKey = BuildKey(key);
+        PlayerPrefs.DeleteKey(fullKey);
+        Debug.Log($"[StudentPrefs] DELETED key for student '{CurrentStudentId}': {fullKey}");
     }
 
     /// <summary>
@@ -88,6 +118,7 @@ public static class StudentPrefs
     public static void Save()
     {
         PlayerPrefs.Save();
+        Debug.Log($"[StudentPrefs] PlayerPrefs SAVED to disk for student '{CurrentStudentId}'.");
     }
 
     /// <summary>
@@ -100,7 +131,11 @@ public static class StudentPrefs
             string fullKey = BuildKey(key);
             if (PlayerPrefs.HasKey(fullKey))
             {
-                Debug.Log($"[{CurrentStudentId}] {fullKey} = {PlayerPrefs.GetString(fullKey, "(not a string)")}");
+                Debug.Log($"[StudentPrefs] [{CurrentStudentId}] {fullKey} = {PlayerPrefs.GetString(fullKey, "(not a string)")}");
+            }
+            else
+            {
+                Debug.Log($"[StudentPrefs] [{CurrentStudentId}] {fullKey} not found.");
             }
         }
     }

@@ -483,8 +483,8 @@ public class BabylonianThirdRecallChallenges : MonoBehaviour
         ArtifactButton.onClick.AddListener(() =>
         {
             // Make sure this key matches exactly
-            PlayerPrefs.SetInt("UsePowerArtifactUsed", 1);
-            PlayerPrefs.Save();
+            StudentPrefs.SetInt("UsePowerArtifactUsed", 1);
+            StudentPrefs.Save();
 
             answerButtons[2].interactable = false;
 

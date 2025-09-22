@@ -10,21 +10,21 @@ public class ArtifactButtonChecker : MonoBehaviour
         
         if (currentScene.Contains("Akkadian"))
         {
-            if (PlayerPrefs.GetInt("UseAkkadianArtifactUsed", 0) == 1)
+            if (StudentPrefs.GetInt("UseAkkadianArtifactUsed", 0) == 1)
             {
                 gameObject.SetActive(false);
             }
         }
         else if (currentScene.Contains("Babylonian"))
         {
-            if (PlayerPrefs.GetInt("UseBabylonianArtifactUsed", 0) == 1)
+            if (StudentPrefs.GetInt("UseBabylonianArtifactUsed", 0) == 1)
             {
                 gameObject.SetActive(false);
             }
         }
         else if (currentScene.Contains("Assyrian"))
         {
-            if (PlayerPrefs.GetInt("UseAssyrianArtifactUsed", 0) == 1)
+            if (StudentPrefs.GetInt("UseAssyrianArtifactUsed", 0) == 1)
             {
                 gameObject.SetActive(false);
             }

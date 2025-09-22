@@ -168,7 +168,7 @@ public class CoordinateSelect : MonoBehaviour
     /// </summary>
     private void ClearProgressForNewGame()
     {
-        // Clear dialogue progress for all scenes
+        // Clear dialogue progress for all scenes using StudentPrefs
         string[] sceneKeys = {
             "SumerianSceneOne_DialogueIndex", "SumerianSceneTwo_DialogueIndex", 
             "SumerianSceneThree_DialogueIndex", "SumerianSceneFour_DialogueIndex",
@@ -189,21 +189,21 @@ public class CoordinateSelect : MonoBehaviour
 
         foreach (string key in sceneKeys)
         {
-            PlayerPrefs.DeleteKey(key);
+            StudentPrefs.DeleteKey(key);
         }
 
-        // Clear scene navigation data
-        PlayerPrefs.DeleteKey("CurrentScene");
-        PlayerPrefs.DeleteKey("LastScene");
-        PlayerPrefs.DeleteKey("SaveTimestamp");
-        PlayerPrefs.DeleteKey("LoadedDialogueIndex");
-        PlayerPrefs.DeleteKey("LoadedFromSave");
+        // Clear scene navigation data using StudentPrefs
+        StudentPrefs.DeleteKey("CurrentScene");
+        StudentPrefs.DeleteKey("LastScene");
+        StudentPrefs.DeleteKey("SaveTimestamp");
+        StudentPrefs.DeleteKey("LoadedDialogueIndex");
+        StudentPrefs.DeleteKey("LoadedFromSave");
         
         // Mark this as a new game start
-        PlayerPrefs.SetString("GameMode", "NewGame");
-        PlayerPrefs.Save();
+        StudentPrefs.SetString("GameMode", "NewGame");
+        StudentPrefs.Save();
         
-        Debug.Log("Starting new game - all dialogue progress cleared");
+        Debug.Log("Starting new game - all dialogue progress cleared from StudentPrefs");
     }
     #endregion
 }

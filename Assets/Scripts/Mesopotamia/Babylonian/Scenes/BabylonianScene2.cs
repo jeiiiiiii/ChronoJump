@@ -125,33 +125,33 @@ public class BabylonianScene2 : MonoBehaviour
     void LoadDialogueIndex()
     {
     // Check if this is a new game
-    if (PlayerPrefs.GetString("GameMode", "") == "NewGame")
+    if (StudentPrefs.GetString("GameMode", "") == "NewGame")
     {
         currentDialogueIndex = 0;
-        PlayerPrefs.DeleteKey("GameMode");
+        StudentPrefs.DeleteKey("GameMode");
         Debug.Log("New game started - dialogue index reset to 0");
         return;
     }
 
     // Check if this is a load operation from save file
-    if (PlayerPrefs.GetString("LoadedFromSave", "false") == "true")
+    if (StudentPrefs.GetString("LoadedFromSave", "false") == "true")
     {
-        if (PlayerPrefs.HasKey("LoadedDialogueIndex"))
+        if (StudentPrefs.HasKey("LoadedDialogueIndex"))
         {
-            currentDialogueIndex = PlayerPrefs.GetInt("LoadedDialogueIndex");
-            PlayerPrefs.DeleteKey("LoadedDialogueIndex");
+            currentDialogueIndex = StudentPrefs.GetInt("LoadedDialogueIndex");
+            StudentPrefs.DeleteKey("LoadedDialogueIndex");
             Debug.Log($"Loaded from save file at dialogue index: {currentDialogueIndex}");
         }
 
         // Clear the load flag
-        PlayerPrefs.SetString("LoadedFromSave", "false");
+        StudentPrefs.SetString("LoadedFromSave", "false");
     }
     else
     {
         // Check for regular scene progression (not from load)
-        if (PlayerPrefs.HasKey("BabylonianSceneTwo_DialogueIndex"))
+        if (StudentPrefs.HasKey("BabylonianSceneTwo_DialogueIndex"))
         {
-            currentDialogueIndex = PlayerPrefs.GetInt("BabylonianSceneTwo_DialogueIndex");
+            currentDialogueIndex = StudentPrefs.GetInt("BabylonianSceneTwo_DialogueIndex");
             Debug.Log($"Continuing from previous session at dialogue index: {currentDialogueIndex}");
         }
         else
@@ -284,12 +284,12 @@ public class BabylonianScene2 : MonoBehaviour
 
     public void SaveAndLoad()
     {
-        PlayerPrefs.SetInt("BabylonianSceneTwo_DialogueIndex", currentDialogueIndex);
-        PlayerPrefs.SetString("LastScene", "BabylonianSceneTwo");
-        PlayerPrefs.DeleteKey("AccessMode");
-        PlayerPrefs.SetString("SaveSource", "StoryScene");
-        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-        PlayerPrefs.Save();
+        StudentPrefs.SetInt("BabylonianSceneTwo_DialogueIndex", currentDialogueIndex);
+        StudentPrefs.SetString("LastScene", "BabylonianSceneTwo");
+        StudentPrefs.DeleteKey("AccessMode");
+        StudentPrefs.SetString("SaveSource", "StoryScene");
+        StudentPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        StudentPrefs.Save();
 
         if (SaveLoadManager.Instance != null)
             SaveLoadManager.Instance.SetCurrentGameState("BabylonianSceneTwo", currentDialogueIndex);
@@ -299,10 +299,10 @@ public class BabylonianScene2 : MonoBehaviour
 
     void SaveCurrentProgress()
     {
-        PlayerPrefs.SetInt("BabylonianSceneTwo_DialogueIndex", currentDialogueIndex);
-        PlayerPrefs.SetString("CurrentScene", "BabylonianSceneTwo");
-        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-        PlayerPrefs.Save();
+        StudentPrefs.SetInt("BabylonianSceneTwo_DialogueIndex", currentDialogueIndex);
+        StudentPrefs.SetString("CurrentScene", "BabylonianSceneTwo");
+        StudentPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        StudentPrefs.Save();
     }
 
     public void Home()

@@ -67,7 +67,7 @@ public class Warbelt : MonoBehaviour
             });
         }
 
-        // if (PlayerPrefs.GetInt("UsePowerArtifactUsed", 0) == 1)
+        // if (StudentPrefs.GetInt("UsePowerArtifactUsed", 0) == 1)
         // {
         //     ArtifactButton.gameObject.SetActive(false);
         //     ArtifactImageButton.gameObject.SetActive(false);
@@ -453,8 +453,8 @@ public class Warbelt : MonoBehaviour
 
     // void ConsumeArtifactPower()
     // {
-    //     PlayerPrefs.SetInt("UsePowerArtifactUsed", 1);
-    //     PlayerPrefs.Save();
+    //     StudentPrefs.SetInt("UsePowerArtifactUsed", 1);
+    //     StudentPrefs.Save();
         
     //     ArtifactButton.gameObject.SetActive(false);
     //     ArtifactImageButton.gameObject.SetActive(false);

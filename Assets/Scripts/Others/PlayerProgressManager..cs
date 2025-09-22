@@ -29,16 +29,16 @@ public static class PlayerProgressManager
         }
         else
         {
-            // Fallback to PlayerPrefs if GameProgressManager is not available
-            PlayerPrefs.SetInt(civName + "_unlocked", 1);
-            PlayerPrefs.Save();
-            Debug.LogWarning($"GameProgressManager not available. Unlocked {civName} using PlayerPrefs fallback.");
+            // Fallback to StudentPrefs if GameProgressManager is not available
+            StudentPrefs.SetInt(civName + "_unlocked", 1);
+            StudentPrefs.Save();
+            Debug.LogWarning($"GameProgressManager not available. Unlocked {civName} using StudentPrefs fallback.");
         }
     }
 
     /// <summary>
     /// Checks if a civilization is unlocked through GameProgressManager.
-    /// Falls back to PlayerPrefs if GameProgressManager is not available.
+    /// Falls back to StudentPrefs if GameProgressManager is not available.
     /// </summary>
     public static bool IsCivilizationUnlocked(string civName)
     {
@@ -55,9 +55,9 @@ public static class PlayerProgressManager
         }
         else
         {
-            // Fallback to PlayerPrefs
-            bool isUnlocked = PlayerPrefs.GetInt(civName + "_unlocked", civName == "Sumerian" ? 1 : 0) == 1;
-            Debug.LogWarning($"GameProgressManager not available. Checking {civName} unlock status using PlayerPrefs fallback: {isUnlocked}");
+            // Fallback to StudentPrefs
+            bool isUnlocked = StudentPrefs.GetInt(civName + "_unlocked", civName == "Sumerian" ? 1 : 0) == 1;
+            Debug.LogWarning($"GameProgressManager not available. Checking {civName} unlock status using StudentPrefs fallback: {isUnlocked}");
             return isUnlocked;
         }
     }
@@ -83,6 +83,8 @@ public static class PlayerProgressManager
             return;
         }
 
+        Debug.Log("Migrating civilizations from legacy PlayerPrefs to GameProgressManager");
+
         foreach (string civName in allCivilizations)
         {
             // Check if this civilization was unlocked in PlayerPrefs
@@ -100,5 +102,34 @@ public static class PlayerProgressManager
         
         PlayerPrefs.Save();
         Debug.Log("Civilization migration completed");
+    }
+
+    /// <summary>
+    /// Migrates legacy PlayerPrefs civilization data to StudentPrefs for fallback scenarios
+    /// </summary>
+    public static void MigrateFromLegacyPlayerPrefs()
+    {
+        Debug.Log("Migrating civilizations from legacy PlayerPrefs to StudentPrefs");
+
+        foreach (string civName in allCivilizations)
+        {
+            string legacyKey = civName + "_unlocked";
+            
+            // Check if this civilization was unlocked in PlayerPrefs and not already in StudentPrefs
+            if (PlayerPrefs.GetInt(legacyKey, 0) == 1 && StudentPrefs.GetInt(legacyKey, 0) == 0)
+            {
+                // Migrate to StudentPrefs
+                StudentPrefs.SetInt(legacyKey, 1);
+                
+                // Clean up the PlayerPrefs entry
+                PlayerPrefs.DeleteKey(legacyKey);
+                
+                Debug.Log($"Migrated civilization {civName} from PlayerPrefs to StudentPrefs");
+            }
+        }
+        
+        StudentPrefs.Save();
+        PlayerPrefs.Save();
+        Debug.Log("PlayerPrefs to StudentPrefs civilization migration completed");
     }
 }

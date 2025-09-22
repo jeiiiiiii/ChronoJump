@@ -104,11 +104,163 @@ public class GameProgressManager : MonoBehaviour
         // Store the completion callback
         OnInitializationComplete = onComplete;
 
-        // Load progress and then migrate into legacy PlayerPrefs
-        LoadProgress();
-        MigrateFirebaseToLegacyPlayerPrefs();
-
+        // NEW: Load progress with proper fallback chain
+        LoadProgressWithFallback();
     }
+
+    #region Improved Loading Logic
+
+    /// <summary>
+    /// Load progress with proper fallback chain: StudentPrefs -> Firebase -> Default
+    /// </summary>
+    private void LoadProgressWithFallback()
+    {
+        Debug.Log($"Starting LoadProgressWithFallback for student {CurrentStudentState.StudentId}");
+
+        // Try StudentPrefs first
+        if (StudentPrefs.HasKey("currentHearts"))
+        {
+            Debug.Log("Found StudentPrefs data, loading...");
+            LoadFromStudentPrefs();
+            TriggerInitializationComplete();
+        }
+        else
+        {
+            Debug.Log("No StudentPrefs data found, checking Firebase...");
+            LoadFromFirebaseWithCallback();
+        }
+    }
+
+    private void LoadFromStudentPrefs()
+    {
+        var gp = CurrentStudentState.GameProgress;
+
+        try
+        {
+            gp.currentHearts = StudentPrefs.GetInt("currentHearts", 3);
+
+            var chaptersJson = StudentPrefs.GetString("unlockedChapters", "");
+            if (!string.IsNullOrEmpty(chaptersJson))
+            {
+                gp.unlockedChapters = JsonUtility.FromJson<StringListWrapper>(chaptersJson).list ?? new List<string> { "CH001" };
+            }
+
+            var storiesJson = StudentPrefs.GetString("unlockedStories", "");
+            if (!string.IsNullOrEmpty(storiesJson))
+            {
+                gp.unlockedStories = JsonUtility.FromJson<StringListWrapper>(storiesJson).list ?? new List<string> { "ST001" };
+            }
+
+            var achievementsJson = StudentPrefs.GetString("unlockedAchievements", "");
+            if (!string.IsNullOrEmpty(achievementsJson))
+            {
+                gp.unlockedAchievements = JsonUtility.FromJson<StringListWrapper>(achievementsJson).list ?? new List<string>();
+            }
+
+            var artifactsJson = StudentPrefs.GetString("unlockedArtifacts", "");
+            if (!string.IsNullOrEmpty(artifactsJson))
+            {
+                gp.unlockedArtifacts = JsonUtility.FromJson<StringListWrapper>(artifactsJson).list ?? new List<string>();
+            }
+
+            var civilizationsJson = StudentPrefs.GetString("unlockedCivilizations", "");
+            if (!string.IsNullOrEmpty(civilizationsJson))
+            {
+                gp.unlockedCivilizations = JsonUtility.FromJson<StringListWrapper>(civilizationsJson).list ?? new List<string> { "Sumerian" };
+            }
+
+            var codexJson = StudentPrefs.GetString("unlockedCodex", "");
+            if (!string.IsNullOrEmpty(codexJson))
+            {
+                var codexWrapper = JsonUtility.FromJson<CodexWrapper>(codexJson);
+                gp.unlockedCodex = new Dictionary<string, object>();
+                if (codexWrapper?.entries != null)
+                {
+                    foreach (var entry in codexWrapper.entries)
+                        gp.unlockedCodex[entry.characterId] = entry.stories;
+                }
+            }
+
+            Debug.Log("Successfully loaded GameProgress from StudentPrefs");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Failed to load from StudentPrefs: {e.Message}. Falling back to Firebase.");
+            ClearStudentPrefsCache();
+            LoadFromFirebaseWithCallback();
+        }
+    }
+
+    private void LoadFromFirebaseWithCallback()
+    {
+        var gp = CurrentStudentState.GameProgress;
+        string studId = CurrentStudentState.StudentId;
+
+        Debug.Log($"Fetching GameProgress from Firebase for student {studId}");
+
+        db.Collection("gameProgress").Document(studId).GetSnapshotAsync().ContinueWith(task =>
+        {
+            UnityDispatcher.RunOnMainThread(() =>
+            {
+                try
+                {
+                    if (task.IsCompletedSuccessfully && task.Result.Exists)
+                    {
+                        var data = task.Result.ToDictionary();
+
+                        gp.currentHearts = data.ContainsKey("currentHearts") ? (int)(long)data["currentHearts"] : 3;
+                        gp.unlockedChapters = data.ContainsKey("unlockedChapters") ? ((List<object>)data["unlockedChapters"]).Cast<string>().ToList() : new List<string> { "CH001" };
+                        gp.unlockedStories = data.ContainsKey("unlockedStories") ? ((List<object>)data["unlockedStories"]).Cast<string>().ToList() : new List<string> { "ST001" };
+                        gp.unlockedAchievements = data.ContainsKey("unlockedAchievements") ? ((List<object>)data["unlockedAchievements"]).Cast<string>().ToList() : new List<string>();
+                        gp.unlockedArtifacts = data.ContainsKey("unlockedArtifacts") ? ((List<object>)data["unlockedArtifacts"]).Cast<string>().ToList() : new List<string>();
+                        gp.unlockedCivilizations = data.ContainsKey("unlockedCivilizations") ? ((List<object>)data["unlockedCivilizations"]).Cast<string>().ToList() : new List<string> { "Sumerian" };
+                        gp.unlockedCodex = data.ContainsKey("unlockedCodex")
+                            ? ((Dictionary<string, object>)data["unlockedCodex"])
+                            : new Dictionary<string, object>();
+
+                        gp.lastUpdated = data.ContainsKey("lastUpdated") ? (Timestamp)data["lastUpdated"] : Timestamp.GetCurrentTimestamp();
+
+                        // Save to StudentPrefs for future loads
+                        SaveToStudentPrefs();
+
+                        Debug.Log("Successfully loaded GameProgress from Firebase and cached to StudentPrefs");
+                    }
+                    else if (task.IsCompletedSuccessfully && !task.Result.Exists)
+                    {
+                        Debug.LogWarning($"No GameProgress document found in Firebase for {studId}. Using default values.");
+                        // Save defaults to StudentPrefs so we don't hit Firebase again
+                        SaveToStudentPrefs();
+                    }
+                    else if (task.IsFaulted)
+                    {
+                        Debug.LogError($"Firebase fetch failed for {studId}: {task.Exception}");
+                        // Use default values already set in GameProgress
+                    }
+                    else if (task.IsCanceled)
+                    {
+                        Debug.LogWarning($"Firebase fetch was canceled for {studId}. Using default values.");
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"Error processing Firebase data for {studId}: {e.Message}");
+                }
+                finally
+                {
+                    TriggerInitializationComplete();
+                }
+            });
+        });
+    }
+
+    private void TriggerInitializationComplete()
+    {
+        Debug.Log($"Initialization completed for {CurrentStudentState.StudentId}");
+        OnInitializationComplete?.Invoke();
+        OnInitializationComplete = null;
+    }
+
+    #endregion
 
     #region Gameplay Methods    
     // Hearts setter
@@ -153,23 +305,23 @@ public class GameProgressManager : MonoBehaviour
     }
 
     public void UnlockStory(string storyId)
-{
-    var gp = CurrentStudentState.GameProgress;
-    if (!gp.unlockedStories.Contains(storyId))
     {
-        gp.unlockedStories.Add(storyId);
-
-        // Update studentProgress
-        if (CurrentStudentState?.Progress != null)
+        var gp = CurrentStudentState.GameProgress;
+        if (!gp.unlockedStories.Contains(storyId))
         {
-            CurrentStudentState.Progress.currentStory = db.Document($"stories/{storyId}");
-        }
+            gp.unlockedStories.Add(storyId);
 
-        SaveProgress();
-        OnStoryUnlocked?.Invoke(storyId);
-        Debug.Log($"Story {storyId} unlocked for student {CurrentStudentState.StudentId}");
+            // Update studentProgress
+            if (CurrentStudentState?.Progress != null)
+            {
+                CurrentStudentState.Progress.currentStory = db.Document($"stories/{storyId}");
+            }
+
+            SaveProgress();
+            OnStoryUnlocked?.Invoke(storyId);
+            Debug.Log($"Story {storyId} unlocked for student {CurrentStudentState.StudentId}");
+        }
     }
-}
 
     public void UnlockAchievement(string achievementName)
     {
@@ -181,7 +333,6 @@ public class GameProgressManager : MonoBehaviour
             Debug.Log("Achievement unlocked: " + achievementName);
         }
     }
-
 
     public void AddAchievement(string achievementId)
     {
@@ -302,27 +453,22 @@ public class GameProgressManager : MonoBehaviour
             dateUpdated = Timestamp.GetCurrentTimestamp()
         });
 
-
         SaveProgress();
         SaveStudentProgressToFirebase();
 
-
         Debug.Log("Started a new game for student: " + CurrentStudentState.StudentId);
     }
-
 
     #endregion
 
     #region Additional Helper Methods
 
-    /// <summary>
-    /// Gets all unlocked civilizations for the current student
-    /// </summary>
     public List<string> GetUnlockedCivilizations()
     {
         if (CurrentStudentState?.GameProgress == null)
         {
             Debug.LogWarning("No student state available");
+
             return new List<string> { "Sumerian" }; // Default
         }
 
@@ -337,9 +483,6 @@ public class GameProgressManager : MonoBehaviour
         return unlocked;
     }
 
-    /// <summary>
-    /// Gets all locked civilizations for the current student
-    /// </summary>
     public List<string> GetLockedCivilizations()
     {
         var unlockedCivs = GetUnlockedCivilizations();
@@ -356,9 +499,6 @@ public class GameProgressManager : MonoBehaviour
         return lockedCivs;
     }
 
-    /// <summary>
-    /// Checks if any specific content is unlocked
-    /// </summary>
     public bool IsChapterUnlocked(string chapterId)
     {
         return CurrentStudentState?.GameProgress?.unlockedChapters?.Contains(chapterId) ?? false;
@@ -379,25 +519,16 @@ public class GameProgressManager : MonoBehaviour
         return CurrentStudentState?.GameProgress?.unlockedArtifacts?.Contains(artifactId) ?? false;
     }
 
-    /// <summary>
-    /// Get current hearts count
-    /// </summary>
     public int GetCurrentHearts()
     {
         return CurrentStudentState?.GameProgress?.currentHearts ?? 3;
     }
 
-    /// <summary>
-    /// Check if player has enough hearts
-    /// </summary>
     public bool HasHearts(int required = 1)
     {
         return GetCurrentHearts() >= required;
     }
 
-    /// <summary>
-    /// Add hearts (for purchases, rewards, etc.)
-    /// </summary>
     public void AddHearts(int amount)
     {
         if (amount <= 0) return;
@@ -410,38 +541,77 @@ public class GameProgressManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Migration method to be called when student logs in
+    /// Migration method to convert old PlayerPrefs to StudentPrefs
     /// </summary>
-    public void MigrateFromPlayerPrefs()
+    public void MigrateFromLegacyPlayerPrefs()
     {
-        PlayerProgressManager.MigrateToGameProgressManager();
+        if (CurrentStudentState == null) return;
+
+        string studId = CurrentStudentState.StudentId;
+        Debug.Log($"Migrating legacy PlayerPrefs to StudentPrefs for {studId}");
+
+        // Check if we have old-style keys and migrate them
+        if (PlayerPrefs.HasKey("currentHearts") && !StudentPrefs.HasKey("currentHearts"))
+        {
+            StudentPrefs.SetInt("currentHearts", PlayerPrefs.GetInt("currentHearts", 3));
+
+            var chapters = PlayerPrefs.GetString("unlockedChapters", "");
+            if (!string.IsNullOrEmpty(chapters)) StudentPrefs.SetString("unlockedChapters", chapters);
+
+            var stories = PlayerPrefs.GetString("unlockedStories", "");
+            if (!string.IsNullOrEmpty(stories)) StudentPrefs.SetString("unlockedStories", stories);
+
+            var achievements = PlayerPrefs.GetString("unlockedAchievements", "");
+            if (!string.IsNullOrEmpty(achievements)) StudentPrefs.SetString("unlockedAchievements", achievements);
+
+            var artifacts = PlayerPrefs.GetString("unlockedArtifacts", "");
+            if (!string.IsNullOrEmpty(artifacts)) StudentPrefs.SetString("unlockedArtifacts", artifacts);
+
+            var civilizations = PlayerPrefs.GetString("unlockedCivilizations", "");
+            if (!string.IsNullOrEmpty(civilizations)) StudentPrefs.SetString("unlockedCivilizations", civilizations);
+
+            var codex = PlayerPrefs.GetString("unlockedCodex", "");
+            if (!string.IsNullOrEmpty(codex)) StudentPrefs.SetString("unlockedCodex", codex);
+
+            StudentPrefs.Save();
+
+            // Clear old keys
+            PlayerPrefs.DeleteKey("currentHearts");
+            PlayerPrefs.DeleteKey("unlockedChapters");
+            PlayerPrefs.DeleteKey("unlockedStories");
+            PlayerPrefs.DeleteKey("unlockedAchievements");
+            PlayerPrefs.DeleteKey("unlockedArtifacts");
+            PlayerPrefs.DeleteKey("unlockedCivilizations");
+            PlayerPrefs.DeleteKey("unlockedCodex");
+            PlayerPrefs.Save();
+
+            Debug.Log("Legacy PlayerPrefs migration completed");
+        }
     }
 
     #endregion
 
-    #region PlayerPrefs Caching
+    #region StudentPrefs Caching
 
-    private string GetKey(string field) => $"{CurrentStudentState.StudentId}_{field}";
-
-    private void SaveProgressToPlayerPrefs()
+    private void SaveToStudentPrefs()
     {
         var gp = CurrentStudentState.GameProgress;
 
-        PlayerPrefs.SetInt(GetKey("currentHearts"), gp.currentHearts);
+        StudentPrefs.SetInt("currentHearts", gp.currentHearts);
 
-        PlayerPrefs.SetString(GetKey("unlockedChapters"),
+        StudentPrefs.SetString("unlockedChapters",
             JsonUtility.ToJson(new StringListWrapper { list = gp.unlockedChapters }));
 
-        PlayerPrefs.SetString(GetKey("unlockedStories"),
+        StudentPrefs.SetString("unlockedStories",
             JsonUtility.ToJson(new StringListWrapper { list = gp.unlockedStories }));
 
-        PlayerPrefs.SetString(GetKey("unlockedAchievements"),
+        StudentPrefs.SetString("unlockedAchievements",
             JsonUtility.ToJson(new StringListWrapper { list = gp.unlockedAchievements }));
 
-        PlayerPrefs.SetString(GetKey("unlockedArtifacts"),
+        StudentPrefs.SetString("unlockedArtifacts",
             JsonUtility.ToJson(new StringListWrapper { list = gp.unlockedArtifacts }));
 
-        PlayerPrefs.SetString(GetKey("unlockedCivilizations"),
+        StudentPrefs.SetString("unlockedCivilizations",
             JsonUtility.ToJson(new StringListWrapper { list = gp.unlockedCivilizations }));
 
         // Codex: convert dictionary to list for serialization
@@ -455,200 +625,57 @@ public class GameProgressManager : MonoBehaviour
             });
         }
 
-        PlayerPrefs.SetString(GetKey("unlockedCodex"), JsonUtility.ToJson(new CodexWrapper { entries = codexList }));
+        StudentPrefs.SetString("unlockedCodex", JsonUtility.ToJson(new CodexWrapper { entries = codexList }));
 
-        PlayerPrefs.Save();
-        Debug.Log("GameProgress saved to PlayerPrefs for " + CurrentStudentState.StudentId);
+        StudentPrefs.Save();
+        Debug.Log("GameProgress saved to StudentPrefs for " + CurrentStudentState.StudentId);
     }
 
-    private void LoadProgress()
+    private void ClearStudentPrefsCache()
     {
-        var gp = CurrentStudentState.GameProgress;
-
-        Debug.Log($"Starting LoadProgress for student {CurrentStudentState.StudentId}");
-
-        if (PlayerPrefs.HasKey(GetKey("unlockedChapters")))
-        {
-            try
-            {
-                Debug.Log("Found cached PlayerPrefs data, attempting to load...");
-
-                gp.currentHearts = PlayerPrefs.GetInt(GetKey("currentHearts"), 3);
-
-                var chaptersJson = PlayerPrefs.GetString(GetKey("unlockedChapters"), "");
-                if (!string.IsNullOrEmpty(chaptersJson))
-                {
-                    gp.unlockedChapters = JsonUtility.FromJson<StringListWrapper>(chaptersJson).list ?? new List<string> { "CH001" };
-                }
-
-                var storiesJson = PlayerPrefs.GetString(GetKey("unlockedStories"), "");
-                if (!string.IsNullOrEmpty(storiesJson))
-                {
-                    gp.unlockedStories = JsonUtility.FromJson<StringListWrapper>(storiesJson).list ?? new List<string> { "ST001" };
-                }
-
-                var achievementsJson = PlayerPrefs.GetString(GetKey("unlockedAchievements"), "");
-                if (!string.IsNullOrEmpty(achievementsJson))
-                {
-                    gp.unlockedAchievements = JsonUtility.FromJson<StringListWrapper>(achievementsJson).list ?? new List<string>();
-                }
-
-                var artifactsJson = PlayerPrefs.GetString(GetKey("unlockedArtifacts"), "");
-                if (!string.IsNullOrEmpty(artifactsJson))
-                {
-                    gp.unlockedArtifacts = JsonUtility.FromJson<StringListWrapper>(artifactsJson).list ?? new List<string>();
-                }
-
-                var civilizationsJson = PlayerPrefs.GetString(GetKey("unlockedCivilizations"), "");
-                if (!string.IsNullOrEmpty(civilizationsJson))
-                {
-                    gp.unlockedCivilizations = JsonUtility.FromJson<StringListWrapper>(civilizationsJson).list ?? new List<string> { "Sumerian" };
-                }
-
-                var codexJson = PlayerPrefs.GetString(GetKey("unlockedCodex"), "");
-                if (!string.IsNullOrEmpty(codexJson))
-                {
-                    var codexWrapper = JsonUtility.FromJson<CodexWrapper>(codexJson);
-                    gp.unlockedCodex = new Dictionary<string, object>();
-                    if (codexWrapper?.entries != null)
-                    {
-                        foreach (var entry in codexWrapper.entries)
-                            gp.unlockedCodex[entry.characterId] = entry.stories;
-                    }
-                }
-
-                Debug.Log("Successfully loaded GameProgress from PlayerPrefs for " + CurrentStudentState.StudentId);
-
-                // Signal completion
-                OnInitializationComplete?.Invoke();
-                OnInitializationComplete = null;
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"Failed to load from PlayerPrefs: {e.Message}. Falling back to Firebase.");
-
-                // Clear corrupted PlayerPrefs and load from Firebase
-                ClearPlayerPrefsCache();
-                FetchProgressFromFirebase();
-            }
-        }
-        else
-        {
-            Debug.Log("No cached PlayerPrefs data found, fetching from Firebase...");
-            FetchProgressFromFirebase();
-        }
-    }
-
-    private void ClearPlayerPrefsCache()
-    {
-        PlayerPrefs.DeleteKey(GetKey("currentHearts"));
-        PlayerPrefs.DeleteKey(GetKey("unlockedChapters"));
-        PlayerPrefs.DeleteKey(GetKey("unlockedStories"));
-        PlayerPrefs.DeleteKey(GetKey("unlockedAchievements"));
-        PlayerPrefs.DeleteKey(GetKey("unlockedArtifacts"));
-        PlayerPrefs.DeleteKey(GetKey("unlockedCivilizations"));
-        PlayerPrefs.DeleteKey(GetKey("unlockedCodex"));
-        PlayerPrefs.Save();
-        Debug.Log("Cleared corrupted PlayerPrefs cache");
+        StudentPrefs.DeleteKey("currentHearts");
+        StudentPrefs.DeleteKey("unlockedChapters");
+        StudentPrefs.DeleteKey("unlockedStories");
+        StudentPrefs.DeleteKey("unlockedAchievements");
+        StudentPrefs.DeleteKey("unlockedArtifacts");
+        StudentPrefs.DeleteKey("unlockedCivilizations");
+        StudentPrefs.DeleteKey("unlockedCodex");
+        StudentPrefs.Save();
+        Debug.Log("Cleared corrupted StudentPrefs cache");
     }
 
     #endregion
 
     #region Firebase Saving/Loading
 
-    private void FetchProgressFromFirebase()
+    private void SaveStudentProgressToFirebase()
     {
-        var gp = CurrentStudentState.GameProgress;
-        string studId = CurrentStudentState.StudentId;
-
-        Debug.Log($"Fetching GameProgress from Firebase for student {studId}");
-
-        db.Collection("gameProgress").Document(studId).GetSnapshotAsync().ContinueWith(task =>
+        if (CurrentStudentState?.Progress == null || string.IsNullOrEmpty(CurrentStudentState.StudentId))
         {
-            UnityDispatcher.RunOnMainThread(() =>
-            {
-                try
-                {
-                    if (task.IsCompletedSuccessfully && task.Result.Exists)
-                    {
-                        var data = task.Result.ToDictionary();
+            Debug.LogWarning("Cannot save StudentProgress: missing state or StudentId");
+            return;
+        }
 
-                        gp.currentHearts = data.ContainsKey("currentHearts") ? (int)(long)data["currentHearts"] : 3;
-                        gp.unlockedChapters = data.ContainsKey("unlockedChapters") ? ((List<object>)data["unlockedChapters"]).Cast<string>().ToList() : new List<string> { "CH001" };
-                        gp.unlockedStories = data.ContainsKey("unlockedStories") ? ((List<object>)data["unlockedStories"]).Cast<string>().ToList() : new List<string> { "ST001" };
-                        gp.unlockedAchievements = data.ContainsKey("unlockedAchievements") ? ((List<object>)data["unlockedAchievements"]).Cast<string>().ToList() : new List<string>();
-                        gp.unlockedArtifacts = data.ContainsKey("unlockedArtifacts") ? ((List<object>)data["unlockedArtifacts"]).Cast<string>().ToList() : new List<string>();
-                        gp.unlockedCivilizations = data.ContainsKey("unlockedCivilizations") ? ((List<object>)data["unlockedCivilizations"]).Cast<string>().ToList() : new List<string> { "Sumerian" };
-                        gp.unlockedCodex = data.ContainsKey("unlockedCodex")
-                            ? ((Dictionary<string, object>)data["unlockedCodex"])
-                            : new Dictionary<string, object>();
+        var sp = CurrentStudentState.Progress;
+        var docRef = db.Collection("studentProgress").Document(CurrentStudentState.StudentId);
 
-                        gp.lastUpdated = data.ContainsKey("lastUpdated") ? (Timestamp)data["lastUpdated"] : Timestamp.GetCurrentTimestamp();
+        var data = new Dictionary<string, object>
+        {
+            { "currentStory", sp.currentStory },
+            { "overallScore", sp.overallScore },
+            { "successRate", sp.successRate },
+            { "isRemoved", sp.isRemoved },
+            { "dateUpdated", Timestamp.GetCurrentTimestamp() }
+        };
 
-                        SaveProgressToPlayerPrefs();
-
-                        Debug.Log("Successfully loaded GameProgress from Firebase for " + studId);
-                    }
-                    else if (task.IsCompletedSuccessfully && !task.Result.Exists)
-                    {
-                        Debug.LogWarning($"No GameProgress document found in Firebase for {studId}. Using default values.");
-                        // GameProgress already has default values from Initialize(), so we're good
-                    }
-                    else if (task.IsFaulted)
-                    {
-                        Debug.LogError($"Firebase fetch failed for {studId}: {task.Exception}");
-                        // Use default values already set in GameProgress
-                    }
-                    else if (task.IsCanceled)
-                    {
-                        Debug.LogWarning($"Firebase fetch was canceled for {studId}. Using default values.");
-                        // Use default values already set in GameProgress
-                    }
-                }
-                catch (System.Exception e)
-                {
-                    Debug.LogError($"Error processing Firebase data for {studId}: {e.Message}");
-                    // Use default values already set in GameProgress
-                }
-                finally
-                {
-                    // ALWAYS call the completion callback, regardless of success or failure
-                    Debug.Log($"Firebase fetch completed for {studId}, triggering callback");
-                    OnInitializationComplete?.Invoke();
-                    OnInitializationComplete = null;
-                }
-            });
+        docRef.SetAsync(data, SetOptions.MergeAll).ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCompletedSuccessfully)
+                Debug.Log($"StudentProgress saved for {CurrentStudentState.StudentId}");
+            else
+                Debug.LogError("Failed to save StudentProgress: " + task.Exception);
         });
     }
-    private void SaveStudentProgressToFirebase()
-{
-    if (CurrentStudentState?.Progress == null || string.IsNullOrEmpty(CurrentStudentState.StudentId))
-    {
-        Debug.LogWarning("Cannot save StudentProgress: missing state or StudentId");
-        return;
-    }
-
-    var sp = CurrentStudentState.Progress;
-    var docRef = db.Collection("studentProgress").Document(CurrentStudentState.StudentId);
-
-    var data = new Dictionary<string, object>
-    {
-        { "currentStory", sp.currentStory },
-        { "overallScore", sp.overallScore },
-        { "successRate", sp.successRate },
-        { "isRemoved", sp.isRemoved },
-        { "dateUpdated", Timestamp.GetCurrentTimestamp() }
-    };
-
-    docRef.SetAsync(data, SetOptions.MergeAll).ContinueWithOnMainThread(task =>
-    {
-        if (task.IsCompletedSuccessfully)
-            Debug.Log($"StudentProgress saved for {CurrentStudentState.StudentId}");
-        else
-            Debug.LogError("Failed to save StudentProgress: " + task.Exception);
-    });
-}
-
 
     private void SaveProgressToFirebase()
     {
@@ -688,31 +715,23 @@ public class GameProgressManager : MonoBehaviour
     #endregion
 
     private void SaveProgress()
-{
-    CurrentStudentState.GameProgress.lastUpdated = Timestamp.GetCurrentTimestamp();
-    SaveProgressToPlayerPrefs();
-    SaveProgressToFirebase();
-    SaveStudentProgressToFirebase(); // 🔥 make sure studentProgress is also updated
-}
-
+    {
+        CurrentStudentState.GameProgress.lastUpdated = Timestamp.GetCurrentTimestamp();
+        SaveToStudentPrefs();
+        SaveProgressToFirebase();
+        SaveStudentProgressToFirebase();
+    }
 
     #region Public Save/Load API
 
-    /// <summary>
-    /// Public method for external systems (like SaveLoadManager) to force save progress.
-    /// This wraps the private SaveProgress.
-    /// </summary>
     public void CommitProgress()
     {
-        SaveProgress(); // calls the private method internally
+        SaveProgress();
     }
 
-    /// <summary>
-    /// Public method to reload from PlayerPrefs/Firebase
-    /// </summary>
     public void RefreshProgress()
     {
-        LoadProgress(); // calls the private loader
+        LoadProgressWithFallback();
     }
 
     public void RefreshProgress(bool keepScores)
@@ -732,7 +751,6 @@ public class GameProgressManager : MonoBehaviour
 
             if (keepScores && CurrentStudentState.Progress != null)
             {
-                // Preserve current values for overallScore and successRate
                 updatedProgress.overallScore = CurrentStudentState.Progress.overallScore;
                 updatedProgress.successRate = CurrentStudentState.Progress.successRate;
             }
@@ -742,8 +760,10 @@ public class GameProgressManager : MonoBehaviour
         });
     }
 
-
     #endregion
+
+    // ... (rest of your methods remain the same - RecordQuizAttempt, UpdateStudentProgressAndLeaderboard, etc.)
+    // I'll continue with the rest if you need them, but they don't need changes for the PlayerPrefs refactor
 
     public void RecordQuizAttempt(string quizId, int score, int total, bool isPassed)
     {
@@ -849,13 +869,13 @@ public class GameProgressManager : MonoBehaviour
             // Prepare update
             var progressUpdate = new Dictionary<string, object>
             {
-            { "overallScore", overallScore.ToString() },
-            { "successRate", successRate },
-            { "perQuizBestScores", perQuizBest },
-            { "totalAttempts", totalAttempts },
-            { "passedAttempts", passedAttempts },
-            { "passedQuizzes", passedQuizzes.ToList() }, // optional but kept
-            { "dateUpdated", Timestamp.GetCurrentTimestamp() }
+                { "overallScore", overallScore.ToString() },
+                { "successRate", successRate },
+                { "perQuizBestScores", perQuizBest },
+                { "totalAttempts", totalAttempts },
+                { "passedAttempts", passedAttempts },
+                { "passedQuizzes", passedQuizzes.ToList() }, // optional but kept
+                { "dateUpdated", Timestamp.GetCurrentTimestamp() }
             };
 
             progressDoc.SetAsync(progressUpdate, SetOptions.MergeAll).ContinueWithOnMainThread(uTask =>
@@ -894,12 +914,12 @@ public class GameProgressManager : MonoBehaviour
 
             var leaderboardUpdate = new Dictionary<string, object>
             {
-            { "displayName", CurrentStudentState?.Identity?.studName ?? "Unknown" },
-            { "classCode", CurrentStudentState?.Identity?.classCode ?? "" },
-            { "overallScore", leaderboardScore.ToString() },
-            { "perQuizFirstScores", perQuizFirst },
-            { "isRemoved", false },
-            { "dateUpdated", Timestamp.GetCurrentTimestamp() }
+                { "displayName", CurrentStudentState?.Identity?.studName ?? "Unknown" },
+                { "classCode", CurrentStudentState?.Identity?.classCode ?? "" },
+                { "overallScore", leaderboardScore.ToString() },
+                { "perQuizFirstScores", perQuizFirst },
+                { "isRemoved", false },
+                { "dateUpdated", Timestamp.GetCurrentTimestamp() }
             };
 
             leaderboardDoc.SetAsync(leaderboardUpdate, SetOptions.MergeAll).ContinueWithOnMainThread(uTask =>
@@ -911,84 +931,4 @@ public class GameProgressManager : MonoBehaviour
             });
         });
     }
-
-/// <summary>
-/// Loads progress from Firebase, clears legacy PlayerPrefs, and migrates
-/// Firebase data into generic PlayerPrefs keys so older code can still work.
-/// </summary>
-public void MigrateFirebaseToLegacyPlayerPrefs()
-{
-    string studId = CurrentStudentState?.StudentId;
-    if (string.IsNullOrEmpty(studId))
-    {
-        Debug.LogError("No student logged in for migration");
-        return;
-    }
-
-    Debug.Log($"Migrating Firebase data to legacy PlayerPrefs for {studId}");
-
-    db.Collection("gameProgress").Document(studId).GetSnapshotAsync().ContinueWithOnMainThread(task =>
-    {
-        if (!task.IsCompletedSuccessfully || !task.Result.Exists)
-        {
-            Debug.LogWarning("No Firebase gameProgress found for " + studId);
-            return;
-        }
-
-        var data = task.Result.ToDictionary();  
-
-        // Step 1: Clear old generic PlayerPrefs (so no stale data)
-        PlayerPrefs.DeleteKey("currentHearts");
-        PlayerPrefs.DeleteKey("unlockedChapters");
-        PlayerPrefs.DeleteKey("unlockedStories");
-        PlayerPrefs.DeleteKey("unlockedAchievements");
-        PlayerPrefs.DeleteKey("unlockedArtifacts");
-        PlayerPrefs.DeleteKey("unlockedCivilizations");
-        PlayerPrefs.DeleteKey("unlockedCodex");
-
-
-        // Step 2: Write Firebase data into generic keys used by legacy code
-        PlayerPrefs.SetInt("currentHearts", data.ContainsKey("currentHearts") ? (int)(long)data["currentHearts"] : 3);
-
-        if (data.ContainsKey("unlockedChapters"))
-            PlayerPrefs.SetString("unlockedChapters",
-                JsonUtility.ToJson(new StringListWrapper { list = ((List<object>)data["unlockedChapters"]).Cast<string>().ToList() }));
-
-        if (data.ContainsKey("unlockedStories"))
-            PlayerPrefs.SetString("unlockedStories",
-                JsonUtility.ToJson(new StringListWrapper { list = ((List<object>)data["unlockedStories"]).Cast<string>().ToList() }));
-
-        if (data.ContainsKey("unlockedAchievements"))
-            PlayerPrefs.SetString("unlockedAchievements",
-                JsonUtility.ToJson(new StringListWrapper { list = ((List<object>)data["unlockedAchievements"]).Cast<string>().ToList() }));
-
-        if (data.ContainsKey("unlockedArtifacts"))
-            PlayerPrefs.SetString("unlockedArtifacts",
-                JsonUtility.ToJson(new StringListWrapper { list = ((List<object>)data["unlockedArtifacts"]).Cast<string>().ToList() }));
-
-        if (data.ContainsKey("unlockedCivilizations"))
-            PlayerPrefs.SetString("unlockedCivilizations",
-                JsonUtility.ToJson(new StringListWrapper { list = ((List<object>)data["unlockedCivilizations"]).Cast<string>().ToList() }));
-
-        if (data.ContainsKey("unlockedCodex"))
-        {
-            var codexDict = (Dictionary<string, object>)data["unlockedCodex"];
-            var codexList = new List<CodexEntry>();
-            foreach (var kvp in codexDict)
-            {
-                codexList.Add(new CodexEntry
-                {
-                    characterId = kvp.Key,
-                    stories = (kvp.Value as List<object>)?.Cast<string>().ToList() ?? new List<string>()
-                });
-            }
-            PlayerPrefs.SetString("unlockedCodex", JsonUtility.ToJson(new CodexWrapper { entries = codexList }));
-        }
-
-        PlayerPrefs.Save();
-        Debug.Log("Migration complete: Firebase data is now in legacy PlayerPrefs");
-    });
 }
-
-}
-

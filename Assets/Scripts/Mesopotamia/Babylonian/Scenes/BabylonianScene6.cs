@@ -108,30 +108,30 @@ public class BabylonianScene6 : MonoBehaviour
     // === Load Dialogue Index Logic ===
     void LoadDialogueIndex()
     {
-        if (PlayerPrefs.GetString("GameMode", "") == "NewGame")
+        if (StudentPrefs.GetString("GameMode", "") == "NewGame")
         {
             currentDialogueIndex = 0;
-            PlayerPrefs.DeleteKey("GameMode");
+            StudentPrefs.DeleteKey("GameMode");
             Debug.Log("New game started - dialogue index reset to 0");
             return;
         }
 
-        if (PlayerPrefs.GetString("LoadedFromSave", "false") == "true")
+        if (StudentPrefs.GetString("LoadedFromSave", "false") == "true")
         {
-            if (PlayerPrefs.HasKey("LoadedDialogueIndex"))
+            if (StudentPrefs.HasKey("LoadedDialogueIndex"))
             {
-                currentDialogueIndex = PlayerPrefs.GetInt("LoadedDialogueIndex");
-                PlayerPrefs.DeleteKey("LoadedDialogueIndex");
+                currentDialogueIndex = StudentPrefs.GetInt("LoadedDialogueIndex");
+                StudentPrefs.DeleteKey("LoadedDialogueIndex");
                 Debug.Log($"Loaded from save file at dialogue index: {currentDialogueIndex}");
             }
 
-            PlayerPrefs.SetString("LoadedFromSave", "false");
+            StudentPrefs.SetString("LoadedFromSave", "false");
         }
         else
         {
-            if (PlayerPrefs.HasKey("BabylonianSceneSix_DialogueIndex"))
+            if (StudentPrefs.HasKey("BabylonianSceneSix_DialogueIndex"))
             {
-                currentDialogueIndex = PlayerPrefs.GetInt("BabylonianSceneSix_DialogueIndex");
+                currentDialogueIndex = StudentPrefs.GetInt("BabylonianSceneSix_DialogueIndex");
                 Debug.Log($"Continuing from previous session at dialogue index: {currentDialogueIndex}");
             }
             else
@@ -256,13 +256,13 @@ public class BabylonianScene6 : MonoBehaviour
     // === Save & Load ===
     public void SaveAndLoad()
     {
-        PlayerPrefs.SetInt("BabylonianSceneSix_DialogueIndex", currentDialogueIndex);
-        PlayerPrefs.SetString("LastScene", "BabylonianSceneSix");
+        StudentPrefs.SetInt("BabylonianSceneSix_DialogueIndex", currentDialogueIndex);
+        StudentPrefs.SetString("LastScene", "BabylonianSceneSix");
 
-        PlayerPrefs.DeleteKey("AccessMode");
-        PlayerPrefs.SetString("SaveSource", "StoryScene");
-        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-        PlayerPrefs.Save();
+        StudentPrefs.DeleteKey("AccessMode");
+        StudentPrefs.SetString("SaveSource", "StoryScene");
+        StudentPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        StudentPrefs.Save();
 
         if (SaveLoadManager.Instance != null)
             SaveLoadManager.Instance.SetCurrentGameState("BabylonianSceneSix", currentDialogueIndex);
@@ -274,10 +274,10 @@ public class BabylonianScene6 : MonoBehaviour
     // === Save Current Progress Only ===
     void SaveCurrentProgress()
     {
-        PlayerPrefs.SetInt("BabylonianSceneSix_DialogueIndex", currentDialogueIndex);
-        PlayerPrefs.SetString("CurrentScene", "BabylonianSceneSix");
-        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-        PlayerPrefs.Save();
+        StudentPrefs.SetInt("BabylonianSceneSix_DialogueIndex", currentDialogueIndex);
+        StudentPrefs.SetString("CurrentScene", "BabylonianSceneSix");
+        StudentPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        StudentPrefs.Save();
     }
 
     public void Home()

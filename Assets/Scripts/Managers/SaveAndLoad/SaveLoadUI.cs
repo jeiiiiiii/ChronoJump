@@ -62,13 +62,13 @@ public class SaveLoadUI : MonoBehaviour
     // NEW METHOD: Clear LoadOnly mode if we came from a story scene
     void ClearLoadOnlyModeIfFromStoryScene()
     {
-        string saveSource = PlayerPrefs.GetString("SaveSource", "");
-        string lastScene = PlayerPrefs.GetString("LastScene", "");
+        string saveSource = StudentPrefs.GetString("SaveSource", "");
+        string lastScene = StudentPrefs.GetString("LastScene", "");
         
         // If we came from a story scene, clear the LoadOnly restriction
         if (saveSource == "StoryScene" && !string.IsNullOrEmpty(lastScene))
         {
-            PlayerPrefs.DeleteKey("AccessMode"); // Clear LoadOnly mode
+            StudentPrefs.DeleteKey("AccessMode"); // Clear LoadOnly mode
             Debug.Log($"Cleared LoadOnly mode - accessed from story scene: {lastScene}");
         }
         else
@@ -108,7 +108,7 @@ public class SaveLoadUI : MonoBehaviour
     void CheckSaveButtonAvailability(int slotIndex)
     {
         // Check access mode - if LoadOnly, disable all save buttons
-        string accessMode = PlayerPrefs.GetString("AccessMode", "");
+        string accessMode = StudentPrefs.GetString("AccessMode", "");
         if (accessMode == "LoadOnly")
         {
             DisableSaveButton(slotIndex, "Load Game mode - saving disabled");
@@ -116,8 +116,8 @@ public class SaveLoadUI : MonoBehaviour
         }
         
         // Check if we came from a story scene and have valid game state
-        string lastScene = PlayerPrefs.GetString("LastScene", "");
-        string saveSource = PlayerPrefs.GetString("SaveSource", "");
+        string lastScene = StudentPrefs.GetString("LastScene", "");
+        string saveSource = StudentPrefs.GetString("SaveSource", "");
         
         // Valid story scenes that can save
         bool isValidStoryScene = (lastScene == "SumerianSceneOne" || lastScene == "SumerianScene1" || 
@@ -266,7 +266,7 @@ public class SaveLoadUI : MonoBehaviour
 
         // Create No button - ENLARGED
         GameObject noButtonObj = new GameObject("NoButton");
-        noButtonObj.transform.SetParent(dialogBox.transform, false);
+        noButtonObj.transform.SetParent(confirmationPanel.transform, false);
         
         noButton = noButtonObj.AddComponent<Button>();
         Image noButtonImage = noButtonObj.AddComponent<Image>();
@@ -365,7 +365,7 @@ public class SaveLoadUI : MonoBehaviour
     void ShowSaveConfirmation(int slotNumber)
     {
         // NEW: Check access mode first
-        string accessMode = PlayerPrefs.GetString("AccessMode", "");
+        string accessMode = StudentPrefs.GetString("AccessMode", "");
         if (accessMode == "LoadOnly")
         {
             Debug.Log("Cannot save - accessed via Load Game button");
@@ -374,8 +374,8 @@ public class SaveLoadUI : MonoBehaviour
         }
         
         // Check if we came from a story scene before showing confirmation
-        string lastScene = PlayerPrefs.GetString("LastScene", "");
-        string saveSource = PlayerPrefs.GetString("SaveSource", "");
+        string lastScene = StudentPrefs.GetString("LastScene", "");
+        string saveSource = StudentPrefs.GetString("SaveSource", "");
         
         bool isValidStoryScene = (lastScene == "SumerianSceneOne" || lastScene == "SumerianScene1" || 
                                  lastScene == "SumerianSceneTwo" || lastScene == "SumerianScene2" ||
@@ -439,7 +439,7 @@ public class SaveLoadUI : MonoBehaviour
             else
             {
                 // Empty slot - ask if they want to save
-                string currentGameScene = PlayerPrefs.GetString("LastScene", "Unknown Scene");
+                string currentGameScene = StudentPrefs.GetString("LastScene", "Unknown Scene");
                 confirmationText.text = $"Do you want to save your current progress?\n\nScene: {GetFriendlySceneName(currentGameScene)}\nSlot: {slotNumber}";
             }
         }
@@ -564,7 +564,7 @@ public class SaveLoadUI : MonoBehaviour
     void PerformActualSave(int slotNumber)
         {
     // Final validation before saving
-    string lastScene = PlayerPrefs.GetString("LastScene", "");
+    string lastScene = StudentPrefs.GetString("LastScene", "");
     bool hasValidGameState = !string.IsNullOrEmpty(lastScene) && lastScene != "SaveAndLoadScene";
     
     if (!hasValidGameState)
@@ -596,8 +596,8 @@ public class SaveLoadUI : MonoBehaviour
     public void GoBack()
     {
     // Check if we came from a story scene (in-game save button)
-    string saveSource = PlayerPrefs.GetString("SaveSource", "");
-    string lastScene = PlayerPrefs.GetString("LastScene", "");
+    string saveSource = StudentPrefs.GetString("SaveSource", "");
+    string lastScene = StudentPrefs.GetString("LastScene", "");
     
     if (saveSource == "StoryScene" && !string.IsNullOrEmpty(lastScene))
     {
@@ -605,8 +605,8 @@ public class SaveLoadUI : MonoBehaviour
         Debug.Log($"Returning to story scene: {lastScene}");
         
         // Clear the save source flag since we're going back
-        PlayerPrefs.DeleteKey("SaveSource");
-        PlayerPrefs.Save();
+        StudentPrefs.DeleteKey("SaveSource");
+        StudentPrefs.Save();
         
         SceneManager.LoadScene(lastScene);
         }
