@@ -11,4 +11,8 @@ public class LandingPage : MonoBehaviour
     {
         SceneManager.LoadScene("ViewCreatedStoriesScene");
     }
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("TitleScreen");
+    }
 }
