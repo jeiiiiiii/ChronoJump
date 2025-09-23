@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using Firebase.Firestore;
 using Firebase.Extensions;
 using System.Collections.Generic;
+using System;
 
 public class SaveLoadManager : MonoBehaviour
 {
@@ -14,6 +15,11 @@ public class SaveLoadManager : MonoBehaviour
     private int currentGameDialogueIndex = 0;
 
     private FirebaseFirestore db => FirebaseManager.Instance.DB;
+
+    private bool firebaseSlotsLoaded = false;
+
+    // ✅ Event to notify UI when Firebase finishes loading
+    public event Action OnFirebaseSlotsLoaded;
 
     [System.Serializable]
     public class LocalSaveData
@@ -36,6 +42,7 @@ public class SaveLoadManager : MonoBehaviour
             timestamp = System.DateTime.Now.ToString("yyyy-MM-dd h:mm:tt");
         }
     }
+    
 
     private void Awake()
     {
@@ -61,15 +68,17 @@ public class SaveLoadManager : MonoBehaviour
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+{
+    Debug.Log($"SaveLoadManager: Scene loaded - {scene.name}");
+    
+    // When SaveAndLoadScene is loaded, capture the current game state
+    if (scene.name == "SaveAndLoadScene")
     {
-        // When SaveAndLoadScene is loaded, capture the current game state
-        if (scene.name == "SaveAndLoadScene")
-        {
-            CaptureCurrentGameState();
-            // Load save slots from Firebase when entering save menu
-            LoadSaveSlotsFromFirebase();
-        }
+        Debug.Log("SaveAndLoadScene detected, starting Firebase load process");
+        CaptureCurrentGameState();
+        LoadSaveSlotsFromFirebase();
     }
+}
 
     private void CaptureCurrentGameState()
     {
@@ -90,8 +99,17 @@ public class SaveLoadManager : MonoBehaviour
 
     #region Firebase Save Operations
 
-    private void LoadSaveSlotsFromFirebase()
+    public void LoadSaveSlotsFromFirebase()
     {
+        if (firebaseSlotsLoaded)
+        {
+            Debug.Log("[SaveLoadManager] Firebase slots already loaded, skipping");
+            return;
+        }
+
+        firebaseSlotsLoaded = true;
+        Debug.Log("[SaveLoadManager] Starting LoadSaveSlotsFromFirebase()");
+
         if (GameProgressManager.Instance?.CurrentStudentState == null)
         {
             Debug.LogWarning("No student logged in, using local saves only");
@@ -99,51 +117,67 @@ public class SaveLoadManager : MonoBehaviour
         }
 
         string studentId = GameProgressManager.Instance.CurrentStudentState.StudentId;
-        
+
+        int completed = 0;
         for (int slot = 1; slot <= 4; slot++)
         {
-            LoadSaveSlotFromFirebase(slot, studentId);
+            LoadSaveSlotFromFirebase(slot, studentId, () =>
+            {
+                completed++;
+                if (completed == 4)
+                {
+                    Debug.Log("[SaveLoadManager] ✅ All Firebase slots loaded");
+                    OnFirebaseSlotsLoaded?.Invoke(); // 🔥 Notify listeners
+                }
+            });
         }
     }
 
-    private void LoadSaveSlotFromFirebase(int slotNumber, string studentId)
+    // Overload with callback for per-slot completion
+    private void LoadSaveSlotFromFirebase(int slotNumber, string studentId, Action onComplete = null)
     {
         string documentId = $"{studentId}_slot_{slotNumber}";
-        
+
         db.Collection("saveData").Document(documentId).GetSnapshotAsync().ContinueWith(task =>
         {
             if (task.IsCompletedSuccessfully && task.Result.Exists)
             {
                 var firebaseSave = task.Result.ConvertTo<SaveData>();
-                
-                var localSave = new LocalSaveData(firebaseSave.currentScene, firebaseSave.dialogueIndex)
-                {
-                    timestamp = firebaseSave.timestamp
-                };
 
-                StudentPrefs.SetString("LastScene", firebaseSave.currentScene);
-                StudentPrefs.SetInt(GetDialogueIndexKey(firebaseSave.currentScene), firebaseSave.dialogueIndex);
-                StudentPrefs.Save();
+                if (firebaseSave != null)
+                {
+                    var localSave = new LocalSaveData(firebaseSave.currentScene, firebaseSave.dialogueIndex)
+                    {
+                        timestamp = firebaseSave.timestamp
+                    };
 
-                string json = JsonUtility.ToJson(localSave, true);
-                string filePath = GetSaveFilePath(slotNumber);
-                
-                try
-                {
-                    File.WriteAllText(filePath, json);
-                    Debug.Log($"Synced save slot {slotNumber} from Firebase to local file and StudentPrefs");
-                }
-                catch (System.Exception e)
-                {
-                    Debug.LogError($"Failed to sync save slot {slotNumber} to local: {e.Message}");
+                    StudentPrefs.SetString("LastScene", firebaseSave.currentScene);
+                    StudentPrefs.SetInt(GetDialogueIndexKey(firebaseSave.currentScene), firebaseSave.dialogueIndex);
+                    StudentPrefs.Save();
+
+                    string json = JsonUtility.ToJson(localSave, true);
+                    string filePath = GetSaveFilePath(slotNumber);
+
+                    try
+                    {
+                        File.WriteAllText(filePath, json);
+                        Debug.Log($"Synced save slot {slotNumber} from Firebase to local");
+                    }
+                    catch (System.Exception e)
+                    {
+                        Debug.LogError($"Failed to sync save slot {slotNumber}: {e.Message}");
+                    }
                 }
             }
             else
             {
                 Debug.Log($"No Firebase save found for slot {slotNumber}");
             }
+
+            onComplete?.Invoke();
         });
     }
+
 
     public void SaveGame(int slotNumber)
     {

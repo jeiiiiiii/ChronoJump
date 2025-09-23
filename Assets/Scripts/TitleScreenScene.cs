@@ -90,8 +90,8 @@ public void Settings()
 public void LoadGame()
 {
     // NEW: Clear save source and set access mode for load-only access
-    StudentPrefs.DeleteKey("LastScene");
-    StudentPrefs.DeleteKey("SaveSource");
+    // StudentPrefs.DeleteKey("LastScene");
+    // StudentPrefs.DeleteKey("SaveSource");
     StudentPrefs.SetString("AccessMode", "LoadOnly"); // Mark that we're only here to load
     StudentPrefs.Save();
     

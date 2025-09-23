@@ -36,35 +36,39 @@ public class SaveLoadUI : MonoBehaviour
     }
 
     void Start()
+{
+    if (SaveLoadManager.Instance == null)
     {
-        if (SaveLoadManager.Instance == null)
-        {
-            GameObject saveLoadManager = new GameObject("SaveLoadManager");
-            saveLoadManager.AddComponent<SaveLoadManager>();
-        }
-
-        // Find the canvas
-        canvas = FindObjectOfType<Canvas>();
-        
-        // NEW: Clear LoadOnly mode if we came from a story scene
-        ClearLoadOnlyModeIfFromStoryScene();
-        
-        SetupSlots();
-        UpdateSlotDisplay();
-        CreateConfirmationDialog();
-
-        if (backButton != null)
-        {
-            backButton.onClick.AddListener(GoBack);
-        }
+        GameObject saveLoadManager = new GameObject("SaveLoadManager");
+        saveLoadManager.AddComponent<SaveLoadManager>();
     }
-    
+
+    canvas = FindObjectOfType<Canvas>();
+
+    // 🔥 Subscribe to Firebase completion
+    SaveLoadManager.Instance.OnFirebaseSlotsLoaded += RefreshSlotDisplay;
+
+    // Start loading immediately
+    SaveLoadManager.Instance?.LoadSaveSlotsFromFirebase();
+
+    ClearLoadOnlyModeIfFromStoryScene();
+    SetupSlots();
+    UpdateSlotDisplay();
+    CreateConfirmationDialog();
+
+    if (backButton != null)
+    {
+        backButton.onClick.AddListener(GoBack);
+    }
+}
+
+
     // NEW METHOD: Clear LoadOnly mode if we came from a story scene
     void ClearLoadOnlyModeIfFromStoryScene()
     {
         string saveSource = StudentPrefs.GetString("SaveSource", "");
         string lastScene = StudentPrefs.GetString("LastScene", "");
-        
+
         // If we came from a story scene, clear the LoadOnly restriction
         if (saveSource == "StoryScene" && !string.IsNullOrEmpty(lastScene))
         {
@@ -89,14 +93,14 @@ public class SaveLoadUI : MonoBehaviour
             if (saveSlots[i].saveButton != null)
             {
                 saveSlots[i].saveButton.onClick.AddListener(() => ShowSaveConfirmation(slotNumber));
-                
+
                 // NEW: Check if we should disable save buttons
                 CheckSaveButtonAvailability(i);
             }
 
             if (saveSlots[i].deleteButton != null)
             {
-            saveSlots[i].deleteButton.onClick.AddListener(() => ShowDeleteConfirmation(slotNumber));
+                saveSlots[i].deleteButton.onClick.AddListener(() => ShowDeleteConfirmation(slotNumber));
             }
 
             if (saveSlots[i].slotText != null)
@@ -114,25 +118,25 @@ public class SaveLoadUI : MonoBehaviour
             DisableSaveButton(slotIndex, "Load Game mode - saving disabled");
             return;
         }
-        
+
         // Check if we came from a story scene and have valid game state
         string lastScene = StudentPrefs.GetString("LastScene", "");
         string saveSource = StudentPrefs.GetString("SaveSource", "");
-        
+
         // Valid story scenes that can save
-        bool isValidStoryScene = (lastScene == "SumerianSceneOne" || lastScene == "SumerianScene1" || 
+        bool isValidStoryScene = (lastScene == "SumerianSceneOne" || lastScene == "SumerianScene1" ||
                                  lastScene == "SumerianSceneTwo" || lastScene == "SumerianScene2" ||
                                  lastScene == "SumerianSceneThree" || lastScene == "SumerianScene3" ||
                                  lastScene == "SumerianSceneFour" || lastScene == "SumerianScene4" ||
                                  lastScene == "SumerianSceneFive" || lastScene == "SumerianScene5" ||
                                  lastScene == "SumerianSceneSix" || lastScene == "SumerianScene6" ||
                                  lastScene == "SumerianSceneSeven" || lastScene == "SumerianScene7" ||
-                                 lastScene == "AkkadianSceneOne" || lastScene == "AkkadianScene1" || 
+                                 lastScene == "AkkadianSceneOne" || lastScene == "AkkadianScene1" ||
                                  lastScene == "AkkadianSceneTwo" || lastScene == "AkkadianScene2" ||
                                  lastScene == "AkkadianSceneThree" || lastScene == "AkkadianScene3" ||
                                  lastScene == "AkkadianSceneFour" || lastScene == "AkkadianScene4" ||
-                                 lastScene == "AkkadianSceneFive" || lastScene == "AkkadianScene5" || 
-                                 lastScene == "AkkadianSceneSix" || lastScene == "AkkadianScene6" ||    
+                                 lastScene == "AkkadianSceneFive" || lastScene == "AkkadianScene5" ||
+                                 lastScene == "AkkadianSceneSix" || lastScene == "AkkadianScene6" ||
                                  lastScene == "BabylonianSceneOne" || lastScene == "BabylonianScene1" ||
                                  lastScene == "BabylonianSceneTwo" || lastScene == "BabylonianScene2" ||
                                  lastScene == "BabylonianSceneThree" || lastScene == "BabylonianScene3" ||
@@ -144,25 +148,25 @@ public class SaveLoadUI : MonoBehaviour
                                  lastScene == "AssyrianSceneTwo" || lastScene == "AssyrianScene2" ||
                                  lastScene == "AssyrianSceneThree" || lastScene == "AssyrianScene3" ||
                                  lastScene == "AssyrianSceneFour" || lastScene == "AssyrianScene4" ||
-                                 lastScene == "AssyrianSceneFive" || lastScene == "AssyrianScene5" 
+                                 lastScene == "AssyrianSceneFive" || lastScene == "AssyrianScene5"
                                  );
-        
+
         bool cameFromStoryScene = saveSource == "StoryScene" && isValidStoryScene;
-        
+
         if (saveSlots[slotIndex].saveButton != null)
         {
             if (cameFromStoryScene)
             {
                 // Enable save button if we came from a valid story scene
                 saveSlots[slotIndex].saveButton.interactable = true;
-                
+
                 // Restore normal button color
                 var buttonImage = saveSlots[slotIndex].saveButton.GetComponent<Image>();
                 if (buttonImage != null)
                 {
                     buttonImage.color = Color.white; // Normal button color
                 }
-                
+
                 Debug.Log($"Save button {slotIndex + 1} enabled - came from story scene: {lastScene}");
             }
             else
@@ -171,21 +175,21 @@ public class SaveLoadUI : MonoBehaviour
             }
         }
     }
-    
+
     // Helper method to disable save button with consistent styling
     void DisableSaveButton(int slotIndex, string reason)
     {
         if (saveSlots[slotIndex].saveButton != null)
         {
             saveSlots[slotIndex].saveButton.interactable = false;
-            
+
             // Gray out the button to show it's disabled
             var buttonImage = saveSlots[slotIndex].saveButton.GetComponent<Image>();
             if (buttonImage != null)
             {
                 buttonImage.color = new Color(0.5f, 0.5f, 0.5f, 0.7f); // Grayed out
             }
-            
+
             Debug.Log($"Save button {slotIndex + 1} disabled - {reason}");
         }
     }
@@ -195,11 +199,11 @@ public class SaveLoadUI : MonoBehaviour
         // Create the main confirmation panel
         confirmationPanel = new GameObject("ConfirmationPanel");
         confirmationPanel.transform.SetParent(canvas.transform, false);
-        
+
         // Add and setup the panel background
         Image panelImage = confirmationPanel.AddComponent<Image>();
         panelImage.color = new Color(0, 0, 0, 0.8f); // Semi-transparent black background
-        
+
         // Setup panel rect transform to fill screen
         RectTransform panelRect = confirmationPanel.GetComponent<RectTransform>();
         panelRect.anchorMin = Vector2.zero;
@@ -210,10 +214,10 @@ public class SaveLoadUI : MonoBehaviour
         // Create the dialog box (inner panel) - ENLARGED
         GameObject dialogBox = new GameObject("DialogBox");
         dialogBox.transform.SetParent(confirmationPanel.transform, false);
-        
+
         Image dialogBoxImage = dialogBox.AddComponent<Image>();
         dialogBoxImage.color = new Color(0.15f, 0.15f, 0.15f, 0.98f); // Darker, more opaque dialog box
-        
+
         RectTransform dialogRect = dialogBox.GetComponent<RectTransform>();
         dialogRect.sizeDelta = new Vector2(700, 400); // INCREASED SIZE from 400x200 to 600x300
         dialogRect.anchoredPosition = Vector2.zero;
@@ -224,7 +228,7 @@ public class SaveLoadUI : MonoBehaviour
         // Create confirmation text - ENLARGED
         GameObject textObj = new GameObject("ConfirmationText");
         textObj.transform.SetParent(dialogBox.transform, false);
-        
+
         confirmationText = textObj.AddComponent<TextMeshProUGUI>();
         confirmationText.text = "Confirm Save";
         confirmationText.fontSize = 24; // INCREASED from 18 to 24
@@ -232,7 +236,7 @@ public class SaveLoadUI : MonoBehaviour
         confirmationText.alignment = TextAlignmentOptions.Center;
         confirmationText.fontStyle = FontStyles.Bold; // Make it bold for better visibility
         confirmationText.enableWordWrapping = true;
-        
+
         RectTransform textRect = textObj.GetComponent<RectTransform>();
         textRect.sizeDelta = new Vector2(640, 220); // INCREASED from 360x100 to 540x150
         textRect.anchoredPosition = new Vector2(0, 50); // Moved up slightly
@@ -240,11 +244,11 @@ public class SaveLoadUI : MonoBehaviour
         // Create Yes button - ENLARGED
         GameObject yesButtonObj = new GameObject("YesButton");
         yesButtonObj.transform.SetParent(dialogBox.transform, false);
-        
+
         yesButton = yesButtonObj.AddComponent<Button>();
         Image yesButtonImage = yesButtonObj.AddComponent<Image>();
         yesButtonImage.color = new Color(0.2f, 0.7f, 0.2f, 1f); // Green
-        
+
         RectTransform yesButtonRect = yesButtonObj.GetComponent<RectTransform>();
         yesButtonRect.sizeDelta = new Vector2(150, 50); // INCREASED from 120x40 to 150x50
         yesButtonRect.anchoredPosition = new Vector2(-90, -120); // Adjusted position
@@ -252,14 +256,14 @@ public class SaveLoadUI : MonoBehaviour
         // Yes button text - ENLARGED
         GameObject yesTextObj = new GameObject("YesText");
         yesTextObj.transform.SetParent(yesButtonObj.transform, false);
-        
+
         TextMeshProUGUI yesButtonText = yesTextObj.AddComponent<TextMeshProUGUI>();
         yesButtonText.text = "Yes";
         yesButtonText.fontSize = 20; // INCREASED from 16 to 20
         yesButtonText.color = Color.white;
         yesButtonText.alignment = TextAlignmentOptions.Center;
         yesButtonText.fontStyle = FontStyles.Bold;
-        
+
         RectTransform yesTextRect = yesTextObj.GetComponent<RectTransform>();
         yesTextRect.sizeDelta = new Vector2(150, 50);
         yesTextRect.anchoredPosition = Vector2.zero;
@@ -267,11 +271,11 @@ public class SaveLoadUI : MonoBehaviour
         // Create No button - ENLARGED
         GameObject noButtonObj = new GameObject("NoButton");
         noButtonObj.transform.SetParent(confirmationPanel.transform, false);
-        
+
         noButton = noButtonObj.AddComponent<Button>();
         Image noButtonImage = noButtonObj.AddComponent<Image>();
         noButtonImage.color = new Color(0.7f, 0.2f, 0.2f, 1f); // Red
-        
+
         RectTransform noButtonRect = noButtonObj.GetComponent<RectTransform>();
         noButtonRect.sizeDelta = new Vector2(150, 50); // INCREASED from 120x40 to 150x50
         noButtonRect.anchoredPosition = new Vector2(90, -120); // Adjusted position
@@ -279,14 +283,14 @@ public class SaveLoadUI : MonoBehaviour
         // No button text - ENLARGED
         GameObject noTextObj = new GameObject("NoText");
         noTextObj.transform.SetParent(noButtonObj.transform, false);
-        
+
         TextMeshProUGUI noButtonText = noTextObj.AddComponent<TextMeshProUGUI>();
         noButtonText.text = "No";
         noButtonText.fontSize = 20; // INCREASED from 16 to 20
         noButtonText.color = Color.white;
         noButtonText.alignment = TextAlignmentOptions.Center;
         noButtonText.fontStyle = FontStyles.Bold;
-        
+
         RectTransform noTextRect = noTextObj.GetComponent<RectTransform>();
         noTextRect.sizeDelta = new Vector2(150, 50);
         noTextRect.anchoredPosition = Vector2.zero;
@@ -372,12 +376,12 @@ public class SaveLoadUI : MonoBehaviour
             ShowCannotSaveMessage();
             return;
         }
-        
+
         // Check if we came from a story scene before showing confirmation
         string lastScene = StudentPrefs.GetString("LastScene", "");
         string saveSource = StudentPrefs.GetString("SaveSource", "");
-        
-        bool isValidStoryScene = (lastScene == "SumerianSceneOne" || lastScene == "SumerianScene1" || 
+
+        bool isValidStoryScene = (lastScene == "SumerianSceneOne" || lastScene == "SumerianScene1" ||
                                  lastScene == "SumerianSceneTwo" || lastScene == "SumerianScene2" ||
                                  lastScene == "SumerianSceneThree" || lastScene == "SumerianScene3" ||
                                  lastScene == "SumerianSceneFour" || lastScene == "SumerianScene4" ||
@@ -387,9 +391,9 @@ public class SaveLoadUI : MonoBehaviour
                                  lastScene == "AkkadianSceneOne" || lastScene == "AkkadianScene1" ||
                                  lastScene == "AkkadianSceneTwo" || lastScene == "AkkadianScene2" ||
                                  lastScene == "AkkadianSceneThree" || lastScene == "AkkadianScene3" ||
-                                 lastScene == "AkkadianSceneFour" || lastScene == "AkkadianScene4" || 
+                                 lastScene == "AkkadianSceneFour" || lastScene == "AkkadianScene4" ||
                                  lastScene == "AkkadianSceneFive" || lastScene == "AkkadianScene5" ||
-                                 lastScene == "AkkadianSceneSix" || lastScene == "AkkadianScene6" ||         
+                                 lastScene == "AkkadianSceneSix" || lastScene == "AkkadianScene6" ||
                                  lastScene == "BabylonianSceneOne" || lastScene == "BabylonianScene1" ||
                                  lastScene == "BabylonianSceneTwo" || lastScene == "BabylonianScene2" ||
                                  lastScene == "BabylonianSceneThree" || lastScene == "BabylonianScene3" ||
@@ -401,11 +405,11 @@ public class SaveLoadUI : MonoBehaviour
                                  lastScene == "AssyrianSceneTwo" || lastScene == "AssyrianScene2" ||
                                  lastScene == "AssyrianSceneThree" || lastScene == "AssyrianScene3" ||
                                  lastScene == "AssyrianSceneFour" || lastScene == "AssyrianScene4" ||
-                                 lastScene == "AssyrianSceneFive" || lastScene == "AssyrianScene5" 
+                                 lastScene == "AssyrianSceneFive" || lastScene == "AssyrianScene5"
                                 );
-        
+
         bool cameFromStoryScene = saveSource == "StoryScene" && isValidStoryScene;
-        
+
         if (!cameFromStoryScene)
         {
             Debug.Log("Cannot save - not accessed from a story scene");
@@ -414,23 +418,23 @@ public class SaveLoadUI : MonoBehaviour
         }
 
         pendingSaveSlot = slotNumber;
-        
+
         if (confirmationPanel != null)
         {
             confirmationPanel.SetActive(true);
-            
+
             // Reset button visibility for normal save confirmation
             if (yesButton != null) yesButton.gameObject.SetActive(true);
-            if (noButton != null) 
+            if (noButton != null)
             {
                 noButton.gameObject.SetActive(true);
                 var noButtonText = noButton.GetComponentInChildren<TextMeshProUGUI>();
                 if (noButtonText != null) noButtonText.text = "No";
             }
-            
+
             // Check if slot already has save data
             var existingSaveData = SaveLoadManager.Instance.GetSaveData(slotNumber);
-            
+
             if (existingSaveData != null)
             {
                 // Slot has existing data - ask if they want to overwrite
@@ -444,7 +448,7 @@ public class SaveLoadUI : MonoBehaviour
             }
         }
     }
-    
+
     // NEW METHOD: Show message when saving is not allowed
     void ShowCannotSaveMessage()
     {
@@ -452,10 +456,10 @@ public class SaveLoadUI : MonoBehaviour
         {
             confirmationPanel.SetActive(true);
             confirmationText.text = "Cannot save from here!\n\nTo save your progress, you need to access the save menu from within a story scene using the save button.";
-            
+
             // Hide the Yes button and change No button to "OK"
             if (yesButton != null) yesButton.gameObject.SetActive(false);
-            if (noButton != null) 
+            if (noButton != null)
             {
                 noButton.gameObject.SetActive(true);
                 var noButtonText = noButton.GetComponentInChildren<TextMeshProUGUI>();
@@ -468,7 +472,7 @@ public class SaveLoadUI : MonoBehaviour
     void ShowDeleteConfirmation(int slotNumber)
     {
         var existingSaveData = SaveLoadManager.Instance.GetSaveData(slotNumber);
-    
+
         if (existingSaveData == null)
         {
             Debug.Log($"No save data to delete in slot {slotNumber}");
@@ -476,24 +480,24 @@ public class SaveLoadUI : MonoBehaviour
         }
 
         pendingSaveSlot = slotNumber; // Reuse this variable for delete operations
-    
+
         if (confirmationPanel != null)
         {
             confirmationPanel.SetActive(true);
-        
+
             // Show both buttons for delete confirmation
             if (yesButton != null) yesButton.gameObject.SetActive(true);
-            if (noButton != null) 
+            if (noButton != null)
             {
-            noButton.gameObject.SetActive(true);
-            var noButtonText = noButton.GetComponentInChildren<TextMeshProUGUI>();
-            if (noButtonText != null) noButtonText.text = "No";
+                noButton.gameObject.SetActive(true);
+                var noButtonText = noButton.GetComponentInChildren<TextMeshProUGUI>();
+                if (noButtonText != null) noButtonText.text = "No";
             }
-        
-        // Set up delete confirmation text
+
+            // Set up delete confirmation text
             confirmationText.text = $"Are you sure you want to delete this save?\n\nSLOT {slotNumber}:\n{GetFriendlySceneName(existingSaveData.currentScene)}\nSaved: {existingSaveData.timestamp}\n\nThis action cannot be undone!";
-        
-        // Change the Yes button callback to delete instead of save
+
+            // Change the Yes button callback to delete instead of save
             yesButton.onClick.RemoveAllListeners();
             yesButton.onClick.AddListener(ConfirmDelete);
         }
@@ -502,19 +506,19 @@ public class SaveLoadUI : MonoBehaviour
     // Confirm save action
     void ConfirmSave()
     {
-    if (pendingSaveSlot != -1)
-    {
-        // Call the method that actually performs the save
-        PerformActualSave(pendingSaveSlot);
-    }
-    
-    // Hide confirmation panel
-    if (confirmationPanel != null)
-    {
-        confirmationPanel.SetActive(false);
-    }
-    
-    pendingSaveSlot = -1;
+        if (pendingSaveSlot != -1)
+        {
+            // Call the method that actually performs the save
+            PerformActualSave(pendingSaveSlot);
+        }
+
+        // Hide confirmation panel
+        if (confirmationPanel != null)
+        {
+            confirmationPanel.SetActive(false);
+        }
+
+        pendingSaveSlot = -1;
     }
     // Cancel save action
     void CancelSave()
@@ -524,7 +528,7 @@ public class SaveLoadUI : MonoBehaviour
         {
             confirmationPanel.SetActive(false);
         }
-        
+
         pendingSaveSlot = -1;
         Debug.Log("Save cancelled by user");
     }
@@ -537,46 +541,46 @@ public class SaveLoadUI : MonoBehaviour
             SaveLoadManager.Instance.DeleteSave(pendingSaveSlot);
             UpdateSlotDisplay();
             Debug.Log($"Save deleted from Slot {pendingSaveSlot}");
-        }   
-    
-    // Hide confirmation panel
+        }
+
+        // Hide confirmation panel
         if (confirmationPanel != null)
         {
             confirmationPanel.SetActive(false);
         }
-    
-    // Restore the Yes button callback for saving
+
+        // Restore the Yes button callback for saving
         if (yesButton != null)
         {
             yesButton.onClick.RemoveAllListeners();
             yesButton.onClick.AddListener(ConfirmSave);
         }
-    
+
         pendingSaveSlot = -1;
     }
 
     public void SaveGame(int slotNumber)
     {
-    // This method should ONLY show the confirmation dialog, not actually save
-    ShowSaveConfirmation(slotNumber);
+        // This method should ONLY show the confirmation dialog, not actually save
+        ShowSaveConfirmation(slotNumber);
     }
 
     void PerformActualSave(int slotNumber)
-        {
-    // Final validation before saving
-    string lastScene = StudentPrefs.GetString("LastScene", "");
-    bool hasValidGameState = !string.IsNullOrEmpty(lastScene) && lastScene != "SaveAndLoadScene";
-    
-    if (!hasValidGameState)
     {
-        Debug.LogWarning("Cannot save - no valid game state available");
-        return;
-    }
+        // Final validation before saving
+        string lastScene = StudentPrefs.GetString("LastScene", "");
+        bool hasValidGameState = !string.IsNullOrEmpty(lastScene) && lastScene != "SaveAndLoadScene";
 
-    // Actually perform the save operation
-    SaveLoadManager.Instance.SaveGame(slotNumber);
-    UpdateSlotDisplay();
-    Debug.Log($"Game saved to Slot {slotNumber}");
+        if (!hasValidGameState)
+        {
+            Debug.LogWarning("Cannot save - no valid game state available");
+            return;
+        }
+
+        // Actually perform the save operation
+        SaveLoadManager.Instance.SaveGame(slotNumber);
+        UpdateSlotDisplay();
+        Debug.Log($"Game saved to Slot {slotNumber}");
     }
 
     public void LoadGame(int slotNumber)
@@ -595,26 +599,26 @@ public class SaveLoadUI : MonoBehaviour
 
     public void GoBack()
     {
-    // Check if we came from a story scene (in-game save button)
-    string saveSource = StudentPrefs.GetString("SaveSource", "");
-    string lastScene = StudentPrefs.GetString("LastScene", "");
-    
-    if (saveSource == "StoryScene" && !string.IsNullOrEmpty(lastScene))
-    {
-        // We came from a story scene via the save button, go back to that scene
-        Debug.Log($"Returning to story scene: {lastScene}");
-        
-        // Clear the save source flag since we're going back
-        StudentPrefs.DeleteKey("SaveSource");
-        StudentPrefs.Save();
-        
-        SceneManager.LoadScene(lastScene);
+        // Check if we came from a story scene (in-game save button)
+        string saveSource = StudentPrefs.GetString("SaveSource", "");
+        string lastScene = StudentPrefs.GetString("LastScene", "");
+
+        if (saveSource == "StoryScene" && !string.IsNullOrEmpty(lastScene))
+        {
+            // We came from a story scene via the save button, go back to that scene
+            Debug.Log($"Returning to story scene: {lastScene}");
+
+            // Clear the save source flag since we're going back
+            StudentPrefs.DeleteKey("SaveSource");
+            StudentPrefs.Save();
+
+            SceneManager.LoadScene(lastScene);
         }
         else
         {
-        // Default behavior - go to title screen (for Load Game access)
-        Debug.Log("Returning to Title Screen");
-        SceneManager.LoadScene("TitleScreen");
+            // Default behavior - go to title screen (for Load Game access)
+            Debug.Log("Returning to Title Screen");
+            SceneManager.LoadScene("TitleScreen");
         }
     }
     string GetFriendlySceneName(string sceneName)
@@ -622,97 +626,97 @@ public class SaveLoadUI : MonoBehaviour
         switch (sceneName)
         {
             case "SumerianScene1":
-            case "SumerianSceneOne": 
+            case "SumerianSceneOne":
                 return "Sumerian Scene 1";
             case "SumerianScene2":
-            case "SumerianSceneTwo": 
+            case "SumerianSceneTwo":
                 return "Sumerian Scene 2";
-            case "SumerianFirstRecallChallenges": 
+            case "SumerianFirstRecallChallenges":
                 return "Sumerian Challenges";
             case "SumerianScene3":
             case "SumerianSceneThree":
                 return "Sumerian Scene 3";
-            case "SumerianSecondRecallChallenges": 
+            case "SumerianSecondRecallChallenges":
                 return "Sumerian Challenges";
             case "SumerianScene4":
             case "SumerianSceneFour":
                 return "Sumerian Scene 4";
-            case "SumerianThirdRecallChallenges": 
+            case "SumerianThirdRecallChallenges":
                 return "Sumerian Challenges";
             case "SumerianScene5":
             case "SumerianSceneFive":
                 return "Sumerian Scene 5";
-            case "SumerianFourthRecallChallenges": 
+            case "SumerianFourthRecallChallenges":
                 return "Sumerian Challenges";
             case "SumerianScene6":
             case "SumerianSceneSix":
                 return "Sumerian Scene 6";
-            case "SumerianFifthRecallChallenges": 
+            case "SumerianFifthRecallChallenges":
                 return "Sumerian Challenges";
             case "SumerianScene7":
             case "SumerianSceneSeven":
-                return "Sumerian Scene 7";            
+                return "Sumerian Scene 7";
             case "AkkadianScene1":
-            case "AkkadianSceneOne": 
+            case "AkkadianSceneOne":
                 return "Akkadian Scene 1";
             case "AkkadianScene2":
-            case "AkkadianSceneTwo": 
+            case "AkkadianSceneTwo":
                 return "Akkadian Scene 2";
-            case "AkkadianFirstRecallChallenges": 
+            case "AkkadianFirstRecallChallenges":
                 return "Akkadian Challenges";
             case "AkkadianScene3":
-            case "AkkadianSceneThree": 
+            case "AkkadianSceneThree":
                 return "Akkadian Scene 3";
             case "AkkadianScene4":
-            case "AkkadianSceneFour": 
+            case "AkkadianSceneFour":
                 return "Akkadian Scene 4";
-            case "AkkadianSecondRecallChallenges": 
+            case "AkkadianSecondRecallChallenges":
                 return "Akkadian Challenges";
             case "AkkadianScene5":
-            case "AkkadianSceneFive": 
+            case "AkkadianSceneFive":
                 return "Akkadian Scene 5";
-            case "AkkadianThirdRecallChallenges": 
+            case "AkkadianThirdRecallChallenges":
                 return "Akkadian Challenges";
             case "AkkadianScene6":
-            case "AkkadianSceneSix": 
-                return "Akkadian Scene 6";            
+            case "AkkadianSceneSix":
+                return "Akkadian Scene 6";
             case "BabylonianScene1":
-            case "BabylonianSceneOne":  
+            case "BabylonianSceneOne":
                 return "Babylonian Scene 1";
             case "BabylonianScene2":
-            case "BabylonianSceneTwo":  
+            case "BabylonianSceneTwo":
                 return "Babylonian Scene 2";
             case "BabylonianScene3":
-            case "BabylonianSceneThree":  
+            case "BabylonianSceneThree":
                 return "Babylonian Scene 3";
             case "BabylonianScene4":
-            case "BabylonianSceneFour":  
+            case "BabylonianSceneFour":
                 return "Babylonian Scene 4";
             case "BabylonianScene5":
-            case "BabylonianSceneFive":  
+            case "BabylonianSceneFive":
                 return "Babylonian Scene 5";
             case "BabylonianScene6":
-            case "BabylonianSceneSix":  
+            case "BabylonianSceneSix":
                 return "Babylonian Scene 6";
             case "BabylonianScene7":
-            case "BabylonianSceneSeven":  
+            case "BabylonianSceneSeven":
                 return "Babylonian Scene 7";
             case "AssyrianScene1":
-            case "AssyrianSceneOne": 
+            case "AssyrianSceneOne":
                 return "Assyrian Scene 1";
             case "AssyrianScene2":
-            case "AssyrianSceneTwo": 
+            case "AssyrianSceneTwo":
                 return "Assyrian Scene 2";
             case "AssyrianScene3":
-            case "AssyrianSceneThree": 
+            case "AssyrianSceneThree":
                 return "Assyrian Scene 3";
             case "AssyrianScene4":
-            case "AssyrianSceneFour": 
+            case "AssyrianSceneFour":
                 return "Assyrian Scene 4";
             case "AssyrianScene5":
-            case "AssyrianSceneFive": 
+            case "AssyrianSceneFive":
                 return "Assyrian Scene 5";
-            default: 
+            default:
                 return sceneName;
         }
     }
@@ -720,6 +724,11 @@ public class SaveLoadUI : MonoBehaviour
     public void DeleteSave(int slotNumber)
     {
         SaveLoadManager.Instance.DeleteSave(slotNumber);
+        UpdateSlotDisplay();
+    }
+    
+        public void RefreshSlotDisplay()
+    {
         UpdateSlotDisplay();
     }
 }

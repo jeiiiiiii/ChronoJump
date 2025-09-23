@@ -13,24 +13,28 @@ public static class StudentPrefs
     /// Replace this with however you track the logged-in student.
     /// </summary>
     private static string CurrentStudentId
+{
+    get
     {
-        get
+        // Use the same student ID that GameProgressManager uses
+        if (GameProgressManager.Instance != null && 
+            GameProgressManager.Instance.CurrentStudentState != null && 
+            !string.IsNullOrEmpty(GameProgressManager.Instance.CurrentStudentState.StudentId))
         {
-            string id = (FirebaseManager.Instance != null &&
-                         FirebaseManager.Instance.CurrentUser != null &&
-                         !string.IsNullOrEmpty(FirebaseManager.Instance.CurrentUser.UserId))
-                ? FirebaseManager.Instance.CurrentUser.UserId
-                : DefaultStudentId;
-
-            if (id == DefaultStudentId)
-            {
-                Debug.LogWarning("[StudentPrefs] WARNING: Using DefaultStudent. " +
-                                 "No logged-in user detected. Data may be shared globally!");
-            }
-
-            return id;
+            return GameProgressManager.Instance.CurrentStudentState.StudentId;
         }
+        
+        // Fallback to Firebase user ID if GameProgressManager not available
+        if (FirebaseManager.Instance != null && 
+            FirebaseManager.Instance.CurrentUser != null && 
+            !string.IsNullOrEmpty(FirebaseManager.Instance.CurrentUser.UserId))
+        {
+            return FirebaseManager.Instance.CurrentUser.UserId;
+        }
+        
+        return DefaultStudentId; // final fallback
     }
+}
 
     /// <summary>
     /// Builds a namespaced key using the student ID.
