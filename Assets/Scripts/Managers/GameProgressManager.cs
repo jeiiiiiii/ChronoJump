@@ -4,6 +4,7 @@ using Firebase.Firestore;
 using System.Linq;
 using Firebase.Extensions;
 using System;
+using System.Threading.Tasks;
 
 [System.Serializable]
 public class StringListWrapper
@@ -264,6 +265,53 @@ public class GameProgressManager : MonoBehaviour
 
     #region Gameplay Methods    
     // Hearts setter
+
+    public async Task<bool> HasProgressAsync(string userId)
+{
+    try
+    {
+        var db = FirebaseManager.Instance.DB;
+        var studentsRef = db.Collection("students");
+
+        // 🔹 1. Get the student document from userId
+        var snapshot = await studentsRef.WhereEqualTo("userId", userId).GetSnapshotAsync();
+
+        if (!snapshot.Documents.Any())
+        {
+            Debug.LogWarning($"[HasProgress] No student document found for userId '{userId}'");
+            return false;
+        }
+
+        var studentDoc = snapshot.Documents.First();
+        string studentId = studentDoc.Id;
+
+        // 🔹 2. Check if gameProgress exists in Firestore
+        var progressRef = db.Collection("gameProgress").Document(studentId);
+        var progressSnap = await progressRef.GetSnapshotAsync();
+
+        if (progressSnap.Exists)
+        {
+            Debug.Log($"[HasProgress] Found Firestore progress for student '{studentId}' (user '{userId}').");
+            return true;
+        }
+        else
+        {
+            Debug.Log($"[HasProgress] No Firestore progress found for student '{studentId}' (user '{userId}').");
+            return false;
+        }
+    }
+    catch (Exception ex)
+    {
+        Debug.LogError($"[HasProgress] Error while checking progress: {ex}");
+        return false;
+    }
+}
+
+
+
+
+
+
     public void SetHearts(int newHearts)
     {
         if (CurrentStudentState?.GameProgress == null) return;

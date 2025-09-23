@@ -36,32 +36,30 @@ public class SaveLoadUI : MonoBehaviour
     }
 
     void Start()
-{
-    if (SaveLoadManager.Instance == null)
     {
-        GameObject saveLoadManager = new GameObject("SaveLoadManager");
-        saveLoadManager.AddComponent<SaveLoadManager>();
+        if (SaveLoadManager.Instance == null)
+        {
+            GameObject saveLoadManager = new GameObject("SaveLoadManager");
+            saveLoadManager.AddComponent<SaveLoadManager>();
+        }
+
+        canvas = FindObjectOfType<Canvas>();
+
+        ClearLoadOnlyModeIfFromStoryScene();
+        SetupSlots();
+        UpdateSlotDisplay();
+        CreateConfirmationDialog();
+
+        if (backButton != null)
+        {
+            backButton.onClick.AddListener(GoBack);
+        }
     }
 
-    canvas = FindObjectOfType<Canvas>();
-
-    // 🔥 Subscribe to Firebase completion
-    SaveLoadManager.Instance.OnFirebaseSlotsLoaded += RefreshSlotDisplay;
-
-    // Start loading immediately
-    SaveLoadManager.Instance?.LoadSaveSlotsFromFirebase();
-
-    ClearLoadOnlyModeIfFromStoryScene();
-    SetupSlots();
-    UpdateSlotDisplay();
-    CreateConfirmationDialog();
-
-    if (backButton != null)
+    public void RefreshSlotDisplay()
     {
-        backButton.onClick.AddListener(GoBack);
+        UpdateSlotDisplay();
     }
-}
-
 
     // NEW METHOD: Clear LoadOnly mode if we came from a story scene
     void ClearLoadOnlyModeIfFromStoryScene()
@@ -124,7 +122,7 @@ public class SaveLoadUI : MonoBehaviour
         string saveSource = StudentPrefs.GetString("SaveSource", "");
 
         // Valid story scenes that can save
-        bool isValidStoryScene = (lastScene == "SumerianSceneOne" || lastScene == "SumerianScene1" ||
+        bool isValidStoryScene = lastScene == "SumerianSceneOne" || lastScene == "SumerianScene1" ||
                                  lastScene == "SumerianSceneTwo" || lastScene == "SumerianScene2" ||
                                  lastScene == "SumerianSceneThree" || lastScene == "SumerianScene3" ||
                                  lastScene == "SumerianSceneFour" || lastScene == "SumerianScene4" ||
@@ -149,7 +147,7 @@ public class SaveLoadUI : MonoBehaviour
                                  lastScene == "AssyrianSceneThree" || lastScene == "AssyrianScene3" ||
                                  lastScene == "AssyrianSceneFour" || lastScene == "AssyrianScene4" ||
                                  lastScene == "AssyrianSceneFive" || lastScene == "AssyrianScene5"
-                                 );
+                                 ;
 
         bool cameFromStoryScene = saveSource == "StoryScene" && isValidStoryScene;
 
@@ -381,7 +379,7 @@ public class SaveLoadUI : MonoBehaviour
         string lastScene = StudentPrefs.GetString("LastScene", "");
         string saveSource = StudentPrefs.GetString("SaveSource", "");
 
-        bool isValidStoryScene = (lastScene == "SumerianSceneOne" || lastScene == "SumerianScene1" ||
+        bool isValidStoryScene = lastScene == "SumerianSceneOne" || lastScene == "SumerianScene1" ||
                                  lastScene == "SumerianSceneTwo" || lastScene == "SumerianScene2" ||
                                  lastScene == "SumerianSceneThree" || lastScene == "SumerianScene3" ||
                                  lastScene == "SumerianSceneFour" || lastScene == "SumerianScene4" ||
@@ -406,7 +404,7 @@ public class SaveLoadUI : MonoBehaviour
                                  lastScene == "AssyrianSceneThree" || lastScene == "AssyrianScene3" ||
                                  lastScene == "AssyrianSceneFour" || lastScene == "AssyrianScene4" ||
                                  lastScene == "AssyrianSceneFive" || lastScene == "AssyrianScene5"
-                                );
+                                ;
 
         bool cameFromStoryScene = saveSource == "StoryScene" && isValidStoryScene;
 
@@ -724,11 +722,6 @@ public class SaveLoadUI : MonoBehaviour
     public void DeleteSave(int slotNumber)
     {
         SaveLoadManager.Instance.DeleteSave(slotNumber);
-        UpdateSlotDisplay();
-    }
-    
-        public void RefreshSlotDisplay()
-    {
         UpdateSlotDisplay();
     }
 }

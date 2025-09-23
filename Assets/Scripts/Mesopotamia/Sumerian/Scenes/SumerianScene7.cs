@@ -43,7 +43,7 @@ public class SumerianScene7 : MonoBehaviour
         // Initialize dialogue lines
         InitializeDialogueLines();
 
-        // Load saved dialogue index - same logic pattern as Scene 1
+        // Load saved dialogue index - same logic pattern as Scene 6
         LoadDialogueIndex();
 
         SetupButtons();
@@ -77,38 +77,37 @@ public class SumerianScene7 : MonoBehaviour
         };
     }
 
-    // Replace the LoadDialogueIndex() method in SumerianScene7.cs with this:
     void LoadDialogueIndex()
     {
         // Check if this is a new game
-        if (PlayerPrefs.GetString("GameMode", "") == "NewGame")
+        if (StudentPrefs.GetString("GameMode", "") == "NewGame")
         {
             currentDialogueIndex = 0;
-            PlayerPrefs.DeleteKey("GameMode"); // Clear the flag after use
+            StudentPrefs.DeleteKey("GameMode"); // Clear the flag after use
             Debug.Log("New game started - dialogue index reset to 0");
             return;
         }
 
         // Check if this is a load operation from save file
-        if (PlayerPrefs.GetString("LoadedFromSave", "false") == "true")
+        if (StudentPrefs.GetString("LoadedFromSave", "false") == "true")
         {
             // Load from save file
-            if (PlayerPrefs.HasKey("LoadedDialogueIndex"))
+            if (StudentPrefs.HasKey("LoadedDialogueIndex"))
             {
-                currentDialogueIndex = PlayerPrefs.GetInt("LoadedDialogueIndex");
-                PlayerPrefs.DeleteKey("LoadedDialogueIndex");
+                currentDialogueIndex = StudentPrefs.GetInt("LoadedDialogueIndex");
+                StudentPrefs.DeleteKey("LoadedDialogueIndex");
                 Debug.Log($"Loaded from save file at dialogue index: {currentDialogueIndex}");
             }
             
             // Clear the load flag
-            PlayerPrefs.SetString("LoadedFromSave", "false");
+            StudentPrefs.SetString("LoadedFromSave", "false");
         }
         else
         {
             // Check for regular scene progression (not from load)
-            if (PlayerPrefs.HasKey("SumerianSceneSeven_DialogueIndex"))
+            if (StudentPrefs.HasKey("SumerianSceneSeven_DialogueIndex"))
             {
-                currentDialogueIndex = PlayerPrefs.GetInt("SumerianSceneSeven_DialogueIndex");
+                currentDialogueIndex = StudentPrefs.GetInt("SumerianSceneSeven_DialogueIndex");
                 Debug.Log($"Continuing from previous session at dialogue index: {currentDialogueIndex}");
             }
             else
@@ -224,14 +223,14 @@ public class SumerianScene7 : MonoBehaviour
     public void SaveAndLoad()
     {
         // Save the current dialogue index and scene info
-        PlayerPrefs.SetInt("SumerianSceneSeven_DialogueIndex", currentDialogueIndex);
-        PlayerPrefs.SetString("LastScene", "SumerianSceneSeven");
+        StudentPrefs.SetInt("SumerianSceneSeven_DialogueIndex", currentDialogueIndex);
+        StudentPrefs.SetString("LastScene", "SumerianSceneSeven");
         
         // NEW: Clear LoadOnly mode and set story scene access
-        PlayerPrefs.DeleteKey("AccessMode"); // Clear any previous LoadOnly restriction
-        PlayerPrefs.SetString("SaveSource", "StoryScene"); // Mark that we came from a story scene
-        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-        PlayerPrefs.Save();
+        StudentPrefs.DeleteKey("AccessMode"); // Clear any previous LoadOnly restriction
+        StudentPrefs.SetString("SaveSource", "StoryScene"); // Mark that we came from a story scene
+        StudentPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        StudentPrefs.Save();
         
         // Also directly set the state in SaveLoadManager if it exists
         if (SaveLoadManager.Instance != null)
@@ -246,10 +245,10 @@ public class SumerianScene7 : MonoBehaviour
     void SaveCurrentProgress()
     {
         // Save current progress for scene continuity
-        PlayerPrefs.SetInt("SumerianSceneSeven_DialogueIndex", currentDialogueIndex);
-        PlayerPrefs.SetString("CurrentScene", "SumerianSceneSeven");
-        PlayerPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-        PlayerPrefs.Save();
+        StudentPrefs.SetInt("SumerianSceneSeven_DialogueIndex", currentDialogueIndex);
+        StudentPrefs.SetString("CurrentScene", "SumerianSceneSeven");
+        StudentPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        StudentPrefs.Save();
     }
 
     public void Home()
