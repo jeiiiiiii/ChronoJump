@@ -5,4 +5,5 @@ public class AchievementModel
     public string Name;      
     public string Title;     
     public string Description; 
+    public string Type;
 }

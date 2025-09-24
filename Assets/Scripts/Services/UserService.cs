@@ -159,7 +159,9 @@ public class UserService
                         return;
                     }
 
-                    // Save leaderboard (auto-ID)
+                    // Save leaderboard (studId)
+                    DocumentReference leaderboardRef = _firebaseService.DB.Collection("studentLeaderboards").Document(studId);
+                    leaderboardRef.SetAsync(leaderboardData);
                     _firebaseService.DB.Collection("studentLeaderboards").AddAsync(leaderboardData);
 
                     // Save progress (studId)

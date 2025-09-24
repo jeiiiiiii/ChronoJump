@@ -2523,8 +2523,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 4.79, y: 327}
-  m_SizeDelta: {x: 1031.32, y: 145.55}
+  m_AnchoredPosition: {x: 4.79, y: 313.34}
+  m_SizeDelta: {x: 1031.32, y: 118.24}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &820573888
 MonoBehaviour:
@@ -2614,9 +2614,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   newGameButton: {fileID: 0}
   loadGameButton: {fileID: 0}
-  optionsButton: {fileID: 0}
+  continueButton: {fileID: 0}
   classroomButton: {fileID: 0}
-  creatermodeButton: {fileID: 0}
+  dashboardButton: {fileID: 0}
+  creatormodeButton: {fileID: 0}
   logoutButton: {fileID: 0}
   educatorsModeText: {fileID: 0}
 --- !u!1 &840875191
@@ -6294,7 +6295,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -126, y: -299}
+  m_AnchoredPosition: {x: -209, y: -299}
   m_SizeDelta: {x: 375.89, y: -25.96}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2070513997

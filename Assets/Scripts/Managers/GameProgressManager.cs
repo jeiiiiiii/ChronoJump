@@ -36,9 +36,6 @@ public class GameProgressManager : MonoBehaviour
     private readonly string[] allCivilizations = { "Sumerian", "Akkadian", "Babylonian", "Assyrian", "Indus" };
 
     #region Events
-    /// <summary>
-    /// Event system for UI updates when progress changes
-    /// </summary>
     public System.Action<string> OnCivilizationUnlocked;
     public System.Action<string> OnChapterUnlocked;
     public System.Action<string> OnStoryUnlocked;
@@ -46,6 +43,8 @@ public class GameProgressManager : MonoBehaviour
     public System.Action<string> OnArtifactUnlocked;
     public System.Action<int> OnHeartsChanged;
     public System.Action OnInitializationComplete;
+
+    private bool? _cachedHasProgress = null;
     #endregion
 
     private void Awake()
@@ -59,9 +58,6 @@ public class GameProgressManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    /// <summary>
-    /// Initialize the manager with the currently logged-in student's state.
-    /// </summary>
     public void SetStudentState(StudentState state, System.Action onComplete = null)
     {
         Initialize(state, onComplete);
@@ -71,7 +67,6 @@ public class GameProgressManager : MonoBehaviour
     {
         CurrentStudentState = studentState;
 
-        // Initialize GameProgress if it doesn't exist
         if (CurrentStudentState.GameProgress == null)
         {
             Debug.LogWarning("GameProgress is NULL in StudentState! Creating new GameProgress.");
@@ -102,23 +97,16 @@ public class GameProgressManager : MonoBehaviour
 
         Debug.Log($"GameProgressManager initialized for student {CurrentStudentState.StudentId}");
 
-        // Store the completion callback
         OnInitializationComplete = onComplete;
-
-        // NEW: Load progress with proper fallback chain
         LoadProgressWithFallback();
     }
 
     #region Improved Loading Logic
 
-    /// <summary>
-    /// Load progress with proper fallback chain: StudentPrefs -> Firebase -> Default
-    /// </summary>
     private void LoadProgressWithFallback()
     {
         Debug.Log($"Starting LoadProgressWithFallback for student {CurrentStudentState.StudentId}");
 
-        // Try StudentPrefs first
         if (StudentPrefs.HasKey("currentHearts"))
         {
             Debug.Log("Found StudentPrefs data, loading...");
@@ -221,21 +209,17 @@ public class GameProgressManager : MonoBehaviour
 
                         gp.lastUpdated = data.ContainsKey("lastUpdated") ? (Timestamp)data["lastUpdated"] : Timestamp.GetCurrentTimestamp();
 
-                        // Save to StudentPrefs for future loads
                         SaveToStudentPrefs();
-
                         Debug.Log("Successfully loaded GameProgress from Firebase and cached to StudentPrefs");
                     }
                     else if (task.IsCompletedSuccessfully && !task.Result.Exists)
                     {
                         Debug.LogWarning($"No GameProgress document found in Firebase for {studId}. Using default values.");
-                        // Save defaults to StudentPrefs so we don't hit Firebase again
                         SaveToStudentPrefs();
                     }
                     else if (task.IsFaulted)
                     {
                         Debug.LogError($"Firebase fetch failed for {studId}: {task.Exception}");
-                        // Use default values already set in GameProgress
                     }
                     else if (task.IsCanceled)
                     {
@@ -264,53 +248,46 @@ public class GameProgressManager : MonoBehaviour
     #endregion
 
     #region Gameplay Methods    
-    // Hearts setter
 
     public async Task<bool> HasProgressAsync(string userId)
-{
-    try
     {
-        var db = FirebaseManager.Instance.DB;
-        var studentsRef = db.Collection("students");
-
-        // 🔹 1. Get the student document from userId
-        var snapshot = await studentsRef.WhereEqualTo("userId", userId).GetSnapshotAsync();
-
-        if (!snapshot.Documents.Any())
+        if (_cachedHasProgress.HasValue)
         {
-            Debug.LogWarning($"[HasProgress] No student document found for userId '{userId}'");
-            return false;
+            Debug.Log($"[HasProgress] Using cached result: {_cachedHasProgress.Value}");
+            return _cachedHasProgress.Value;
         }
 
-        var studentDoc = snapshot.Documents.First();
-        string studentId = studentDoc.Id;
-
-        // 🔹 2. Check if gameProgress exists in Firestore
-        var progressRef = db.Collection("gameProgress").Document(studentId);
-        var progressSnap = await progressRef.GetSnapshotAsync();
-
-        if (progressSnap.Exists)
+        try
         {
-            Debug.Log($"[HasProgress] Found Firestore progress for student '{studentId}' (user '{userId}').");
-            return true;
+            var db = FirebaseManager.Instance.DB;
+            var studentsRef = db.Collection("students");
+
+            var snapshot = await studentsRef.WhereEqualTo("userId", userId).GetSnapshotAsync();
+            if (!snapshot.Documents.Any())
+            {
+                Debug.LogWarning($"[HasProgress] No student document found for userId '{userId}'");
+                _cachedHasProgress = false;
+                return false;
+            }
+
+            var studentDoc = snapshot.Documents.First();
+            string studentId = studentDoc.Id;
+
+            var progressRef = db.Collection("gameProgress").Document(studentId);
+            var progressSnap = await progressRef.GetSnapshotAsync();
+
+            _cachedHasProgress = progressSnap.Exists;
+            Debug.Log($"[HasProgress] Firestore progress exists? {_cachedHasProgress}");
+
+            return _cachedHasProgress.Value;
         }
-        else
+        catch (Exception ex)
         {
-            Debug.Log($"[HasProgress] No Firestore progress found for student '{studentId}' (user '{userId}').");
+            Debug.LogError($"[HasProgress] Error while checking progress: {ex}");
+            _cachedHasProgress = false;
             return false;
         }
     }
-    catch (Exception ex)
-    {
-        Debug.LogError($"[HasProgress] Error while checking progress: {ex}");
-        return false;
-    }
-}
-
-
-
-
-
 
     public void SetHearts(int newHearts)
     {
@@ -321,13 +298,13 @@ public class GameProgressManager : MonoBehaviour
         OnHeartsChanged?.Invoke(newHearts);
     }
 
-    // Score setter
     public void SetScore(int newScore)
     {
         if (CurrentStudentState?.Progress == null) return;
 
         CurrentStudentState.Progress.overallScore = newScore.ToString();
-        SaveProgress();
+        SaveStudentProgressToFirebase();
+        Debug.Log($"Set overall score to {newScore} for student {CurrentStudentState.StudentId}");
     }
 
     public int GetScore()
@@ -352,22 +329,42 @@ public class GameProgressManager : MonoBehaviour
         }
     }
 
+    // FIXED: Properly updates currentStory and ensures both GameProgress and StudentProgress are saved
     public void UnlockStory(string storyId)
     {
+        if (CurrentStudentState?.GameProgress == null)
+        {
+            Debug.LogError("Cannot unlock story: GameProgress is null");
+            return;
+        }
+
         var gp = CurrentStudentState.GameProgress;
-        if (!gp.unlockedStories.Contains(storyId))
+        bool wasUnlocked = gp.unlockedStories.Contains(storyId);
+        
+        if (!wasUnlocked)
         {
             gp.unlockedStories.Add(storyId);
+            Debug.Log($"Added {storyId} to unlockedStories list for student {CurrentStudentState.StudentId}");
+        }
 
-            // Update studentProgress
-            if (CurrentStudentState?.Progress != null)
-            {
-                CurrentStudentState.Progress.currentStory = db.Document($"stories/{storyId}");
-            }
+        // FIXED: Always update currentStory in StudentProgress
+        if (CurrentStudentState?.Progress != null)
+        {
+            CurrentStudentState.Progress.currentStory = db.Document($"stories/{storyId}");
+            Debug.Log($"Updated currentStory to {storyId} for student {CurrentStudentState.StudentId}");
+        }
 
-            SaveProgress();
+        // FIXED: Save both GameProgress and StudentProgress
+        SaveProgress();
+        
+        if (!wasUnlocked)
+        {
             OnStoryUnlocked?.Invoke(storyId);
             Debug.Log($"Story {storyId} unlocked for student {CurrentStudentState.StudentId}");
+        }
+        else
+        {
+            Debug.Log($"Story {storyId} was already unlocked, but currentStory was updated");
         }
     }
 
@@ -394,13 +391,17 @@ public class GameProgressManager : MonoBehaviour
         }
     }
 
+    // FIXED: Artifact unlocking now properly saves to Firebase
     public void AddArtifact(string artifactId)
     {
         var gp = CurrentStudentState.GameProgress;
+        if (gp.unlockedArtifacts == null)
+            gp.unlockedArtifacts = new List<string>();
+
         if (!gp.unlockedArtifacts.Contains(artifactId))
         {
             gp.unlockedArtifacts.Add(artifactId);
-            SaveProgress();
+            SaveProgress(); // This will save to both StudentPrefs and Firebase
             OnArtifactUnlocked?.Invoke(artifactId);
             Debug.Log($"Artifact {artifactId} unlocked for student {CurrentStudentState.StudentId}");
         }
@@ -436,14 +437,15 @@ public class GameProgressManager : MonoBehaviour
         }
 
         var gp = CurrentStudentState.GameProgress;
+        if (gp.unlockedCivilizations == null)
+            gp.unlockedCivilizations = new List<string> { "Sumerian" };
+
         if (!gp.unlockedCivilizations.Contains(civName))
         {
             gp.unlockedCivilizations.Add(civName);
             SaveProgress();
 
-            // Trigger event for UI updates
             OnCivilizationUnlocked?.Invoke(civName);
-
             Debug.Log($"Civilization {civName} unlocked for student {CurrentStudentState.StudentId}");
         }
     }
@@ -502,8 +504,6 @@ public class GameProgressManager : MonoBehaviour
         });
 
         SaveProgress();
-        SaveStudentProgressToFirebase();
-
         Debug.Log("Started a new game for student: " + CurrentStudentState.StudentId);
     }
 
@@ -516,13 +516,11 @@ public class GameProgressManager : MonoBehaviour
         if (CurrentStudentState?.GameProgress == null)
         {
             Debug.LogWarning("No student state available");
-
-            return new List<string> { "Sumerian" }; // Default
+            return new List<string> { "Sumerian" };
         }
 
         var unlocked = new List<string>(CurrentStudentState.GameProgress.unlockedCivilizations);
 
-        // Ensure Sumerian is always included as the default
         if (!unlocked.Contains("Sumerian"))
         {
             unlocked.Add("Sumerian");
@@ -588,9 +586,6 @@ public class GameProgressManager : MonoBehaviour
         Debug.Log($"Added {amount} hearts. Total hearts: {gp.currentHearts}");
     }
 
-    /// <summary>
-    /// Migration method to convert old PlayerPrefs to StudentPrefs
-    /// </summary>
     public void MigrateFromLegacyPlayerPrefs()
     {
         if (CurrentStudentState == null) return;
@@ -598,7 +593,6 @@ public class GameProgressManager : MonoBehaviour
         string studId = CurrentStudentState.StudentId;
         Debug.Log($"Migrating legacy PlayerPrefs to StudentPrefs for {studId}");
 
-        // Check if we have old-style keys and migrate them
         if (PlayerPrefs.HasKey("currentHearts") && !StudentPrefs.HasKey("currentHearts"))
         {
             StudentPrefs.SetInt("currentHearts", PlayerPrefs.GetInt("currentHearts", 3));
@@ -623,7 +617,6 @@ public class GameProgressManager : MonoBehaviour
 
             StudentPrefs.Save();
 
-            // Clear old keys
             PlayerPrefs.DeleteKey("currentHearts");
             PlayerPrefs.DeleteKey("unlockedChapters");
             PlayerPrefs.DeleteKey("unlockedStories");
@@ -662,7 +655,6 @@ public class GameProgressManager : MonoBehaviour
         StudentPrefs.SetString("unlockedCivilizations",
             JsonUtility.ToJson(new StringListWrapper { list = gp.unlockedCivilizations }));
 
-        // Codex: convert dictionary to list for serialization
         var codexList = new List<CodexEntry>();
         foreach (var kvp in gp.unlockedCodex)
         {
@@ -696,7 +688,7 @@ public class GameProgressManager : MonoBehaviour
 
     #region Firebase Saving/Loading
 
-    private void SaveStudentProgressToFirebase()
+    public void SaveStudentProgressToFirebase()
     {
         if (CurrentStudentState?.Progress == null || string.IsNullOrEmpty(CurrentStudentState.StudentId))
         {
@@ -716,10 +708,12 @@ public class GameProgressManager : MonoBehaviour
             { "dateUpdated", Timestamp.GetCurrentTimestamp() }
         };
 
+        Debug.Log($"Saving StudentProgress - overallScore: {sp.overallScore}, successRate: {sp.successRate}, currentStory: {sp.currentStory?.Path ?? "null"}");
+
         docRef.SetAsync(data, SetOptions.MergeAll).ContinueWithOnMainThread(task =>
         {
             if (task.IsCompletedSuccessfully)
-                Debug.Log($"StudentProgress saved for {CurrentStudentState.StudentId}");
+                Debug.Log($"StudentProgress saved successfully for {CurrentStudentState.StudentId}");
             else
                 Debug.LogError("Failed to save StudentProgress: " + task.Exception);
         });
@@ -751,6 +745,8 @@ public class GameProgressManager : MonoBehaviour
             { "isRemoved", gp.isRemoved }
         };
 
+        Debug.Log($"Saving GameProgress - unlockedStories count: {gp.unlockedStories?.Count ?? 0}, stories: {string.Join(", ", gp.unlockedStories ?? new List<string>())}");
+
         docRef.SetAsync(data).ContinueWith(task =>
         {
             if (task.IsCompletedSuccessfully)
@@ -762,8 +758,11 @@ public class GameProgressManager : MonoBehaviour
 
     #endregion
 
+    // FIXED: SaveProgress now properly saves both GameProgress and StudentProgress
     private void SaveProgress()
     {
+        if (CurrentStudentState?.GameProgress == null) return;
+
         CurrentStudentState.GameProgress.lastUpdated = Timestamp.GetCurrentTimestamp();
         SaveToStudentPrefs();
         SaveProgressToFirebase();
@@ -810,9 +809,7 @@ public class GameProgressManager : MonoBehaviour
 
     #endregion
 
-    // ... (rest of your methods remain the same - RecordQuizAttempt, UpdateStudentProgressAndLeaderboard, etc.)
-    // I'll continue with the rest if you need them, but they don't need changes for the PlayerPrefs refactor
-
+    // FIXED: Proper quiz attempt recording with correct success rate calculation
     public void RecordQuizAttempt(string quizId, int score, int total, bool isPassed)
     {
         string studId = CurrentStudentState.StudentId;
@@ -824,6 +821,9 @@ public class GameProgressManager : MonoBehaviour
 
         var quizAttemptsRef = db.Collection("quizAttempts").Document(studId).Collection("attempts");
 
+        // Create attempt model first
+        var attempt = new QuizAttemptModel(quizId, 0, score, isPassed); // Attempt number will be calculated
+
         // Step 1: Get existing attempts for this quiz to calculate attemptNumber
         quizAttemptsRef.WhereEqualTo("quizId", quizId).GetSnapshotAsync().ContinueWith(task =>
         {
@@ -834,9 +834,7 @@ public class GameProgressManager : MonoBehaviour
             }
 
             int attemptNumber = task.Result.Count + 1;
-
-            // Create attempt model
-            var attempt = new QuizAttemptModel(quizId, attemptNumber, score, isPassed);
+            attempt.attemptNumber = attemptNumber;
 
             // Step 2: Save to Firebase
             quizAttemptsRef.AddAsync(attempt).ContinueWith(addTask =>
@@ -845,7 +843,7 @@ public class GameProgressManager : MonoBehaviour
                 {
                     Debug.Log($"Quiz attempt saved: {quizId}, Attempt {attemptNumber}, Score {score}");
 
-                    // Step 3: Update StudentProgress and Leaderboard
+                    // Step 3: Update StudentProgress and Leaderboard with ALL attempts
                     UpdateStudentProgressAndLeaderboard(studId, quizId, score, attemptNumber, isPassed);
                 }
                 else
@@ -856,6 +854,7 @@ public class GameProgressManager : MonoBehaviour
         });
     }
 
+    // FIXED: Correct success rate calculation using ALL quiz attempts
     private void UpdateStudentProgressAndLeaderboard(string studId, string quizId, int score, int attemptNumber, bool isPassed)
     {
         if (string.IsNullOrEmpty(studId) || string.IsNullOrEmpty(quizId))
@@ -864,118 +863,141 @@ public class GameProgressManager : MonoBehaviour
             return;
         }
 
-        // --- Student Progress ---
-        var progressDoc = db.Collection("studentProgress").Document(studId);
-        progressDoc.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        // Get ALL quiz attempts for this student to calculate correct totals
+        var quizAttemptsRef = db.Collection("quizAttempts").Document(studId).Collection("attempts");
+        quizAttemptsRef.GetSnapshotAsync().ContinueWithOnMainThread(allAttemptsTask =>
         {
-            if (!task.IsCompletedSuccessfully)
+            if (!allAttemptsTask.IsCompletedSuccessfully)
             {
-                Debug.LogError($"Failed to fetch progress doc for {studId}: {task.Exception}");
+                Debug.LogError($"Failed to fetch all quiz attempts for {studId}: {allAttemptsTask.Exception}");
                 return;
             }
 
-            var snapshot = task.Result;
-            var progressData = snapshot.Exists ? snapshot.ToDictionary() : new Dictionary<string, object>();
+            if (!allAttemptsTask.IsCompletedSuccessfully || allAttemptsTask.Result == null)
+{
+    Debug.LogError($"Failed to fetch quiz attempts for {studId}");
+    return;
+}
 
-            // Extract per-quiz best scores
-            var perQuizBest = progressData.ContainsKey("perQuizBestScores")
-                ? progressData["perQuizBestScores"] as Dictionary<string, object>
-                : new Dictionary<string, object>();
+QuerySnapshot snapshot = allAttemptsTask.Result;
+var allAttempts = snapshot.Documents;
 
-            // Current best score for this quiz
-            int currentBest = perQuizBest.ContainsKey(quizId) ? Convert.ToInt32(perQuizBest[quizId]) : 0;
-
-            // Update if this attempt is better
-            if (score > currentBest) perQuizBest[quizId] = score;
-
-            // Recompute overall score (sum of bests)
-            int overallScore = perQuizBest.Values.Sum(v => Convert.ToInt32(v));
-
-            // --- Track Attempts (fix for successRate) ---
-            int totalAttempts = progressData.ContainsKey("totalAttempts")
-                ? Convert.ToInt32(progressData["totalAttempts"])
-                : 0;
-
-            int passedAttempts = progressData.ContainsKey("passedAttempts")
-                ? Convert.ToInt32(progressData["passedAttempts"])
-                : 0;
-
-            totalAttempts++;
-            if (isPassed) passedAttempts++;
+int totalAttempts = ((IReadOnlyCollection<DocumentSnapshot>)allAttempts).Count;
+int passedAttempts = allAttempts.Count(doc =>
+{
+    var attempt = doc.ConvertTo<QuizAttemptModel>();
+    return attempt.isPassed;
+});
 
             string successRate = totalAttempts > 0
                 ? $"{(int)((float)passedAttempts / totalAttempts * 100)}%"
                 : "0%";
 
-            // Keep old passedQuizzes (for reference if you still need it)
-            var passedQuizzes = progressData.ContainsKey("passedQuizzes")
-                ? (progressData["passedQuizzes"] as List<object>).Select(q => q.ToString()).ToHashSet()
-                : new HashSet<string>();
-
-            if (isPassed) passedQuizzes.Add(quizId);
-
-            // Prepare update
-            var progressUpdate = new Dictionary<string, object>
+            // --- Student Progress ---
+            var progressDoc = db.Collection("studentProgress").Document(studId);
+            progressDoc.GetSnapshotAsync().ContinueWithOnMainThread(task =>
             {
-                { "overallScore", overallScore.ToString() },
-                { "successRate", successRate },
-                { "perQuizBestScores", perQuizBest },
-                { "totalAttempts", totalAttempts },
-                { "passedAttempts", passedAttempts },
-                { "passedQuizzes", passedQuizzes.ToList() }, // optional but kept
-                { "dateUpdated", Timestamp.GetCurrentTimestamp() }
-            };
+                if (!task.IsCompletedSuccessfully)
+                {
+                    Debug.LogError($"Failed to fetch progress doc for {studId}: {task.Exception}");
+                    return;
+                }
 
-            progressDoc.SetAsync(progressUpdate, SetOptions.MergeAll).ContinueWithOnMainThread(uTask =>
-            {
-                if (uTask.IsCompletedSuccessfully)
-                    Debug.Log($"studentProgress updated for {studId}: overallScore={overallScore}, successRate={successRate}, totalAttempts={totalAttempts}, passedAttempts={passedAttempts}");
-                else
-                    Debug.LogError("Failed to update studentProgress: " + uTask.Exception);
+                var snapshot = task.Result;
+                var progressData = snapshot.Exists ? snapshot.ToDictionary() : new Dictionary<string, object>();
+
+                // Extract per-quiz best scores
+                var perQuizBest = progressData.ContainsKey("perQuizBestScores")
+                    ? progressData["perQuizBestScores"] as Dictionary<string, object>
+                    : new Dictionary<string, object>();
+
+                // Current best score for this quiz
+                int currentBest = perQuizBest.ContainsKey(quizId) ? Convert.ToInt32(perQuizBest[quizId]) : 0;
+
+                // Update if this attempt is better
+                if (score > currentBest) perQuizBest[quizId] = score;
+
+                // Recompute overall score (sum of bests)
+                int overallScore = perQuizBest.Values.Sum(v => Convert.ToInt32(v));
+
+                // Keep old passedQuizzes
+                var passedQuizzes = progressData.ContainsKey("passedQuizzes")
+                    ? (progressData["passedQuizzes"] as List<object>).Select(q => q.ToString()).ToHashSet()
+                    : new HashSet<string>();
+
+                if (isPassed) passedQuizzes.Add(quizId);
+
+                // Prepare update with CORRECT totals
+                var progressUpdate = new Dictionary<string, object>
+                {
+                    { "overallScore", overallScore.ToString() },
+                    { "successRate", successRate },
+                    { "perQuizBestScores", perQuizBest },
+                    { "totalAttempts", totalAttempts },
+                    { "passedAttempts", passedAttempts },
+                    { "passedQuizzes", passedQuizzes.ToList() },
+                    { "dateUpdated", Timestamp.GetCurrentTimestamp() }
+                };
+
+                // Update local CurrentStudentState
+                if (CurrentStudentState?.Progress != null)
+                {
+                    CurrentStudentState.Progress.overallScore = overallScore.ToString();
+                    CurrentStudentState.Progress.successRate = successRate;
+                    Debug.Log($"Updated local StudentProgress - overallScore: {overallScore}, successRate: {successRate}, totalAttempts: {totalAttempts}, passedAttempts: {passedAttempts}");
+                }
+
+                progressDoc.SetAsync(progressUpdate, SetOptions.MergeAll).ContinueWithOnMainThread(uTask =>
+                {
+                    if (uTask.IsCompletedSuccessfully)
+                        Debug.Log($"studentProgress updated for {studId}: overallScore={overallScore}, successRate={successRate}, totalAttempts={totalAttempts}, passedAttempts={passedAttempts}");
+                    else
+                        Debug.LogError("Failed to update studentProgress: " + uTask.Exception);
+                });
             });
-        });
 
-        // --- Student Leaderboard ---
-        var leaderboardDoc = db.Collection("studentLeaderboards").Document(studId);
-        leaderboardDoc.GetSnapshotAsync().ContinueWithOnMainThread(task =>
-        {
-            if (!task.IsCompletedSuccessfully)
+            // --- Student Leaderboard ---
+            var leaderboardDoc = db.Collection("studentLeaderboards").Document(studId);
+            leaderboardDoc.GetSnapshotAsync().ContinueWithOnMainThread(task =>
             {
-                Debug.LogError($"Failed to fetch leaderboard doc for {studId}: {task.Exception}");
-                return;
-            }
+                if (!task.IsCompletedSuccessfully)
+                {
+                    Debug.LogError($"Failed to fetch leaderboard doc for {studId}: {task.Exception}");
+                    return;
+                }
 
-            var snapshot = task.Result;
-            var leaderboardData = snapshot.Exists ? snapshot.ToDictionary() : new Dictionary<string, object>();
+                var snapshot = task.Result;
+                var leaderboardData = snapshot.Exists ? snapshot.ToDictionary() : new Dictionary<string, object>();
 
-            // Extract per-quiz first scores
-            var perQuizFirst = leaderboardData.ContainsKey("perQuizFirstScores")
-                ? leaderboardData["perQuizFirstScores"] as Dictionary<string, object>
-                : new Dictionary<string, object>();
+                // Extract per-quiz first scores
+                var perQuizFirst = leaderboardData.ContainsKey("perQuizFirstScores")
+                    ? leaderboardData["perQuizFirstScores"] as Dictionary<string, object>
+                    : new Dictionary<string, object>();
 
-            // Only update if this is the first attempt
-            if (!perQuizFirst.ContainsKey(quizId) || attemptNumber == 1)
-                perQuizFirst[quizId] = score;
+                // Only update if this is the first attempt
+                if (!perQuizFirst.ContainsKey(quizId) || attemptNumber == 1)
+                    perQuizFirst[quizId] = score;
 
-            // Recompute leaderboard total (sum of first attempts)
-            int leaderboardScore = perQuizFirst.Values.Sum(v => Convert.ToInt32(v));
+                // Recompute leaderboard total (sum of first attempts)
+                int leaderboardScore = perQuizFirst.Values.Sum(v => Convert.ToInt32(v));
 
-            var leaderboardUpdate = new Dictionary<string, object>
-            {
-                { "displayName", CurrentStudentState?.Identity?.studName ?? "Unknown" },
-                { "classCode", CurrentStudentState?.Identity?.classCode ?? "" },
-                { "overallScore", leaderboardScore.ToString() },
-                { "perQuizFirstScores", perQuizFirst },
-                { "isRemoved", false },
-                { "dateUpdated", Timestamp.GetCurrentTimestamp() }
-            };
+                var leaderboardUpdate = new Dictionary<string, object>
+                {
+                    { "displayName", CurrentStudentState?.Identity?.studName ?? "Unknown" },
+                    { "classCode", CurrentStudentState?.Identity?.classCode ?? "" },
+                    { "overallScore", leaderboardScore.ToString() },
+                    { "perQuizFirstScores", perQuizFirst },
+                    { "isRemoved", false },
+                    { "dateUpdated", Timestamp.GetCurrentTimestamp() }
+                };
 
-            leaderboardDoc.SetAsync(leaderboardUpdate, SetOptions.MergeAll).ContinueWithOnMainThread(uTask =>
-            {
-                if (uTask.IsCompletedSuccessfully)
-                    Debug.Log($"Leaderboard updated for {studId}: overallScore={leaderboardScore}");
-                else
-                    Debug.LogError("Failed to update leaderboard: " + uTask.Exception);
+                leaderboardDoc.SetAsync(leaderboardUpdate, SetOptions.MergeAll).ContinueWithOnMainThread(uTask =>
+                {
+                    if (uTask.IsCompletedSuccessfully)
+                        Debug.Log($"Leaderboard updated for {studId}: overallScore={leaderboardScore}");
+                    else
+                        Debug.LogError("Failed to update leaderboard: " + uTask.Exception);
+                });
             });
         });
     }

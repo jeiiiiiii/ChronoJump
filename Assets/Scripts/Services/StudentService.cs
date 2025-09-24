@@ -207,7 +207,7 @@ public class StudentService
                 {
                     var data = document.ToDictionary();
                     
-                    string studId = data.ContainsKey("studId") ? data["studId"]?.ToString() : "";
+                    string studId = document.Id;
                     string displayName = data.ContainsKey("displayName") ? data["displayName"]?.ToString() : "Unknown Student";
                     string classCodeFromDoc = data.ContainsKey("classCode") ? data["classCode"]?.ToString() : "";
                     bool isRemoved = data.ContainsKey("isRemoved") && data["isRemoved"] is bool b && b;

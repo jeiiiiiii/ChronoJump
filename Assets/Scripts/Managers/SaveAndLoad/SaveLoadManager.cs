@@ -5,6 +5,7 @@ using Firebase.Firestore;
 using Firebase.Extensions;
 using System.Collections.Generic;
 using System;
+using System.Collections;
 
 public class SaveLoadManager : MonoBehaviour
 {
@@ -64,27 +65,56 @@ public class SaveLoadManager : MonoBehaviour
 }
 
     private void OnEnable()
+{
+    SceneManager.sceneLoaded += OnSceneLoaded;
+
+    // NEW: Handle case where SaveLoadManager is created AFTER the scene is loaded
+    if (SceneManager.GetActiveScene().name == "SaveAndLoadScene")
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        StartCoroutine(WaitForStudentStateAndLoad());
     }
+}
+
 
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
+    // NEW: Wait until GameProgressManager.CurrentStudentState exists
+private IEnumerator WaitForStudentStateAndLoad()
+{
+    float timeout = 5f; // seconds
+    float elapsed = 0f;
+
+    while ((GameProgressManager.Instance == null || GameProgressManager.Instance.CurrentStudentState == null) 
+            && elapsed < timeout)
+    {
+        elapsed += Time.deltaTime;
+        yield return null;
+    }
+
+    if (GameProgressManager.Instance?.CurrentStudentState == null)
+    {
+        Debug.LogWarning("[SaveLoadManager] WaitForStudentStateAndLoad timed out — student state still null.");
+        yield break;
+    }
+
+    LoadSaveSlotsFromFirebase();
+}
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
 {
     Debug.Log($"SaveLoadManager: Scene loaded - {scene.name}");
     
-    // When SaveAndLoadScene is loaded, capture the current game state
     if (scene.name == "SaveAndLoadScene")
     {
         Debug.Log("SaveAndLoadScene detected, starting Firebase load process");
         CaptureCurrentGameState();
-        LoadSaveSlotsFromFirebase();
+        StartCoroutine(WaitForStudentStateAndLoad()); // NEW
     }
 }
+
 
     private void CaptureCurrentGameState()
     {
@@ -105,100 +135,155 @@ public class SaveLoadManager : MonoBehaviour
 
     #region Firebase Save Operations
 
-    private void LoadSaveSlotsFromFirebase()
-{
-    if (GameProgressManager.Instance?.CurrentStudentState == null)
-    {
-        Debug.LogWarning("[SaveLoadManager] No student logged in, using local saves only");
-        return;
-    }
-
-    string studentId = GameProgressManager.Instance.CurrentStudentState.StudentId;
-    int completedSlots = 0;
-    
-    Debug.Log($"[SaveLoadManager] Starting LoadSaveSlotsFromFirebase for student: {studentId}");
-    
-    for (int slot = 1; slot <= 4; slot++)
-    {
-        LoadSaveSlotFromFirebase(slot, studentId, () => {
-            completedSlots++;
-            Debug.Log($"[SaveLoadManager] Completed loading slot {completedSlots}/4");
-            
-            if (completedSlots >= 4)
-            {
-                Debug.Log("[SaveLoadManager] All Firebase slots loaded, updating UI");
-                
-                var saveLoadUI = FindFirstObjectByType<SaveLoadUI>();
-                if (saveLoadUI != null)
-                {
-                    Debug.Log("[SaveLoadManager] Found SaveLoadUI, refreshing display");
-                    saveLoadUI.RefreshSlotDisplay();
-                }
-                else
-                {
-                    Debug.LogWarning("[SaveLoadManager] SaveLoadUI not found!");
-                }
-            }
-        });
-    }
-}
-
-    // Overload with callback for per-slot completion
     private void LoadSaveSlotFromFirebase(int slotNumber, string studentId, System.Action onComplete = null)
-{
-    string documentId = $"{studentId}_slot_{slotNumber}";
-    
-    Debug.Log($"[SaveLoadManager] Fetching slot {slotNumber}: {documentId}");
-    
-    db.Collection("saveData").Document(documentId).GetSnapshotAsync().ContinueWith(task =>
     {
-        // IMPORTANT: Force this onto the main thread immediately
-        UnityDispatcher.RunOnMainThread(() => {
-            try 
-            {
-                if (task.IsCompletedSuccessfully && task.Result.Exists)
-                {
-                    Debug.Log($"[SaveLoadManager] Found Firebase data for slot {slotNumber}");
-                    
-                    var firebaseSave = task.Result.ConvertTo<SaveData>();
-                    
-                    var localSave = new LocalSaveData(firebaseSave.currentScene, firebaseSave.dialogueIndex)
-                    {
-                        timestamp = firebaseSave.timestamp
-                    };
+        string documentId = $"{studentId}_slot_{slotNumber}";
 
-                    // Save to local file with student-specific path
-                    string json = JsonUtility.ToJson(localSave, true);
-                    string filePath = GetSaveFilePath(slotNumber);
-                    
-                    // Ensure directory exists
-                    string directory = Path.GetDirectoryName(filePath);
-                    if (!Directory.Exists(directory))
-                    {
-                        Directory.CreateDirectory(directory);
-                        Debug.Log($"[SaveLoadManager] Created directory: {directory}");
-                    }
-                    
-                    File.WriteAllText(filePath, json);
-                    Debug.Log($"[SaveLoadManager] Synced slot {slotNumber} to local file: {firebaseSave.currentScene} at {filePath}");
-                }
-                else
+        Debug.Log($"[SaveLoadManager] Fetching slot {slotNumber}: {documentId}");
+
+        db.Collection("saveData").Document(documentId).GetSnapshotAsync().ContinueWith(task =>
+        {
+            UnityDispatcher.RunOnMainThread(() =>
+            {
+                try
                 {
-                    Debug.Log($"[SaveLoadManager] No Firebase save found for slot {slotNumber}");
+                    if (task.IsCompletedSuccessfully && task.Result.Exists)
+                    {
+                        Debug.Log($"[SaveLoadManager] ✅ Found Firebase data for slot {slotNumber}");
+
+                        var firebaseSave = task.Result.ConvertTo<SaveData>();
+                        Debug.Log($"[SaveLoadManager] Firebase data - Scene: {firebaseSave.currentScene}, Dialogue: {firebaseSave.dialogueIndex}, Timestamp: {firebaseSave.timestamp}");
+
+                        var localSave = new LocalSaveData(firebaseSave.currentScene, firebaseSave.dialogueIndex)
+                        {
+                            timestamp = firebaseSave.timestamp
+                        };
+
+                        // Check if local file already exists
+                        string filePath = GetSaveFilePath(slotNumber);
+                        bool fileExistedBefore = File.Exists(filePath);
+                        Debug.Log($"[SaveLoadManager] Local file path: {filePath}");
+                        Debug.Log($"[SaveLoadManager] File existed before: {fileExistedBefore}");
+
+                        // Ensure directory exists
+                        string directory = Path.GetDirectoryName(filePath);
+                        if (!Directory.Exists(directory))
+                        {
+                            Directory.CreateDirectory(directory);
+                            Debug.Log($"[SaveLoadManager] ✅ Created directory: {directory}");
+                        }
+
+                        // Write to local file
+                        string json = JsonUtility.ToJson(localSave, true);
+                        File.WriteAllText(filePath, json);
+
+                        // Verify the file was written
+                        bool fileExistsAfter = File.Exists(filePath);
+                        Debug.Log($"[SaveLoadManager] ✅ File written successfully: {fileExistsAfter}");
+                        Debug.Log($"[SaveLoadManager] ✅ Synced slot {slotNumber} - {firebaseSave.currentScene} -> {filePath}");
+
+                        // Show file content for debugging
+                        if (fileExistsAfter)
+                        {
+                            string writtenContent = File.ReadAllText(filePath);
+                            Debug.Log($"[SaveLoadManager] Written file content: {writtenContent}");
+                        }
+                    }
+                    else if (task.IsCompletedSuccessfully && !task.Result.Exists)
+                    {
+                        Debug.Log($"[SaveLoadManager] ❌ No Firebase save found for slot {slotNumber}");
+                    }
+                    else
+                    {
+                        Debug.LogError($"[SaveLoadManager] ❌ Firebase fetch failed for slot {slotNumber}: {task.Exception}");
+                    }
                 }
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"[SaveLoadManager] Failed to sync save slot {slotNumber}: {e.Message}");
-            }
-            finally
-            {
-                Debug.Log($"[SaveLoadManager] Completed slot {slotNumber}, calling callback");
-                onComplete?.Invoke();
-            }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"[SaveLoadManager] ❌ Exception syncing slot {slotNumber}: {e.Message}");
+                    Debug.LogError($"[SaveLoadManager] Stack trace: {e.StackTrace}");
+                }
+                finally
+                {
+                    Debug.Log($"[SaveLoadManager] 🔄 Completed processing slot {slotNumber}, calling callback");
+                    onComplete?.Invoke();
+                }
+            });
         });
-    });
+    }
+
+// NEW: Fallback reload if UI still empty after Firebase sync
+private IEnumerator DelayedVerifyAndReloadIfNeeded()
+{
+    yield return new WaitForSeconds(0.15f); // let IO/UI settle
+
+    bool anyLocal = false;
+    for (int i = 1; i <= 4; i++)
+    {
+        if (HasSaveFile(i))
+        {
+            anyLocal = true;
+            break;
+        }
+    }
+
+    if (!anyLocal)
+    {
+        Debug.LogWarning("[SaveLoadManager] No local saves detected — forcing scene reload.");
+        SceneManager.LoadScene("SaveAndLoadScene");
+    }
 }
+
+
+    private void LoadSaveSlotsFromFirebase()
+    {
+        if (GameProgressManager.Instance?.CurrentStudentState == null)
+        {
+            Debug.LogWarning("[SaveLoadManager] ❌ No student logged in, using local saves only");
+            return;
+        }
+
+        string studentId = GameProgressManager.Instance.CurrentStudentState.StudentId;
+        int completedSlots = 0;
+
+        Debug.Log($"[SaveLoadManager] 🚀 Starting LoadSaveSlotsFromFirebase for student: {studentId}");
+
+        for (int slot = 1; slot <= 4; slot++)
+        {
+            LoadSaveSlotFromFirebase(slot, studentId, () =>
+            {
+                completedSlots++;
+                Debug.Log($"[SaveLoadManager] 📊 Progress: {completedSlots}/4 slots completed");
+
+                if (completedSlots >= 4)
+                {
+                    Debug.Log("[SaveLoadManager] ✅ All Firebase slots processed, updating UI");
+
+                    // Notify listeners
+                    firebaseSlotsLoaded = true;
+                    OnFirebaseSlotsLoaded?.Invoke();
+
+                    var saveLoadUI = FindFirstObjectByType<SaveLoadUI>();
+                    if (saveLoadUI != null)
+                    {
+                        Debug.Log("[SaveLoadManager] 🎯 Found SaveLoadUI, calling RefreshSlotDisplay()");
+                        UnityDispatcher.RunOnMainThread(() =>
+                        {
+                            saveLoadUI.RefreshSlotDisplay();
+                        });
+                    }
+                    else
+                    {
+                        Debug.LogWarning("[SaveLoadManager] ❌ SaveLoadUI not found - cannot refresh display!");
+                    }
+
+                    // NEW: fallback verification
+                    StartCoroutine(DelayedVerifyAndReloadIfNeeded());
+                }
+
+            });
+        }
+    }
 
 
     public void SaveGame(int slotNumber)

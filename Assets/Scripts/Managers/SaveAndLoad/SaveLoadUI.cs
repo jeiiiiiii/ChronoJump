@@ -36,30 +36,64 @@ public class SaveLoadUI : MonoBehaviour
     }
 
     void Start()
+{
+    if (SaveLoadManager.Instance == null)
     {
-        if (SaveLoadManager.Instance == null)
-        {
-            GameObject saveLoadManager = new GameObject("SaveLoadManager");
-            saveLoadManager.AddComponent<SaveLoadManager>();
-        }
-
-        canvas = FindObjectOfType<Canvas>();
-
-        ClearLoadOnlyModeIfFromStoryScene();
-        SetupSlots();
-        UpdateSlotDisplay();
-        CreateConfirmationDialog();
-
-        if (backButton != null)
-        {
-            backButton.onClick.AddListener(GoBack);
-        }
+        GameObject saveLoadManager = new GameObject("SaveLoadManager");
+        saveLoadManager.AddComponent<SaveLoadManager>();
     }
+
+    canvas = FindObjectOfType<Canvas>();
+
+    // NEW: Subscribe to Firebase event
+    if (SaveLoadManager.Instance != null)
+    {
+        SaveLoadManager.Instance.OnFirebaseSlotsLoaded += RefreshSlotDisplay;
+    }
+
+    ClearLoadOnlyModeIfFromStoryScene();
+    SetupSlots();
+    UpdateSlotDisplay();
+    CreateConfirmationDialog();
+
+    if (backButton != null)
+    {
+        backButton.onClick.AddListener(GoBack);
+    }
+}
+
+void OnDestroy()
+{
+    if (SaveLoadManager.Instance != null)
+    {
+        SaveLoadManager.Instance.OnFirebaseSlotsLoaded -= RefreshSlotDisplay;
+    }
+}
+
+
 
     public void RefreshSlotDisplay()
+{
+    Debug.Log("[SaveLoadUI] 🔄 RefreshSlotDisplay() called - updating slot display");
+    
+    // Log current state before refresh
+    for (int i = 0; i < 4; i++)
     {
-        UpdateSlotDisplay();
+        int slotNumber = i + 1;
+        var saveData = SaveLoadManager.Instance.GetSaveData(slotNumber);
+        if (saveData != null)
+        {
+            Debug.Log($"[SaveLoadUI] Slot {slotNumber} data found: {saveData.currentScene} at {saveData.timestamp}");
+        }
+        else
+        {
+            Debug.Log($"[SaveLoadUI] Slot {slotNumber} is empty");
+        }
     }
+    
+    UpdateSlotDisplay();
+    Debug.Log("[SaveLoadUI] ✅ UpdateSlotDisplay() completed");
+}
 
     // NEW METHOD: Clear LoadOnly mode if we came from a story scene
     void ClearLoadOnlyModeIfFromStoryScene()

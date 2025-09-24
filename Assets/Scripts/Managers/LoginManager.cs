@@ -16,12 +16,21 @@ public class LoginManager : MonoBehaviour
     public Toggle isTeacherToggle;
     public GameObject errorMessagePanel;
     public Button backButton;
+    
+    [Header("Remember Me Feature")]
+    public Toggle rememberMeToggle;
 
     private FirebaseFirestore _firestore;
 
     private void Awake()
     {
         _firestore = FirebaseFirestore.DefaultInstance;
+    }
+
+    private void Start()
+    {
+        // Load saved email if Remember Me was enabled
+        LoadRememberedEmail();
     }
 
     // Navigate to the registration scene
@@ -100,6 +109,10 @@ public class LoginManager : MonoBehaviour
                     if (isTeacherToggle.isOn && isTeacher)
                     {
                         Debug.Log($"User {userData.displayName} logged in as teacher.");
+                        
+                        // Handle Remember Me for teacher
+                        HandleRememberMe(email);
+                        
                         feedbackText.text = message;
                         SceneManager.LoadScene("TitleScreen");
                     }
@@ -179,22 +192,22 @@ public class LoginManager : MonoBehaviour
                                 feedbackText.text = "Loading game progress...";
 
                                 GameProgressManager.Instance.SetStudentState(studentState, () => {
-                                // This callback runs when GameProgressManager is fully initialized
-                                Debug.Log($"Student {studentState.StudentId} fully initialized, navigating to TitleScreen");
+                                    // This callback runs when GameProgressManager is fully initialized
+                                    Debug.Log($"Student {studentState.StudentId} fully initialized, navigating to TitleScreen");
 
-                                // Migrate any old PlayerPrefs data
-                                GameProgressManager.Instance.MigrateFromLegacyPlayerPrefs();
-                                SaveLoadManager.Instance?.MigrateFromLegacyStudentPlayerPrefs();
+                                    // Handle Remember Me for student
+                                    HandleRememberMe(email);
 
-                                // Clear other students' local data, keep only this student's folder
-                                SaveLoadManager.Instance?.ClearOtherStudentsLocalData(studentState.StudentId);
+                                    // Migrate any old PlayerPrefs data
+                                    GameProgressManager.Instance.MigrateFromLegacyPlayerPrefs();
+                                    SaveLoadManager.Instance?.MigrateFromLegacyStudentPlayerPrefs();
 
-                                errorMessagePanel.SetActive(true);
-                                feedbackText.text = "Welcome back!";
-                                
-                                // Now it's safe to load the TitleScreen
-                                SceneManager.LoadScene("TitleScreen");
-                            });
+                                    // Clear other students' local data, keep only this student's folder
+                                    SaveLoadManager.Instance?.ClearOtherStudentsLocalData(studentState.StudentId);
+                                    
+                                    // Now it's safe to load the TitleScreen
+                                    SceneManager.LoadScene("TitleScreen");
+                                });
 
                             });
                     }
@@ -219,4 +232,95 @@ public class LoginManager : MonoBehaviour
         errorMessagePanel.SetActive(false);
         feedbackText.text = string.Empty;
     }
+
+    #region Remember Me Functionality
+
+    private void LoadRememberedEmail()
+    {
+        // Check if Remember Me was enabled and we have a saved email
+        if (PlayerPrefs.HasKey("RememberMe") && PlayerPrefs.GetInt("RememberMe") == 1)
+        {
+            string savedEmail = PlayerPrefs.GetString("SavedEmail");
+            
+            if (!string.IsNullOrEmpty(savedEmail))
+            {
+                emailField.text = savedEmail;
+                rememberMeToggle.isOn = true;
+                
+                // Set focus to password field for better UX
+                passwordField.Select();
+                passwordField.ActivateInputField();
+            }
+            else
+            {
+                // Clear invalid saved data
+                ClearRememberedEmail();
+            }
+        }
+        else
+        {
+            // Ensure toggle is off if no remembered email
+            rememberMeToggle.isOn = false;
+        }
+    }
+
+    private void HandleRememberMe(string email)
+    {
+        if (rememberMeToggle.isOn)
+        {
+            SaveRememberedEmail(email);
+        }
+        else
+        {
+            ClearRememberedEmail();
+        }
+    }
+
+    private void SaveRememberedEmail(string email)
+    {
+        PlayerPrefs.SetInt("RememberMe", 1);
+        PlayerPrefs.SetString("SavedEmail", email);
+        PlayerPrefs.Save();
+        
+        Debug.Log("Email saved for Remember Me feature");
+    }
+
+    private void ClearRememberedEmail()
+    {
+        PlayerPrefs.DeleteKey("RememberMe");
+        PlayerPrefs.DeleteKey("SavedEmail");
+        PlayerPrefs.Save();
+        
+        Debug.Log("Remember Me data cleared");
+    }
+
+    // Public method to clear remembered email (can be called from a "Clear" button)
+    public void ClearRememberedCredentials()
+    {
+        ClearRememberedEmail();
+        emailField.text = string.Empty;
+        passwordField.text = string.Empty;
+        rememberMeToggle.isOn = false;
+        
+        feedbackText.text = "Remembered credentials cleared.";
+        Debug.Log("All remembered credentials cleared");
+    }
+
+    // Optional: Call this when the Remember Me toggle is changed manually
+    public void OnRememberMeToggleChanged()
+    {
+        // If user unchecks Remember Me, clear the saved email immediately
+        if (!rememberMeToggle.isOn)
+        {
+            // Only clear if we currently have a remembered email loaded
+            if (PlayerPrefs.HasKey("RememberMe") && PlayerPrefs.GetInt("RememberMe") == 1)
+            {
+                // But don't clear the email field, just the saved preference
+                PlayerPrefs.DeleteKey("RememberMe");
+                PlayerPrefs.Save();
+            }
+        }
+    }
+
+    #endregion
 }

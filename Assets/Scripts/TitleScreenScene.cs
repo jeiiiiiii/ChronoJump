@@ -15,52 +15,73 @@ public class TitleScreen : MonoBehaviour
     public Button logoutButton;
     public TextMeshProUGUI educatorsModeText;
 
-    private void Awake()
+    private async void Start()
     {
-        FirebaseManager.Instance.GetUserData(userData =>
+        // Hide all buttons until role is known
+        SetAllButtonsActive(false);
+
+        // Show loading scene/spinner
+        await LoadingManager.Instance.Show();
+
+        FirebaseManager.Instance.GetUserData(async userData =>
+        {
+            if (userData == null)
             {
-                Debug.Log(userData.displayName);
-                if (userData == null)
-                {
-                    Debug.LogError("No user data found. Redirecting to Register.");
-                    return;
-                }
-                else if (userData.role.ToLower() == "teacher")
-                {
-                    newGameButton.gameObject.SetActive(false);
-                    loadGameButton.gameObject.SetActive(false);
-                    classroomButton.gameObject.SetActive(false);
-                    dashboardButton.gameObject.SetActive(true);
-                    creatormodeButton.gameObject.SetActive(true);
-                    logoutButton.gameObject.SetActive(true);
-                    educatorsModeText.gameObject.SetActive(true);
-                }
-                else if (userData.role.ToLower() == "student")
-                {
-                    newGameButton.gameObject.SetActive(true);
-                    loadGameButton.gameObject.SetActive(true);
-                    classroomButton.gameObject.SetActive(true);
-                    dashboardButton.gameObject.SetActive(false);
-                    creatormodeButton.gameObject.SetActive(false);
-                    logoutButton.gameObject.SetActive(true);
-                    educatorsModeText.gameObject.SetActive(false);
+                Debug.LogError("No user data found. Redirecting to Register.");
+                await LoadingManager.Instance.Hide();
+                SceneManager.LoadScene("Register");
+                return;
+            }
 
-                    // Call async wrapper to check student progress
-                    CheckStudentProgress(userData.userId);
-                }
+            Debug.Log($"[TitleScreen] Loaded user: {userData.displayName} ({userData.role})");
 
-                else
-                {
-                    Debug.LogError("Unknown user role. Redirecting to Register.");
-                    SceneManager.LoadScene("Register");
-                }
-            });
+            if (userData.role.ToLower() == "teacher")
+            {
+                newGameButton.gameObject.SetActive(false);
+                loadGameButton.gameObject.SetActive(false);
+                classroomButton.gameObject.SetActive(false);
+                dashboardButton.gameObject.SetActive(true);
+                creatormodeButton.gameObject.SetActive(true);
+                logoutButton.gameObject.SetActive(true);
+                educatorsModeText.gameObject.SetActive(true);
+
+                await LoadingManager.Instance.Hide();
+            }
+            else if (userData.role.ToLower() == "student")
+            {
+                newGameButton.gameObject.SetActive(true);
+                loadGameButton.gameObject.SetActive(true);
+                classroomButton.gameObject.SetActive(true);
+                dashboardButton.gameObject.SetActive(false);
+                creatormodeButton.gameObject.SetActive(false);
+                logoutButton.gameObject.SetActive(true);
+                educatorsModeText.gameObject.SetActive(false);
+
+                // Check student progress before showing Continue
+                await CheckStudentProgress(userData.userId);
+            }
+            else
+            {
+                Debug.LogError("Unknown user role. Redirecting to Register.");
+                await LoadingManager.Instance.Hide();
+                SceneManager.LoadScene("Register");
+            }
+        });
     }
 
-    public void ContinueGame()
+    private void SetAllButtonsActive(bool state)
     {
-        SceneManager.LoadScene("ChapterSelect");
+        newGameButton.gameObject.SetActive(state);
+        loadGameButton.gameObject.SetActive(state);
+        continueButton.gameObject.SetActive(state);
+        classroomButton.gameObject.SetActive(state);
+        dashboardButton.gameObject.SetActive(state);
+        creatormodeButton.gameObject.SetActive(state);
+        logoutButton.gameObject.SetActive(state);
+        educatorsModeText.gameObject.SetActive(state);
     }
+
+    public void ContinueGame() => SceneManager.LoadScene("ChapterSelect");
 
     public void NewGame()
     {
@@ -70,56 +91,43 @@ public class TitleScreen : MonoBehaviour
             return;
         }
 
-        // Start a fresh game for the current student
         GameProgressManager.Instance.StartNewGame();
-
-        // Go to Chapter Select scene
         SceneManager.LoadScene("ChapterSelect");
     }
 
-    public void CreatorMode()
-    {
-        SceneManager.LoadScene("Creator'sModeScene");
-    }
+    public void CreatorMode() => SceneManager.LoadScene("Creator'sModeScene");
 
     public void Logout()
     {
         SceneManager.LoadScene("Login");
-        // NEW: Clear save source to indicate we're accessing for loading only
         StudentPrefs.DeleteKey("LastScene");
         StudentPrefs.DeleteKey("SaveSource");
-        StudentPrefs.SetString("AccessMode", "LoadOnly"); // Mark that we're only here to load
+        StudentPrefs.SetString("AccessMode", "LoadOnly");
         StudentPrefs.Save();
     }
 
-    public void Classroom()
-    {
-        SceneManager.LoadScene("Classroom");
-    }
+    public void Classroom() => SceneManager.LoadScene("Classroom");
 
     public void LoadGame()
     {
-        // NEW: Clear save source and set access mode for load-only access
-        // StudentPrefs.DeleteKey("LastScene");
-        // StudentPrefs.DeleteKey("SaveSource");
-        StudentPrefs.SetString("AccessMode", "LoadOnly"); // Mark that we're only here to load
+        StudentPrefs.SetString("AccessMode", "LoadOnly");
+        StudentPrefs.SetString("SaveSource", "TitleScreen"); 
+        StudentPrefs.SetString("LastScene", "TitleScreen");  
         StudentPrefs.Save();
 
         SceneManager.LoadScene("SaveAndLoadScene");
     }
 
-    public void TeacherDashboard()
-    {
-        SceneManager.LoadScene("TeacherDashboard");
-    }
 
-    private async void CheckStudentProgress(string userId)
+    public void TeacherDashboard() => SceneManager.LoadScene("TeacherDashboard");
+
+    private async System.Threading.Tasks.Task CheckStudentProgress(string userId)
     {
         bool hasProgress = await GameProgressManager.Instance.HasProgressAsync(userId);
         Debug.Log($"[TitleScreen] Checking HasProgress() for student '{userId}': {hasProgress}");
 
         continueButton.gameObject.SetActive(hasProgress);
+
+        await LoadingManager.Instance.Hide();
     }
-
 }
-
