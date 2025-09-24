@@ -48,6 +48,7 @@ public class QuizTimeManagerSumerian : MonoBehaviour
 
     void Start()
     {
+        GameState.ResetScore();
         quizQuestions = new Question[]
         {
             new Question {
@@ -297,6 +298,8 @@ public class QuizTimeManagerSumerian : MonoBehaviour
 
         resultTextUI.text = resultText;
         ScoreTextUI.text = ScoreText;
+
+        GameState.UpdateProgressManager();
 
         // Saving to firebase
         bool passed = GameState.score >= 8; 

@@ -19,7 +19,7 @@ public static class GameState
         set
         {
             _score = value;
-            GameProgressManager.Instance?.SetScore(_score);
+            // Remove auto-save: GameProgressManager.Instance?.SetScore(_score);
         }
     }
 
@@ -51,4 +51,11 @@ public static class GameState
 
     public static void ResetHearts() => hearts = 3;
     public static void ResetScore() => score = 0;
+    
+    // New method to manually update progress manager
+    public static void UpdateProgressManager()
+    {
+        GameProgressManager.Instance?.SetHearts(_hearts);
+        GameProgressManager.Instance?.SetScore(_score);
+    }
 }

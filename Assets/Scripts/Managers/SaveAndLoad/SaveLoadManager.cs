@@ -111,8 +111,39 @@ private IEnumerator WaitForStudentStateAndLoad()
     {
         Debug.Log("SaveAndLoadScene detected, starting Firebase load process");
         CaptureCurrentGameState();
-        StartCoroutine(WaitForStudentStateAndLoad()); // NEW
+        
+        // FIXED: Add a timeout to prevent infinite waiting
+        StartCoroutine(WaitForStudentStateWithTimeout());
     }
+}
+
+// FIXED: Add timeout to prevent infinite waiting
+private IEnumerator WaitForStudentStateWithTimeout()
+{
+    float timeout = 10f; // seconds
+    float elapsed = 0f;
+
+    while ((GameProgressManager.Instance == null || GameProgressManager.Instance.CurrentStudentState == null) 
+            && elapsed < timeout)
+    {
+        elapsed += Time.deltaTime;
+        yield return null;
+    }
+
+    if (GameProgressManager.Instance?.CurrentStudentState == null)
+    {
+        Debug.LogWarning("[SaveLoadManager] WaitForStudentStateWithTimeout timed out — student state still null.");
+        
+        // FIXED: Don't crash or reload, just show empty slots
+        var saveLoadUI = FindFirstObjectByType<SaveLoadUI>();
+        if (saveLoadUI != null)
+        {
+            saveLoadUI.RefreshSlotDisplay();
+        }
+        yield break;
+    }
+
+    LoadSaveSlotsFromFirebase();
 }
 
 
@@ -212,78 +243,104 @@ private IEnumerator WaitForStudentStateAndLoad()
         });
     }
 
-// NEW: Fallback reload if UI still empty after Firebase sync
-private IEnumerator DelayedVerifyAndReloadIfNeeded()
-{
-    yield return new WaitForSeconds(0.15f); // let IO/UI settle
+    // FIXED: Remove the infinite reload loop
+    private IEnumerator DelayedVerifyAndReloadIfNeeded()
+    {
+        yield return new WaitForSeconds(0.15f); // let IO/UI settle
 
-    bool anyLocal = false;
+        bool anyLocal = false;
+        for (int i = 1; i <= 4; i++)
+        {
+            if (HasSaveFile(i))
+            {
+                anyLocal = true;
+                break;
+            }
+        }
+
+        if (!anyLocal)
+        {
+            Debug.LogWarning("[SaveLoadManager] No local saves detected — this is normal for new players.");
+            // REMOVED the SceneManager.LoadScene call that was causing infinite loop
+        }
+    }
+// FIXED: Add this method to safely handle user switching
+public void OnUserSwitched(string newStudentId)
+{
+    Debug.Log($"[SaveLoadManager] User switched to: {newStudentId}");
+    
+    // Reset state
+    firebaseSlotsLoaded = false;
+    currentGameScene = "";
+    currentGameDialogueIndex = 0;
+    
+    // Don't automatically clear other users' data - let the login system handle this
+    // ClearOtherStudentsLocalData(newStudentId); // COMMENTED OUT - too dangerous
+    
+    // Migrate if needed
+    MigrateFromLegacyStudentPlayerPrefs();
+}
+
+
+   private void LoadSaveSlotsFromFirebase()
+{
+    if (GameProgressManager.Instance?.CurrentStudentState == null)
+    {
+        Debug.LogWarning("[SaveLoadManager] ❌ No student logged in, using local saves only");
+        return;
+    }
+
+    string studentId = GameProgressManager.Instance.CurrentStudentState.StudentId;
+    int completedSlots = 0;
+
+    Debug.Log($"[SaveLoadManager] 🚀 Starting LoadSaveSlotsFromFirebase for student: {studentId}");
+
+    // FIXED: Check if we have any local saves first to avoid unnecessary Firebase calls
+    bool hasAnyLocalSaves = false;
     for (int i = 1; i <= 4; i++)
     {
         if (HasSaveFile(i))
         {
-            anyLocal = true;
+            hasAnyLocalSaves = true;
             break;
         }
     }
 
-    if (!anyLocal)
+    for (int slot = 1; slot <= 4; slot++)
     {
-        Debug.LogWarning("[SaveLoadManager] No local saves detected — forcing scene reload.");
-        SceneManager.LoadScene("SaveAndLoadScene");
-    }
-}
-
-
-    private void LoadSaveSlotsFromFirebase()
-    {
-        if (GameProgressManager.Instance?.CurrentStudentState == null)
+        LoadSaveSlotFromFirebase(slot, studentId, () =>
         {
-            Debug.LogWarning("[SaveLoadManager] ❌ No student logged in, using local saves only");
-            return;
-        }
+            completedSlots++;
+            Debug.Log($"[SaveLoadManager] 📊 Progress: {completedSlots}/4 slots completed");
 
-        string studentId = GameProgressManager.Instance.CurrentStudentState.StudentId;
-        int completedSlots = 0;
-
-        Debug.Log($"[SaveLoadManager] 🚀 Starting LoadSaveSlotsFromFirebase for student: {studentId}");
-
-        for (int slot = 1; slot <= 4; slot++)
-        {
-            LoadSaveSlotFromFirebase(slot, studentId, () =>
+            if (completedSlots >= 4)
             {
-                completedSlots++;
-                Debug.Log($"[SaveLoadManager] 📊 Progress: {completedSlots}/4 slots completed");
+                Debug.Log("[SaveLoadManager] ✅ All Firebase slots processed, updating UI");
 
-                if (completedSlots >= 4)
+                // Notify listeners
+                firebaseSlotsLoaded = true;
+                OnFirebaseSlotsLoaded?.Invoke();
+
+                var saveLoadUI = FindFirstObjectByType<SaveLoadUI>();
+                if (saveLoadUI != null)
                 {
-                    Debug.Log("[SaveLoadManager] ✅ All Firebase slots processed, updating UI");
-
-                    // Notify listeners
-                    firebaseSlotsLoaded = true;
-                    OnFirebaseSlotsLoaded?.Invoke();
-
-                    var saveLoadUI = FindFirstObjectByType<SaveLoadUI>();
-                    if (saveLoadUI != null)
+                    Debug.Log("[SaveLoadManager] 🎯 Found SaveLoadUI, calling RefreshSlotDisplay()");
+                    UnityDispatcher.RunOnMainThread(() =>
                     {
-                        Debug.Log("[SaveLoadManager] 🎯 Found SaveLoadUI, calling RefreshSlotDisplay()");
-                        UnityDispatcher.RunOnMainThread(() =>
-                        {
-                            saveLoadUI.RefreshSlotDisplay();
-                        });
-                    }
-                    else
-                    {
-                        Debug.LogWarning("[SaveLoadManager] ❌ SaveLoadUI not found - cannot refresh display!");
-                    }
-
-                    // NEW: fallback verification
-                    StartCoroutine(DelayedVerifyAndReloadIfNeeded());
+                        saveLoadUI.RefreshSlotDisplay();
+                    });
+                }
+                else
+                {
+                    Debug.LogWarning("[SaveLoadManager] ❌ SaveLoadUI not found - cannot refresh display!");
                 }
 
-            });
-        }
+                // FIXED: Only verify, don't reload scene
+                StartCoroutine(DelayedVerifyAndReloadIfNeeded());
+            }
+        });
     }
+}
 
 
     public void SaveGame(int slotNumber)
@@ -396,40 +453,78 @@ private IEnumerator DelayedVerifyAndReloadIfNeeded()
     }
 
     public bool LoadGame(int slotNumber)
+{
+    string filePath = GetSaveFilePath(slotNumber);
+
+    if (!File.Exists(filePath))
     {
-        string filePath = GetSaveFilePath(slotNumber);
-
-        if (!File.Exists(filePath))
-        {
-            Debug.LogWarning($"Save file for slot {slotNumber} does not exist");
-            return false;
-        }
-
-        try
-        {
-            string json = File.ReadAllText(filePath);
-            LocalSaveData saveData = JsonUtility.FromJson<LocalSaveData>(json);
-
-            StudentPrefs.SetInt("LoadedDialogueIndex", saveData.dialogueIndex);
-            StudentPrefs.SetString("LoadedFromSave", "true");
-            StudentPrefs.Save();
-
-            Debug.Log($"Loading game - Scene: {saveData.currentScene}, Dialogue Index: {saveData.dialogueIndex}");
-
-            if (GameProgressManager.Instance != null)
-            {
-                GameProgressManager.Instance.RefreshProgress(keepScores: true);
-            }
-
-            SceneManager.LoadScene(saveData.currentScene);
-            return true;
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Failed to load game: {e.Message}");
-            return false;
-        }
+        Debug.LogWarning($"Save file for slot {slotNumber} does not exist");
+        return false;
     }
+
+    try
+    {
+        string json = File.ReadAllText(filePath);
+        LocalSaveData saveData = JsonUtility.FromJson<LocalSaveData>(json);
+
+        // FIXED: Also load the corresponding Firebase save data to restore GameProgress
+        if (GameProgressManager.Instance?.CurrentStudentState != null)
+        {
+            string studentId = GameProgressManager.Instance.CurrentStudentState.StudentId;
+            string documentId = $"{studentId}_slot_{slotNumber}";
+            
+            Debug.Log($"Loading GameProgress from Firebase save slot {slotNumber}");
+            
+            db.Collection("saveData").Document(documentId).GetSnapshotAsync().ContinueWith(task =>
+            {
+                UnityDispatcher.RunOnMainThread(() =>
+                {
+                    try
+                    {
+                        if (task.IsCompletedSuccessfully && task.Result.Exists)
+                        {
+                            var firebaseSave = task.Result.ConvertTo<SaveData>();
+                            
+                            // FIXED: Restore GameProgress from the save data
+                            if (GameProgressManager.Instance != null)
+                            {
+                                GameProgressManager.Instance.LoadGameProgressFromSave(firebaseSave);
+                                Debug.Log($"GameProgress restored from save slot {slotNumber}");
+                            }
+                        }
+                        else
+                        {
+                            Debug.LogWarning($"No Firebase save data found for slot {slotNumber}, using current GameProgress");
+                        }
+                    }
+                    catch (System.Exception e)
+                    {
+                        Debug.LogError($"Failed to load GameProgress from Firebase save: {e.Message}");
+                    }
+                });
+            });
+        }
+
+        StudentPrefs.SetInt("LoadedDialogueIndex", saveData.dialogueIndex);
+        StudentPrefs.SetString("LoadedFromSave", "true");
+        StudentPrefs.Save();
+
+        Debug.Log($"Loading game - Scene: {saveData.currentScene}, Dialogue Index: {saveData.dialogueIndex}");
+
+        if (GameProgressManager.Instance != null)
+        {
+            GameProgressManager.Instance.RefreshProgress(keepScores: true);
+        }
+
+        SceneManager.LoadScene(saveData.currentScene);
+        return true;
+    }
+    catch (System.Exception e)
+    {
+        Debug.LogError($"Failed to load game: {e.Message}");
+        return false;
+    }
+}
 
     #region Firebase Save Slot Management
 
@@ -605,18 +700,34 @@ private IEnumerator DelayedVerifyAndReloadIfNeeded()
     // -----------------------------
     // Student-specific save path
     // -----------------------------
-    private string GetSaveFilePath(int slotNumber)
+    // FIXED: Safer file path handling
+private string GetSaveFilePath(int slotNumber)
+{
+    string studentId = GameProgressManager.Instance?.CurrentStudentState?.StudentId ?? "DefaultStudent";
+    
+    // FIXED: Validate studentId to prevent invalid paths
+    if (string.IsNullOrEmpty(studentId) || studentId.Length < 3)
     {
-        string studentId = GameProgressManager.Instance?.CurrentStudentState?.StudentId ?? "DefaultStudent";
-        string studentFolder = Path.Combine(Application.persistentDataPath, studentId);
+        studentId = "InvalidStudent";
+    }
+    
+    string studentFolder = Path.Combine(Application.persistentDataPath, studentId);
 
-        if (!Directory.Exists(studentFolder))
+    if (!Directory.Exists(studentFolder))
+    {
+        try
         {
             Directory.CreateDirectory(studentFolder);
         }
-
-        return Path.Combine(studentFolder, $"savegame_slot_{slotNumber}.json");
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Failed to create directory {studentFolder}: {e.Message}");
+            return Path.Combine(Application.persistentDataPath, $"savegame_slot_{slotNumber}.json");
+        }
     }
+
+    return Path.Combine(studentFolder, $"savegame_slot_{slotNumber}.json");
+}
 
     public void SetCurrentGameState(string sceneName, int dialogueIndex)
     {

@@ -18,15 +18,24 @@ public static class PlayerAchievementManager
             return;
         }
 
-        // Always save using ID internally
+        // FIXED: Check the type and call the appropriate method
         if (GameProgressManager.Instance != null && GameProgressManager.Instance.CurrentStudentState != null)
         {
-            GameProgressManager.Instance.AddAchievement(data.Id);
+            if (data.Type == "artifact")
+            {
+                GameProgressManager.Instance.AddArtifact(data.Id);
+            }
+            else // achievement or any other type
+            {
+                GameProgressManager.Instance.AddAchievement(data.Id);
+            }
             return;
         }
 
         // Legacy fallback (still uses ID now) - now with StudentPrefs
-        StudentPrefs.SetInt(GetKey(data.Id), 1);
+        // FIXED: Use different keys for achievements vs artifacts
+        string key = data.Type == "artifact" ? GetArtifactKey(data.Id) : GetAchievementKey(data.Id);
+        StudentPrefs.SetInt(key, 1);
         StudentPrefs.Save();
     }
 
@@ -42,12 +51,21 @@ public static class PlayerAchievementManager
         if (data == null) return false;
 
         if (GameProgressManager.Instance != null && GameProgressManager.Instance.CurrentStudentState != null)
-            return GameProgressManager.Instance.IsAchievementUnlocked(data.Id);
+        {
+            // FIXED: Check the appropriate list based on type
+            if (data.Type == "artifact")
+                return GameProgressManager.Instance.IsArtifactUnlocked(data.Id);
+            else
+                return GameProgressManager.Instance.IsAchievementUnlocked(data.Id);
+        }
 
-        return StudentPrefs.GetInt(GetKey(data.Id), 0) == 1;
+        // FIXED: Check the appropriate key based on type
+        string key = data.Type == "artifact" ? GetArtifactKey(data.Id) : GetAchievementKey(data.Id);
+        return StudentPrefs.GetInt(key, 0) == 1;
     }
 
-    private static string GetKey(string achievementId) => $"ACH_{achievementId}_unlocked";
+    private static string GetAchievementKey(string achievementId) => $"ACH_{achievementId}_unlocked";
+    private static string GetArtifactKey(string artifactId) => $"ART_{artifactId}_unlocked";
 
     /// <summary>
     /// Migration method to convert old PlayerPrefs achievements to StudentPrefs
@@ -61,27 +79,28 @@ public static class PlayerAchievementManager
             return;
         }
 
-        Debug.Log("Migrating achievements from legacy PlayerPrefs to StudentPrefs");
+        Debug.Log("Migrating achievements and artifacts from legacy PlayerPrefs to StudentPrefs");
 
         foreach (var achievement in AchievementRegistry.AchievementsById.Values)
         {
-            string legacyKey = GetKey(achievement.Id);
+            string legacyKey = GetAchievementKey(achievement.Id);
             
-            // Check if this achievement was unlocked in PlayerPrefs
+            // Check if this achievement/artifact was unlocked in PlayerPrefs
             if (PlayerPrefs.GetInt(legacyKey, 0) == 1)
             {
-                // Migrate to StudentPrefs
-                StudentPrefs.SetInt(legacyKey, 1);
+                // FIXED: Use the appropriate key based on type
+                string newKey = achievement.Type == "artifact" ? GetArtifactKey(achievement.Id) : GetAchievementKey(achievement.Id);
+                StudentPrefs.SetInt(newKey, 1);
                 
                 // Clean up the PlayerPrefs entry
                 PlayerPrefs.DeleteKey(legacyKey);
                 
-                Debug.Log($"Migrated achievement {achievement.Id} from PlayerPrefs to StudentPrefs");
+                Debug.Log($"Migrated {achievement.Type} {achievement.Id} from PlayerPrefs to StudentPrefs");
             }
         }
         
         StudentPrefs.Save();
         PlayerPrefs.Save();
-        Debug.Log("Achievement migration completed");
+        Debug.Log("Achievement and artifact migration completed");
     }
 }

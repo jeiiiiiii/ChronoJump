@@ -301,6 +301,8 @@ public class QuizTimeManagerAkkadian : MonoBehaviour
         resultTextUI.text = resultText;
         ScoreTextUI.text = ScoreText;
 
+        GameState.UpdateProgressManager();
+
         // Saving to firebase
         bool passed = GameState.score >= 8; 
         GameProgressManager.Instance.RecordQuizAttempt(

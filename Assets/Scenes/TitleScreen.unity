@@ -1562,7 +1562,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 636.16, y: 34.883}
+  m_AnchoredPosition: {x: 636.16, y: -80.11998}
   m_SizeDelta: {x: 570, y: 115}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &999657105
@@ -1611,7 +1611,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 832659951}
         m_TargetAssemblyTypeName: TitleScreen, Assembly-CSharp
-        m_MethodName: Classroom
+        m_MethodName: TeacherDashboard
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1826,7 +1826,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 276.90002, y: 150}
+  m_AnchoredPosition: {x: 281, y: 239.75}
   m_SizeDelta: {x: -1581.22, y: -1015.27}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1146449732
@@ -1964,7 +1964,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 636.16, y: -80.117}
+  m_AnchoredPosition: {x: 636.16, y: -195.12}
   m_SizeDelta: {x: 570, y: 115}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1308320586
