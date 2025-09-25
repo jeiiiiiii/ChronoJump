@@ -486,7 +486,7 @@ public class AssyrianSecondRecallChallenges : MonoBehaviour
 
     void LoadGameOverScene()
     {
-        SceneManager.LoadScene("GameOver");
+        SceneManager.LoadScene("AssyrianGameOver");
     }
 
     void PlayCongratsAudio()

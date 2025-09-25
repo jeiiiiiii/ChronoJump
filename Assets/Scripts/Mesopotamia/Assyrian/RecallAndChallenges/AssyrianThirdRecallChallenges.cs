@@ -524,7 +524,7 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
 
     void LoadGameOverScene()
     {
-        SceneManager.LoadScene("GameOver");
+        SceneManager.LoadScene("AssyrianGameOver");
     }
 
     void PlayCongratsAudio()

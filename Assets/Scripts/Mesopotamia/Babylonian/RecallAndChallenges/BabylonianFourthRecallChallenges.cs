@@ -517,7 +517,7 @@ public class BabylonianFourthRecallChallenges : MonoBehaviour
 
     void LoadGameOverScene()
     {
-        SceneManager.LoadScene("GameOver");
+        SceneManager.LoadScene("BabylonianGameOver");
     }
 
     void PlayCongratsAudio()

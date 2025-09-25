@@ -535,7 +535,7 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
     }
     void LoadGameOverScene()
     {
-        SceneManager.LoadScene("GameOver");
+        SceneManager.LoadScene("AkkadianGameOver");
     }
 
     void PlayCongratsAudio()

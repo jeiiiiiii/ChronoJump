@@ -492,7 +492,7 @@ public class BabylonianSecondRecallChallenges : MonoBehaviour
 
     void LoadGameOverScene()
     {
-        SceneManager.LoadScene("GameOver");
+        SceneManager.LoadScene("BabylonianGameOver");
     }
 
     void PlayCongratsAudio()

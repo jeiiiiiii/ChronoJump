@@ -114,7 +114,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/AkkadianQuizTime.unity
     guid: 95bbf2f1d0e14434fb06b6160bb136ca
   - enabled: 1
-    path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/GameOver.unity
+    path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/AkkadianGameOver.unity
     guid: b02e92e7886af404d8805f10d1b9858a
   - enabled: 1
     path: Assets/Scenes/Mesopotamia/BabylonianScene/BabylonianSceneOne.unity
@@ -153,7 +153,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Mesopotamia/BabylonianRecallChallenges/BabylonianQuizTime.unity
     guid: 16b4624754796754299fdbb376da2767
   - enabled: 1
-    path: Assets/Scenes/Mesopotamia/BabylonianRecallChallenges/GameOver.unity
+    path: Assets/Scenes/Mesopotamia/BabylonianRecallChallenges/BabylonianGameOver.unity
     guid: 908e0cd058698214781d14e611f015cf
   - enabled: 1
     path: Assets/Scenes/Mesopotamia/AssyrianScene/AssyrianSceneOne.unity
@@ -183,7 +183,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Mesopotamia/AssyrianRecallChallenges/AssyrianQuizTime.unity
     guid: f14ca075008136d4a9b630095bc47f66
   - enabled: 1
-    path: Assets/Scenes/Mesopotamia/AssyrianRecallChallenges/GameOver.unity
+    path: Assets/Scenes/Mesopotamia/AssyrianRecallChallenges/AssyrianGameOver.unity
     guid: 2d63f6f95e20d654584e04ea002527e9
   - enabled: 1
     path: Assets/Scenes/Mesopotamia/CodexScene/Mesopotamia/CodexScene.unity
@@ -306,7 +306,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Mesopotamia/BabylonianRecallChallenges/BabylonianThirdRecallChallenges.unity
     guid: 1b4657b7d82117b438b0bfc41748314f
   - enabled: 1
-    path: Assets/Scenes/Mesopotamia/BabylonianRecallChallenges/GameOver.unity
+    path: Assets/Scenes/Mesopotamia/BabylonianRecallChallenges/BabylonianGameOver.unity
     guid: 908e0cd058698214781d14e611f015cf
   - enabled: 1
     path: Assets/Scenes/Mesopotamia/AssyrianScene/AssyrianSceneFive.unity
@@ -345,7 +345,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Mesopotamia/AssyrianRecallChallenges/AssyrianThirdRecallChallenges.unity
     guid: ab4ac6301ae373a439408e5225f7bec3
   - enabled: 1
-    path: Assets/Scenes/Mesopotamia/AssyrianRecallChallenges/GameOver.unity
+    path: Assets/Scenes/Mesopotamia/AssyrianRecallChallenges/AssyrianGameOver.unity
     guid: 2d63f6f95e20d654584e04ea002527e9
   - enabled: 1
     path: Assets/Scenes/Mesopotamia/AkkadianScene/AkkadianSceneFour.unity
@@ -393,7 +393,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/AkkadianThirdRecallChallenges.unity
     guid: 806a1fcd2b4be7742ab17ae5b7a8f6c9
   - enabled: 1
-    path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/GameOver.unity
+    path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/AkkadianGameOver.unity
     guid: b02e92e7886af404d8805f10d1b9858a
   - enabled: 1
     path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/CreateNewAddTitleScene.unity

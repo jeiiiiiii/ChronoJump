@@ -519,7 +519,7 @@ public void UseArtifactButton()
 
     void LoadGameOverScene()
     {
-        SceneManager.LoadScene("GameOver");
+        SceneManager.LoadScene("AkkadianGameOver");
     }
 
     void PlayCongratsAudio()
