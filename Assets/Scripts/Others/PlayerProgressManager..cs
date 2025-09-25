@@ -37,6 +37,66 @@ public static class PlayerProgressManager
     }
 
     /// <summary>
+    /// Unlocks a chapter through GameProgressManager.
+    /// This is a bridge method for backward compatibility.
+    /// </summary>
+    public static void UnlockChapter(string chapterId)
+    {
+        if (string.IsNullOrEmpty(chapterId))
+        {
+            Debug.LogWarning("Invalid chapter ID: " + chapterId);
+            return;
+        }
+
+        // Use GameProgressManager if available
+        if (GameProgressManager.Instance != null && GameProgressManager.Instance.CurrentStudentState != null)
+        {
+            GameProgressManager.Instance.UnlockChapter(chapterId);
+            Debug.Log($"Unlocked chapter {chapterId} through GameProgressManager");
+        }
+        else
+        {
+            // Fallback to StudentPrefs if GameProgressManager is not available
+            // Load existing unlocked chapters
+            var chaptersJson = StudentPrefs.GetString("unlockedChapters", "");
+            var unlockedChapters = new System.Collections.Generic.List<string>();
+            
+            if (!string.IsNullOrEmpty(chaptersJson))
+            {
+                try
+                {
+                    var wrapper = JsonUtility.FromJson<StringListWrapper>(chaptersJson);
+                    if (wrapper != null && wrapper.list != null)
+                    {
+                        unlockedChapters = wrapper.list;
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"Failed to parse unlockedChapters from StudentPrefs: {e.Message}");
+                }
+            }
+
+            // Add the new chapter if not already unlocked
+            if (!unlockedChapters.Contains(chapterId))
+            {
+                unlockedChapters.Add(chapterId);
+                
+                // Save back to StudentPrefs
+                var newChaptersJson = JsonUtility.ToJson(new StringListWrapper { list = unlockedChapters });
+                StudentPrefs.SetString("unlockedChapters", newChaptersJson);
+                StudentPrefs.Save();
+                
+                Debug.Log($"Unlocked chapter {chapterId} using StudentPrefs fallback.");
+            }
+            else
+            {
+                Debug.Log($"Chapter {chapterId} was already unlocked in StudentPrefs.");
+            }
+        }
+    }
+
+    /// <summary>
     /// Checks if a civilization is unlocked through GameProgressManager.
     /// Falls back to StudentPrefs if GameProgressManager is not available.
     /// </summary>
@@ -62,6 +122,53 @@ public static class PlayerProgressManager
         }
     }
 
+    /// <summary>
+    /// Checks if a chapter is unlocked through GameProgressManager.
+    /// Falls back to StudentPrefs if GameProgressManager is not available.
+    /// </summary>
+    public static bool IsChapterUnlocked(string chapterId)
+    {
+        if (string.IsNullOrEmpty(chapterId))
+        {
+            Debug.LogWarning("Invalid chapter ID: " + chapterId);
+            return false;
+        }
+
+        // Use GameProgressManager if available
+        if (GameProgressManager.Instance != null && GameProgressManager.Instance.CurrentStudentState != null)
+        {
+            return GameProgressManager.Instance.IsChapterUnlocked(chapterId);
+        }
+        else
+        {
+            // Fallback to StudentPrefs
+            var chaptersJson = StudentPrefs.GetString("unlockedChapters", "");
+            
+            if (!string.IsNullOrEmpty(chaptersJson))
+            {
+                try
+                {
+                    var wrapper = JsonUtility.FromJson<StringListWrapper>(chaptersJson);
+                    if (wrapper != null && wrapper.list != null)
+                    {
+                        bool isUnlocked = wrapper.list.Contains(chapterId);
+                        Debug.LogWarning($"GameProgressManager not available. Checking {chapterId} unlock status using StudentPrefs fallback: {isUnlocked}");
+                        return isUnlocked;
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"Failed to parse unlockedChapters from StudentPrefs: {e.Message}");
+                }
+            }
+            
+            // Default: CH001 is always unlocked
+            bool defaultUnlocked = (chapterId == "CH001");
+            Debug.LogWarning($"GameProgressManager not available. Using default unlock status for {chapterId}: {defaultUnlocked}");
+            return defaultUnlocked;
+        }
+    }
+
     private static bool IsValidCivilization(string civName)
     {
         foreach (string civ in allCivilizations)
@@ -77,7 +184,7 @@ public static class PlayerProgressManager
     /// </summary>
     public static void MigrateToGameProgressManager()
     {
-        if (GameProgressManager.Instance == null || GameProgressManager.Instance.CurrentStudentState == null)
+        if (GameProgressManager.Instance == null || GameProgressManager.Instance.CurrentStudentState != null)
         {
             Debug.LogWarning("Cannot migrate: GameProgressManager not available or no student logged in");
             return;
