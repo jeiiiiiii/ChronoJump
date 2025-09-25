@@ -46,6 +46,12 @@ public class GameProgressManager : MonoBehaviour
 
     private bool? _cachedHasProgress = null;
 
+    // Add these fields at the top of your GameProgressManager class
+    private bool _isRecalculatingScores = false;
+    private bool _isLoadingFromFirebase = false;
+    private System.DateTime _lastSaveTime = System.DateTime.MinValue;
+    private const float SAVE_COOLDOWN_SECONDS = 2f;
+
     // Civilization to Story mapping (1:1 relationship)
     private readonly Dictionary<string, string> civilizationToStory = new Dictionary<string, string>
     {
@@ -75,6 +81,9 @@ public class GameProgressManager : MonoBehaviour
 
     public void Initialize(StudentState studentState, System.Action onComplete = null)
     {
+        // Invalidate cache when initializing with a new student state
+        InvalidateProgressCache();
+
         CurrentStudentState = studentState;
 
         if (CurrentStudentState.GameProgress == null)
@@ -199,11 +208,14 @@ public class GameProgressManager : MonoBehaviour
     string studId = CurrentStudentState.StudentId;
 
     Debug.Log($"Fetching GameProgress from Firebase for student {studId}");
+    _isLoadingFromFirebase = true;
 
     db.Collection("gameProgress").Document(studId).GetSnapshotAsync().ContinueWith(task =>
     {
         UnityDispatcher.RunOnMainThread(() =>
         {
+            _isLoadingFromFirebase = false;
+            
             try
             {
                 if (task.IsCompletedSuccessfully && task.Result.Exists)
@@ -222,44 +234,212 @@ public class GameProgressManager : MonoBehaviour
 
                     gp.lastUpdated = data.ContainsKey("lastUpdated") ? (Timestamp)data["lastUpdated"] : Timestamp.GetCurrentTimestamp();
 
-                    // FIXED: Update currentStory to the latest unlocked story
                     UpdateCurrentStoryFromGameProgress();
-
                     SaveToStudentPrefs();
                     Debug.Log("Successfully loaded GameProgress from Firebase and cached to StudentPrefs");
+                    
+                    // FIX: After loading from Firebase, check if scores need recalculation
+                    CheckAndRecalculateScoresAfterLoad();
                 }
                 else if (task.IsCompletedSuccessfully && !task.Result.Exists)
                 {
                     Debug.LogWarning($"No GameProgress document found in Firebase for {studId}. Using default values.");
                     
-                    // FIXED: Set default currentStory as DocumentReference
                     if (CurrentStudentState?.Progress != null)
                     {
                         CurrentStudentState.Progress.currentStory = db.Document("stories/ST001");
                     }
                     
                     SaveToStudentPrefs();
+                    
+                    // FIX: For new games, also check if scores need recalculation
+                    CheckAndRecalculateScoresAfterLoad();
                 }
                 else if (task.IsFaulted)
                 {
                     Debug.LogError($"Firebase fetch failed for {studId}: {task.Exception}");
+                    TriggerInitializationComplete();
                 }
                 else if (task.IsCanceled)
                 {
                     Debug.LogWarning($"Firebase fetch was canceled for {studId}. Using default values.");
+                    TriggerInitializationComplete();
                 }
             }
             catch (System.Exception e)
             {
                 Debug.LogError($"Error processing Firebase data for {studId}: {e.Message}");
-            }
-            finally
-            {
                 TriggerInitializationComplete();
             }
         });
     });
+}
+
+// NEW: Method to check if scores need recalculation after loading
+private void CheckAndRecalculateScoresAfterLoad()
+{
+    if (CurrentStudentState?.Progress == null)
+    {
+        Debug.LogWarning("Cannot check scores: StudentProgress is null");
+        TriggerInitializationComplete();
+        return;
+    }
+
+    // Check if scores are zero/default and need recalculation
+    bool needsRecalculation = string.IsNullOrEmpty(CurrentStudentState.Progress.overallScore) || 
+                             string.IsNullOrEmpty(CurrentStudentState.Progress.successRate) ||
+                             CurrentStudentState.Progress.overallScore == "0" ||
+                             CurrentStudentState.Progress.successRate == "0%" ||
+                             CurrentStudentState.Progress.successRate == "0";
+
+    if (needsRecalculation)
+    {
+        Debug.Log("Scores need recalculation after loading from Firebase");
+        RecalculateScoresAfterInitialLoad();
+    }
+    else
+    {
+        Debug.Log($"Scores are already set - Overall: {CurrentStudentState.Progress.overallScore}, Success: {CurrentStudentState.Progress.successRate}");
+        TriggerInitializationComplete();
+    }
+}
+
+// NEW: Safe score recalculation for initial load
+private void RecalculateScoresAfterInitialLoad()
+{
+    if (CurrentStudentState == null) 
+    {
+        TriggerInitializationComplete();
+        return;
+    }
     
+    if (_isRecalculatingScores)
+    {
+        Debug.Log("Score recalculation already in progress, skipping...");
+        TriggerInitializationComplete();
+        return;
+    }
+
+    _isRecalculatingScores = true;
+    string studId = CurrentStudentState.StudentId;
+    
+    Debug.Log($"Starting initial score recalculation for student {studId}");
+    
+    var quizAttemptsRef = db.Collection("quizAttempts").Document(studId).Collection("attempts");
+    quizAttemptsRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+    {
+        try
+        {
+            if (!task.IsCompletedSuccessfully || task.Result == null)
+            {
+                Debug.LogWarning("Failed to fetch quiz attempts for initial recalculation");
+                // Set default scores
+                if (CurrentStudentState.Progress != null)
+                {
+                    CurrentStudentState.Progress.overallScore = "0";
+                    CurrentStudentState.Progress.successRate = "0%";
+                }
+                _isRecalculatingScores = false;
+                TriggerInitializationComplete();
+                return;
+            }
+
+            QuerySnapshot snapshot = task.Result;
+            var allAttempts = snapshot.Documents;
+
+            if (allAttempts.Count() == 0)
+            {
+                Debug.Log("No quiz attempts found, setting default scores");
+                if (CurrentStudentState.Progress != null)
+                {
+                    CurrentStudentState.Progress.overallScore = "0";
+                    CurrentStudentState.Progress.successRate = "0%";
+                }
+                _isRecalculatingScores = false;
+                TriggerInitializationComplete();
+                return;
+            }
+
+            int totalAttempts = allAttempts.Count();
+            int passedAttempts = allAttempts.Count(doc =>
+            {
+                var attempt = doc.ConvertTo<QuizAttemptModel>();
+                return attempt.isPassed;
+            });
+
+            string successRate = totalAttempts > 0
+                ? $"{(int)((float)passedAttempts / totalAttempts * 100)}%"
+                : "0%";
+
+            var bestScoresPerQuiz = new Dictionary<string, int>();
+            
+            foreach (var doc in allAttempts)
+            {
+                var attempt = doc.ConvertTo<QuizAttemptModel>();
+                if (!bestScoresPerQuiz.ContainsKey(attempt.quizId) || attempt.score > bestScoresPerQuiz[attempt.quizId])
+                {
+                    bestScoresPerQuiz[attempt.quizId] = attempt.score;
+                }
+            }
+
+            int overallScore = bestScoresPerQuiz.Values.Sum();
+
+            // Update local progress
+            if (CurrentStudentState.Progress != null)
+            {
+                CurrentStudentState.Progress.overallScore = overallScore.ToString();
+                CurrentStudentState.Progress.successRate = successRate;
+                Debug.Log($"Recalculated initial scores - OverallScore: {overallScore}, SuccessRate: {successRate}");
+            }
+
+            // Save to Firebase without triggering loops
+            SaveStudentProgressSafely(overallScore, successRate, bestScoresPerQuiz, totalAttempts, passedAttempts);
+        }
+        catch (System.Exception e)
+        {
+            _isRecalculatingScores = false;
+            Debug.LogError($"Exception during initial score recalculation: {e.Message}");
+            TriggerInitializationComplete();
+        }
+    });
+}
+
+// NEW: Safe method to save student progress without causing loops
+private void SaveStudentProgressSafely(int overallScore, string successRate, Dictionary<string, int> bestScores, int totalAttempts, int passedAttempts)
+{
+    if (CurrentStudentState?.Progress == null || string.IsNullOrEmpty(CurrentStudentState.StudentId))
+    {
+        _isRecalculatingScores = false;
+        TriggerInitializationComplete();
+        return;
+    }
+
+    var progressDoc = db.Collection("studentProgress").Document(CurrentStudentState.StudentId);
+    var progressUpdate = new Dictionary<string, object>
+    {
+        { "overallScore", overallScore.ToString() },
+        { "successRate", successRate },
+        { "perQuizBestScores", bestScores },
+        { "totalAttempts", totalAttempts },
+        { "passedAttempts", passedAttempts },
+        { "dateUpdated", Timestamp.GetCurrentTimestamp() }
+    };
+
+    progressDoc.SetAsync(progressUpdate, SetOptions.MergeAll).ContinueWithOnMainThread(updateTask =>
+    {
+        _isRecalculatingScores = false;
+        
+        if (updateTask.IsCompletedSuccessfully)
+        {
+            Debug.Log($"Successfully saved recalculated scores for student {CurrentStudentState.StudentId}");
+        }
+        else
+        {
+            Debug.LogError($"Failed to save recalculated scores: {updateTask.Exception}");
+        }
+        
+        TriggerInitializationComplete();
+    });
 }
 
 // FIXED: Helper method to get civilization from story ID
@@ -385,10 +565,18 @@ private string GetLatestUnlockedStory()
 
     public async Task<bool> HasProgressAsync(string userId)
     {
-        if (_cachedHasProgress.HasValue)
+        // Only use cache if we have a value AND the current student state matches
+        if (_cachedHasProgress.HasValue &&
+            CurrentStudentState?.StudentId == userId)
         {
             Debug.Log($"[HasProgress] Using cached result: {_cachedHasProgress.Value}");
             return _cachedHasProgress.Value;
+        }
+
+        // If student ID changed, invalidate cache
+        if (CurrentStudentState?.StudentId != userId)
+        {
+            _cachedHasProgress = null;
         }
 
         try
@@ -421,7 +609,23 @@ private string GetLatestUnlockedStory()
             _cachedHasProgress = false;
             return false;
         }
+    
+}
+    #region Cache Management
+
+    public void InvalidateProgressCache()
+    {
+        _cachedHasProgress = null;
+        Debug.Log("[HasProgress] Cache invalidated - next check will query Firebase");
     }
+
+    public void SetProgressCache(bool hasProgress)
+    {
+        _cachedHasProgress = hasProgress;
+        Debug.Log($"[HasProgress] Cache manually set to: {hasProgress}");
+    }
+
+    #endregion
 
     public void SetHearts(int newHearts)
     {
@@ -631,29 +835,18 @@ private void UpdateCurrentStoryTo(string storyId)
         return gp.unlockedCivilizations.Contains(civName) || civName == "Sumerian";
     }
 
-    public void StartNewGame()
+    // FIXED: Add safeguards to prevent loops in StartNewGame
+public void StartNewGame()
 {
     if (CurrentStudentState == null)
     {
         Debug.LogError("No student logged in. Cannot start a new game.");
         return;
     }
-
-    // Preserve unlocked achievements
+    
+    InvalidateProgressCache();
     var previousAchievements = CurrentStudentState.GameProgress?.unlockedAchievements ?? new List<string>();
 
-    // FIXED: Recalculate score and success rate from quiz attempts instead of using potentially null values
-    string calculatedOverallScore = "0";
-    string calculatedSuccessRate = "0%";
-
-    // If progress exists, use it; otherwise we'll recalculate from quiz attempts
-    if (CurrentStudentState.Progress != null)
-    {
-        calculatedOverallScore = CurrentStudentState.Progress.overallScore ?? "0";
-        calculatedSuccessRate = CurrentStudentState.Progress.successRate ?? "0%";
-    }
-
-    // Reset game progress but keep achievements
     CurrentStudentState.SetGameProgress(new GameProgressModel
     {
         currentHearts = 3,
@@ -667,122 +860,160 @@ private void UpdateCurrentStoryTo(string storyId)
         isRemoved = false
     });
 
-    // Reset student progress but preserve overallScore & successRate (or recalculate if needed)
+    // FIX: Initialize with proper default values that will trigger recalculation if needed
     CurrentStudentState.SetProgress(new StudentProgressModel
     {
         currentStory = db.Document("stories/ST001"),
-        overallScore = calculatedOverallScore,
-        successRate = calculatedSuccessRate,
+        overallScore = "0", // This will trigger recalculation
+        successRate = "0%", // This will trigger recalculation
         isRemoved = false,
         dateUpdated = Timestamp.GetCurrentTimestamp()
     });
 
-    // FIXED: If scores are default/zero, recalculate from quiz attempts
-    if (calculatedOverallScore == "0" || calculatedSuccessRate == "0%")
-    {
-        Debug.Log("Scores are zero, recalculating from quiz attempts...");
-        RecalculateScoresFromQuizAttempts();
-    }
-    else
-    {
-        SaveProgress();
-        Debug.Log("Started a new game for student: " + CurrentStudentState.StudentId);
-    }
+    // Save the initial progress
+    SaveProgress();
+    Debug.Log("Started a new game for student: " + CurrentStudentState.StudentId);
+    
+    // Force recalculation for new games
+    CheckAndRecalculateScoresAfterLoad();
 }
 
-// FIXED: New method to recalculate scores from quiz attempts
+// FIXED: Add method to manually break any loops
+public void ForceStopAllOperations()
+{
+    _isRecalculatingScores = false;
+    _isLoadingFromFirebase = false;
+    _lastSaveTime = System.DateTime.MinValue;
+    Debug.Log("Force stopped all GameProgressManager operations");
+}
+
+
+// FIXED: Completely rewrite this to prevent loops
 private void RecalculateScoresFromQuizAttempts()
 {
     if (CurrentStudentState == null) return;
+    
+    if (_isRecalculatingScores)
+    {
+        Debug.Log("Score recalculation already in progress, skipping...");
+        return;
+    }
 
+    _isRecalculatingScores = true;
     string studId = CurrentStudentState.StudentId;
     
-    // Get ALL quiz attempts for this student to recalculate scores
+    Debug.Log($"Starting score recalculation for student {studId}");
+    
     var quizAttemptsRef = db.Collection("quizAttempts").Document(studId).Collection("attempts");
     quizAttemptsRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
     {
-        if (!task.IsCompletedSuccessfully || task.Result == null)
+        try
         {
-            Debug.LogWarning("Failed to fetch quiz attempts for recalculation, using default scores");
-            SaveProgress();
-            return;
-        }
-
-        QuerySnapshot snapshot = task.Result;
-        var allAttempts = snapshot.Documents;
-
-        if (allAttempts.Count() == 0)  // Fixed: Added parentheses
-        {
-            Debug.Log("No quiz attempts found, using default scores");
-            SaveProgress();
-            return;
-        }
-
-        // Calculate success rate
-        int totalAttempts = allAttempts.Count();  // Fixed: Added parentheses
-        int passedAttempts = allAttempts.Count(doc =>  // Fixed: Added parentheses
-        {
-            var attempt = doc.ConvertTo<QuizAttemptModel>();
-            return attempt.isPassed;
-        });
-
-        string successRate = totalAttempts > 0
-            ? $"{(int)((float)passedAttempts / totalAttempts * 100)}%"
-            : "0%";
-
-        // Calculate overall score (sum of best scores per quiz)
-        var bestScoresPerQuiz = new Dictionary<string, int>();
-        
-        foreach (var doc in allAttempts)
-        {
-            var attempt = doc.ConvertTo<QuizAttemptModel>();
-            if (!bestScoresPerQuiz.ContainsKey(attempt.quizId) || attempt.score > bestScoresPerQuiz[attempt.quizId])
+            if (!task.IsCompletedSuccessfully || task.Result == null)
             {
-                bestScoresPerQuiz[attempt.quizId] = attempt.score;
+                Debug.LogWarning("Failed to fetch quiz attempts for recalculation, using default scores");
+                _isRecalculatingScores = false;
+                // DO NOT CALL SaveProgress here - this is what causes the loop!
+                return;
             }
-        }
 
-        int overallScore = bestScoresPerQuiz.Values.Sum();
+            QuerySnapshot snapshot = task.Result;
+            var allAttempts = snapshot.Documents;
 
-        // Update the student progress with recalculated values
-        if (CurrentStudentState.Progress != null)
-        {
-            CurrentStudentState.Progress.overallScore = overallScore.ToString();
-            CurrentStudentState.Progress.successRate = successRate;
+            if (allAttempts.Count() == 0)
+            {
+                Debug.Log("No quiz attempts found, using default scores");
+                _isRecalculatingScores = false;
+                // DO NOT CALL SaveProgress here either!
+                return;
+            }
+
+            int totalAttempts = allAttempts.Count();
+            int passedAttempts = allAttempts.Count(doc =>
+            {
+                var attempt = doc.ConvertTo<QuizAttemptModel>();
+                return attempt.isPassed;
+            });
+
+            string successRate = totalAttempts > 0
+                ? $"{(int)((float)passedAttempts / totalAttempts * 100)}%"
+                : "0%";
+
+            var bestScoresPerQuiz = new Dictionary<string, int>();
             
-            Debug.Log($"Recalculated scores from quiz attempts - OverallScore: {overallScore}, SuccessRate: {successRate}");
-            Debug.Log($"Best scores per quiz: {string.Join(", ", bestScoresPerQuiz.Select(kvp => $"{kvp.Key}:{kvp.Value}"))}");
+            foreach (var doc in allAttempts)
+            {
+                var attempt = doc.ConvertTo<QuizAttemptModel>();
+                if (!bestScoresPerQuiz.ContainsKey(attempt.quizId) || attempt.score > bestScoresPerQuiz[attempt.quizId])
+                {
+                    bestScoresPerQuiz[attempt.quizId] = attempt.score;
+                }
+            }
+
+            int overallScore = bestScoresPerQuiz.Values.Sum();
+
+            if (CurrentStudentState.Progress != null)
+            {
+                CurrentStudentState.Progress.overallScore = overallScore.ToString();
+                CurrentStudentState.Progress.successRate = successRate;
+                
+                Debug.Log($"Recalculated scores - OverallScore: {overallScore}, SuccessRate: {successRate}");
+            }
+
+            var progressDoc = db.Collection("studentProgress").Document(studId);
+            var progressUpdate = new Dictionary<string, object>
+            {
+                { "overallScore", overallScore.ToString() },
+                { "successRate", successRate },
+                { "perQuizBestScores", bestScoresPerQuiz },
+                { "totalAttempts", totalAttempts },
+                { "passedAttempts", passedAttempts },
+                { "dateUpdated", Timestamp.GetCurrentTimestamp() }
+            };
+
+            progressDoc.SetAsync(progressUpdate, SetOptions.MergeAll).ContinueWithOnMainThread(updateTask =>
+            {
+                _isRecalculatingScores = false;
+                
+                if (updateTask.IsCompletedSuccessfully)
+                {
+                    Debug.Log($"Successfully recalculated and saved scores for student {studId}");
+                }
+                else
+                {
+                    Debug.LogError($"Failed to update recalculated scores: {updateTask.Exception}");
+                }
+                
+                // CRITICAL: Only save GameProgress to Firebase directly, skip the SaveProgress method
+                SaveGameProgressToFirebaseOnly();
+            });
         }
-
-        // Also update the perQuizBestScores in studentProgress document
-        var progressDoc = db.Collection("studentProgress").Document(studId);
-        var progressUpdate = new Dictionary<string, object>
+        catch (System.Exception e)
         {
-            { "overallScore", overallScore.ToString() },
-            { "successRate", successRate },
-            { "perQuizBestScores", bestScoresPerQuiz },
-            { "totalAttempts", totalAttempts },
-            { "passedAttempts", passedAttempts },
-            { "dateUpdated", Timestamp.GetCurrentTimestamp() }
-        };
-
-        progressDoc.SetAsync(progressUpdate, SetOptions.MergeAll).ContinueWithOnMainThread(updateTask =>
-        {
-            if (updateTask.IsCompletedSuccessfully)
-            {
-                Debug.Log($"Successfully recalculated and saved scores for student {studId}");
-            }
-            else
-            {
-                Debug.LogError($"Failed to update recalculated scores: {updateTask.Exception}");
-            }
-            
-            // Save the game progress regardless
-            SaveProgress(true);
-            Debug.Log("Started a new game with recalculated scores for student: " + studId);
-        });
+            _isRecalculatingScores = false;
+            Debug.LogError($"Exception during score recalculation: {e.Message}");
+        }
     });
 }
+
+// NEW: Method to save only GameProgress without triggering other saves
+private void SaveGameProgressToFirebaseOnly()
+{
+    if (CanSave())
+    {
+        _lastSaveTime = System.DateTime.Now;
+        SaveProgressToFirebase();
+        SaveToStudentPrefs();
+        Debug.Log("GameProgress saved directly to Firebase (bypassing SaveProgress)");
+    }
+}
+
+// NEW: Cooldown check to prevent rapid saves
+private bool CanSave()
+{
+    return (System.DateTime.Now - _lastSaveTime).TotalSeconds >= SAVE_COOLDOWN_SECONDS;
+}
+
 
     #endregion
 
@@ -965,7 +1196,8 @@ private void RecalculateScoresFromQuizAttempts()
 
     #region Firebase Saving/Loading
 
-    public void SaveStudentProgressToFirebase()
+    // FIXED: Safer SaveStudentProgressToFirebase
+public void SaveStudentProgressToFirebase()
 {
     if (CurrentStudentState?.Progress == null || string.IsNullOrEmpty(CurrentStudentState.StudentId))
     {
@@ -973,34 +1205,25 @@ private void RecalculateScoresFromQuizAttempts()
         return;
     }
 
-    var sp = CurrentStudentState.Progress;
-    
-    // Check if scores need recalculation
-    bool needsRecalculation = string.IsNullOrEmpty(sp.overallScore) || 
-                             string.IsNullOrEmpty(sp.successRate) ||
-                             sp.overallScore == "0" || 
-                             sp.successRate == "0%";
-
-    if (needsRecalculation)
+    if (_isRecalculatingScores)
     {
-        Debug.LogWarning("Scores are null/zero, recalculating from quiz attempts...");
-        RecalculateScoresFromQuizAttempts();
-        return; // Exit early, the recalculation method will handle saving
+        Debug.Log("Score recalculation in progress, skipping StudentProgress save");
+        return;
     }
 
-    // Proceed with normal save if scores are valid
+    var sp = CurrentStudentState.Progress;
     var docRef = db.Collection("studentProgress").Document(CurrentStudentState.StudentId);
 
     var data = new Dictionary<string, object>
     {
         { "currentStory", sp.currentStory },
-        { "overallScore", sp.overallScore },
-        { "successRate", sp.successRate },
+        { "overallScore", sp.overallScore ?? "0" },
+        { "successRate", sp.successRate ?? "0%" },
         { "isRemoved", sp.isRemoved },
         { "dateUpdated", Timestamp.GetCurrentTimestamp() }
     };
 
-    Debug.Log($"Saving StudentProgress - overallScore: {sp.overallScore}, successRate: {sp.successRate}, currentStory: {sp.currentStory?.Path ?? "null"}");
+    Debug.Log($"Saving StudentProgress - overallScore: {sp.overallScore}, successRate: {sp.successRate}");
 
     docRef.SetAsync(data, SetOptions.MergeAll).ContinueWithOnMainThread(task =>
     {
@@ -1052,20 +1275,38 @@ private void RecalculateScoresFromQuizAttempts()
 
     #endregion
 
-    // FIXED: SaveProgress now properly saves both GameProgress and StudentProgress
-    private void SaveProgress(bool skipStudentProgressSave = false)
+    // FIXED: Add safeguards to the main SaveProgress method
+private void SaveProgress(bool skipStudentProgressSave = false)
 {
     if (CurrentStudentState?.GameProgress == null) return;
+    
+    // Prevent saves during loading or recalculation
+    if (_isLoadingFromFirebase || _isRecalculatingScores)
+    {
+        Debug.Log("Skipping SaveProgress - operation in progress");
+        return;
+    }
 
+    if (!CanSave())
+    {
+        Debug.Log("SaveProgress called too frequently, skipping");
+        return;
+    }
+
+    _lastSaveTime = System.DateTime.Now;
     CurrentStudentState.GameProgress.lastUpdated = Timestamp.GetCurrentTimestamp();
+    
     SaveToStudentPrefs();
     SaveProgressToFirebase();
-    
+    _cachedHasProgress = true;
+
     if (!skipStudentProgressSave)
     {
         SaveStudentProgressToFirebase();
     }
 }
+
+
 
     #region FIXED: Save Game Loading with GameProgress Restoration
 
@@ -1130,95 +1371,115 @@ public void LoadGameProgressFromSave(SaveData saveData)
     }
 }
 
-// NEW: Special method for recalculating after save load to avoid circular calls
+// Also add this similar fix for RecalculateScoresFromQuizAttemptsAfterSave:
 private void RecalculateScoresFromQuizAttemptsAfterSave()
 {
     if (CurrentStudentState == null) return;
+    
+    if (_isRecalculatingScores)
+    {
+        Debug.Log("Score recalculation already in progress, skipping after-save recalculation...");
+        return;
+    }
 
+    _isRecalculatingScores = true;
     string studId = CurrentStudentState.StudentId;
     
     var quizAttemptsRef = db.Collection("quizAttempts").Document(studId).Collection("attempts");
     quizAttemptsRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
     {
-        if (!task.IsCompletedSuccessfully || task.Result == null)
+        try
         {
-            Debug.LogWarning("Failed to fetch quiz attempts for recalculation after save load, using default scores");
-            SaveProgress();
-            return;
-        }
-
-        QuerySnapshot snapshot = task.Result;
-        var allAttempts = snapshot.Documents;
-
-        if (allAttempts.Count() == 0)
-        {
-            Debug.Log("No quiz attempts found after save load, using default scores");
-            SaveProgress();
-            return;
-        }
-
-        // Calculate success rate
-        int totalAttempts = allAttempts.Count();
-        int passedAttempts = allAttempts.Count(doc =>
-        {
-            var attempt = doc.ConvertTo<QuizAttemptModel>();
-            return attempt.isPassed;
-        });
-
-        string successRate = totalAttempts > 0
-            ? $"{(int)((float)passedAttempts / totalAttempts * 100)}%"
-            : "0%";
-
-        // Calculate overall score (sum of best scores per quiz)
-        var bestScoresPerQuiz = new Dictionary<string, int>();
-        
-        foreach (var doc in allAttempts)
-        {
-            var attempt = doc.ConvertTo<QuizAttemptModel>();
-            if (!bestScoresPerQuiz.ContainsKey(attempt.quizId) || attempt.score > bestScoresPerQuiz[attempt.quizId])
+            if (!task.IsCompletedSuccessfully || task.Result == null)
             {
-                bestScoresPerQuiz[attempt.quizId] = attempt.score;
+                Debug.LogWarning("Failed to fetch quiz attempts for recalculation after save load, using default scores");
+                _isRecalculatingScores = false;
+                SaveProgress();
+                return;
             }
-        }
 
-        int overallScore = bestScoresPerQuiz.Values.Sum();
+            QuerySnapshot snapshot = task.Result;
+            var allAttempts = snapshot.Documents;
 
-        // Update the student progress with recalculated values
-        if (CurrentStudentState.Progress != null)
-        {
-            CurrentStudentState.Progress.overallScore = overallScore.ToString();
-            CurrentStudentState.Progress.successRate = successRate;
+            if (allAttempts.Count() == 0)
+            {
+                Debug.Log("No quiz attempts found after save load, using default scores");
+                _isRecalculatingScores = false;
+                SaveProgress();
+                return;
+            }
+
+            // Calculate success rate
+            int totalAttempts = allAttempts.Count();
+            int passedAttempts = allAttempts.Count(doc =>
+            {
+                var attempt = doc.ConvertTo<QuizAttemptModel>();
+                return attempt.isPassed;
+            });
+
+            string successRate = totalAttempts > 0
+                ? $"{(int)((float)passedAttempts / totalAttempts * 100)}%"
+                : "0%";
+
+            // Calculate overall score (sum of best scores per quiz)
+            var bestScoresPerQuiz = new Dictionary<string, int>();
             
-            Debug.Log($"Recalculated scores after save load - OverallScore: {overallScore}, SuccessRate: {successRate}");
+            foreach (var doc in allAttempts)
+            {
+                var attempt = doc.ConvertTo<QuizAttemptModel>();
+                if (!bestScoresPerQuiz.ContainsKey(attempt.quizId) || attempt.score > bestScoresPerQuiz[attempt.quizId])
+                {
+                    bestScoresPerQuiz[attempt.quizId] = attempt.score;
+                }
+            }
+
+            int overallScore = bestScoresPerQuiz.Values.Sum();
+
+            // Update the student progress with recalculated values
+            if (CurrentStudentState.Progress != null)
+            {
+                CurrentStudentState.Progress.overallScore = overallScore.ToString();
+                CurrentStudentState.Progress.successRate = successRate;
+                
+                Debug.Log($"Recalculated scores after save load - OverallScore: {overallScore}, SuccessRate: {successRate}");
+            }
+
+            // Update the studentProgress document
+            var progressDoc = db.Collection("studentProgress").Document(studId);
+            var progressUpdate = new Dictionary<string, object>
+            {
+                { "overallScore", overallScore.ToString() },
+                { "successRate", successRate },
+                { "perQuizBestScores", bestScoresPerQuiz },
+                { "totalAttempts", totalAttempts },
+                { "passedAttempts", passedAttempts },
+                { "dateUpdated", Timestamp.GetCurrentTimestamp() }
+            };
+
+            progressDoc.SetAsync(progressUpdate, SetOptions.MergeAll).ContinueWithOnMainThread(updateTask =>
+            {
+                _isRecalculatingScores = false; // Reset flag here
+                
+                if (updateTask.IsCompletedSuccessfully)
+                {
+                    Debug.Log($"Successfully recalculated and saved scores after save load for student {studId}");
+                }
+                else
+                {
+                    Debug.LogError($"Failed to update recalculated scores after save load: {updateTask.Exception}");
+                }
+                
+                // Save the game progress
+                SaveProgress(true); // Skip student progress save
+                Debug.Log("Save game loaded with recalculated scores for student: " + studId);
+            });
         }
-
-        // Update the studentProgress document
-        var progressDoc = db.Collection("studentProgress").Document(studId);
-        var progressUpdate = new Dictionary<string, object>
+        catch (System.Exception e)
         {
-            { "overallScore", overallScore.ToString() },
-            { "successRate", successRate },
-            { "perQuizBestScores", bestScoresPerQuiz },
-            { "totalAttempts", totalAttempts },
-            { "passedAttempts", passedAttempts },
-            { "dateUpdated", Timestamp.GetCurrentTimestamp() }
-        };
-
-        progressDoc.SetAsync(progressUpdate, SetOptions.MergeAll).ContinueWithOnMainThread(updateTask =>
-        {
-            if (updateTask.IsCompletedSuccessfully)
-            {
-                Debug.Log($"Successfully recalculated and saved scores after save load for student {studId}");
-            }
-            else
-            {
-                Debug.LogError($"Failed to update recalculated scores after save load: {updateTask.Exception}");
-            }
-            
-            // Save the game progress
+            _isRecalculatingScores = false;
+            Debug.LogError($"Exception during after-save score recalculation: {e.Message}");
             SaveProgress();
-            Debug.Log("Save game loaded with recalculated scores for student: " + studId);
-        });
+        }
     });
 }
 

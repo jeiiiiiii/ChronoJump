@@ -91,6 +91,9 @@ public class TitleScreen : MonoBehaviour
             return;
         }
 
+        // Invalidate cache before starting new game
+        GameProgressManager.Instance.InvalidateProgressCache();
+        
         GameProgressManager.Instance.StartNewGame();
         SceneManager.LoadScene("ChapterSelect");
     }
