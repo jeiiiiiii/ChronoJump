@@ -12,19 +12,6 @@ public class StringListWrapper
     public List<string> list;
 }
 
-[System.Serializable]
-public class CodexWrapper
-{
-    public List<CodexEntry> entries;
-}
-
-[System.Serializable]
-public class CodexEntry
-{
-    public string characterId;
-    public List<string> stories;
-}
-
 public class GameProgressManager : MonoBehaviour
 {
     public static GameProgressManager Instance { get; private set; }
@@ -97,7 +84,6 @@ public class GameProgressManager : MonoBehaviour
                 unlockedStories = new List<string> { "ST001" },
                 unlockedAchievements = new List<string>(),
                 unlockedArtifacts = new List<string>(),
-                unlockedCodex = new Dictionary<string, object>(),
                 unlockedCivilizations = new List<string> { "Sumerian" },
                 lastUpdated = Timestamp.GetCurrentTimestamp(),
                 isRemoved = false
@@ -111,7 +97,6 @@ public class GameProgressManager : MonoBehaviour
         if (gp.unlockedStories == null) gp.unlockedStories = new List<string> { "ST001" };
         if (gp.unlockedAchievements == null) gp.unlockedAchievements = new List<string>();
         if (gp.unlockedArtifacts == null) gp.unlockedArtifacts = new List<string>();
-        if (gp.unlockedCodex == null) gp.unlockedCodex = new Dictionary<string, object>();
         if (gp.unlockedCivilizations == null) gp.unlockedCivilizations = new List<string> { "Sumerian" };
 
         Debug.Log($"GameProgressManager initialized for student {CurrentStudentState.StudentId}");
@@ -177,18 +162,6 @@ public class GameProgressManager : MonoBehaviour
                 gp.unlockedCivilizations = JsonUtility.FromJson<StringListWrapper>(civilizationsJson).list ?? new List<string> { "Sumerian" };
             }
 
-            var codexJson = StudentPrefs.GetString("unlockedCodex", "");
-            if (!string.IsNullOrEmpty(codexJson))
-            {
-                var codexWrapper = JsonUtility.FromJson<CodexWrapper>(codexJson);
-                gp.unlockedCodex = new Dictionary<string, object>();
-                if (codexWrapper?.entries != null)
-                {
-                    foreach (var entry in codexWrapper.entries)
-                        gp.unlockedCodex[entry.characterId] = entry.stories;
-                }
-            }
-
             // FIXED: Update currentStory to the latest unlocked story
             UpdateCurrentStoryFromGameProgress();
 
@@ -228,9 +201,6 @@ public class GameProgressManager : MonoBehaviour
                     gp.unlockedAchievements = data.ContainsKey("unlockedAchievements") ? ((List<object>)data["unlockedAchievements"]).Cast<string>().ToList() : new List<string>();
                     gp.unlockedArtifacts = data.ContainsKey("unlockedArtifacts") ? ((List<object>)data["unlockedArtifacts"]).Cast<string>().ToList() : new List<string>();
                     gp.unlockedCivilizations = data.ContainsKey("unlockedCivilizations") ? ((List<object>)data["unlockedCivilizations"]).Cast<string>().ToList() : new List<string> { "Sumerian" };
-                    gp.unlockedCodex = data.ContainsKey("unlockedCodex")
-                        ? ((Dictionary<string, object>)data["unlockedCodex"])
-                        : new Dictionary<string, object>();
 
                     gp.lastUpdated = data.ContainsKey("lastUpdated") ? (Timestamp)data["lastUpdated"] : Timestamp.GetCurrentTimestamp();
 
@@ -745,15 +715,6 @@ private string GetLatestUnlockedStory()
         }
     }
 
-    public void AddCodexEntry(string characterId, List<string> stories)
-    {
-        var gp = CurrentStudentState.GameProgress;
-        if (!gp.unlockedCodex.ContainsKey(characterId))
-            gp.unlockedCodex[characterId] = stories;
-
-        SaveProgress();
-    }
-
     public void UseHeart()
     {
         var gp = CurrentStudentState.GameProgress;
@@ -854,7 +815,6 @@ public void StartNewGame()
         unlockedStories = new List<string> { "ST001" },
         unlockedAchievements = new List<string>(previousAchievements),
         unlockedArtifacts = new List<string>(),
-        unlockedCodex = new Dictionary<string, object>(),
         unlockedCivilizations = new List<string> { "Sumerian" },
         lastUpdated = Timestamp.GetCurrentTimestamp(),
         isRemoved = false
@@ -1094,50 +1054,6 @@ private bool CanSave()
         Debug.Log($"Added {amount} hearts. Total hearts: {gp.currentHearts}");
     }
 
-    public void MigrateFromLegacyPlayerPrefs()
-    {
-        if (CurrentStudentState == null) return;
-
-        string studId = CurrentStudentState.StudentId;
-        Debug.Log($"Migrating legacy PlayerPrefs to StudentPrefs for {studId}");
-
-        if (PlayerPrefs.HasKey("currentHearts") && !StudentPrefs.HasKey("currentHearts"))
-        {
-            StudentPrefs.SetInt("currentHearts", PlayerPrefs.GetInt("currentHearts", 3));
-
-            var chapters = PlayerPrefs.GetString("unlockedChapters", "");
-            if (!string.IsNullOrEmpty(chapters)) StudentPrefs.SetString("unlockedChapters", chapters);
-
-            var stories = PlayerPrefs.GetString("unlockedStories", "");
-            if (!string.IsNullOrEmpty(stories)) StudentPrefs.SetString("unlockedStories", stories);
-
-            var achievements = PlayerPrefs.GetString("unlockedAchievements", "");
-            if (!string.IsNullOrEmpty(achievements)) StudentPrefs.SetString("unlockedAchievements", achievements);
-
-            var artifacts = PlayerPrefs.GetString("unlockedArtifacts", "");
-            if (!string.IsNullOrEmpty(artifacts)) StudentPrefs.SetString("unlockedArtifacts", artifacts);
-
-            var civilizations = PlayerPrefs.GetString("unlockedCivilizations", "");
-            if (!string.IsNullOrEmpty(civilizations)) StudentPrefs.SetString("unlockedCivilizations", civilizations);
-
-            var codex = PlayerPrefs.GetString("unlockedCodex", "");
-            if (!string.IsNullOrEmpty(codex)) StudentPrefs.SetString("unlockedCodex", codex);
-
-            StudentPrefs.Save();
-
-            PlayerPrefs.DeleteKey("currentHearts");
-            PlayerPrefs.DeleteKey("unlockedChapters");
-            PlayerPrefs.DeleteKey("unlockedStories");
-            PlayerPrefs.DeleteKey("unlockedAchievements");
-            PlayerPrefs.DeleteKey("unlockedArtifacts");
-            PlayerPrefs.DeleteKey("unlockedCivilizations");
-            PlayerPrefs.DeleteKey("unlockedCodex");
-            PlayerPrefs.Save();
-
-            Debug.Log("Legacy PlayerPrefs migration completed");
-        }
-    }
-
     #endregion
 
     #region StudentPrefs Caching
@@ -1163,18 +1079,6 @@ private bool CanSave()
         StudentPrefs.SetString("unlockedCivilizations",
             JsonUtility.ToJson(new StringListWrapper { list = gp.unlockedCivilizations }));
 
-        var codexList = new List<CodexEntry>();
-        foreach (var kvp in gp.unlockedCodex)
-        {
-            codexList.Add(new CodexEntry
-            {
-                characterId = kvp.Key,
-                stories = kvp.Value as List<string> ?? new List<string>()
-            });
-        }
-
-        StudentPrefs.SetString("unlockedCodex", JsonUtility.ToJson(new CodexWrapper { entries = codexList }));
-
         StudentPrefs.Save();
         Debug.Log("GameProgress saved to StudentPrefs for " + CurrentStudentState.StudentId);
     }
@@ -1187,7 +1091,6 @@ private bool CanSave()
         StudentPrefs.DeleteKey("unlockedAchievements");
         StudentPrefs.DeleteKey("unlockedArtifacts");
         StudentPrefs.DeleteKey("unlockedCivilizations");
-        StudentPrefs.DeleteKey("unlockedCodex");
         StudentPrefs.Save();
         Debug.Log("Cleared corrupted StudentPrefs cache");
     }
@@ -1254,7 +1157,6 @@ public void SaveStudentProgressToFirebase()
             { "unlockedAchievements", gp.unlockedAchievements },
             { "unlockedArtifacts", gp.unlockedArtifacts },
             { "unlockedCivilizations", gp.unlockedCivilizations },
-            { "unlockedCodex", gp.unlockedCodex },
             { "currentHearts", gp.currentHearts },
             { "lastUpdated", gp.lastUpdated },
             { "isRemoved", gp.isRemoved }
@@ -1336,7 +1238,6 @@ public void LoadGameProgressFromSave(SaveData saveData)
         currentGP.unlockedAchievements = savedGP.unlockedAchievements ?? new List<string>();
         currentGP.unlockedArtifacts = savedGP.unlockedArtifacts ?? new List<string>();
         currentGP.unlockedCivilizations = savedGP.unlockedCivilizations ?? new List<string> { "Sumerian" };
-        currentGP.unlockedCodex = savedGP.unlockedCodex ?? new Dictionary<string, object>();
         currentGP.lastUpdated = savedGP.lastUpdated;
         currentGP.isRemoved = savedGP.isRemoved;
 

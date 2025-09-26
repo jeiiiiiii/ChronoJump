@@ -182,7 +182,6 @@ public class LoginManager : MonoBehaviour
                                         unlockedStories = new List<string> { "ST001" },
                                         unlockedAchievements = new List<string>(),
                                         unlockedArtifacts = new List<string>(),
-                                        unlockedCodex = new Dictionary<string, object>(),
                                         unlockedCivilizations = new List<string> { "Sumerian" },
                                         lastUpdated = Timestamp.GetCurrentTimestamp(),
                                         isRemoved = false
@@ -197,10 +196,6 @@ public class LoginManager : MonoBehaviour
 
                                     // Handle Remember Me for student
                                     HandleRememberMe(email);
-
-                                    // Migrate any old PlayerPrefs data
-                                    GameProgressManager.Instance.MigrateFromLegacyPlayerPrefs();
-                                    SaveLoadManager.Instance?.MigrateFromLegacyStudentPlayerPrefs();
 
                                     // Clear other students' local data, keep only this student's folder
                                     SaveLoadManager.Instance?.ClearOtherStudentsLocalData(studentState.StudentId);

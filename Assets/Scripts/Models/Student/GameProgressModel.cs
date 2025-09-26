@@ -12,6 +12,5 @@ public class GameProgressModel
     [FirestoreProperty] public List<string> unlockedArtifacts { get; set; }
     [FirestoreProperty] public List<string> unlockedChapters { get; set; }
     [FirestoreProperty] public List<string> unlockedCivilizations { get; set; }
-    [FirestoreProperty] public Dictionary<string, object> unlockedCodex { get; set; }
     [FirestoreProperty] public List<string> unlockedStories { get; set; }
 }

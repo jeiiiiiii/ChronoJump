@@ -64,7 +64,6 @@ public class StudentState
             unlockedStories = new List<string>(),
             unlockedAchievements = new List<string>(),
             unlockedArtifacts = new List<string>(),
-            unlockedCodex = new Dictionary<string, object>(),
             lastUpdated = Timestamp.GetCurrentTimestamp(),
             isRemoved = false
         };
