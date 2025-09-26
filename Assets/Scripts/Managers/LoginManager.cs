@@ -16,21 +16,39 @@ public class LoginManager : MonoBehaviour
     public Toggle isTeacherToggle;
     public GameObject errorMessagePanel;
     public Button backButton;
+    public Button loginButton; // Reference to the login button
     
     [Header("Remember Me Feature")]
     public Toggle rememberMeToggle;
 
+    [Header("Loading Spinner")]
+    public GameObject loadingSpinner; // Reference to the spinner prefab/GameObject
+    public TextMeshProUGUI loginButtonText; // Reference to the button's text component
+
     private FirebaseFirestore _firestore;
+    private string originalLoginButtonText = "Login"; // Store original button text
 
     private void Awake()
     {
         _firestore = FirebaseFirestore.DefaultInstance;
+        
+        // Store the original button text
+        if (loginButtonText != null)
+        {
+            originalLoginButtonText = loginButtonText.text;
+        }
     }
 
     private void Start()
     {
         // Load saved email if Remember Me was enabled
         LoadRememberedEmail();
+        
+        // Ensure spinner is initially hidden
+        if (loadingSpinner != null)
+        {
+            loadingSpinner.SetActive(false);
+        }
     }
 
     // Navigate to the registration scene
@@ -83,22 +101,28 @@ public class LoginManager : MonoBehaviour
             feedbackText.text = "Please enter both email and password.";
             return;
         }
+
+        // Show loading state
+        SetLoadingState(true);
         feedbackText.text = "Logging in...";
 
         FirebaseManager.Instance.SignIn(email, password, (success, message) =>
         {
             if (!success)
             {
+                SetLoadingState(false);
                 errorMessagePanel.SetActive(true);
                 feedbackText.text = message;
                 return;
             }
+            
             FirebaseManager.Instance.GetUserData(userData =>
             {
                 UnityDispatcher.RunOnMainThread(() =>
                 {
                     if (userData == null)
                     {
+                        SetLoadingState(false);
                         errorMessagePanel.SetActive(true);
                         feedbackText.text = "No user data found.";
                         return;
@@ -114,6 +138,7 @@ public class LoginManager : MonoBehaviour
                         HandleRememberMe(email);
                         
                         feedbackText.text = message;
+                        // Keep loading state until scene loads
                         SceneManager.LoadScene("TitleScreen");
                     }
                     else if (!isTeacherToggle.isOn && !isTeacher)
@@ -129,6 +154,7 @@ public class LoginManager : MonoBehaviour
                             {
                                 if (task.IsFaulted)
                                 {
+                                    SetLoadingState(false);
                                     errorMessagePanel.SetActive(true);
                                     feedbackText.text = "Failed to fetch student profile.";
                                     return;
@@ -138,6 +164,7 @@ public class LoginManager : MonoBehaviour
 
                                 if (snapshot.Count == 0)
                                 {
+                                    SetLoadingState(false);
                                     errorMessagePanel.SetActive(true);
                                     feedbackText.text = "No student profile found.";
                                     return;
@@ -147,6 +174,7 @@ public class LoginManager : MonoBehaviour
 
                                 if (studDoc == null || !studDoc.Exists)
                                 {
+                                    SetLoadingState(false);
                                     errorMessagePanel.SetActive(true);
                                     feedbackText.text = "No student profile found.";
                                     return;
@@ -200,7 +228,7 @@ public class LoginManager : MonoBehaviour
                                     // Clear other students' local data, keep only this student's folder
                                     SaveLoadManager.Instance?.ClearOtherStudentsLocalData(studentState.StudentId);
                                     
-                                    // Now it's safe to load the TitleScreen
+                                    // Now it's safe to load the TitleScreen (keep loading state until scene loads)
                                     SceneManager.LoadScene("TitleScreen");
                                 });
 
@@ -208,11 +236,13 @@ public class LoginManager : MonoBehaviour
                     }
                     else if (isTeacherToggle.isOn && !isTeacher)
                     {
+                        SetLoadingState(false);
                         errorMessagePanel.SetActive(true);
                         feedbackText.text = "Role mismatch: Please uncheck the Educator toggle.";
                     }
                     else
                     {
+                        SetLoadingState(false);
                         errorMessagePanel.SetActive(true);
                         feedbackText.text = "Role mismatch: Please check the Educator toggle.";
                     }
@@ -227,6 +257,31 @@ public class LoginManager : MonoBehaviour
         errorMessagePanel.SetActive(false);
         feedbackText.text = string.Empty;
     }
+
+    #region Loading State Management
+
+    private void SetLoadingState(bool isLoading)
+    {
+        // Enable/disable the login button
+        if (loginButton != null)
+        {
+            loginButton.interactable = !isLoading;
+        }
+
+        // Show/hide the loading spinner
+        if (loadingSpinner != null)
+        {
+            loadingSpinner.SetActive(isLoading);
+        }
+
+        // Update button text
+        if (loginButtonText != null)
+        {
+            loginButtonText.text = isLoading ? "Logging in..." : originalLoginButtonText;
+        }
+    }
+
+    #endregion
 
     #region Remember Me Functionality
 

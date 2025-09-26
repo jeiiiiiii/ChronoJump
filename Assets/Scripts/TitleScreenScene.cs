@@ -69,17 +69,49 @@ public class TitleScreen : MonoBehaviour
         });
     }
 
-    private void SetAllButtonsActive(bool state)
-    {
+   private void SetAllButtonsActive(bool state)
+{
+    if (newGameButton != null) 
         newGameButton.gameObject.SetActive(state);
+    else 
+        Debug.LogError("[TitleScreen] newGameButton is NULL!");
+
+    if (loadGameButton != null) 
         loadGameButton.gameObject.SetActive(state);
+    else 
+        Debug.LogError("[TitleScreen] loadGameButton is NULL!");
+
+    if (continueButton != null) 
         continueButton.gameObject.SetActive(state);
+    else 
+        Debug.LogError("[TitleScreen] continueButton is NULL!");
+
+    if (classroomButton != null) 
         classroomButton.gameObject.SetActive(state);
+    else 
+        Debug.LogError("[TitleScreen] classroomButton is NULL!");
+
+    if (dashboardButton != null) 
         dashboardButton.gameObject.SetActive(state);
+    else 
+        Debug.LogError("[TitleScreen] dashboardButton is NULL!");
+
+    if (creatormodeButton != null) 
         creatormodeButton.gameObject.SetActive(state);
+    else 
+        Debug.LogError("[TitleScreen] creatormodeButton is NULL!");
+
+    if (logoutButton != null) 
         logoutButton.gameObject.SetActive(state);
+    else 
+        Debug.LogError("[TitleScreen] logoutButton is NULL!");
+
+    if (educatorsModeText != null) 
         educatorsModeText.gameObject.SetActive(state);
-    }
+    else 
+        Debug.LogError("[TitleScreen] educatorsModeText is NULL!");
+}
+
 
     public void ContinueGame() => SceneManager.LoadScene("ChapterSelect");
 

@@ -19,6 +19,31 @@ public class RegisterManager : MonoBehaviour
     public Button loginButton;
     public Button goBackButton;
     public Button errorBackButton;
+    public Button registerButton; // Reference to the register button
+
+    [Header("Loading Spinner")]
+    public GameObject loadingSpinner; // Reference to the spinner prefab/GameObject
+    public TextMeshProUGUI registerButtonText; // Reference to the button's text component
+
+    private string originalRegisterButtonText = "Register"; // Store original button text
+
+    private void Awake()
+    {
+        // Store the original button text
+        if (registerButtonText != null)
+        {
+            originalRegisterButtonText = registerButtonText.text;
+        }
+    }
+
+    private void Start()
+    {
+        // Ensure spinner is initially hidden
+        if (loadingSpinner != null)
+        {
+            loadingSpinner.SetActive(false);
+        }
+    }
 
     // Navigate to the login scene
     public void LoginButtonClicked()
@@ -93,6 +118,9 @@ public class RegisterManager : MonoBehaviour
 
         string fullName = $"{firstName} {lastName}";
         bool isTeacher = isTeacherToggle.isOn;
+        
+        // Show loading state
+        SetLoadingState(true);
         feedbackText.text = "Validating code...";
 
         // First validate the code before proceeding with registration
@@ -103,6 +131,7 @@ public class RegisterManager : MonoBehaviour
             {
                 if (!isValid)
                 {
+                    SetLoadingState(false);
                     ShowError("Invalid teacher code. Please contact your administrator.");
                     return;
                 }
@@ -118,6 +147,7 @@ public class RegisterManager : MonoBehaviour
             {
                 if (!isValid)
                 {
+                    SetLoadingState(false);
                     ShowError("Invalid class code. Please check with your teacher.");
                     return;
                 }
@@ -136,6 +166,7 @@ public class RegisterManager : MonoBehaviour
         {
             if (!success)
             {
+                SetLoadingState(false);
                 ShowError(message);
                 return;
             }
@@ -143,6 +174,7 @@ public class RegisterManager : MonoBehaviour
             UnityDispatcher.RunOnMainThread(() =>
             {
                 feedbackText.text = message;
+                // Keep loading state until scene loads
                 SceneManager.LoadScene("Login");
             });
         });
@@ -160,4 +192,29 @@ public class RegisterManager : MonoBehaviour
         errorMessagePanel.SetActive(false);
         feedbackText.text = string.Empty;
     }
+
+    #region Loading State Management
+
+    private void SetLoadingState(bool isLoading)
+    {
+        // Enable/disable the register button
+        if (registerButton != null)
+        {
+            registerButton.interactable = !isLoading;
+        }
+
+        // Show/hide the loading spinner
+        if (loadingSpinner != null)
+        {
+            loadingSpinner.SetActive(isLoading);
+        }
+
+        // Update button text
+        if (registerButtonText != null)
+        {
+            registerButtonText.text = isLoading ? "Processing..." : originalRegisterButtonText;
+        }
+    }
+
+    #endregion
 }
