@@ -423,28 +423,107 @@ public class SaveLoadManager : MonoBehaviour
 
     #endregion
 
-    public void OverwriteAllSavesAfterChallenge(string nextSceneName, int nextDialogueIndex = 0)
+// Helper method to determine if a save should be overwritten
+private bool ShouldOverwriteSave(string existingScene, string newScene)
+{
+    if (string.IsNullOrEmpty(existingScene)) return true;
+    
+    // Define chapter progression order
+    Dictionary<string, int> chapterOrder = new Dictionary<string, int>()
     {
-        LocalSaveData newSaveData = new LocalSaveData(nextSceneName, nextDialogueIndex);
+        // Sumerian chapters
+        {"SumerianSceneOne", 1}, {"SumerianScene1", 1},
+        {"SumerianSceneTwo", 2}, {"SumerianScene2", 2},
+        {"SumerianSceneThree", 3}, {"SumerianScene3", 3},
+        {"SumerianSceneFour", 4}, {"SumerianScene4", 4},
+        {"SumerianSceneFive", 5}, {"SumerianScene5", 5},
+        {"SumerianSceneSix", 6}, {"SumerianScene6", 6},
+        {"SumerianSceneSeven", 7}, {"SumerianScene7", 7},
+        
+        // Sumerian Challenge scenes
+        {"SumerianFirstRecallChallenges", 2}, {"SumerianSecondRecallChallenges", 4},
+        {"SumerianThirdRecallChallenges", 6}, {"SumerianFourthRecallChallenges", 8},
+        {"SumerianFifthRecallChallenges", 10},
+        
+        // Sumerian Quiz and Artifact scenes
+        {"SumerianQuizTime", 11}, {"SumerianArtifactScene", 12},
+        
+        // Akkadian chapters  
+        {"AkkadianSceneOne", 13}, {"AkkadianScene1", 13},
+        {"AkkadianSceneTwo", 14}, {"AkkadianScene2", 14},
+        {"AkkadianSceneThree", 15}, {"AkkadianScene3", 15},
+        {"AkkadianSceneFour", 16}, {"AkkadianScene4", 16},
+        {"AkkadianSceneFive", 17}, {"AkkadianScene5", 17},
+        {"AkkadianSceneSix", 18}, {"AkkadianScene6", 18},
+        
+        // Akkadian Challenge scenes
+        {"AkkadianFirstRecallChallenges", 14}, {"AkkadianSecondRecallChallenges", 16},
+        {"AkkadianThirdRecallChallenges", 18},
+        
+        // Akkadian Quiz and Artifact scenes
+        {"AkkadianQuizTime", 19}, {"AkkadianArtifactScene", 20},
+        
+        // Babylonian chapters
+        {"BabylonianSceneOne", 21}, {"BabylonianScene1", 21},
+        {"BabylonianSceneTwo", 22}, {"BabylonianScene2", 22},
+        {"BabylonianSceneThree", 23}, {"BabylonianScene3", 23},
+        {"BabylonianSceneFour", 24}, {"BabylonianScene4", 24},
+        {"BabylonianSceneFive", 25}, {"BabylonianScene5", 25},
+        {"BabylonianSceneSix", 26}, {"BabylonianScene6", 26},
+        {"BabylonianSceneSeven", 27}, {"BabylonianScene7", 27},
+        
+        // Babylonian Challenge scenes
+        {"BabylonianFirstRecallChallenges", 22}, {"BabylonianSecondRecallChallenges", 24},
+        {"BabylonianThirdRecallChallenges", 26},
+        
+        // Babylonian Quiz and Artifact scenes
+        {"BabylonianQuizTime", 28}, {"BabylonianArtifactScene", 29},
+        
+        // Assyrian chapters
+        {"AssyrianSceneOne", 30}, {"AssyrianScene1", 30},
+        {"AssyrianSceneTwo", 31}, {"AssyrianScene2", 31},
+        {"AssyrianSceneThree", 32}, {"AssyrianScene3", 32},
+        {"AssyrianSceneFour", 33}, {"AssyrianScene4", 33},
+        {"AssyrianSceneFive", 34}, {"AssyrianScene5", 34},
+        
+        // Assyrian Challenge scenes
+        {"AssyrianFirstRecallChallenges", 31}, {"AssyrianSecondRecallChallenges", 33},
+        
+        // Assyrian Quiz and Artifact scenes
+        {"AssyrianQuizTime", 35}, {"AssyrianArtifactScene", 36},
+    };
 
-        for (int slot = 1; slot <= 4; slot++)
+    int existingChapter = chapterOrder.ContainsKey(existingScene) ? chapterOrder[existingScene] : 0;
+    int newChapter = chapterOrder.ContainsKey(newScene) ? chapterOrder[newScene] : 0;
+
+    // Only overwrite if existing save is from same or earlier chapter
+    return existingChapter <= newChapter;
+}
+
+// Optional: Add this method for cleaner code
+public void UpdateSaveSlot(int slotNumber, string sceneName, int dialogueIndex)
+{
+    var newSaveData = new LocalSaveData(sceneName, dialogueIndex);
+    SaveToLocalFile(slotNumber, newSaveData);
+    SaveToFirebase(slotNumber, newSaveData);
+}
+
+// Then use it in OverwriteAllSavesAfterChallenge:
+public void OverwriteAllSavesAfterChallenge(string nextSceneName, int nextDialogueIndex = 0)
+{
+    for (int slot = 1; slot <= 4; slot++)
+    {
+        if (HasSaveFile(slot))
         {
-            if (HasSaveFile(slot))
+            var existingSave = GetSaveData(slot);
+            if (ShouldOverwriteSave(existingSave.currentScene, nextSceneName))
             {
-                SaveToLocalFile(slot, newSaveData);
-                SaveToFirebase(slot, newSaveData);
-
-                Debug.Log($"Overwritten save slot {slot} after challenge completion - Scene: {nextSceneName}, Dialogue: {nextDialogueIndex}");
+                UpdateSaveSlot(slot, nextSceneName, nextDialogueIndex); // Cleaner call
+                Debug.Log($"Overwritten save slot {slot}");
             }
         }
-
-        Debug.Log($"All existing saves have been updated to prevent challenge replay exploit");
-
-        if (GameProgressManager.Instance != null)
-        {
-            GameProgressManager.Instance.CommitProgress();
-        }
     }
+}
 
     public bool LoadGame(int slotNumber)
     {

@@ -258,6 +258,7 @@ public class QuizTimeManagerAkkadian : MonoBehaviour
     void ShowQuizResult()
     {
         PlayerProgressManager.UnlockCivilization("Babylonian");
+        UpdateSaveAfterQuizCompletion();
         
         timerText.color = Color.white;
         timerText.gameObject.SetActive(false);
@@ -364,5 +365,79 @@ public class QuizTimeManagerAkkadian : MonoBehaviour
         nextButton.onClick.AddListener(NextQuestion);
     }
 
+    // Add this method to update saves after quiz completion
+private void UpdateSaveAfterQuizCompletion()
+{
+    if (SaveLoadManager.Instance != null && GameProgressManager.Instance?.CurrentStudentState != null)
+    {
+        // Determine the next civilization's first scene based on current quiz
+        string nextScene = GetNextCivilizationScene();
+        
+        // Update all slots that contain the current chapter's data
+        for (int slot = 1; slot <= 4; slot++)
+        {
+            if (SaveLoadManager.Instance.HasSaveFile(slot))
+            {
+                var saveData = SaveLoadManager.Instance.GetSaveData(slot);
+                if (saveData != null && IsCurrentChapterSave(saveData.currentScene))
+                {
+                    // Update this save to point to the next civilization's first scene
+                    SaveLoadManager.Instance.UpdateSaveSlot(slot, nextScene, 0);
+                    
+                    Debug.Log($"Updated slot {slot} after quiz completion to: {nextScene}");
+                }
+            }
+        }
+    }
+}
 
+// Helper method to determine the next civilization's first scene
+private string GetNextCivilizationScene()
+{
+    string currentScene = SceneManager.GetActiveScene().name;
+    
+    switch (currentScene)
+    {
+        case "SumerianQuizTime":
+            return "AkkadianSceneOne"; // Progress to Akkadian
+        
+        case "AkkadianQuizTime":
+            return "BabylonianSceneOne"; // Progress to Babylonian
+        
+        case "BabylonianQuizTime":
+            return "AssyrianSceneOne"; // Progress to Assyrian
+        
+        //case "AssyrianQuizTime":
+        //    return "FinalReview"; // Progress to next
+        
+        default:
+            Debug.LogWarning($"Unknown quiz scene: {currentScene}, defaulting to TitleScreen");
+            return "TitleScreen";
+    }
+}
+
+    // Helper method to check if a save is from the current chapter
+    private bool IsCurrentChapterSave(string sceneName)
+    {
+        string currentQuizScene = SceneManager.GetActiveScene().name;
+
+        if (currentQuizScene.Contains("Sumerian"))
+        {
+            return sceneName.Contains("Sumerian");
+        }
+        else if (currentQuizScene.Contains("Akkadian"))
+        {
+            return sceneName.Contains("Akkadian");
+        }
+        else if (currentQuizScene.Contains("Babylonian"))
+        {
+            return sceneName.Contains("Babylonian");
+        }
+        else if (currentQuizScene.Contains("Assyrian"))
+        {
+            return sceneName.Contains("Assyrian");
+        }
+
+        return false;
+    }
 }

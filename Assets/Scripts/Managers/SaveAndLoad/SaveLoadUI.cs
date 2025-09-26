@@ -114,31 +114,31 @@ void OnDestroy()
     }
 
     void SetupSlots()
+{
+    for (int i = 0; i < saveSlots.Length; i++)
     {
-        for (int i = 0; i < saveSlots.Length; i++)
+        int slotIndex = i;         // <--- capture
+        int slotNumber = slotIndex + 1;
+
+        if (saveSlots[slotIndex].loadButton != null)
+            saveSlots[slotIndex].loadButton.onClick.AddListener(() => LoadGame(slotNumber));
+
+        if (saveSlots[slotIndex].saveButton != null)
         {
-            int slotNumber = i + 1;
-
-            if (saveSlots[i].loadButton != null)
-                saveSlots[i].loadButton.onClick.AddListener(() => LoadGame(slotNumber));
-
-            if (saveSlots[i].saveButton != null)
-            {
-                saveSlots[i].saveButton.onClick.AddListener(() => ShowSaveConfirmation(slotNumber));
-
-                // NEW: Check if we should disable save buttons
-                CheckSaveButtonAvailability(i);
-            }
-
-            if (saveSlots[i].deleteButton != null)
-            {
-                saveSlots[i].deleteButton.onClick.AddListener(() => ShowDeleteConfirmation(slotNumber));
-            }
-
-            if (saveSlots[i].slotText != null)
-                saveSlots[i].slotText.text = $"Slot {slotNumber}";
+            saveSlots[slotIndex].saveButton.onClick.AddListener(() => ShowSaveConfirmation(slotNumber));
+            CheckSaveButtonAvailability(slotIndex);
         }
+
+        if (saveSlots[slotIndex].deleteButton != null)
+        {
+            saveSlots[slotIndex].deleteButton.onClick.AddListener(() => ShowDeleteConfirmation(slotNumber));
+        }
+
+        if (saveSlots[slotIndex].slotText != null)
+            saveSlots[slotIndex].slotText.text = $"Slot {slotNumber}";
     }
+}
+
 
     // NEW METHOD: Check if save buttons should be enabled
     void CheckSaveButtonAvailability(int slotIndex)
@@ -397,23 +397,20 @@ void OnDestroy()
         }
     }
 
-    // Show save confirmation dialog
     void ShowSaveConfirmation(int slotNumber)
+{
+    string accessMode = StudentPrefs.GetString("AccessMode", "");
+    if (accessMode == "LoadOnly")
     {
-        // NEW: Check access mode first
-        string accessMode = StudentPrefs.GetString("AccessMode", "");
-        if (accessMode == "LoadOnly")
-        {
-            Debug.Log("Cannot save - accessed via Load Game button");
-            ShowCannotSaveMessage();
-            return;
-        }
+        Debug.Log("Cannot save - accessed via Load Game button");
+        ShowCannotSaveMessage();
+        return;
+    }
 
-        // Check if we came from a story scene before showing confirmation
-        string lastScene = StudentPrefs.GetString("LastScene", "");
-        string saveSource = StudentPrefs.GetString("SaveSource", "");
+    string lastScene = StudentPrefs.GetString("LastScene", "");
+    string saveSource = StudentPrefs.GetString("SaveSource", "");
 
-        bool isValidStoryScene = lastScene == "SumerianSceneOne" || lastScene == "SumerianScene1" ||
+    bool isValidStoryScene = lastScene == "SumerianSceneOne" || lastScene == "SumerianScene1" ||
                                  lastScene == "SumerianSceneTwo" || lastScene == "SumerianScene2" ||
                                  lastScene == "SumerianSceneThree" || lastScene == "SumerianScene3" ||
                                  lastScene == "SumerianSceneFour" || lastScene == "SumerianScene4" ||
@@ -440,46 +437,58 @@ void OnDestroy()
                                  lastScene == "AssyrianSceneFive" || lastScene == "AssyrianScene5"
                                 ;
 
-        bool cameFromStoryScene = saveSource == "StoryScene" && isValidStoryScene;
+    bool cameFromStoryScene = saveSource == "StoryScene" && isValidStoryScene;
+    if (!cameFromStoryScene)
+    {
+        Debug.Log("Cannot save - not accessed from a story scene");
+        ShowCannotSaveMessage();
+        return;
+    }
 
-        if (!cameFromStoryScene)
+    pendingSaveSlot = slotNumber;
+
+    if (confirmationPanel != null)
+    {
+        confirmationPanel.SetActive(true);
+
+        // Reset listeners
+        yesButton.onClick.RemoveAllListeners();
+        noButton.onClick.RemoveAllListeners();
+
+        // Assign save-specific behavior
+        yesButton.onClick.AddListener(() =>
         {
-            Debug.Log("Cannot save - not accessed from a story scene");
-            ShowCannotSaveMessage();
-            return;
+            ConfirmSave();
+        });
+
+        noButton.onClick.AddListener(() =>
+        {
+            CancelSave();
+        });
+
+        yesButton.gameObject.SetActive(true);
+        noButton.gameObject.SetActive(true);
+
+        var existingSaveData = SaveLoadManager.Instance.GetSaveData(slotNumber);
+        if (existingSaveData != null)
+        {
+            confirmationText.text =
+                $"Slot {slotNumber} already contains save data from:\n\n" +
+                $"{GetFriendlySceneName(existingSaveData.currentScene)}\n" +
+                $"Saved: {existingSaveData.timestamp}\n\n" +
+                $"Do you want to overwrite this save?";
         }
-
-        pendingSaveSlot = slotNumber;
-
-        if (confirmationPanel != null)
+        else
         {
-            confirmationPanel.SetActive(true);
-
-            // Reset button visibility for normal save confirmation
-            if (yesButton != null) yesButton.gameObject.SetActive(true);
-            if (noButton != null)
-            {
-                noButton.gameObject.SetActive(true);
-                var noButtonText = noButton.GetComponentInChildren<TextMeshProUGUI>();
-                if (noButtonText != null) noButtonText.text = "No";
-            }
-
-            // Check if slot already has save data
-            var existingSaveData = SaveLoadManager.Instance.GetSaveData(slotNumber);
-
-            if (existingSaveData != null)
-            {
-                // Slot has existing data - ask if they want to overwrite
-                confirmationText.text = $"Slot {slotNumber} already contains save data from:\n\n{GetFriendlySceneName(existingSaveData.currentScene)}\nSaved: {existingSaveData.timestamp}\n\nDo you want to overwrite this save?";
-            }
-            else
-            {
-                // Empty slot - ask if they want to save
-                string currentGameScene = StudentPrefs.GetString("LastScene", "Unknown Scene");
-                confirmationText.text = $"Do you want to save your current progress?\n\nScene: {GetFriendlySceneName(currentGameScene)}\nSlot: {slotNumber}";
-            }
+            string currentGameScene = StudentPrefs.GetString("LastScene", "Unknown Scene");
+            confirmationText.text =
+                $"Do you want to save your current progress?\n\n" +
+                $"Scene: {GetFriendlySceneName(currentGameScene)}\n" +
+                $"Slot: {slotNumber}";
         }
     }
+}
+
 
     // NEW METHOD: Show message when saving is not allowed
     void ShowCannotSaveMessage()
@@ -500,40 +509,72 @@ void OnDestroy()
         }
     }
 
-    // NEW METHOD: Show delete confirmation dialog
     void ShowDeleteConfirmation(int slotNumber)
+{
+    var existingSaveData = SaveLoadManager.Instance.GetSaveData(slotNumber);
+    if (existingSaveData == null)
     {
-        var existingSaveData = SaveLoadManager.Instance.GetSaveData(slotNumber);
-
-        if (existingSaveData == null)
-        {
-            Debug.Log($"No save data to delete in slot {slotNumber}");
-            return;
-        }
-
-        pendingSaveSlot = slotNumber; // Reuse this variable for delete operations
-
-        if (confirmationPanel != null)
-        {
-            confirmationPanel.SetActive(true);
-
-            // Show both buttons for delete confirmation
-            if (yesButton != null) yesButton.gameObject.SetActive(true);
-            if (noButton != null)
-            {
-                noButton.gameObject.SetActive(true);
-                var noButtonText = noButton.GetComponentInChildren<TextMeshProUGUI>();
-                if (noButtonText != null) noButtonText.text = "No";
-            }
-
-            // Set up delete confirmation text
-            confirmationText.text = $"Are you sure you want to delete this save?\n\nSLOT {slotNumber}:\n{GetFriendlySceneName(existingSaveData.currentScene)}\nSaved: {existingSaveData.timestamp}\n\nThis action cannot be undone!";
-
-            // Change the Yes button callback to delete instead of save
-            yesButton.onClick.RemoveAllListeners();
-            yesButton.onClick.AddListener(ConfirmDelete);
-        }
+        Debug.Log($"No save data to delete in slot {slotNumber}");
+        return;
     }
+
+    pendingSaveSlot = slotNumber;
+
+    if (confirmationPanel != null)
+    {
+        confirmationPanel.SetActive(true);
+
+        // Reset listeners
+        yesButton.onClick.RemoveAllListeners();
+        noButton.onClick.RemoveAllListeners();
+
+        // Assign delete-specific behavior
+        yesButton.onClick.AddListener(() =>
+        {
+            ConfirmDelete();
+        });
+
+        noButton.onClick.AddListener(() =>
+        {
+            CancelDelete();
+        });
+
+        yesButton.gameObject.SetActive(true);
+        noButton.gameObject.SetActive(true);
+
+        confirmationText.text =
+            $"Are you sure you want to delete this save?\n\n" +
+            $"SLOT {slotNumber}:\n{GetFriendlySceneName(existingSaveData.currentScene)}\n" +
+            $"Saved: {existingSaveData.timestamp}\n\n" +
+            $"This action cannot be undone!";
+    }
+}
+
+
+void CancelDelete()
+{
+    if (confirmationPanel != null)
+        confirmationPanel.SetActive(false);
+
+    pendingSaveSlot = -1;
+    Debug.Log("Delete cancelled by user");
+}
+
+void ConfirmDelete()
+{
+    if (pendingSaveSlot != -1)
+    {
+        SaveLoadManager.Instance.DeleteSave(pendingSaveSlot);
+        UpdateSlotDisplay();
+        Debug.Log($"Save deleted from Slot {pendingSaveSlot}");
+    }
+
+    if (confirmationPanel != null)
+        confirmationPanel.SetActive(false);
+
+    pendingSaveSlot = -1;
+}
+
 
     // Confirm save action
     void ConfirmSave()
@@ -565,31 +606,6 @@ void OnDestroy()
         Debug.Log("Save cancelled by user");
     }
 
-    // Confirm delete action
-    void ConfirmDelete()
-    {
-        if (pendingSaveSlot != -1)
-        {
-            SaveLoadManager.Instance.DeleteSave(pendingSaveSlot);
-            UpdateSlotDisplay();
-            Debug.Log($"Save deleted from Slot {pendingSaveSlot}");
-        }
-
-        // Hide confirmation panel
-        if (confirmationPanel != null)
-        {
-            confirmationPanel.SetActive(false);
-        }
-
-        // Restore the Yes button callback for saving
-        if (yesButton != null)
-        {
-            yesButton.onClick.RemoveAllListeners();
-            yesButton.onClick.AddListener(ConfirmSave);
-        }
-
-        pendingSaveSlot = -1;
-    }
 
     public void SaveGame(int slotNumber)
     {
