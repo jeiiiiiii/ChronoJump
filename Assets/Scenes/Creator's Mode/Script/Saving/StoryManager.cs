@@ -10,14 +10,17 @@ public class PublishedStory
     public string classCode;
     public string className;
     public string publishDate;
-    
+    public string publishDateTime;
+
     public PublishedStory(StoryData story, string classCode, string className)
     {
         this.storyId = story.storyId;
         this.storyTitle = story.storyTitle;
         this.classCode = classCode;
         this.className = className;
-        this.publishDate = System.DateTime.Now.ToString("MMM dd, yyyy");
+        var now = System.DateTime.Now;
+        this.publishDate = now.ToString("MMM dd, yyyy hh:mm tt");
+        this.publishDateTime = now.ToString("yyyy-MM-dd HH:mm:ss");
     }
 }
 
@@ -58,7 +61,7 @@ public class StoryManager : MonoBehaviour
             }
         }
     }
-    
+
 
     private void Awake()
     {
@@ -158,7 +161,7 @@ public class StoryManager : MonoBehaviour
         Debug.Log($"🔍 Total Stories: {allStories.Count}");
         Debug.Log($"🔍 Current Story Index: {currentStoryIndex}");
         Debug.Log($"🔍 Current Story: {(currentStory != null ? currentStory.storyTitle : "NULL")}");
-        
+
         for (int i = 0; i < allStories.Count; i++)
         {
             Debug.Log($"🔍 Story {i}: {allStories[i].storyTitle}");
@@ -201,7 +204,7 @@ public class StoryManager : MonoBehaviour
             allStories = new List<StoryData>();
             Debug.Log("No saved stories found, starting fresh.");
         }
-    
+
         // Also load published stories
         LoadPublishedStories();
     }
@@ -257,25 +260,34 @@ public class StoryManager : MonoBehaviour
         return tex;
     }
 
-    public void PublishStory(StoryData story, string classCode, string className)
+    public bool PublishStory(StoryData story, string classCode, string className)
     {
-        // Check if story is already published to this class
+        // Prevent duplicate by storyId and classCode
         var existing = publishedStories.Find(p => p.storyId == story.storyId && p.classCode == classCode);
         if (existing != null)
         {
-            Debug.LogWarning($"Story '{story.storyTitle}' is already published to class {className}");
-            return;
+            Debug.Log($"Story '{story.storyTitle}' is already published to class {className}");
+            return false;
         }
-    
+
+        // Prevent duplicate by title and classCode (optional)
+        var existingTitle = publishedStories.Find(p => p.storyTitle == story.storyTitle && p.classCode == classCode);
+        if (existingTitle != null)
+        {
+            Debug.Log($"A story with the title '{story.storyTitle}' is already published to class {className}");
+            return false;
+        }
+
         var publishedStory = new PublishedStory(story, classCode, className);
         publishedStories.Add(publishedStory);
         SavePublishedStories();
-    
+
         Debug.Log($"Published story '{story.storyTitle}' to class {className}");
+        return true;
     }
 
     public void DeletePublishedStory(string storyId, string classCode)
-    {      
+    {
         publishedStories.RemoveAll(p => p.storyId == storyId && p.classCode == classCode);
         SavePublishedStories();
         Debug.Log($"Deleted published story with ID: {storyId}");
@@ -283,7 +295,31 @@ public class StoryManager : MonoBehaviour
 
     public List<PublishedStory> GetPublishedStoriesForClass(string classCode)
     {
-        return publishedStories.FindAll(p => p.classCode == classCode);
+        // Make the comparison case-insensitive and trim whitespace
+        var stories = publishedStories.FindAll(p =>
+            string.Equals(p.classCode.Trim(), classCode.Trim(), System.StringComparison.OrdinalIgnoreCase));
+
+        // Debug logging to see what's happening
+        Debug.Log($"[StoryManager] Looking for class: '{classCode.Trim()}'");
+        Debug.Log($"[StoryManager] Total published stories: {publishedStories.Count}");
+
+        foreach (var story in publishedStories)
+        {
+            bool matches = string.Equals(story.classCode.Trim(), classCode.Trim(), System.StringComparison.OrdinalIgnoreCase);
+            Debug.Log($"[StoryManager] Story: '{story.storyTitle}' | Class: '{story.classCode}' | Match: {matches}");
+        }
+
+        Debug.Log($"[StoryManager] Found {stories.Count} matching stories");
+
+        // Sort by publishDateTime (oldest first)
+        stories.Sort((a, b) =>
+        {
+            System.DateTime aTime, bTime;
+            if (!System.DateTime.TryParse(a.publishDateTime, out aTime)) aTime = System.DateTime.MinValue;
+            if (!System.DateTime.TryParse(b.publishDateTime, out bTime)) bTime = System.DateTime.MinValue;
+            return aTime.CompareTo(bTime);
+        });
+        return stories;
     }
 
     private void SavePublishedStories()

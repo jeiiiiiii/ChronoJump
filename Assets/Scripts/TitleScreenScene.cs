@@ -13,6 +13,7 @@ public class TitleScreen : MonoBehaviour
     public Button dashboardButton;
     public Button creatormodeButton;
     public Button logoutButton;
+    public Button publishedStoriesButton;
     public TextMeshProUGUI educatorsModeText;
 
     private async void Start()
@@ -44,6 +45,7 @@ public class TitleScreen : MonoBehaviour
                 creatormodeButton.gameObject.SetActive(true);
                 logoutButton.gameObject.SetActive(true);
                 educatorsModeText.gameObject.SetActive(true);
+                publishedStoriesButton.gameObject.SetActive(true);
 
                 await LoadingManager.Instance.Hide();
             }
@@ -56,6 +58,7 @@ public class TitleScreen : MonoBehaviour
                 creatormodeButton.gameObject.SetActive(false);
                 logoutButton.gameObject.SetActive(true);
                 educatorsModeText.gameObject.SetActive(false);
+                publishedStoriesButton.gameObject.SetActive(false);
 
                 // Check student progress before showing Continue
                 await CheckStudentProgress(userData.userId);
@@ -69,48 +72,48 @@ public class TitleScreen : MonoBehaviour
         });
     }
 
-   private void SetAllButtonsActive(bool state)
-{
-    if (newGameButton != null) 
-        newGameButton.gameObject.SetActive(state);
-    else 
-        Debug.LogError("[TitleScreen] newGameButton is NULL!");
+    private void SetAllButtonsActive(bool state)
+    {
+        if (newGameButton != null)
+            newGameButton.gameObject.SetActive(state);
+        else
+            Debug.LogError("[TitleScreen] newGameButton is NULL!");
 
-    if (loadGameButton != null) 
-        loadGameButton.gameObject.SetActive(state);
-    else 
-        Debug.LogError("[TitleScreen] loadGameButton is NULL!");
+        if (loadGameButton != null)
+            loadGameButton.gameObject.SetActive(state);
+        else
+            Debug.LogError("[TitleScreen] loadGameButton is NULL!");
 
-    if (continueButton != null) 
-        continueButton.gameObject.SetActive(state);
-    else 
-        Debug.LogError("[TitleScreen] continueButton is NULL!");
+        if (continueButton != null)
+            continueButton.gameObject.SetActive(state);
+        else
+            Debug.LogError("[TitleScreen] continueButton is NULL!");
 
-    if (classroomButton != null) 
-        classroomButton.gameObject.SetActive(state);
-    else 
-        Debug.LogError("[TitleScreen] classroomButton is NULL!");
+        if (classroomButton != null)
+            classroomButton.gameObject.SetActive(state);
+        else
+            Debug.LogError("[TitleScreen] classroomButton is NULL!");
 
-    if (dashboardButton != null) 
-        dashboardButton.gameObject.SetActive(state);
-    else 
-        Debug.LogError("[TitleScreen] dashboardButton is NULL!");
+        if (dashboardButton != null)
+            dashboardButton.gameObject.SetActive(state);
+        else
+            Debug.LogError("[TitleScreen] dashboardButton is NULL!");
 
-    if (creatormodeButton != null) 
-        creatormodeButton.gameObject.SetActive(state);
-    else 
-        Debug.LogError("[TitleScreen] creatormodeButton is NULL!");
+        if (creatormodeButton != null)
+            creatormodeButton.gameObject.SetActive(state);
+        else
+            Debug.LogError("[TitleScreen] creatormodeButton is NULL!");
 
-    if (logoutButton != null) 
-        logoutButton.gameObject.SetActive(state);
-    else 
-        Debug.LogError("[TitleScreen] logoutButton is NULL!");
+        if (logoutButton != null)
+            logoutButton.gameObject.SetActive(state);
+        else
+            Debug.LogError("[TitleScreen] logoutButton is NULL!");
 
-    if (educatorsModeText != null) 
-        educatorsModeText.gameObject.SetActive(state);
-    else 
-        Debug.LogError("[TitleScreen] educatorsModeText is NULL!");
-}
+        if (educatorsModeText != null)
+            educatorsModeText.gameObject.SetActive(state);
+        else
+            Debug.LogError("[TitleScreen] educatorsModeText is NULL!");
+    }
 
 
     public void ContinueGame() => SceneManager.LoadScene("ChapterSelect");
@@ -125,7 +128,7 @@ public class TitleScreen : MonoBehaviour
 
         // Invalidate cache before starting new game
         GameProgressManager.Instance.InvalidateProgressCache();
-        
+
         GameProgressManager.Instance.StartNewGame();
         SceneManager.LoadScene("ChapterSelect");
     }
@@ -146,8 +149,8 @@ public class TitleScreen : MonoBehaviour
     public void LoadGame()
     {
         StudentPrefs.SetString("AccessMode", "LoadOnly");
-        StudentPrefs.SetString("SaveSource", "TitleScreen"); 
-        StudentPrefs.SetString("LastScene", "TitleScreen");  
+        StudentPrefs.SetString("SaveSource", "TitleScreen");
+        StudentPrefs.SetString("LastScene", "TitleScreen");
         StudentPrefs.Save();
 
         SceneManager.LoadScene("SaveAndLoadScene");
@@ -164,5 +167,15 @@ public class TitleScreen : MonoBehaviour
         continueButton.gameObject.SetActive(hasProgress);
 
         await LoadingManager.Instance.Hide();
+    }
+
+
+    public void OnPublishedStoriesClicked()
+    {
+        Debug.Log("Published Stories button clicked!");
+        if (SceneNavigationManager.Instance != null)
+            SceneNavigationManager.Instance.GoToStoryPublish();
+        else
+            SceneManager.LoadScene("StoryPublish");
     }
 }

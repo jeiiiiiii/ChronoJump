@@ -5,6 +5,19 @@ public class GameScene : MonoBehaviour
 {
     public void MainMenu()
     {
-        SceneManager.LoadScene("Creator'sModeScene");
+        if (IsTeacher())
+        {
+            SceneManager.LoadScene("Creator'sModeScene");
+        }
+        else
+        {
+            SceneManager.LoadScene("Classroom");
+        }
+    }
+
+    private bool IsTeacher()
+    {
+        string userRole = PlayerPrefs.GetString("UserRole", "student");
+        return userRole.ToLower() == "teacher";
     }
 }

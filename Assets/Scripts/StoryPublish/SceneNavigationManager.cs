@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 public class SceneNavigationManager : MonoBehaviour
 {
     public static SceneNavigationManager Instance { get; private set; }
+    public static string PreviousSceneName { get; private set; }
 
     [Header("Scene Names")]
     [SerializeField] private string creatorModeSceneName = "Creator'sModeScene";
@@ -13,7 +14,6 @@ public class SceneNavigationManager : MonoBehaviour
 
     private void Awake()
     {
-        // Singleton pattern
         if (Instance == null)
         {
             Instance = this;
@@ -40,6 +40,7 @@ public class SceneNavigationManager : MonoBehaviour
     public void GoToStoryPublish()
     {
         Debug.Log("Navigating to Story Publish...");
+        PreviousSceneName = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(storyPublishSceneName);
     }
 
@@ -49,7 +50,6 @@ public class SceneNavigationManager : MonoBehaviour
         SceneManager.LoadScene(titleScreenSceneName);
     }
 
-    // Method to navigate with custom scene name
     public void NavigateToScene(string sceneName)
     {
         Debug.Log($"Navigating to {sceneName}...");

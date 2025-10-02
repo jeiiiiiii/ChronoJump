@@ -38,13 +38,13 @@ public class StudentService
     {
         List<StudentModel> students = new List<StudentModel>();
 
-        if (snapshot.Count() == 0)  
+        if (snapshot.Count() == 0)
         {
             callback(students);
             return;
         }
 
-        int remaining = snapshot.Count(); 
+        int remaining = snapshot.Count();
 
         foreach (DocumentSnapshot document in snapshot.Documents)
         {
@@ -102,6 +102,40 @@ public class StudentService
         }
     }
 
+    public void GetStudentDataByUserId(string userId, Action<StudentModel> callback)
+    {
+        Debug.Log($"Fetching student data for userId: {userId}");
+
+        _firebaseService.DB.Collection("students")
+            .WhereEqualTo("userId", userId)
+            .WhereEqualTo("isRemoved", false)
+            .Limit(1)
+            .GetSnapshotAsync()
+            .ContinueWithOnMainThread(task =>
+            {
+                if (task.IsCanceled || task.IsFaulted)
+                {
+                    Debug.LogError("Failed to get student data: " + task.Exception);
+                    callback(null);
+                    return;
+                }
+
+                QuerySnapshot snapshot = task.Result;
+
+                if (snapshot.Count > 0)
+                {
+                    DocumentSnapshot document = snapshot.Documents.First();
+                    StudentModel student = MapDocumentToStudent(document);
+                    callback(student);
+                }
+                else
+                {
+                    Debug.LogWarning($"No student found for userId: {userId}");
+                    callback(null);
+                }
+            });
+    }
+
     private async Task<Dictionary<string, object>> ProcessProgressDocuments(DocumentSnapshot studentProgressDoc)
     {
         Dictionary<string, object> progress = new Dictionary<string, object>();
@@ -157,7 +191,7 @@ public class StudentService
                     }
                     else
                     {
-                        progress[kv.Key] = kv.Value; 
+                        progress[kv.Key] = kv.Value;
                     }
                 }
                 catch (System.Exception ex)
@@ -184,10 +218,10 @@ public class StudentService
     public void GetStudentLeaderboard(string classCode, Action<List<LeaderboardStudentModel>> callback)
     {
         Debug.Log($"[GetStudentLeaderboard] Starting for class: {classCode}");
-        
+
         _firebaseService.DB.Collection("studentLeaderboards")
             .WhereEqualTo("classCode", classCode)
-            .OrderByDescending("overallScore") 
+            .OrderByDescending("overallScore")
             .GetSnapshotAsync()
             .ContinueWithOnMainThread(task =>
             {
@@ -201,17 +235,17 @@ public class StudentService
                 QuerySnapshot snapshot = task.Result;
                 List<LeaderboardStudentModel> students = new List<LeaderboardStudentModel>();
 
-                Debug.Log($"[GetStudentLeaderboard] Found {snapshot.Documents.Count()} students"); 
+                Debug.Log($"[GetStudentLeaderboard] Found {snapshot.Documents.Count()} students");
 
                 foreach (DocumentSnapshot document in snapshot.Documents)
                 {
                     var data = document.ToDictionary();
-                    
+
                     string studId = document.Id;
                     string displayName = data.ContainsKey("displayName") ? data["displayName"]?.ToString() : "Unknown Student";
                     string classCodeFromDoc = data.ContainsKey("classCode") ? data["classCode"]?.ToString() : "";
                     bool isRemoved = data.ContainsKey("isRemoved") && data["isRemoved"] is bool b && b;
-                    
+
                     int overallScore = 0;
                     if (data.ContainsKey("overallScore"))
                     {
@@ -229,4 +263,5 @@ public class StudentService
                 callback(students);
             });
     }
+
 }

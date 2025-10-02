@@ -137,6 +137,84 @@ public class FirebaseManager : MonoBehaviour
         });
     }
 
+    public void GetClassDetails(string classCode, Action<ClassDetailsModel> callback)
+    {
+        if (string.IsNullOrEmpty(classCode))
+        {
+            callback?.Invoke(null);
+            return;
+        }
+
+        DB.Collection("classes")
+            .WhereEqualTo("classCode", classCode)
+            .Limit(1)
+            .GetSnapshotAsync()
+            .ContinueWith((Task<QuerySnapshot> task) =>
+            {
+                UnityDispatcher.RunOnMainThread(() =>
+                {
+                    if (task.IsCompletedSuccessfully && task.Result != null && task.Result.Count > 0)
+                    {
+                        var doc = task.Result.Documents.FirstOrDefault();
+                        if (doc != null)
+                        {
+                            var classData = doc.ToDictionary();
+                            string teacherId = classData.ContainsKey("teachId") ? classData["teachId"].ToString() : "";
+
+                            // If we have a teacherId, fetch the teacher's name
+                            if (!string.IsNullOrEmpty(teacherId))
+                            {
+                                GetTeacherData(teacherId, (teacherData) =>
+                                {
+                                    string teacherName = "Unknown Teacher";
+
+                                    if (teacherData != null)
+                                    {
+                                        // Combine first and last name
+                                        string firstName = teacherData.teachFirstName ?? "";
+                                        string lastName = teacherData.teachLastName ?? "";
+                                        teacherName = $"{firstName} {lastName}".Trim();
+
+                                        // Fallback if both names are empty
+                                        if (string.IsNullOrEmpty(teacherName))
+                                            teacherName = "Unknown Teacher";
+                                    }
+
+                                    var classDetails = new ClassDetailsModel
+                                    {
+                                        classCode = classCode,
+                                        className = classData.ContainsKey("className") ? classData["className"].ToString() : "Unknown Class",
+                                        classLevel = classData.ContainsKey("classLevel") ? classData["classLevel"].ToString() : "Unknown Level",
+                                        teacherName = teacherName,
+                                        isActive = classData.ContainsKey("isActive") ? (bool)classData["isActive"] : true
+                                    };
+
+                                    callback?.Invoke(classDetails);
+                                });
+                            }
+                            else
+                            {
+                                // No teacherId found
+                                var classDetails = new ClassDetailsModel
+                                {
+                                    classCode = classCode,
+                                    className = classData.ContainsKey("className") ? classData["className"].ToString() : "Unknown Class",
+                                    classLevel = classData.ContainsKey("classLevel") ? classData["classLevel"].ToString() : "Unknown Level",
+                                    teacherName = "Unknown Teacher",
+                                    isActive = classData.ContainsKey("isActive") ? (bool)classData["isActive"] : true
+                                };
+
+                                callback?.Invoke(classDetails);
+                            }
+                            return;
+                        }
+                    }
+
+                    callback?.Invoke(null);
+                });
+            });
+    }
+
     public void GetUserData(Action<UserAccountModel> callback)
     {
         UserService?.GetUserData(callback);
@@ -166,10 +244,12 @@ public class FirebaseManager : MonoBehaviour
     {
         StudentService?.GetStudentLeaderboard(classCode, callback);
     }
-    
+
     public void MarkStudentAsRemoved(string userId, string classCode, Action<bool> callback)
     {
         ClassService?.MarkStudentAsRemoved(userId, classCode, callback);
     }
+
+
 
 }

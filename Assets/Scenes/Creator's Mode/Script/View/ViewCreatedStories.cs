@@ -16,6 +16,9 @@ public class ViewCreatedStoriesScene : MonoBehaviour
 
     void Start()
     {
+        // Check if a student is playing a specific story
+        CheckForStudentStoryPlayback();
+
         UpdateAllStoryBackgrounds();
 
         if (storyActionPopup != null)
@@ -23,7 +26,7 @@ public class ViewCreatedStoriesScene : MonoBehaviour
             storyActionPopup.SetActive(false);
         }
 
-        // ✅ Load current story background
+        // Load current story background (existing code)
         if (StoryManager.Instance != null && StoryManager.Instance.currentStory != null)
         {
             string path = StoryManager.Instance.currentStory.backgroundPath;
@@ -44,6 +47,47 @@ public class ViewCreatedStoriesScene : MonoBehaviour
         else
         {
             Debug.LogWarning("⚠ No current story set, skipping background preview.");
+        }
+    }
+
+    private void CheckForStudentStoryPlayback()
+    {
+        bool isStudentPlaying = PlayerPrefs.GetString("IsStudentPlaying", "false") == "true";
+        string selectedStoryID = PlayerPrefs.GetString("SelectedStoryID", "");
+
+        if (isStudentPlaying && !string.IsNullOrEmpty(selectedStoryID))
+        {
+            Debug.Log($"Student is playing story ID: {selectedStoryID}");
+
+            // Clear the student playing flag
+            PlayerPrefs.SetString("IsStudentPlaying", "false");
+            PlayerPrefs.Save();
+
+            // Find and auto-play the selected story
+            AutoPlayStoryByID(selectedStoryID);
+        }
+    }
+
+    private void AutoPlayStoryByID(string storyID)
+    {
+        if (StoryManager.Instance == null) return;
+
+        // Find the story with the matching ID
+        var story = StoryManager.Instance.allStories.Find(s => s.storyId == storyID);
+
+        if (story != null)
+        {
+            // Set as current story
+            StoryManager.Instance.currentStory = story;
+
+            Debug.Log($"Auto-playing story: {story.storyTitle}");
+
+            // Load the GameScene directly (same as ViewStory)
+            SceneManager.LoadScene("GameScene");
+        }
+        else
+        {
+            Debug.LogError($"Story with ID {storyID} not found!");
         }
     }
 
@@ -113,7 +157,7 @@ public class ViewCreatedStoriesScene : MonoBehaviour
         }
     }
 
-        public void MainMenu()
+    public void MainMenu()
     {
         SceneManager.LoadScene("Creator'sModeScene");
     }

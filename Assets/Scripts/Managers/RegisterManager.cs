@@ -58,7 +58,7 @@ public class RegisterManager : MonoBehaviour
         errorMessagePanel.SetActive(false);
         feedbackText.text = string.Empty;
     }
-    
+
     // Validate input fields and attempt to register the user, handling errors and success feedback
     public void RegisterButtonClicked()
     {
@@ -118,7 +118,7 @@ public class RegisterManager : MonoBehaviour
 
         string fullName = $"{firstName} {lastName}";
         bool isTeacher = isTeacherToggle.isOn;
-        
+
         // Show loading state
         SetLoadingState(true);
         feedbackText.text = "Validating code...";
@@ -135,7 +135,7 @@ public class RegisterManager : MonoBehaviour
                     ShowError("Invalid teacher code. Please contact your administrator.");
                     return;
                 }
-                
+
                 // Code is valid, proceed with registration
                 ProceedWithRegistration(email, password, fullName, isTeacher, code);
             });
@@ -151,7 +151,7 @@ public class RegisterManager : MonoBehaviour
                     ShowError("Invalid class code. Please check with your teacher.");
                     return;
                 }
-                
+
                 // Code is valid, proceed with registration
                 ProceedWithRegistration(email, password, fullName, isTeacher, code);
             });
@@ -166,7 +166,6 @@ public class RegisterManager : MonoBehaviour
         {
             if (!success)
             {
-                SetLoadingState(false);
                 ShowError(message);
                 return;
             }
@@ -174,7 +173,6 @@ public class RegisterManager : MonoBehaviour
             UnityDispatcher.RunOnMainThread(() =>
             {
                 feedbackText.text = message;
-                // Keep loading state until scene loads
                 SceneManager.LoadScene("Login");
             });
         });
@@ -185,7 +183,7 @@ public class RegisterManager : MonoBehaviour
         errorMessagePanel.SetActive(true);
         feedbackText.text = message;
     }
-    
+
     // Close the error message panel and clear feedback text
     public void ErrorBackButtonClicked()
     {

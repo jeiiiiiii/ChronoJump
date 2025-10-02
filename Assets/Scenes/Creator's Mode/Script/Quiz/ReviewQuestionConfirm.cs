@@ -55,7 +55,7 @@ public class ReviewQuestionConfirm : MonoBehaviour
     {
         // Save the current story first
         SaveCurrentStory();
-    
+
         SceneManager.LoadScene("StoryPublish");
     }
 
@@ -67,7 +67,7 @@ public class ReviewQuestionConfirm : MonoBehaviour
 
         var s = StoryManager.Instance.currentStory;
 
-    // Fill with data from your scene
+        // Fill with data from your scene
         if (string.IsNullOrEmpty(s.storyId))
             s.storyId = System.Guid.NewGuid().ToString(); // only if new
 

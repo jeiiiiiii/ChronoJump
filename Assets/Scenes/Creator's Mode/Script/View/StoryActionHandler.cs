@@ -8,8 +8,10 @@ public class StoryActionHandler : MonoBehaviour
     [SerializeField] private GameObject actionPopup;
     [SerializeField] private Button editButton;
     [SerializeField] private Button viewButton;
+    [SerializeField] private Button publishButton;
     [SerializeField] private Button deleteButton;
     [SerializeField] private Button backButton;
+
 
     [Header("Delete Confirmation")]
     [SerializeField] private GameObject deleteConfirmPopup;
@@ -23,6 +25,7 @@ public class StoryActionHandler : MonoBehaviour
         // Set up button listeners
         if (editButton != null) editButton.onClick.AddListener(EditStory);
         if (viewButton != null) viewButton.onClick.AddListener(ViewStory);
+        if (publishButton != null) publishButton.onClick.AddListener(OnPublishedStoriesClicked);
         if (deleteButton != null) deleteButton.onClick.AddListener(ShowDeleteConfirmation);
         if (backButton != null) backButton.onClick.AddListener(ClosePopup);
 
@@ -33,31 +36,31 @@ public class StoryActionHandler : MonoBehaviour
         if (deleteConfirmPopup != null) deleteConfirmPopup.SetActive(false);
     }
 
-public void OnStoryButtonClicked(int storyIndex)
-{
-    var stories = StoryManager.Instance.allStories;
-
-    // Check if this slot actually has content
-    if (storyIndex < 0 || storyIndex >= stories.Count)
+    public void OnStoryButtonClicked(int storyIndex)
     {
-        Debug.LogWarning($"Invalid story index: {storyIndex}");
-        return;
+        var stories = StoryManager.Instance.allStories;
+
+        // Check if this slot actually has content
+        if (storyIndex < 0 || storyIndex >= stories.Count)
+        {
+            Debug.LogWarning($"Invalid story index: {storyIndex}");
+            return;
+        }
+
+        var story = stories[storyIndex];
+        if (story == null || string.IsNullOrEmpty(story.backgroundPath))
+        {
+            Debug.Log($"Story button clicked but it's empty (index {storyIndex})");
+            return; // do nothing if empty
+        }
+
+        // Otherwise, set the current story and open the action popup
+        SetCurrentStory(storyIndex);
+        if (actionPopup != null)
+            actionPopup.SetActive(true);
+
+        Debug.Log($"✅ Story button clicked. Current story index = {storyIndex}, Title = {story.storyTitle}");
     }
-
-    var story = stories[storyIndex];
-    if (story == null || string.IsNullOrEmpty(story.backgroundPath))
-    {
-        Debug.Log($"Story button clicked but it's empty (index {storyIndex})");
-        return; // do nothing if empty
-    }
-
-    // Otherwise, set the current story and open the action popup
-    SetCurrentStory(storyIndex);
-    if (actionPopup != null) 
-        actionPopup.SetActive(true);
-
-    Debug.Log($"✅ Story button clicked. Current story index = {storyIndex}, Title = {story.storyTitle}");
-}
 
 
     public void SetCurrentStory(int storyIndex)
@@ -76,6 +79,13 @@ public void OnStoryButtonClicked(int storyIndex)
         if (viewButton != null) viewButton.interactable = hasContent;
         if (editButton != null) editButton.interactable = hasContent;
         if (deleteButton != null) deleteButton.interactable = hasContent;
+        if (publishButton != null) publishButton.interactable = hasContent;
+    }
+
+    public void OnPublishedStoriesClicked()
+    {
+        Debug.Log("Published Stories button clicked!");
+        SceneManager.LoadScene("StoryPublish");
     }
 
     public void EditStory()
@@ -142,7 +152,7 @@ public void OnStoryButtonClicked(int storyIndex)
         }
 
         // Refresh UI immediately
-        FindObjectOfType<ViewCreatedStoriesScene>()?.RefreshBackgrounds();
+        FindFirstObjectByType<ViewCreatedStoriesScene>()?.RefreshBackgrounds();
 
         // Close popups
         CloseDeleteConfirmation();

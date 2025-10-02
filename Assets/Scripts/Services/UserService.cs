@@ -3,6 +3,7 @@ using Firebase.Firestore;
 using Firebase.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using System.Linq;
 
@@ -61,7 +62,7 @@ public class UserService
 
 
     private void HandleTeacherRegistration(FirebaseUser user, Action<bool, string> callback)
-    {   
+    {
         var teacherData = new Dictionary<string, object>
         {
             { "teachFirstName", ExtractFirstName(user.DisplayName) },
@@ -102,74 +103,134 @@ public class UserService
                     return;
                 }
 
-                QuerySnapshot snapshot = task.Result;
-                DocumentSnapshot classDoc = snapshot.Documents.FirstOrDefault();
-
+                DocumentSnapshot classDoc = task.Result.Documents.FirstOrDefault();
                 string teacherId = "";
+
                 if (classDoc != null && classDoc.TryGetValue("teachId", out string fetchedTeacherId))
                 {
                     teacherId = fetchedTeacherId;
                 }
 
-                // Generate a new studId for students & studentProgress
                 DocumentReference studentRef = _firebaseService.DB.Collection("students").Document();
                 string studId = studentRef.Id;
 
-                // Student profile data
                 var studentData = new Dictionary<string, object>
                 {
-                    { "classCode", classCode },
-                    { "studName", user.DisplayName },
-                    { "teachId", teacherId },
-                    { "userId", user.UserId },
-                    { "dateUpdated", FieldValue.ServerTimestamp },
-                    { "isRemoved", false},
+                { "classCode", classCode },
+                { "studName", user.DisplayName },
+                { "teachId", teacherId },
+                { "userId", user.UserId },
+                { "dateUpdated", FieldValue.ServerTimestamp },
+                { "isRemoved", false },
                 };
 
-                // Leaderboard data (doc ID = studId)
                 var leaderboardData = new Dictionary<string, object>
                 {
-                    { "displayName", user.DisplayName ?? "Unknown" },
-                    { "classCode", classCode ?? "" },
-                    { "overallScore", "0" },
-                    { "perQuizFirstScores", new Dictionary<string, object>() }, 
-                    { "isRemoved", false },
-                    { "dateUpdated", FieldValue.ServerTimestamp }
+                { "displayName", user.DisplayName ?? "Unknown" },
+                { "classCode", classCode ?? "" },
+                { "overallScore", "0" },
+                { "perQuizFirstScores", new Dictionary<string, object>() },
+                { "isRemoved", false },
+                { "dateUpdated", FieldValue.ServerTimestamp }
                 };
 
-                // Progress data (doc ID = studId)
                 var progressData = new Dictionary<string, object>
                 {
-                    { "overallScore", "0" },
-                    { "successRate", "0%" },
-                    { "perQuizBestScores", new Dictionary<string, object>() },
-                    { "passedQuizzes", new List<string>() },
-                    { "currentStory", null },
-                    { "dateUpdated", FieldValue.ServerTimestamp },
-                    { "isRemoved", false}
+                { "overallScore", "0" },
+                { "successRate", "0%" },
+                { "perQuizBestScores", new Dictionary<string, object>() },
+                { "passedQuizzes", new List<string>() },
+                { "currentStory", null },
+                { "dateUpdated", FieldValue.ServerTimestamp },
+                { "isRemoved", false }
                 };
 
-                // Save student profile
                 studentRef.SetAsync(studentData).ContinueWithOnMainThread(studentTask =>
                 {
                     if (studentTask.IsCanceled || studentTask.IsFaulted)
                     {
-                        Debug.LogError("Failed to create student profile: " + studentTask.Exception);
                         callback(false, "Failed to create student profile. Please try again.");
                         return;
                     }
 
-                    // Save leaderboard (studId)
                     DocumentReference leaderboardRef = _firebaseService.DB.Collection("studentLeaderboards").Document(studId);
-                    leaderboardRef.SetAsync(leaderboardData);
-                    _firebaseService.DB.Collection("studentLeaderboards").AddAsync(leaderboardData);
-
-                    // Save progress (studId)
                     DocumentReference progressRef = _firebaseService.DB.Collection("studentProgress").Document(studId);
-                    progressRef.SetAsync(progressData);
 
-                    Debug.Log($"✅ Student profile created (studId: {studId}), leaderboard entry, and progress initialized.");
-                    callback(true, "Student registration successful!");
+                    var leaderboardTask = leaderboardRef.SetAsync(leaderboardData);
+                    var progressTask = progressRef.SetAsync(progressData);
+
+                    Task.WhenAll(leaderboardTask, progressTask).ContinueWithOnMainThread(allTasks =>
+                    {
+                        if (allTasks.IsFaulted)
+                        {
+                            Debug.LogError("Failed to create leaderboard/progress: " + allTasks.Exception);
+                            callback(false, "Failed to initialize student data.");
+                            return;
+                        }
+
+                        Debug.Log($"✅ Student profile created (studId: {studId}), leaderboard and progress initialized.");
+
+                        // Fetch class details and teacher name for caching
+                        _firebaseService.DB.Collection("classes")
+                            .WhereEqualTo("classCode", classCode)
+                            .Limit(1)
+                            .GetSnapshotAsync()
+                            .ContinueWithOnMainThread(classTask =>
+                            {
+                                if (classTask.IsCompletedSuccessfully && classTask.Result.Count > 0)
+                                {
+                                    var classDocInner = classTask.Result.Documents.FirstOrDefault();
+                                    if (classDocInner != null)
+                                    {
+                                        var classData = classDocInner.ToDictionary();
+                                        string teacherIdFromClass = classData.ContainsKey("teachId") ? classData["teachId"].ToString() : "";
+
+                                        if (!string.IsNullOrEmpty(teacherIdFromClass))
+                                        {
+                                            _firebaseService.DB.Collection("teachers")
+                                                .WhereEqualTo("userId", teacherIdFromClass)
+                                                .Limit(1)
+                                                .GetSnapshotAsync()
+                                                .ContinueWithOnMainThread(teacherTask =>
+                                                {
+                                                    string teacherName = "Unknown Teacher";
+
+                                                    if (teacherTask.IsCompletedSuccessfully && teacherTask.Result.Count > 0)
+                                                    {
+                                                        var teacherDoc = teacherTask.Result.Documents.FirstOrDefault();
+                                                        if (teacherDoc != null)
+                                                        {
+                                                            var teacherData = teacherDoc.ToDictionary();
+                                                            string firstName = teacherData.ContainsKey("teachFirstName") ? teacherData["teachFirstName"].ToString() : "";
+                                                            string lastName = teacherData.ContainsKey("teachLastName") ? teacherData["teachLastName"].ToString() : "";
+                                                            teacherName = $"{firstName} {lastName}".Trim();
+                                                        }
+                                                        if (string.IsNullOrEmpty(teacherName))
+                                                            teacherName = "Unknown Teacher";
+                                                    }
+
+                                                    var studentClassData = new StudentClassData(
+                                                        classCode,
+                                                        teacherName,
+                                                        classData.ContainsKey("className") ? classData["className"].ToString() : "",
+                                                        classData.ContainsKey("classLevel") ? classData["classLevel"].ToString() : ""
+                                                    );
+
+                                                    PlayerPrefs.SetString("JoinedClassCode", classCode);
+                                                    PlayerPrefs.SetString("RegisteredClassData", JsonUtility.ToJson(studentClassData));
+                                                    PlayerPrefs.Save();
+
+                                                    Debug.Log("✅ Class data cached with teacher name");
+                                                    callback(true, "Student registration successful!");
+                                                });
+                                            return;
+                                        }
+                                    }
+                                }
+
+                                callback(true, "Student registration successful!");
+                            });
+                    });
                 });
             });
     }
@@ -187,7 +248,7 @@ public class UserService
 
         DocumentReference docRef = _firebaseService.DB.Collection("userAccounts")
             .Document(_firebaseService.CurrentUser.UserId);
-            
+
         docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsCanceled || task.IsFaulted)
@@ -225,7 +286,7 @@ public class UserService
     private string ExtractFirstName(string fullName)
     {
         if (string.IsNullOrEmpty(fullName)) return "";
-        
+
         string[] nameParts = fullName.Split(' ');
         return nameParts[0];
     }
@@ -233,7 +294,7 @@ public class UserService
     private string ExtractLastName(string fullName)
     {
         if (string.IsNullOrEmpty(fullName)) return "";
-        
+
         string[] nameParts = fullName.Split(' ');
         return nameParts.Length > 1 ? nameParts[nameParts.Length - 1] : "";
     }

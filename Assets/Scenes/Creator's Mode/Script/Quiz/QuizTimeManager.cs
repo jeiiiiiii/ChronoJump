@@ -215,7 +215,23 @@ public class QuizTimeManager : MonoBehaviour
         nextButton.interactable = true;
         nextButton.onClick.AddListener(() =>
         {
-            SceneManager.LoadScene("Creator'sModeScene");
+            // Check if user is a teacher or student and load appropriate scene
+            if (IsTeacher())
+            {
+                SceneManager.LoadScene("Creator'sModeScene");
+            }
+            else
+            {
+                SceneManager.LoadScene("Classroom");
+            }
         });
+    }
+
+    // Helper method to determine if the current user is a teacher
+    private bool IsTeacher()
+    {
+        // Check the user role saved during login
+        string userRole = PlayerPrefs.GetString("UserRole", "student");
+        return userRole.ToLower() == "teacher";
     }
 }

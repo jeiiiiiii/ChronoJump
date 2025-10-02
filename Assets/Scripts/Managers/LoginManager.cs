@@ -17,7 +17,7 @@ public class LoginManager : MonoBehaviour
     public GameObject errorMessagePanel;
     public Button backButton;
     public Button loginButton; // Reference to the login button
-    
+
     [Header("Remember Me Feature")]
     public Toggle rememberMeToggle;
 
@@ -31,7 +31,7 @@ public class LoginManager : MonoBehaviour
     private void Awake()
     {
         _firestore = FirebaseFirestore.DefaultInstance;
-        
+
         // Store the original button text
         if (loginButtonText != null)
         {
@@ -43,7 +43,7 @@ public class LoginManager : MonoBehaviour
     {
         // Load saved email if Remember Me was enabled
         LoadRememberedEmail();
-        
+
         // Ensure spinner is initially hidden
         if (loadingSpinner != null)
         {
@@ -115,7 +115,7 @@ public class LoginManager : MonoBehaviour
                 feedbackText.text = message;
                 return;
             }
-            
+
             FirebaseManager.Instance.GetUserData(userData =>
             {
                 UnityDispatcher.RunOnMainThread(() =>
@@ -133,10 +133,13 @@ public class LoginManager : MonoBehaviour
                     if (isTeacherToggle.isOn && isTeacher)
                     {
                         Debug.Log($"User {userData.displayName} logged in as teacher.");
-                        
+
+                        PlayerPrefs.SetString("UserRole", "teacher");
+                        PlayerPrefs.Save();
+
                         // Handle Remember Me for teacher
                         HandleRememberMe(email);
-                        
+
                         feedbackText.text = message;
                         // Keep loading state until scene loads
                         SceneManager.LoadScene("TitleScreen");
@@ -195,7 +198,7 @@ public class LoginManager : MonoBehaviour
                                     GameObject gameManagerGO = new GameObject("GameProgressManager");
                                     gameManagerGO.AddComponent<GameProgressManager>();
                                     DontDestroyOnLoad(gameManagerGO);
-                                    
+
                                     Debug.Log("Created GameProgressManager instance for student login");
                                 }
 
@@ -218,16 +221,20 @@ public class LoginManager : MonoBehaviour
 
                                 feedbackText.text = "Loading game progress...";
 
-                                GameProgressManager.Instance.SetStudentState(studentState, () => {
+                                GameProgressManager.Instance.SetStudentState(studentState, () =>
+                                {
                                     // This callback runs when GameProgressManager is fully initialized
                                     Debug.Log($"Student {studentState.StudentId} fully initialized, navigating to TitleScreen");
+
+                                    PlayerPrefs.SetString("UserRole", "student");
+                                    PlayerPrefs.Save();
 
                                     // Handle Remember Me for student
                                     HandleRememberMe(email);
 
                                     // Clear other students' local data, keep only this student's folder
                                     SaveLoadManager.Instance?.ClearOtherStudentsLocalData(studentState.StudentId);
-                                    
+
                                     // Now it's safe to load the TitleScreen (keep loading state until scene loads)
                                     SceneManager.LoadScene("TitleScreen");
                                 });
@@ -291,12 +298,12 @@ public class LoginManager : MonoBehaviour
         if (PlayerPrefs.HasKey("RememberMe") && PlayerPrefs.GetInt("RememberMe") == 1)
         {
             string savedEmail = PlayerPrefs.GetString("SavedEmail");
-            
+
             if (!string.IsNullOrEmpty(savedEmail))
             {
                 emailField.text = savedEmail;
                 rememberMeToggle.isOn = true;
-                
+
                 // Set focus to password field for better UX
                 passwordField.Select();
                 passwordField.ActivateInputField();
@@ -331,7 +338,7 @@ public class LoginManager : MonoBehaviour
         PlayerPrefs.SetInt("RememberMe", 1);
         PlayerPrefs.SetString("SavedEmail", email);
         PlayerPrefs.Save();
-        
+
         Debug.Log("Email saved for Remember Me feature");
     }
 
@@ -340,7 +347,7 @@ public class LoginManager : MonoBehaviour
         PlayerPrefs.DeleteKey("RememberMe");
         PlayerPrefs.DeleteKey("SavedEmail");
         PlayerPrefs.Save();
-        
+
         Debug.Log("Remember Me data cleared");
     }
 
@@ -351,7 +358,7 @@ public class LoginManager : MonoBehaviour
         emailField.text = string.Empty;
         passwordField.text = string.Empty;
         rememberMeToggle.isOn = false;
-        
+
         feedbackText.text = "Remembered credentials cleared.";
         Debug.Log("All remembered credentials cleared");
     }

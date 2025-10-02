@@ -14,45 +14,46 @@ public class TeacherService
         _firebaseService = firebaseService;
     }
 
-    public async void GetTeacherData(string userId, Action<TeacherModel> callback)
+    // Main method that handles both userId and teacherId
+    public async void GetTeacherData(string userIdOrTeacherId, Action<TeacherModel> callback)
     {
         try
         {
-            // Check if we're still in a valid context
-            if (Application.isPlaying == false) 
-            {
-                return;
-            }
+            if (Application.isPlaying == false) return;
 
-            var teacherDoc = await GetTeacherDocument(userId);
-        
-            // Check again after async operation
-            if (Application.isPlaying == false) 
-            {
-                return;
-            }
+            // First, try direct document lookup (assumes it's a teacherId)
+            var teacherDocSnapshot = await _firebaseService.DB
+                .Collection("teachers")
+                .Document(userIdOrTeacherId)
+                .GetSnapshotAsync();
 
-            if (teacherDoc == null)
+            if (Application.isPlaying == false) return;
+
+            // If document doesn't exist, try querying by userId field
+            if (!teacherDocSnapshot.Exists)
             {
-                // Only log if we're still in play mode
-                if (Application.isPlaying)
-                    Debug.LogWarning("No teacher data found for userId: " + userId);
-                callback?.Invoke(null);
-                return;
+                Debug.Log($"No teacher document with ID: {userIdOrTeacherId}, trying userId query...");
+                teacherDocSnapshot = await GetTeacherDocumentByUserId(userIdOrTeacherId);
+
+                if (teacherDocSnapshot == null || !teacherDocSnapshot.Exists)
+                {
+                    if (Application.isPlaying)
+                        Debug.LogError("No teacher document found with userId: " + userIdOrTeacherId);
+                    callback?.Invoke(null);
+                    return;
+                }
             }
 
             if (Application.isPlaying)
-                LogTeacherDocumentFields(teacherDoc);
-        
-            var classCodes = await GetTeacherClassCodes(teacherDoc.Id);
-        
-            // Final check before callback
-            if (Application.isPlaying == false) 
-            {
-                return;
-            }
+                LogTeacherDocumentFields(teacherDocSnapshot);
 
-            var teacherData = MapDocumentToTeacher(teacherDoc, classCodes);
+            // Use the document ID (teacherId) to get classes
+            string teacherId = teacherDocSnapshot.Id;
+            var classCodes = await GetTeacherClassCodes(teacherId);
+
+            if (Application.isPlaying == false) return;
+
+            var teacherData = MapDocumentToTeacher(teacherDocSnapshot, classCodes);
             callback?.Invoke(teacherData);
         }
         catch (Exception ex)
@@ -63,24 +64,24 @@ public class TeacherService
         }
     }
 
-    private async Task<DocumentSnapshot> GetTeacherDocument(string userId)
+    private async Task<DocumentSnapshot> GetTeacherDocumentByUserId(string userId)
     {
         Query teachQuery = _firebaseService.DB.Collection("teachers")
             .WhereEqualTo("userId", userId)
             .Limit(1);
-            
+
         QuerySnapshot teachQuerySnapshot = await teachQuery.GetSnapshotAsync();
-        
+
         return teachQuerySnapshot.Count > 0 ? teachQuerySnapshot.Documents.FirstOrDefault() : null;
     }
 
     private async Task<Dictionary<string, List<string>>> GetTeacherClassCodes(string teacherId)
     {
         Dictionary<string, List<string>> classCodes = new Dictionary<string, List<string>>();
-        
+
         Query classQuery = _firebaseService.DB.Collection("classes")
             .WhereEqualTo("teachId", teacherId);
-            
+
         QuerySnapshot querySnapshot = await classQuery.GetSnapshotAsync();
 
         foreach (DocumentSnapshot document in querySnapshot.Documents)
