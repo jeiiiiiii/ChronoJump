@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class StoryActionHandler : MonoBehaviour
 {
@@ -12,6 +13,11 @@ public class StoryActionHandler : MonoBehaviour
     [SerializeField] private Button deleteButton;
     [SerializeField] private Button backButton;
 
+    [Header("Story Details UI")]
+    [SerializeField] private TextMeshProUGUI storyTitleText;
+    [SerializeField] private TextMeshProUGUI storyDescriptionText;
+    [SerializeField] private TextMeshProUGUI dateCreatedText;
+    [SerializeField] private TextMeshProUGUI dateUpdatedText;
 
     [Header("Delete Confirmation")]
     [SerializeField] private GameObject deleteConfirmPopup;
@@ -22,14 +28,12 @@ public class StoryActionHandler : MonoBehaviour
 
     void Start()
     {
-        // Set up button listeners
         if (editButton != null) editButton.onClick.AddListener(EditStory);
         if (viewButton != null) viewButton.onClick.AddListener(ViewStory);
         if (publishButton != null) publishButton.onClick.AddListener(OnPublishedStoriesClicked);
         if (deleteButton != null) deleteButton.onClick.AddListener(ShowDeleteConfirmation);
         if (backButton != null) backButton.onClick.AddListener(ClosePopup);
 
-        // Delete confirmation buttons
         if (confirmDeleteButton != null) confirmDeleteButton.onClick.AddListener(DeleteStory);
         if (cancelDeleteButton != null) cancelDeleteButton.onClick.AddListener(CloseDeleteConfirmation);
 
@@ -39,8 +43,6 @@ public class StoryActionHandler : MonoBehaviour
     public void OnStoryButtonClicked(int storyIndex)
     {
         var stories = StoryManager.Instance.allStories;
-
-        // ✅ FIXED: More robust validation
         bool isValidStory = false;
         StoryData story = null;
 
@@ -56,20 +58,66 @@ public class StoryActionHandler : MonoBehaviour
             return;
         }
 
-        // Show popup only for valid, saved stories
         SetCurrentStory(storyIndex);
+        UpdateStoryDetailsUI(story);
+        
         if (actionPopup != null)
             actionPopup.SetActive(true);
 
         Debug.Log($"Story action popup shown. Index = {storyIndex}, Title = {story.storyTitle}");
     }
+
+    private void UpdateStoryDetailsUI(StoryData story)
+    {
+        if (story == null)
+        {
+            ClearStoryDetailsUI();
+            return;
+        }
+
+        if (storyTitleText != null)
+        {
+            storyTitleText.text = string.IsNullOrEmpty(story.storyTitle) 
+                ? "Untitled Story" 
+                : story.storyTitle;
+        }
+
+        if (storyDescriptionText != null)
+        {
+            storyDescriptionText.text = string.IsNullOrEmpty(story.storyDescription) 
+                ? "No description available" 
+                : story.storyDescription;
+        }
+
+        if (dateCreatedText != null)
+        {
+            dateCreatedText.text = string.IsNullOrEmpty(story.createdAt) 
+                ? "Created: Unknown" 
+                : $"Created: {story.createdAt}";
+        }
+
+        if (dateUpdatedText != null)
+        {
+            dateUpdatedText.text = string.IsNullOrEmpty(story.updatedAt) 
+                ? "Updated: Not modified" 
+                : $"Updated: {story.updatedAt}";
+        }
+    }
+
+    private void ClearStoryDetailsUI()
+    {
+        if (storyTitleText != null) storyTitleText.text = "No Story Selected";
+        if (storyDescriptionText != null) storyDescriptionText.text = "";
+        if (dateCreatedText != null) dateCreatedText.text = "";
+        if (dateUpdatedText != null) dateUpdatedText.text = "";
+    }
+
     void UpdateButtonStates()
     {
-        var stories = StoryManager.Instance.allStories; // ✅ Use allStories
+        var stories = StoryManager.Instance.allStories;
 
         if (currentStoryIndex < 0 || currentStoryIndex >= stories.Count)
         {
-            // If no valid story, disable all buttons
             if (viewButton != null) viewButton.interactable = false;
             if (editButton != null) editButton.interactable = false;
             if (deleteButton != null) deleteButton.interactable = false;
@@ -78,7 +126,6 @@ public class StoryActionHandler : MonoBehaviour
         }
 
         var story = stories[currentStoryIndex];
-        // Enable buttons if story is saved and not null
         bool isSaved = story != null && !string.IsNullOrEmpty(story.createdAt);
 
         if (viewButton != null) viewButton.interactable = isSaved;
@@ -86,18 +133,17 @@ public class StoryActionHandler : MonoBehaviour
         if (deleteButton != null) deleteButton.interactable = isSaved;
         if (publishButton != null) publishButton.interactable = isSaved;
 
-        Debug.Log($"🔘 Button states updated - Story valid: {isSaved}");
+        Debug.Log($"Button states updated - Story valid: {isSaved}");
     }
-
-
 
     public void SetCurrentStory(int storyIndex)
     {
         currentStoryIndex = storyIndex;
-        // ✅ FIXED: Use allStories consistently
         if (storyIndex >= 0 && storyIndex < StoryManager.Instance.allStories.Count)
         {
-            StoryManager.Instance.currentStory = StoryManager.Instance.allStories[storyIndex];
+            StoryData story = StoryManager.Instance.allStories[storyIndex];
+            StoryManager.Instance.currentStory = story;
+            UpdateStoryDetailsUI(story);
         }
         UpdateButtonStates();
     }
@@ -105,7 +151,6 @@ public class StoryActionHandler : MonoBehaviour
     public void EditStory()
     {
         if (currentStoryIndex < 0) return;
-        // ✅ FIXED: Use allStories consistently
         if (currentStoryIndex < StoryManager.Instance.allStories.Count)
         {
             StoryManager.Instance.currentStory = StoryManager.Instance.allStories[currentStoryIndex];
@@ -116,7 +161,6 @@ public class StoryActionHandler : MonoBehaviour
     public void ViewStory()
     {
         if (currentStoryIndex < 0) return;
-        // ✅ FIXED: Use allStories consistently
         if (currentStoryIndex < StoryManager.Instance.allStories.Count)
         {
             StoryManager.Instance.currentStory = StoryManager.Instance.allStories[currentStoryIndex];
@@ -157,32 +201,25 @@ public class StoryActionHandler : MonoBehaviour
 
         if (storyToDelete != null)
         {
-            Debug.Log($"🗑️ Deleting story: {storyToDelete.storyTitle} (Index: {storyIndexToDelete})");
+            Debug.Log($"Deleting story: {storyToDelete.storyTitle} (Index: {storyIndexToDelete})");
 
-            // ✅ FIXED: Delete from Firebase if using Firestore
             if (StoryManager.Instance.UseFirestore && !string.IsNullOrEmpty(storyToDelete.storyId))
             {
                 DeleteStoryFromFirestore(storyToDelete.storyId);
             }
 
-            // ✅ UPDATED: Delete local files using ImageStorage with relative paths
             ImageStorage.DeleteImage(storyToDelete.backgroundPath);
             ImageStorage.DeleteImage(storyToDelete.character1Path);
             ImageStorage.DeleteImage(storyToDelete.character2Path);
 
-            // Remove from list
             if (storyIndexToDelete < stories.Count)
             {
                 stories.RemoveAt(storyIndexToDelete);
             }
 
-            // Remove from published stories
             RemoveFromPublishedStories(storyToDelete.storyId);
-
-            // Save changes
             StoryManager.Instance.SaveStories();
 
-            // Reset selection and clear temp data
             if (StoryManager.Instance.currentStory == storyToDelete)
                 StoryManager.Instance.currentStory = null;
 
@@ -193,22 +230,19 @@ public class StoryActionHandler : MonoBehaviour
                 ImageStorage.uploadedTexture2 = null;
             }
 
-            // Refresh UI
             var viewStoriesScene = FindFirstObjectByType<ViewCreatedStoriesScene>();
             if (viewStoriesScene != null)
             {
                 viewStoriesScene.RefreshBackgrounds();
             }
 
-            Debug.Log($"🗑️ Story at slot {storyIndexToDelete} deleted successfully.");
+            Debug.Log($"Story at slot {storyIndexToDelete} deleted successfully.");
         }
 
         CloseDeleteConfirmation();
         ClosePopup();
     }
 
-
-    // ✅ UPDATED: Use StoryManager's integrated Firestore method
     private async void DeleteStoryFromFirestore(string storyId)
     {
         if (StoryManager.Instance.UseFirestore && StoryManager.Instance.IsFirebaseReady)
@@ -219,22 +253,20 @@ public class StoryActionHandler : MonoBehaviour
 
                 if (success)
                 {
-                    Debug.Log($"✅ Story {storyId} deleted from Firestore");
+                    Debug.Log($"Story {storyId} deleted from Firestore");
                 }
                 else
                 {
-                    Debug.LogError($"❌ Failed to delete story {storyId} from Firestore");
+                    Debug.LogError($"Failed to delete story {storyId} from Firestore");
                 }
             }
             catch (System.Exception ex)
             {
-                Debug.LogError($"❌ Error deleting story from Firestore: {ex.Message}");
+                Debug.LogError($"Error deleting story from Firestore: {ex.Message}");
             }
         }
     }
 
-
-    // ✅ NEW: Method to remove from published stories
     private void RemoveFromPublishedStories(string storyId)
     {
         if (StoryManager.Instance.publishedStories != null)
@@ -242,26 +274,24 @@ public class StoryActionHandler : MonoBehaviour
             int removedCount = StoryManager.Instance.publishedStories.RemoveAll(p => p.storyId == storyId);
             if (removedCount > 0)
             {
-                Debug.Log($"✅ Removed {removedCount} published story entries");
+                Debug.Log($"Removed {removedCount} published story entries");
             }
         }
     }
-
-
-
 
     private void TryDeleteFile(string path)
     {
         if (!string.IsNullOrEmpty(path) && System.IO.File.Exists(path))
         {
             System.IO.File.Delete(path);
-            Debug.Log($"🗑 Deleted file: {path}");
+            Debug.Log($"Deleted file: {path}");
         }
     }
 
     public void ClosePopup()
     {
         if (actionPopup != null) actionPopup.SetActive(false);
+        ClearStoryDetailsUI();
         currentStoryIndex = -1;
     }
 
@@ -270,12 +300,9 @@ public class StoryActionHandler : MonoBehaviour
         if (deleteConfirmPopup != null) deleteConfirmPopup.SetActive(false);
     }
 
-    // ✅ NEW: Method to be called when popup is shown via StorySelector
     public void OnPopupShown(int storyIndex)
     {
         SetCurrentStory(storyIndex);
         UpdateButtonStates();
     }
-
 }
-

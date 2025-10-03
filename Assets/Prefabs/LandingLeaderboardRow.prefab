@@ -170,8 +170,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 16, y: 0.0000033379}
-  m_SizeDelta: {x: 196.6, y: 51.28}
+  m_AnchoredPosition: {x: -22.8424, y: 0.0000033379}
+  m_SizeDelta: {x: 221.9822, y: 51.28}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5590319914989358172
 CanvasRenderer:
@@ -303,7 +303,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5131826326864839849}
   - {fileID: 1669889911822216565}
   - {fileID: 5306053491720018642}
   m_Father: {fileID: 0}
@@ -406,7 +405,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0.6128731, z: -1.5351562, w: -1.3884468}
+  m_margin: {x: 19.998154, y: 0.6128731, z: -1.5351562, w: -1.3884468}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -424,7 +423,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d450fc8cb590fb47ab0f91e8a5cc879, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LeaderboardStudIcon: {fileID: 2149984295648639948}
+  LeaderboardStudIcon: {fileID: 0}
   LeaderboardStudName: {fileID: 8918567554324764600}
   LeaderboardStudPoints: {fileID: 9126675172227097599}
   rankingText: {fileID: 761227765604487114}
@@ -437,81 +436,6 @@ MonoBehaviour:
   secondTotalPointsBackground: {fileID: -1559940509511860350, guid: d36e5e24b4cbc9f4ab2b20b20906db8a, type: 3}
   thirdTotalPointsBackground: {fileID: 8479400099217904719, guid: d9f248b0febdfa845b5bc61241c3b3e0, type: 3}
   followingTotalPointsBackground: {fileID: 6937681832998414090, guid: 54331ad53fdcb5549b4f19d884b5a8cc, type: 3}
---- !u!1 &3275234049258068241
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5131826326864839849}
-  - component: {fileID: 9171456337897259546}
-  - component: {fileID: 2149984295648639948}
-  m_Layer: 5
-  m_Name: LeaderboardStudIcon
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &5131826326864839849
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3275234049258068241}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 104614320511883097}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -129.5, y: -0.0000019073}
-  m_SizeDelta: {x: 55, y: 55}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &9171456337897259546
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3275234049258068241}
-  m_CullTransparentMesh: 1
---- !u!114 &2149984295648639948
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3275234049258068241}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6554843a2edc0444eb5fc9f1353392d6, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &5753343529369425855
 GameObject:
   m_ObjectHideFlags: 0
@@ -548,7 +472,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 164.64995, y: 0.0000047684}
+  m_AnchoredPosition: {x: 145.5, y: 0}
   m_SizeDelta: {x: 67.54, y: 34.01}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5570128457757344491

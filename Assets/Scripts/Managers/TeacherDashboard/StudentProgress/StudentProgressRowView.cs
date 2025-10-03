@@ -7,7 +7,6 @@ public class StudentProgressRowView : MonoBehaviour
 {
     [Header("UI References")]
     public TextMeshProUGUI studentNameText;
-    public Image studentProfileImage;
     public DynamicProgressBar progressBar;
     
     [Header("Additional Progress UI")]
@@ -31,9 +30,6 @@ public class StudentProgressRowView : MonoBehaviour
         // Set basic student info
         if (studentNameText != null)
             studentNameText.text = student.studName;
-        
-        // Set profile image if available
-        // Keep existing profile image logic here
         
         // Use the progress data from the student model
         if (student.studentProgress != null)

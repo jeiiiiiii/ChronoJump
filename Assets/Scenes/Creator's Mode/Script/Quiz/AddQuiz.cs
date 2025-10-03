@@ -43,6 +43,17 @@ public class AddQuiz : MonoBehaviour
 
     void Start()
     {
+        // Add character limit validation
+        if (questionInput != null)
+        {
+            questionInput.characterLimit = ValidationManager.Instance.maxQuestionLength;
+        }
+
+        if (choice1Input != null) choice1Input.characterLimit = ValidationManager.Instance.maxChoiceLength;
+        if (choice2Input != null) choice2Input.characterLimit = ValidationManager.Instance.maxChoiceLength;
+        if (choice3Input != null) choice3Input.characterLimit = ValidationManager.Instance.maxChoiceLength;
+        if (choice4Input != null) choice4Input.characterLimit = ValidationManager.Instance.maxChoiceLength;
+        
         addQuestionButton.onClick.AddListener(AddQuestion);
         nextButton.onClick.AddListener(GoNext);
 
@@ -92,10 +103,33 @@ public class AddQuiz : MonoBehaviour
             choice4Input.text.Trim()
         };
 
+        // Validate choices
+        var choicesValidation = ValidationManager.Instance.ValidateChoices(choices);
+        if (!choicesValidation.isValid)
+        {
+            ValidationManager.Instance.ShowWarning(
+                "Choices Validation",
+                choicesValidation.message,
+                null,
+                () => { 
+                    if (string.IsNullOrEmpty(choices[0])) choice1Input.Select();
+                    else if (string.IsNullOrEmpty(choices[1])) choice2Input.Select();
+                    else if (string.IsNullOrEmpty(choices[2])) choice3Input.Select();
+                    else if (string.IsNullOrEmpty(choices[3])) choice4Input.Select();
+                }
+            );
+            return;
+        }
+
         int correctIndex = GetCorrectAnswerIndex();
         if (correctIndex == -1)
         {
-            Debug.LogWarning("⚠ Please select a correct answer!");
+            ValidationManager.Instance.ShowWarning(
+                "Correct Answer Required",
+                "Please select a correct answer!",
+                null,
+                () => { /* Stay on current scene */ }
+            );
             return;
         }
 

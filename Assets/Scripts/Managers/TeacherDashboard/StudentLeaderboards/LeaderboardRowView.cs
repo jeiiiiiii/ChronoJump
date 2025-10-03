@@ -11,12 +11,6 @@ public class LeaderboardRowView : MonoBehaviour
     public TextMeshProUGUI rankingText;
     public Image leaderboardStudPointsBg;
     
-    [Header("Ranking Assets")]
-    public Sprite firstStudIcon;
-    public Sprite secondStudIcon;
-    public Sprite thirdStudIcon;
-    public Sprite followingStudIcon;
-    
     public Sprite firstTotalPointsBackground;
     public Sprite secondTotalPointsBackground;
     public Sprite thirdTotalPointsBackground;
@@ -56,31 +50,28 @@ public class LeaderboardRowView : MonoBehaviour
     private void ApplyRankingStyling(int ranking)
     {
         switch (ranking)
-        {
+        {   
             case 1:
-                SetRankingAssets(firstStudIcon, firstTotalPointsBackground, 
+                SetRankingAssets(firstTotalPointsBackground, 
                     Hex("#FACC15"), Hex("#FEF9C3"), Hex("#A16207"));
                 break;
             case 2:
-                SetRankingAssets(secondStudIcon, secondTotalPointsBackground, 
+                SetRankingAssets(secondTotalPointsBackground, 
                     Hex("#9CA3AF"), Hex("#FFFFFF"), Hex("#374151"));
                 break;
             case 3:
-                SetRankingAssets(thirdStudIcon, thirdTotalPointsBackground, 
+                SetRankingAssets(thirdTotalPointsBackground, 
                     Hex("#FB923C"), Hex("#FFFFFF"), Hex("#C2410C"));
                 break;
             default:
-                SetRankingAssets(followingStudIcon, followingTotalPointsBackground, 
+                SetRankingAssets(followingTotalPointsBackground, 
                     Hex("#60A5FA"), Hex("#FFFFFF"), Hex("#1D4ED8"));
                 break;
         }
     }
     
-    private void SetRankingAssets(Sprite iconSprite, Sprite bgSprite, Color rankColor, Color iconColor, Color pointsColor)
+    private void SetRankingAssets(Sprite bgSprite, Color rankColor, Color iconColor, Color pointsColor)
     {
-        if (LeaderboardStudIcon != null && iconSprite != null)
-            LeaderboardStudIcon.sprite = iconSprite;
-
         if (leaderboardStudPointsBg != null && bgSprite != null)
         {
             leaderboardStudPointsBg.sprite = bgSprite;

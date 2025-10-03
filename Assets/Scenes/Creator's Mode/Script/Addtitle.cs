@@ -9,11 +9,23 @@ public class AddTitle : MonoBehaviour
 
     void Start()
     {
+
+        // Add character limit validation
+        if (titleInputField != null)
+        {
+            titleInputField.characterLimit = ValidationManager.Instance.maxTitleLength;
+        }
+
+        if (descriptionInputField != null)
+        {
+            descriptionInputField.characterLimit = ValidationManager.Instance.maxDescriptionLength;
+        }
+
         // ✅ FIXED: Ensure we have a current story
         if (StoryManager.Instance.currentStory == null)
         {
             Debug.LogWarning("⚠️ No current story found, creating a new one...");
-            
+
             // Get the current story index from ImageStorage
             int storyIndex = ImageStorage.CurrentStoryIndex;
             if (storyIndex >= 0)
@@ -28,7 +40,7 @@ public class AddTitle : MonoBehaviour
                     storyTitle = string.Empty,
                     createdAt = string.Empty
                 };
-                
+
                 // Add to stories list
                 while (StoryManager.Instance.allStories.Count <= storyIndex)
                 {
@@ -37,7 +49,7 @@ public class AddTitle : MonoBehaviour
                 StoryManager.Instance.allStories[storyIndex] = newStory;
                 StoryManager.Instance.currentStory = newStory;
                 StoryManager.Instance.currentStoryIndex = storyIndex;
-                
+
                 Debug.Log($"✅ Created new story at index {storyIndex}");
             }
             else
@@ -62,10 +74,35 @@ public class AddTitle : MonoBehaviour
     public void OnNextButton()
     {
         var story = StoryManager.Instance.currentStory;
-
         if (story == null)
         {
             Debug.LogError("❌ No current story to update!");
+            return;
+        }
+
+        // Validate title
+        var titleValidation = ValidationManager.Instance.ValidateTitle(titleInputField.text);
+        if (!titleValidation.isValid)
+        {
+            ValidationManager.Instance.ShowWarning(
+                "Title Validation",
+                titleValidation.message,
+                null, // No confirm action, just close
+                () => { /* Focus on title field */ }
+            );
+            return;
+        }
+
+        // Validate description
+        var descValidation = ValidationManager.Instance.ValidateDescription(descriptionInputField.text);
+        if (!descValidation.isValid)
+        {
+            ValidationManager.Instance.ShowWarning(
+                "Description Validation",
+                descValidation.message,
+                null,
+                () => { /* Focus on description field */ }
+            );
             return;
         }
 

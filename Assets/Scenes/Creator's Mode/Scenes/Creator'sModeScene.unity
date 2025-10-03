@@ -951,6 +951,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15d48f54646b305479aa0aa25ba34040, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  firstButton: {fileID: 224057715}
+  secondButton: {fileID: 1013125557}
+  movingImage: {fileID: 1162063688}
 --- !u!1 &1162063687
 GameObject:
   m_ObjectHideFlags: 0
@@ -985,7 +988,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -504, y: -78}
+  m_AnchoredPosition: {x: -458, y: -78}
   m_SizeDelta: {x: 764.34, y: 813.96}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1162063689
