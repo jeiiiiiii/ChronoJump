@@ -22,6 +22,9 @@ public class ViewCreatedStoriesScene : MonoBehaviour
 
     void Start()
     {
+        // ✅ ADD THIS: Debug to see current state
+        DebugTeacherContext();
+
         if (storyActionPopup != null)
         {
             storyActionPopup.SetActive(false);
@@ -30,6 +33,7 @@ public class ViewCreatedStoriesScene : MonoBehaviour
         // Wait for stories to load, then update backgrounds
         StartCoroutine(WaitForStoriesAndUpdate());
     }
+
 
     private System.Collections.IEnumerator WaitForStoriesAndUpdate()
     {
@@ -310,5 +314,34 @@ public string GetBackgroundType(int storyIndex)
         Debug.Log("🔍 === END DEBUG ===");
     }
 
+    private void DebugTeacherContext()
+    {
+        Debug.Log("🔍 === TEACHER CONTEXT DEBUG ===");
+
+        // Check Firebase user
+        if (FirebaseManager.Instance?.CurrentUserData != null)
+        {
+            Debug.Log($"Firebase User: {FirebaseManager.Instance.CurrentUserData.displayName}");
+            Debug.Log($"Firebase Role: {FirebaseManager.Instance.CurrentUserData.role}");
+            Debug.Log($"Firebase UserId: {FirebaseManager.Instance.CurrentUser.UserId}");
+        }
+        else
+        {
+            Debug.Log("❌ No Firebase user data");
+        }
+
+        // Check StoryManager teacher context
+        if (StoryManager.Instance != null)
+        {
+            Debug.Log($"StoryManager Teacher ID: {StoryManager.Instance.GetCurrentTeacherId()}");
+            Debug.Log($"StoryManager Stories Count: {StoryManager.Instance.allStories?.Count ?? 0}");
+        }
+        else
+        {
+            Debug.Log("❌ StoryManager instance is null");
+        }
+
+        Debug.Log("🔍 === END DEBUG ===");
+    }
 
 }

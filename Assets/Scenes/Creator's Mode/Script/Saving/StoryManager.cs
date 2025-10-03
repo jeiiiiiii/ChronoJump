@@ -108,8 +108,8 @@ public class StoryManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
 
             InitializeFirebaseIntegration();
-            // ❌ REMOVED: LoadStories() from here
-            Debug.Log("✅ StoryManager initialized - waiting for teacher data to load stories");
+            // ❌ REMOVED: LoadStories() from here - wait for explicit teacher context
+            Debug.Log("✅ StoryManager initialized - waiting for explicit teacher context to load stories");
         }
         else if (_instance != this)
         {
@@ -117,6 +117,7 @@ public class StoryManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
 
     private void LoadTeacherData()
     {
@@ -223,19 +224,45 @@ public class StoryManager : MonoBehaviour
         return _currentTeacher;
     }
 
+    // Add this method to StoryManager.cs
+    public void ClearStoriesForNewTeacher()
+    {
+        allStories.Clear();
+        publishedStories.Clear();
+        currentStoryIndex = -1;
+        currentStory = null;
+
+        Debug.Log($"🧹 Cleared stories for teacher switch");
+    }
+
+
     public void SetCurrentTeacher(string teachId)
     {
         if (!string.IsNullOrEmpty(teachId))
         {
+            // Clear existing stories before switching teachers
+            ClearStoriesForNewTeacher();
+
             _currentTeachId = teachId;
             TeacherPrefs.SetString("CurrentTeachId", teachId);
             TeacherPrefs.Save();
             Debug.Log($"✅ Current teacher set to: {teachId}");
 
-            // Reload stories for this teacher
-            LoadStories();
+            // ✅ Only load stories if Firebase is ready and we have a valid teacher
+            if (UseFirestore && IsFirebaseReady)
+            {
+                LoadStories();
+            }
+            else
+            {
+                Debug.Log("ℹ️ StoryManager: Loading local stories for teacher");
+                LoadStoriesLocal();
+                LoadPublishedStories();
+            }
         }
     }
+
+
 
     public void ClearCurrentTeacher()
     {
@@ -394,7 +421,7 @@ public class StoryManager : MonoBehaviour
         }
     }
 
-    // NEW: Delete story from Firestore
+    // Update DeleteStoryFromFirestore to validate ownership
     public async Task<bool> DeleteStoryFromFirestore(string storyId)
     {
         try
@@ -411,13 +438,32 @@ public class StoryManager : MonoBehaviour
                 return false;
             }
 
-            // Delete from createdStories collection
+            string currentTeachId = GetCurrentTeacherId();
+
+            // ✅ FIXED: Verify the story belongs to current teacher before deletion
             DocumentReference storyDocRef = _firestore
                 .Collection("createdStories")
                 .Document(storyId);
 
+            var storySnapshot = await storyDocRef.GetSnapshotAsync();
+            if (!storySnapshot.Exists)
+            {
+                Debug.LogError($"❌ Story {storyId} does not exist in Firestore");
+                return false;
+            }
+
+            var firestoreStory = storySnapshot.ConvertTo<StoryDataFirestore>();
+
+            // ✅ CRITICAL: Check if the story belongs to the current teacher
+            if (firestoreStory.teachId != currentTeachId)
+            {
+                Debug.LogError($"❌ Permission denied: Story {storyId} belongs to teacher {firestoreStory.teachId}, not current teacher {currentTeachId}");
+                return false;
+            }
+
+            // Proceed with deletion
             await storyDocRef.DeleteAsync();
-            Debug.Log($"✅ Story {storyId} deleted from Firestore");
+            Debug.Log($"✅ Story {storyId} deleted from Firestore by teacher {currentTeachId}");
             return true;
         }
         catch (System.Exception ex)
@@ -426,6 +472,7 @@ public class StoryManager : MonoBehaviour
             return false;
         }
     }
+
 
     // === SUBCOLLECTION METHODS ===
 
@@ -677,7 +724,7 @@ public class StoryManager : MonoBehaviour
         }
     }
 
-    // Renamed to avoid conflict
+    // In LoadStoriesFromFirestoreAsync method, ensure the query includes teachId filter
     private async Task<bool> LoadStoriesFromFirestoreAsync()
     {
         try
@@ -688,27 +735,38 @@ public class StoryManager : MonoBehaviour
                 return false;
             }
 
-            // Get teacher ID
-            string teachId = GetCurrentTeacherId();
-            if (string.IsNullOrEmpty(teachId))
+            // Get current teacher ID
+            string currentTeachId = GetCurrentTeacherId();
+            if (string.IsNullOrEmpty(currentTeachId))
             {
                 Debug.LogError("❌ No teacher ID found, cannot load stories");
                 return false;
             }
 
-            // Query stories for this teacher
+            Debug.Log($"🔍 Loading stories for teacher: {currentTeachId}");
+
+            // ✅ FIXED: Query stories ONLY for the current teacher
             var storiesQuery = _firestore
                 .Collection("createdStories")
-                .WhereEqualTo("teachId", teachId);
+                .WhereEqualTo("teachId", currentTeachId); // This is the key filter
 
             var snapshot = await storiesQuery.GetSnapshotAsync();
 
             var loadedStories = new List<StoryData>();
-
             var documents = snapshot.Documents.ToList();
+
+            Debug.Log($"📚 Found {documents.Count} stories in Firestore for teacher {currentTeachId}");
+
             foreach (var storyDoc in documents)
             {
                 var firestoreStory = storyDoc.ConvertTo<StoryDataFirestore>();
+
+                // ✅ DOUBLE CHECK: Ensure this story belongs to the current teacher
+                if (firestoreStory.teachId != currentTeachId)
+                {
+                    Debug.LogWarning($"⚠️ Skipping story {firestoreStory.storyId} - belongs to teacher {firestoreStory.teachId}, not current teacher {currentTeachId}");
+                    continue;
+                }
 
                 // Load dialogues and questions
                 var dialogues = await LoadDialoguesFromFirestore(storyDoc.Id);
@@ -721,7 +779,7 @@ public class StoryManager : MonoBehaviour
 
             // Update stories list
             allStories = loadedStories;
-            Debug.Log($"✅ Loaded {loadedStories.Count} stories from Firestore");
+            Debug.Log($"✅ Loaded {loadedStories.Count} stories from Firestore for teacher: {currentTeachId}");
             return true;
         }
         catch (System.Exception ex)
@@ -730,6 +788,7 @@ public class StoryManager : MonoBehaviour
             return false;
         }
     }
+
 
     // Keep the public void method for external calls
     public async void LoadStoriesFromFirestore()
@@ -791,6 +850,7 @@ public class StoryManager : MonoBehaviour
         Debug.Log($"📁 File: {filePath}");
     }
 
+    // In LoadStoriesLocal method, add teacher validation
     private void LoadStoriesLocal()
     {
         string filePath = GetTeacherStoriesFilePath();
@@ -798,17 +858,22 @@ public class StoryManager : MonoBehaviour
         {
             string json = File.ReadAllText(filePath);
             StoryListWrapper wrapper = JsonUtility.FromJson<StoryListWrapper>(json);
+
+            // ✅ FIXED: Always create new list to ensure clean state
             allStories = wrapper.stories ?? new List<StoryData>();
-            Debug.Log($"Loaded {allStories.Count} stories for teacher: {GetCurrentTeacherId()}");
+
+            Debug.Log($"📚 Loaded {allStories.Count} local stories for teacher: {GetCurrentTeacherId()}");
             Debug.Log($"📁 File: {filePath}");
         }
         else
         {
             allStories = new List<StoryData>();
-            Debug.Log($"No saved stories found for teacher: {GetCurrentTeacherId()}, starting fresh.");
+            Debug.Log($"❌ No saved stories found for teacher: {GetCurrentTeacherId()}, starting fresh.");
             Debug.Log($"📁 Expected file: {filePath}");
         }
     }
+
+    
 
     [System.Serializable]
     private class StoryListWrapper

@@ -36,8 +36,11 @@ public class TitleScreen : MonoBehaviour
 
             Debug.Log($"[TitleScreen] Loaded user: {userData.displayName} ({userData.role})");
 
-            if (userData.role.ToLower() == "teacher")
+           if (userData.role.ToLower() == "teacher")
             {
+                // ✅ Ensure teacher data is loaded before initializing StoryManager
+                await LoadTeacherData(userData.userId);
+                
                 newGameButton.gameObject.SetActive(false);
                 loadGameButton.gameObject.SetActive(false);
                 classroomButton.gameObject.SetActive(false);
@@ -137,12 +140,23 @@ public class TitleScreen : MonoBehaviour
 
     public void Logout()
     {
+        // ✅ Clear StoryManager data on logout
+        if (StoryManager.Instance != null)
+        {
+            StoryManager.Instance.ClearStoriesForNewTeacher();
+            StoryManager.Instance.ClearCurrentTeacher();
+        }
+
         SceneManager.LoadScene("Login");
         StudentPrefs.DeleteKey("LastScene");
         StudentPrefs.DeleteKey("SaveSource");
         StudentPrefs.SetString("AccessMode", "LoadOnly");
         StudentPrefs.Save();
+
+        Debug.Log("✅ Teacher data cleared on logout");
     }
+
+
 
     public void Classroom() => SceneManager.LoadScene("Classroom");
 
@@ -178,4 +192,35 @@ public class TitleScreen : MonoBehaviour
         else
             SceneManager.LoadScene("StoryPublish");
     }
+
+    private async System.Threading.Tasks.Task LoadTeacherData(string userId)
+    {
+        var completionSource = new System.Threading.Tasks.TaskCompletionSource<bool>();
+
+        FirebaseManager.Instance.GetTeacherData(userId, teacher =>
+        {
+            if (teacher != null)
+            {
+                Debug.Log($"✅ Teacher data loaded in TitleScreen: {teacher.teachFirstName} {teacher.teachLastName} (ID: {teacher.teachId})");
+
+                // Ensure StoryManager uses the correct teachId
+                if (StoryManager.Instance != null)
+                {
+                    StoryManager.Instance.SetCurrentTeacher(teacher.teachId);
+                }
+
+                completionSource.SetResult(true);
+            }
+            else
+            {
+                Debug.LogError("❌ Failed to load teacher data in TitleScreen");
+                completionSource.SetResult(false);
+            }
+        });
+
+        await completionSource.Task;
+    }
+
+ 
+
 }

@@ -141,6 +141,7 @@ public class LoginManager : MonoBehaviour
                         HandleRememberMe(email);
 
                         feedbackText.text = message;
+
                         // Keep loading state until scene loads
                         SceneManager.LoadScene("TitleScreen");
                     }
@@ -378,6 +379,5 @@ public class LoginManager : MonoBehaviour
             }
         }
     }
-
     #endregion
 }
