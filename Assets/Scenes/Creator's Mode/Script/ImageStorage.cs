@@ -1,23 +1,26 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using System;
 
 public static class ImageStorage
 {
-    public static Texture2D UploadedTexture; // Temporary storage for currently uploaded image
+    public static Texture2D UploadedTexture;
     public static Texture2D uploadedTexture1;
     public static Texture2D uploadedTexture2;
-
-    // Current story being edited (set when creating/editing a story)
     public static int CurrentStoryIndex = -1;
 
-    // Method to save current uploaded image to specific story (called on "Next" click)
+    // Constants for image types
+    public const string IMAGE_TYPE_BACKGROUND = "background";
+    public const string IMAGE_TYPE_CHARACTER1 = "char1";
+    public const string IMAGE_TYPE_CHARACTER2 = "char2";
+
+    // Method to save current uploaded image to specific story
     public static void SaveCurrentImageToStory()
     {
-        // ✅ ADD NULL CHECK WITH BETTER ERROR HANDLING
         if (StoryManager.Instance == null)
         {
-            Debug.LogError("❌ StoryManager.Instance is null - cannot save images. Make sure StoryManager is initialized.");
+            Debug.LogError("❌ StoryManager.Instance is null - cannot save images.");
             return;
         }
 
@@ -34,170 +37,183 @@ public static class ImageStorage
             return;
         }
 
-        // Get teacher-specific directory for images
-        string teacherBaseDir = GetTeacherImageDirectory();
-        if (string.IsNullOrEmpty(teacherBaseDir))
-        {
-            Debug.LogError("❌ Could not determine teacher directory for images");
-            return;
-        }
-
         // ✅ Background
         if (UploadedTexture != null)
         {
-            string bgPath = Path.Combine(teacherBaseDir, $"story_{CurrentStoryIndex}_background.png");
-            File.WriteAllBytes(bgPath, UploadedTexture.EncodeToPNG());
-            story.backgroundPath = bgPath;
-            Debug.Log($"✅ Saved background → {bgPath}");
+            string relativePath = SaveTextureWithRelativePath(UploadedTexture, CurrentStoryIndex, IMAGE_TYPE_BACKGROUND);
+            story.backgroundPath = relativePath; // Store relative path only
+            Debug.Log($"✅ Saved background → {relativePath}");
         }
 
         // ✅ Character 1
         if (uploadedTexture1 != null)
         {
-            string char1Path = Path.Combine(teacherBaseDir, $"story_{CurrentStoryIndex}_char1.png");
-            File.WriteAllBytes(char1Path, uploadedTexture1.EncodeToPNG());
-            story.character1Path = char1Path;
-            Debug.Log($"✅ Saved character 1 → {char1Path}");
+            string relativePath = SaveTextureWithRelativePath(uploadedTexture1, CurrentStoryIndex, IMAGE_TYPE_CHARACTER1);
+            story.character1Path = relativePath;
+            Debug.Log($"✅ Saved character 1 → {relativePath}");
         }
 
         // ✅ Character 2
         if (uploadedTexture2 != null)
         {
-            string char2Path = Path.Combine(teacherBaseDir, $"story_{CurrentStoryIndex}_char2.png");
-            File.WriteAllBytes(char2Path, uploadedTexture2.EncodeToPNG());
-            story.character2Path = char2Path;
-            Debug.Log($"✅ Saved character 2 → {char2Path}");
+            string relativePath = SaveTextureWithRelativePath(uploadedTexture2, CurrentStoryIndex, IMAGE_TYPE_CHARACTER2);
+            story.character2Path = relativePath;
+            Debug.Log($"✅ Saved character 2 → {relativePath}");
         }
 
-        // ✅ Save metadata (title, description, dialogues, etc.)
-        // BUT DON'T SAVE TO FIRESTORE YET - only local JSON
+        // ✅ Save metadata
         StoryManager.Instance.SaveStories();
-
-        Debug.Log($"📂 All images saved for Story {CurrentStoryIndex} in teacher directory: {teacherBaseDir}");
+        Debug.Log($"📂 All images saved for Story {CurrentStoryIndex}");
     }
 
-    // Get teacher-specific image directory
-    private static string GetTeacherImageDirectory()
+    // NEW: Save texture and return relative path
+    private static string SaveTextureWithRelativePath(Texture2D texture, int storyIndex, string imageType)
     {
-        // ✅ IMPROVED NULL CHECK WITH DETAILED DEBUGGING
-        if (StoryManager.Instance == null)
-        {
-            Debug.LogError("❌ StoryManager.Instance is null in GetTeacherImageDirectory()");
-            Debug.LogError("🔍 This usually means:");
-            Debug.LogError("   - StoryManager GameObject is not in the scene");
-            Debug.LogError("   - StoryManager script is not attached to a GameObject"); 
-            Debug.LogError("   - StoryManager hasn't finished initializing yet");
-            return null;
-        }
-
-        // Use the same pattern as StoryManager for teacher-specific directories
         string teachId = StoryManager.Instance.GetCurrentTeacherId();
-        
-        if (string.IsNullOrEmpty(teachId))
-        {
-            Debug.LogWarning("⚠️ Teacher ID is null or empty, using 'default' folder");
-            teachId = "default";
-        }
-        
+        if (string.IsNullOrEmpty(teachId)) teachId = "default";
         string safeTeachId = teachId.Replace("/", "_").Replace("\\", "_");
+
+        // Create relative path structure: teacherId/story_{index}/{imageType}.png
+        string relativeDir = Path.Combine(safeTeachId, $"story_{storyIndex}");
+        string relativePath = Path.Combine(relativeDir, $"{imageType}.png");
         
-        string teacherBaseDir = Path.Combine(Application.persistentDataPath, safeTeachId, "StoryImages");
+        // Convert to absolute path for saving
+        string absolutePath = Path.Combine(Application.persistentDataPath, relativePath);
         
         // Ensure directory exists
-        if (!Directory.Exists(teacherBaseDir))
+        string absoluteDir = Path.GetDirectoryName(absolutePath);
+        if (!Directory.Exists(absoluteDir))
         {
-            Directory.CreateDirectory(teacherBaseDir);
-            Debug.Log($"📁 Created teacher image directory: {teacherBaseDir}");
+            Directory.CreateDirectory(absoluteDir);
         }
 
-        Debug.Log($"📁 Using teacher image directory: {teacherBaseDir}");
-        return teacherBaseDir;
+        // Save the file
+        File.WriteAllBytes(absolutePath, texture.EncodeToPNG());
+        
+        // Return only the relative path for storage
+        return relativePath;
     }
 
-    // UPDATED: Method to get background for specific story (now loads from file path)
-    public static Texture2D GetBackgroundForStory(int storyIndex)
+    // UPDATED: Load image from relative path
+    public static Texture2D LoadImage(string relativePath)
     {
-        if (StoryManager.Instance == null)
+        if (string.IsNullOrEmpty(relativePath))
         {
-            Debug.LogError("❌ StoryManager.Instance is null");
+            Debug.LogWarning("⚠️ Relative path is null or empty");
             return null;
         }
 
-        if (storyIndex < 0 || storyIndex >= StoryManager.Instance.allStories.Count)
+        // Convert relative path to absolute path
+        string absolutePath = Path.Combine(Application.persistentDataPath, relativePath);
+        
+        if (!File.Exists(absolutePath)) 
         {
-            return null;
-        }
-
-        var story = StoryManager.Instance.allStories[storyIndex];
-        if (story == null || string.IsNullOrEmpty(story.backgroundPath))
-        {
-            return null;
-        }
-
-        return LoadImage(story.backgroundPath);
-    }
-
-    // UPDATED: Check if current story has a saved background
-    public static bool CurrentStoryHasBackground()
-    {
-        if (StoryManager.Instance == null)
-        {
-            Debug.LogError("❌ StoryManager.Instance is null");
-            return false;
-        }
-
-        var story = StoryManager.Instance.currentStory;
-        return story != null && !string.IsNullOrEmpty(story.backgroundPath) && File.Exists(story.backgroundPath);
-    }
-    
-    public static Texture2D LoadImage(string path)
-    {
-        if (!File.Exists(path)) 
-        {
-            Debug.LogWarning($"⚠️ Image file not found: {path}");
+            Debug.LogWarning($"⚠️ Image file not found: {absolutePath} (relative: {relativePath})");
             return null;
         }
         
         try
         {
-            byte[] bytes = File.ReadAllBytes(path);
+            byte[] bytes = File.ReadAllBytes(absolutePath);
             Texture2D tex = new Texture2D(2, 2);
             tex.LoadImage(bytes);
-            Debug.Log($"✅ Loaded image from: {path}");
+            Debug.Log($"✅ Loaded image from: {absolutePath}");
             return tex;
         }
         catch (System.Exception ex)
         {
-            Debug.LogError($"❌ Failed to load image from {path}: {ex.Message}");
+            Debug.LogError($"❌ Failed to load image from {absolutePath}: {ex.Message}");
             return null;
         }
     }
 
-    // NEW: Get the correct image path for loading (teacher-specific)
-    public static string GetTeacherImagePath(string filename)
+    // NEW: Convert relative path to absolute path
+    public static string GetAbsolutePath(string relativePath)
     {
-        string teacherBaseDir = GetTeacherImageDirectory();
-        if (string.IsNullOrEmpty(teacherBaseDir)) return null;
+        if (string.IsNullOrEmpty(relativePath)) return null;
+        return Path.Combine(Application.persistentDataPath, relativePath);
+    }
+
+    // NEW: Check if image file exists (using relative path)
+    public static bool ImageExists(string relativePath)
+    {
+        if (string.IsNullOrEmpty(relativePath)) return false;
+        string absolutePath = GetAbsolutePath(relativePath);
+        return File.Exists(absolutePath);
+    }
+
+    // NEW: Delete image file (using relative path)
+    public static void DeleteImage(string relativePath)
+    {
+        if (string.IsNullOrEmpty(relativePath)) return;
         
-        return Path.Combine(teacherBaseDir, filename);
+        string absolutePath = GetAbsolutePath(relativePath);
+        if (File.Exists(absolutePath))
+        {
+            File.Delete(absolutePath);
+            Debug.Log($"🗑️ Deleted image: {absolutePath}");
+        }
     }
 
-    // NEW: Clear temporary images when switching teachers or stories
-    public static void ClearTemporaryImages()
+    // NEW: For Firebase Storage - generate cloud path from relative path
+    public static string GetCloudStoragePath(string relativePath)
     {
-        UploadedTexture = null;
-        uploadedTexture1 = null;
-        uploadedTexture2 = null;
-        Debug.Log("🔄 Cleared temporary images from memory");
+        if (string.IsNullOrEmpty(relativePath)) return null;
+        return $"story_images/{relativePath}";
     }
 
-    // NEW: Check if a story has any images
+    // NEW: For Firebase Storage - convert download URL to relative path
+    public static string GetRelativePathFromUrl(string downloadUrl)
+    {
+        // Extract the relative path from Firebase Storage URL
+        // Example: https://firebasestorage.googleapis.com/.../default/story_0/background.png
+        // Should return: default/story_0/background.png
+        if (string.IsNullOrEmpty(downloadUrl)) return null;
+        
+        try
+        {
+            Uri uri = new Uri(downloadUrl);
+            string path = uri.AbsolutePath;
+            
+            // Find the story_images part and get everything after it
+            const string prefix = "/story_images/";
+            int prefixIndex = path.IndexOf(prefix);
+            if (prefixIndex >= 0)
+            {
+                return path.Substring(prefixIndex + prefix.Length);
+            }
+            
+            return path.TrimStart('/');
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    // Rest of your existing methods remain the same, but updated to use relative paths:
+    public static Texture2D GetBackgroundForStory(int storyIndex)
+    {
+        if (StoryManager.Instance == null) return null;
+        if (storyIndex < 0 || storyIndex >= StoryManager.Instance.allStories.Count) return null;
+
+        var story = StoryManager.Instance.allStories[storyIndex];
+        if (story == null || string.IsNullOrEmpty(story.backgroundPath)) return null;
+
+        return LoadImage(story.backgroundPath); // Now uses relative path
+    }
+
+    public static bool CurrentStoryHasBackground()
+    {
+        if (StoryManager.Instance == null) return false;
+        var story = StoryManager.Instance.currentStory;
+        return story != null && !string.IsNullOrEmpty(story.backgroundPath) && ImageExists(story.backgroundPath);
+    }
+
     public static bool StoryHasImages(int storyIndex)
     {
         if (StoryManager.Instance == null || storyIndex < 0 || storyIndex >= StoryManager.Instance.allStories.Count)
-        {
             return false;
-        }
 
         var story = StoryManager.Instance.allStories[storyIndex];
         return story != null && 
@@ -205,6 +221,7 @@ public static class ImageStorage
                 !string.IsNullOrEmpty(story.character1Path) || 
                 !string.IsNullOrEmpty(story.character2Path));
     }
+
 
     // NEW: Safe method to check if StoryManager is ready
     public static bool IsReady()

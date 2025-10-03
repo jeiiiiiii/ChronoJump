@@ -83,13 +83,13 @@ private void Start()
     }
 
     // Upload for background slot
-    // Upload for background slot
     public void UploadBackground()
     {
         UploadAndSetImage(ref ImageStorage.UploadedTexture, previewBackground, 3);
-        // Save into current story slot
+        // Save into current story slot - THIS IS THE ONLY SAVE THAT SHOULD HAPPEN
         ImageStorage.SaveCurrentImageToStory();
-    }
+    }  
+
 
 
     private void UploadAndSetImage(ref Texture2D lastTexture, RawImage targetPreview, int slot)

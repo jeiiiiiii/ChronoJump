@@ -18,25 +18,24 @@ public class BackgroundSetter : MonoBehaviour
         // 1. If story already has a saved background path → load from disk
         if (!string.IsNullOrEmpty(CurrentStory.backgroundPath))
         {
-            Texture2D savedBackground = LoadTextureFromFile(CurrentStory.backgroundPath);
+            Texture2D savedBackground = ImageStorage.LoadImage(CurrentStory.backgroundPath);
             if (savedBackground != null)
             {
                 ApplyTexture(savedBackground);
-                Debug.Log($"📖 Loaded background for story '{CurrentStory.storyTitle}'");
+                Debug.Log($"📖 Loaded background for story '{CurrentStory.storyTitle}' from: {CurrentStory.backgroundPath}");
                 return;
             }
         }
 
-        // 2. If no saved path but user uploaded during session → apply and save
+        // 2. If no saved path but user uploaded during session → just apply (don't save)
         if (ImageStorage.UploadedTexture != null)
         {
             ApplyTexture(ImageStorage.UploadedTexture);
-            Debug.Log($"🖼 Applied uploaded background for story '{CurrentStory.storyTitle}'");
-
-            // ⚡ Save the uploaded background as this story’s permanent background
-            string path = SaveTextureToFile(ImageStorage.UploadedTexture, CurrentStory.storyId);
-            CurrentStory.backgroundPath = path;
-            StoryManager.Instance.SaveStories();
+            Debug.Log($"🖼 Applied temporary uploaded background for story '{CurrentStory.storyTitle}'");
+            
+            // ❌ REMOVED: The redundant SaveTextureToFile call
+            // ImageUploader.cs already calls ImageStorage.SaveCurrentImageToStory() when images are uploaded
+            // So we don't need to save again here
         }
     }
 
@@ -51,23 +50,7 @@ public class BackgroundSetter : MonoBehaviour
         }
     }
 
-    private Texture2D LoadTextureFromFile(string path)
-    {
-        if (!System.IO.File.Exists(path)) return null;
-        byte[] fileData = System.IO.File.ReadAllBytes(path);
-        Texture2D tex = new Texture2D(2, 2);
-        tex.LoadImage(fileData);
-        return tex;
-    }
-
-    private string SaveTextureToFile(Texture2D tex, string storyId)
-    {
-        string folder = Application.persistentDataPath + "/Backgrounds/";
-        if (!System.IO.Directory.Exists(folder))
-            System.IO.Directory.CreateDirectory(folder);
-
-        string path = folder + storyId + ".png";
-        System.IO.File.WriteAllBytes(path, tex.EncodeToPNG());
-        return path;
-    }
+    // ❌ COMPLETELY REMOVE these methods - they're not needed anymore
+    // private Texture2D LoadTextureFromFile(string path) { ... }
+    // private string SaveTextureToFile(Texture2D tex, string storyId) { ... }
 }

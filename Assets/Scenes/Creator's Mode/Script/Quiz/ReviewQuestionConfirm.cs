@@ -63,7 +63,6 @@ public class ReviewQuestionConfirm : MonoBehaviour
         SceneManager.LoadScene("StoryPublish");
     }
 
-    // ✅ UPDATED: Save to Firestore by default
     public void SaveCurrentStory(bool saveToFirestore = true)
     {
         if (StoryManager.Instance.currentStory == null)
@@ -76,26 +75,48 @@ public class ReviewQuestionConfirm : MonoBehaviour
 
         Debug.Log($"💾 Saving story: {s.storyTitle} (ID: {s.storyId})");
 
-        // Fill with data from your scene
+        // Ensure story ID exists
         if (string.IsNullOrEmpty(s.storyId))
             s.storyId = System.Guid.NewGuid().ToString();
 
+        // Fill with data from your scene
         s.dialogues = DialogueStorage.GetAllDialogues();
         s.quizQuestions = StoryManager.Instance.currentStory.quizQuestions;
-        s.backgroundPath = s.backgroundPath; // already stored inside story
 
-        // Add or replace in list
-        var index = StoryManager.Instance.allStories.FindIndex(st => st.storyId == s.storyId);
-        if (index >= 0)
-            StoryManager.Instance.allStories[index] = s;
-        else
-            StoryManager.Instance.allStories.Add(s);
+        // Set timestamps
+        if (string.IsNullOrEmpty(s.createdAt))
+        {
+            s.createdAt = System.DateTime.Now.ToString();
+        }
+        s.updatedAt = System.DateTime.Now.ToString();
 
-        // ✅ Always save locally
+        // ✅ FIXED: Get the intended slot index from ImageStorage
+        int storyIndex = ImageStorage.CurrentStoryIndex;
+        if (storyIndex < 0 || storyIndex > 5)
+        {
+            Debug.LogError($"❌ Invalid story index from ImageStorage: {storyIndex}");
+            storyIndex = 0; // fallback to first slot
+        }
+
+        s.storyIndex = storyIndex; // Ensure the story knows its index
+
+        var stories = StoryManager.Instance.allStories;
+
+        // Ensure list is big enough
+        while (stories.Count <= storyIndex)
+        {
+            stories.Add(null);
+        }
+
+        // Add/replace at the correct slot
+        stories[storyIndex] = s;
+        Debug.Log($"✅ Story added to slot {storyIndex}");
+
+        // Always save locally
         StoryManager.Instance.SaveStories();
         Debug.Log($"✅ Story saved locally: {s.storyTitle}");
 
-        // ✅ Save to Firestore if requested AND available
+        // Save to Firestore if requested
         if (saveToFirestore && StoryManager.Instance.UseFirestore)
         {
             Debug.Log($"🔥 Saving story to Firestore: {s.storyTitle}");
@@ -105,9 +126,6 @@ public class ReviewQuestionConfirm : MonoBehaviour
         {
             Debug.Log("ℹ️ Firestore not available, local save only");
         }
-        else
-        {
-            Debug.Log("ℹ️ Story saved locally only (Firestore save disabled)");
-        }
     }
+
 }
