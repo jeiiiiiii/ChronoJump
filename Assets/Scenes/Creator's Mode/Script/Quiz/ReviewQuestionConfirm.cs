@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
 using System;
+
 public class ReviewQuestionConfirm : MonoBehaviour
 {
     public Image BlurBGImage;
@@ -47,29 +48,37 @@ public class ReviewQuestionConfirm : MonoBehaviour
     {
         SceneManager.LoadScene("CreateNewAddQuizScene");
     }
+
     public void Save()
     {
+        Debug.Log("💾 Save button clicked - Saving story to Firestore");
+        SaveCurrentStory(true); // ✅ CHANGED: Now saves to Firestore too
         SceneManager.LoadScene("Creator'sModeScene");
     }
+
     public void SaveAndPublish()
     {
-        // Save the current story first
-        SaveCurrentStory();
-
+        Debug.Log("🚀 Save and Publish button clicked - Saving to Firestore and preparing for publish");
+        SaveCurrentStory(true); // ✅ Save to Firestore
         SceneManager.LoadScene("StoryPublish");
     }
 
-    // Save in Json file
-    public void SaveCurrentStory()
+    // ✅ UPDATED: Save to Firestore by default
+    public void SaveCurrentStory(bool saveToFirestore = true)
     {
         if (StoryManager.Instance.currentStory == null)
-            StoryManager.Instance.currentStory = new StoryData();
+        {
+            Debug.LogError("❌ No current story to save!");
+            return;
+        }
 
         var s = StoryManager.Instance.currentStory;
 
+        Debug.Log($"💾 Saving story: {s.storyTitle} (ID: {s.storyId})");
+
         // Fill with data from your scene
         if (string.IsNullOrEmpty(s.storyId))
-            s.storyId = System.Guid.NewGuid().ToString(); // only if new
+            s.storyId = System.Guid.NewGuid().ToString();
 
         s.dialogues = DialogueStorage.GetAllDialogues();
         s.quizQuestions = StoryManager.Instance.currentStory.quizQuestions;
@@ -82,7 +91,23 @@ public class ReviewQuestionConfirm : MonoBehaviour
         else
             StoryManager.Instance.allStories.Add(s);
 
+        // ✅ Always save locally
         StoryManager.Instance.SaveStories();
-    }
+        Debug.Log($"✅ Story saved locally: {s.storyTitle}");
 
+        // ✅ Save to Firestore if requested AND available
+        if (saveToFirestore && StoryManager.Instance.UseFirestore)
+        {
+            Debug.Log($"🔥 Saving story to Firestore: {s.storyTitle}");
+            StoryManager.Instance.SaveCurrentStoryToFirestore();
+        }
+        else if (saveToFirestore && !StoryManager.Instance.UseFirestore)
+        {
+            Debug.Log("ℹ️ Firestore not available, local save only");
+        }
+        else
+        {
+            Debug.Log("ℹ️ Story saved locally only (Firestore save disabled)");
+        }
+    }
 }

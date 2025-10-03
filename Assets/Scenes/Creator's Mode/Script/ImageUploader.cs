@@ -92,53 +92,59 @@ private void Start()
     }
 
 
-    // Shared logic so we don't repeat code
     private void UploadAndSetImage(ref Texture2D lastTexture, RawImage targetPreview, int slot)
+{
+    // ✅ CHECK IF STORYMANAGER IS READY BEFORE UPLOADING
+    if (!ImageStorage.IsReady())
     {
-        var extensions = new[] {
+        Debug.LogError("❌ Cannot upload image - StoryManager is not initialized yet");
+        return;
+    }
+
+    var extensions = new[] {
         new ExtensionFilter("Image files", "jpg", "jpeg", "png", "bmp", "gif")
     };
 
-        var paths = StandaloneFileBrowser.OpenFilePanel("Select Image", "", extensions, false);
+    var paths = StandaloneFileBrowser.OpenFilePanel("Select Image", "", extensions, false);
 
-        if (paths.Length > 0 && File.Exists(paths[0]))
+    if (paths.Length > 0 && File.Exists(paths[0]))
+    {
+        byte[] fileData = File.ReadAllBytes(paths[0]);
+
+        Texture2D tex = new Texture2D(2, 2);
+        if (tex.LoadImage(fileData))
         {
-            byte[] fileData = File.ReadAllBytes(paths[0]);
+            if (lastTexture != null)
+                Destroy(lastTexture);
 
-            Texture2D tex = new Texture2D(2, 2);
-            if (tex.LoadImage(fileData))
-            {
-                if (lastTexture != null)
-                    Destroy(lastTexture);
+            // Assign to preview
+            targetPreview.texture = tex;
+            lastTexture = tex;
 
-                // Assign to preview
-                targetPreview.texture = tex;
-                lastTexture = tex;
+            // ✅ Save globally
+            if (slot == 1)
+                ImageStorage.uploadedTexture1 = tex;
+            else if (slot == 2)
+                ImageStorage.uploadedTexture2 = tex;
+            else if (slot == 3)
+                ImageStorage.UploadedTexture = tex;
 
-                // ✅ Save globally
-                if (slot == 1)
-                    ImageStorage.uploadedTexture1 = tex;
-                else if (slot == 2)
-                    ImageStorage.uploadedTexture2 = tex;
-                else if (slot == 3)
-                    ImageStorage.UploadedTexture = tex; // background slot
+            // Save into current story
+            ImageStorage.SaveCurrentImageToStory();
 
-                // Save into current story (important for ViewCreatedStoriesScene)
-                ImageStorage.SaveCurrentImageToStory();
+            // Fix aspect ratio
+            AspectRatioFitter fitter = targetPreview.GetComponent<AspectRatioFitter>();
+            if (fitter != null)
+                fitter.aspectRatio = (float)tex.width / tex.height;
 
-                // Fix aspect ratio
-                AspectRatioFitter fitter = targetPreview.GetComponent<AspectRatioFitter>();
-                if (fitter != null)
-                    fitter.aspectRatio = (float)tex.width / tex.height;
-
-                Debug.Log("Image uploaded to " + targetPreview.name);
-            }
-            else
-            {
-                Debug.LogError("Failed to load image. Please select a valid file.");
-            }
+            Debug.Log($"✅ Image uploaded to {targetPreview.name} and saved to story");
+        }
+        else
+        {
+            Debug.LogError("❌ Failed to load image. Please select a valid file.");
         }
     }
+}
 
     
 }

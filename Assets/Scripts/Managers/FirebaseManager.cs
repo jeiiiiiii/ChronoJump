@@ -250,6 +250,9 @@ public class FirebaseManager : MonoBehaviour
         ClassService?.MarkStudentAsRemoved(userId, classCode, callback);
     }
 
-
+    public IFirebaseService GetFirebaseService()
+    {
+        return _firebaseService;
+    }
 
 }

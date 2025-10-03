@@ -26,29 +26,30 @@ public class AddTitle : MonoBehaviour
 
         if (story == null)
         {
-            // If no story exists yet, create one
-            story = StoryManager.Instance.CreateNewStory(titleInputField.text);
+            Debug.LogError("❌ No current story to update!");
+            return;
         }
 
         // ✅ Save entered values
         story.storyTitle = titleInputField.text;
         story.storyDescription = descriptionInputField.text;
 
-        Debug.Log($"✅ Saved Story Title: {story.storyTitle}, Description: {story.storyDescription}");
+        Debug.Log($"✅ Updated Story Title: '{story.storyTitle}', Description: '{story.storyDescription}'");
 
-        // Optionally auto-save stories
-        StoryManager.Instance.SaveStories();
+        // ❌ REMOVED: StoryManager.Instance.SaveStories(); - Don't save yet!
+        Debug.Log("ℹ️ Story updated in memory - will save when teacher clicks 'Save & Publish'");
 
         // Move to the next scene
         SceneManager.LoadScene("CreateNewAddCharacterScene");
     }
+
     public void MainMenu()
     {
         SceneManager.LoadScene("Creator'sModeScene");
     }
+
     public void Back()
     {
         SceneManager.LoadScene("ViewCreatedStoriesScene");
     }
-
 }

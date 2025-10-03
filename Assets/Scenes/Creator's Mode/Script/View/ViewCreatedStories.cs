@@ -12,82 +12,21 @@ public class ViewCreatedStoriesScene : MonoBehaviour
 
     [SerializeField] private StorySlot[] storySlots = new StorySlot[6];
     [SerializeField] private GameObject storyActionPopup;
-    [SerializeField] private Image currentBackgroundImage; // ✅ assign in Inspector
+    [SerializeField] private Image currentBackgroundImage;
+    
+    // Button images for each story slot (buttonStory1.png to buttonStory6.png)
+    [SerializeField] private Texture2D[] storyButtonImages = new Texture2D[6];
+    
+    // Default background (div (22).png)
+    [SerializeField] private Texture2D defaultButtonBackground;
 
     void Start()
     {
-        // Check if a student is playing a specific story
-        CheckForStudentStoryPlayback();
-
         UpdateAllStoryBackgrounds();
 
         if (storyActionPopup != null)
         {
             storyActionPopup.SetActive(false);
-        }
-
-        // Load current story background (existing code)
-        if (StoryManager.Instance != null && StoryManager.Instance.currentStory != null)
-        {
-            string path = StoryManager.Instance.currentStory.backgroundPath;
-            if (!string.IsNullOrEmpty(path))
-            {
-                Texture2D tex = StoryManager.Instance.LoadBackground(path);
-                if (tex != null && currentBackgroundImage != null)
-                {
-                    Sprite bgSprite = Sprite.Create(
-                        tex,
-                        new Rect(0, 0, tex.width, tex.height),
-                        new Vector2(0.5f, 0.5f)
-                    );
-                    currentBackgroundImage.sprite = bgSprite;
-                }
-            }
-        }
-        else
-        {
-            Debug.LogWarning("⚠ No current story set, skipping background preview.");
-        }
-    }
-
-    private void CheckForStudentStoryPlayback()
-    {
-        bool isStudentPlaying = PlayerPrefs.GetString("IsStudentPlaying", "false") == "true";
-        string selectedStoryID = PlayerPrefs.GetString("SelectedStoryID", "");
-
-        if (isStudentPlaying && !string.IsNullOrEmpty(selectedStoryID))
-        {
-            Debug.Log($"Student is playing story ID: {selectedStoryID}");
-
-            // Clear the student playing flag
-            PlayerPrefs.SetString("IsStudentPlaying", "false");
-            PlayerPrefs.Save();
-
-            // Find and auto-play the selected story
-            AutoPlayStoryByID(selectedStoryID);
-        }
-    }
-
-    private void AutoPlayStoryByID(string storyID)
-    {
-        if (StoryManager.Instance == null) return;
-
-        // Find the story with the matching ID
-        var story = StoryManager.Instance.allStories.Find(s => s.storyId == storyID);
-
-        if (story != null)
-        {
-            // Set as current story
-            StoryManager.Instance.currentStory = story;
-
-            Debug.Log($"Auto-playing story: {story.storyTitle}");
-
-            // Load the GameScene directly (same as ViewStory)
-            SceneManager.LoadScene("GameScene");
-        }
-        else
-        {
-            Debug.LogError($"Story with ID {storyID} not found!");
         }
     }
 
@@ -104,29 +43,63 @@ public class ViewCreatedStoriesScene : MonoBehaviour
         if (index < 0 || index >= storySlots.Length) return;
 
         var slot = storySlots[index];
-        if (index < StoryManager.Instance.allStories.Count)
+        Texture2D backgroundToUse = null;
+        
+        // Check if a story exists at this index
+        bool storyExists = StoryManager.Instance != null && 
+                          StoryManager.Instance.allStories != null && 
+                          index < StoryManager.Instance.allStories.Count &&
+                          StoryManager.Instance.allStories[index] != null;
+
+        if (storyExists)
         {
             var story = StoryManager.Instance.allStories[index];
-            if (!string.IsNullOrEmpty(story.backgroundPath))
+            
+            // Priority 1: Check if story has a custom uploaded background
+            if (!string.IsNullOrEmpty(story.backgroundPath) && System.IO.File.Exists(story.backgroundPath))
             {
-                Texture2D background = StoryManager.Instance.LoadBackground(story.backgroundPath);
-                if (background != null)
-                {
-                    slot.backgroundImage.texture = background;
-                    slot.backgroundImage.gameObject.SetActive(true);
-
-                    AspectRatioFitter fitter = slot.backgroundImage.GetComponent<AspectRatioFitter>();
-                    if (fitter != null)
-                    {
-                        fitter.aspectRatio = (float)background.width / background.height;
-                    }
-                    return;
-                }
+                backgroundToUse = ImageStorage.LoadImage(story.backgroundPath);
+                Debug.Log($"[Slot {index}] Using custom uploaded background");
+            }
+            // Priority 2: Use indexed button image (buttonStory1-6)
+            else if (storyButtonImages != null && index < storyButtonImages.Length && storyButtonImages[index] != null)
+            {
+                backgroundToUse = storyButtonImages[index];
+                Debug.Log($"[Slot {index}] Using indexed button image: buttonStory{index + 1}");
+            }
+            // Priority 3: Fallback to default background
+            else
+            {
+                backgroundToUse = defaultButtonBackground;
+                Debug.Log($"[Slot {index}] Using default background (fallback)");
             }
         }
+        else
+        {
+            // No story exists - always use default background
+            backgroundToUse = defaultButtonBackground;
+            Debug.Log($"[Slot {index}] Empty slot - using default background");
+        }
+        
+        // Apply the selected background
+        if (backgroundToUse != null)
+        {
+            slot.backgroundImage.texture = backgroundToUse;
+            slot.backgroundImage.gameObject.SetActive(true);
 
-        // If no background, hide slot
-        slot.backgroundImage.gameObject.SetActive(false);
+            // Update aspect ratio
+            AspectRatioFitter fitter = slot.backgroundImage.GetComponent<AspectRatioFitter>();
+            if (fitter != null)
+            {
+                fitter.aspectRatio = (float)backgroundToUse.width / backgroundToUse.height;
+            }
+        }
+        else
+        {
+            // If no background is available at all, hide the slot
+            slot.backgroundImage.gameObject.SetActive(false);
+            Debug.LogWarning($"[Slot {index}] No background available - hiding slot");
+        }
     }
 
     public void RefreshBackgrounds()
@@ -137,6 +110,68 @@ public class ViewCreatedStoriesScene : MonoBehaviour
     void OnEnable()
     {
         UpdateAllStoryBackgrounds();
+    }
+
+    // Method to handle background deletion for a specific story
+    public void DeleteStoryBackground(int storyIndex)
+    {
+        if (storyIndex >= 0 && storyIndex < StoryManager.Instance.allStories.Count)
+        {
+            var story = StoryManager.Instance.allStories[storyIndex];
+            if (story != null)
+            {
+                // Clear the background path
+                story.backgroundPath = string.Empty;
+                
+                // Save the changes
+                StoryManager.Instance.SaveStories();
+                
+                // Update the visual - will revert to default background
+                UpdateStorySlot(storyIndex);
+                
+                Debug.Log($"🗑️ Deleted custom background for story {storyIndex} - reverted to default");
+            }
+        }
+    }
+
+    // Method to check if a story has a custom background
+    public bool HasCustomBackground(int storyIndex)
+    {
+        if (storyIndex >= 0 && storyIndex < StoryManager.Instance.allStories.Count)
+        {
+            var story = StoryManager.Instance.allStories[storyIndex];
+            return story != null && !string.IsNullOrEmpty(story.backgroundPath) && System.IO.File.Exists(story.backgroundPath);
+        }
+        return false;
+    }
+
+    // Method to get the current background type for debugging
+    public string GetBackgroundType(int storyIndex)
+    {
+        if (storyIndex >= 0 && storyIndex < StoryManager.Instance.allStories.Count)
+        {
+            var story = StoryManager.Instance.allStories[storyIndex];
+            if (story == null) return "No Story (Default Background)";
+            
+            if (!string.IsNullOrEmpty(story.backgroundPath) && System.IO.File.Exists(story.backgroundPath))
+                return "Custom Uploaded Background";
+            else if (storyIndex < storyButtonImages.Length && storyButtonImages[storyIndex] != null)
+                return $"Indexed Button Image (buttonStory{storyIndex + 1})";
+            else
+                return "Default Background (div 22)";
+        }
+        return "Empty Slot (Default Background)";
+    }
+
+    [ContextMenu("Debug All Slot Backgrounds")]
+    public void DebugAllSlotBackgrounds()
+    {
+        Debug.Log("🔍 === BACKGROUND STATUS FOR ALL SLOTS ===");
+        for (int i = 0; i < storySlots.Length; i++)
+        {
+            Debug.Log($"Slot {i}: {GetBackgroundType(i)}");
+        }
+        Debug.Log("🔍 === END DEBUG ===");
     }
 
     public void OnEditStory(int storyIndex)

@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
+using Firebase.Firestore;
 
 [System.Serializable]
 public class PublishedStory
@@ -10,33 +12,34 @@ public class PublishedStory
     public string classCode;
     public string className;
     public string publishDate;
-    public string publishDateTime;
-
+    
     public PublishedStory(StoryData story, string classCode, string className)
     {
         this.storyId = story.storyId;
         this.storyTitle = story.storyTitle;
         this.classCode = classCode;
         this.className = className;
-        var now = System.DateTime.Now;
-        this.publishDate = now.ToString("MMM dd, yyyy hh:mm tt");
-        this.publishDateTime = now.ToString("yyyy-MM-dd HH:mm:ss");
+        this.publishDate = System.DateTime.Now.ToString("MMM dd, yyyy");
     }
 }
 
 public class StoryManager : MonoBehaviour
 {
-    public static StoryManager Instance;
-
     // Main list of stories
     public List<StoryData> allStories = new List<StoryData>();
-
     public List<PublishedStory> publishedStories = new List<PublishedStory>();
-
-    // ✅ Alias so other scripts using .stories will still work
     public List<StoryData> stories => allStories;
+    public int currentStoryIndex = -1;
 
-    public int currentStoryIndex = -1;   // index of the story being edited/viewed
+    // NEW: Firebase integration
+    private CreatorModeService _creatorModeService;
+    public bool UseFirestore { get; private set; } = false;
+    public bool IsFirebaseReady => FirebaseManager.Instance != null &&
+                                  FirebaseManager.Instance.CurrentUser != null;
+
+    // NEW: Teacher-specific storage
+    private string _currentTeachId;
+    private TeacherModel _currentTeacher;
 
     public StoryData currentStory
     {
@@ -62,35 +65,179 @@ public class StoryManager : MonoBehaviour
         }
     }
 
+    private static StoryManager _instance;
+    public static StoryManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                // Try to find existing instance in scene
+                _instance = FindFirstObjectByType<StoryManager>();
+                
+                if (_instance == null)
+                {
+                    // Create new instance
+                    GameObject go = new GameObject("StoryManager");
+                    _instance = go.AddComponent<StoryManager>();
+                    DontDestroyOnLoad(go);
+                    
+                    // Initialize
+                    _instance.InitializeFirebaseIntegration();
+                    _instance.LoadStories();
+                    Debug.Log("✅ StoryManager created and initialized");
+                }
+            }
+            return _instance;
+        }
+    }
 
     private void Awake()
     {
-        if (Instance == null)
+        if (_instance == null)
         {
-            Instance = this;
+            _instance = this;
             DontDestroyOnLoad(gameObject);
-            LoadStories(); // auto-load at startup
+            
+            InitializeFirebaseIntegration();
+            LoadStories();
             Debug.Log("✅ StoryManager initialized and stories loaded.");
         }
-        else if (Instance != this)
+        else if (_instance != this)
         {
+            Debug.LogWarning($"⚠️ Destroying duplicate StoryManager. Existing: {_instance.gameObject.name}, New: {gameObject.name}");
             Destroy(gameObject);
         }
     }
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    // NEW: Initialize Firebase integration
+    private void InitializeFirebaseIntegration()
+    {
+        if (FirebaseManager.Instance != null)
+        {
+            _creatorModeService = new CreatorModeService(FirebaseManager.Instance.GetFirebaseService());
+            UseFirestore = true;
+            Debug.Log("✅ StoryManager: Firestore mode enabled");
+
+            // Load teacher data if user is logged in
+            if (FirebaseManager.Instance.CurrentUser != null)
+            {
+                LoadTeacherData();
+            }
+        }
+        else
+        {
+            Debug.Log("ℹ️ StoryManager: Local JSON mode (Firebase not available)");
+        }
+    }
+
     private static void AutoCreate()
     {
         if (Instance == null)
         {
             GameObject go = new GameObject("StoryManager");
-            Instance = go.AddComponent<StoryManager>();
+            _instance = go.AddComponent<StoryManager>();
             DontDestroyOnLoad(go);
             Debug.Log("✅ StoryManager auto-created.");
         }
     }
 
-    // --- Helpers ---
+    // NEW: Teacher-specific methods
+    private void LoadTeacherData()
+    {
+        if (FirebaseManager.Instance.CurrentUser == null) return;
+
+        FirebaseManager.Instance.GetTeacherData(FirebaseManager.Instance.CurrentUser.UserId, teacher =>
+        {
+            if (teacher != null)
+            {
+                _currentTeacher = teacher;
+                _currentTeachId = teacher.teachId;
+                Debug.Log($"✅ Teacher data loaded: {teacher.teachFirstName} {teacher.teachLastName} (ID: {teacher.teachId})");
+
+                // Update TeacherPrefs
+                TeacherPrefs.SetString("CurrentTeachId", _currentTeachId);
+                TeacherPrefs.Save();
+
+                // Reload stories for this teacher
+                LoadStories();
+            }
+            else
+            {
+                Debug.LogWarning("⚠️ No teacher data found for current user");
+            }
+        });
+    }
+
+    public string GetCurrentTeacherId()
+    {
+        // Priority 1: Use loaded teacher data
+        if (!string.IsNullOrEmpty(_currentTeachId))
+        {
+            return _currentTeachId;
+        }
+
+        // Priority 2: Use TeacherPrefs
+        if (TeacherPrefs.HasKey("CurrentTeachId"))
+        {
+            return TeacherPrefs.GetString("CurrentTeachId");
+        }
+
+        // Priority 3: Fallback to Firebase user ID
+        if (FirebaseManager.Instance?.CurrentUserData?.role == "teacher" &&
+            FirebaseManager.Instance.CurrentUser != null)
+        {
+            return FirebaseManager.Instance.CurrentUser.UserId;
+        }
+
+        return "default";
+    }
+
+    // NEW: Get teacher-specific base directory
+    private string GetTeacherBaseDirectory()
+    {
+        string teachId = GetCurrentTeacherId();
+        string safeTeachId = string.IsNullOrEmpty(teachId) ? "default" : teachId.Replace("/", "_").Replace("\\", "_");
+        return Path.Combine(Application.persistentDataPath, safeTeachId);
+    }
+
+    public bool IsCurrentUserTeacher()
+    {
+        return FirebaseManager.Instance?.CurrentUserData?.role == "teacher" ||
+               !string.IsNullOrEmpty(_currentTeachId);
+    }
+
+    public TeacherModel GetCurrentTeacher()
+    {
+        return _currentTeacher;
+    }
+
+    public void SetCurrentTeacher(string teachId)
+    {
+        if (!string.IsNullOrEmpty(teachId))
+        {
+            _currentTeachId = teachId;
+            TeacherPrefs.SetString("CurrentTeachId", teachId);
+            TeacherPrefs.Save();
+            Debug.Log($"✅ Current teacher set to: {teachId}");
+
+            // Reload stories for this teacher
+            LoadStories();
+        }
+    }
+
+    public void ClearCurrentTeacher()
+    {
+        _currentTeachId = null;
+        _currentTeacher = null;
+        TeacherPrefs.DeleteKey("CurrentTeachId");
+        TeacherPrefs.Save();
+        allStories.Clear();
+        currentStoryIndex = -1;
+        Debug.Log("✅ Teacher data cleared");
+    }
+
+    // --- EXISTING METHODS (UPDATED FOR TEACHER-SPECIFIC STORAGE) ---
     public StoryData GetCurrentStory()
     {
         if (currentStoryIndex >= 0 && currentStoryIndex < allStories.Count)
@@ -110,7 +257,6 @@ public class StoryManager : MonoBehaviour
         return false;
     }
 
-    // ✅ Explicit setter for story objects
     public void SetCurrentStory(StoryData story)
     {
         if (story == null)
@@ -134,7 +280,6 @@ public class StoryManager : MonoBehaviour
         Debug.Log($"📖 Current story set to: {story.storyTitle}");
     }
 
-    // ✅ Uses parameterless StoryData constructor now
     public StoryData CreateNewStory(string title = null)
     {
         var s = new StoryData();
@@ -153,14 +298,15 @@ public class StoryManager : MonoBehaviour
         return s;
     }
 
-
-    // ✅ Debug method to check current state
     public void DebugCurrentState()
     {
         Debug.Log("🔍 === StoryManager Debug Info ===");
         Debug.Log($"🔍 Total Stories: {allStories.Count}");
         Debug.Log($"🔍 Current Story Index: {currentStoryIndex}");
         Debug.Log($"🔍 Current Story: {(currentStory != null ? currentStory.storyTitle : "NULL")}");
+        Debug.Log($"🔍 Current Teacher ID: {GetCurrentTeacherId()}");
+        Debug.Log($"🔍 Using Firestore: {UseFirestore}");
+        Debug.Log($"🔍 Teacher Directory: {GetTeacherBaseDirectory()}");
 
         for (int i = 0; i < allStories.Count; i++)
         {
@@ -169,7 +315,6 @@ public class StoryManager : MonoBehaviour
         Debug.Log("🔍 === End Debug Info ===");
     }
 
-    // ✅ Auto-select first story if none is selected
     public bool EnsureCurrentStoryExists()
     {
         if (currentStory == null && allStories.Count > 0)
@@ -181,32 +326,90 @@ public class StoryManager : MonoBehaviour
         return currentStory != null;
     }
 
-    // --- SAVE & LOAD STORIES (JSON) ---
-    public void SaveStories()
+    // --- UPDATED SAVE & LOAD STORIES (TEACHER-SPECIFIC) ---
+    public async void SaveStories()
+{
+    // Always save locally for backup
+    SaveStoriesLocal();
+    
+    Debug.Log("💾 Stories saved locally - Firestore save requires explicit 'Save & Publish'");
+    
+    // ❌ REMOVED: The automatic Firestore save
+    // Only save to Firestore when explicitly called via SaveCurrentStoryToFirestore()
+}
+
+    public async void LoadStories()
     {
-        string json = JsonUtility.ToJson(new StoryListWrapper { stories = allStories }, true);
-        File.WriteAllText(Path.Combine(Application.persistentDataPath, "stories.json"), json);
-        Debug.Log("✅ Stories saved to " + Path.Combine(Application.persistentDataPath, "stories.json"));
+        // Try Firestore first if available
+        if (UseFirestore && _creatorModeService != null)
+        {
+            bool success = await _creatorModeService.LoadStoriesFromFirestore();
+            if (success)
+            {
+                Debug.Log("✅ Stories loaded from Firestore");
+                LoadPublishedStories(); // Load published stories separately
+                return;
+            }
+        }
+
+        // Fallback to local loading
+        LoadStoriesLocal();
+        LoadPublishedStories();
     }
 
-    public void LoadStories()
+    // NEW: Teacher-specific local storage methods with proper directory structure
+    private string GetTeacherStoriesFilePath()
     {
-        string path = Path.Combine(Application.persistentDataPath, "stories.json");
-        if (File.Exists(path))
+        string baseDir = GetTeacherBaseDirectory();
+        string teacherStoriesDir = Path.Combine(baseDir, "TeacherStories");
+
+        if (!Directory.Exists(teacherStoriesDir))
         {
-            string json = File.ReadAllText(path);
+            Directory.CreateDirectory(teacherStoriesDir);
+        }
+
+        return Path.Combine(teacherStoriesDir, "stories.json");
+    }
+
+    private string GetTeacherPublishedStoriesFilePath()
+    {
+        string baseDir = GetTeacherBaseDirectory();
+        string teacherStoriesDir = Path.Combine(baseDir, "TeacherStories");
+
+        if (!Directory.Exists(teacherStoriesDir))
+        {
+            Directory.CreateDirectory(teacherStoriesDir);
+        }
+
+        return Path.Combine(teacherStoriesDir, "published_stories.json");
+    }
+
+    private void SaveStoriesLocal()
+    {
+        string filePath = GetTeacherStoriesFilePath();
+        string json = JsonUtility.ToJson(new StoryListWrapper { stories = allStories }, true);
+        File.WriteAllText(filePath, json);
+        Debug.Log($"✅ Stories saved locally for teacher: {GetCurrentTeacherId()}");
+        Debug.Log($"📁 File: {filePath}");
+    }
+
+    private void LoadStoriesLocal()
+    {
+        string filePath = GetTeacherStoriesFilePath();
+        if (File.Exists(filePath))
+        {
+            string json = File.ReadAllText(filePath);
             StoryListWrapper wrapper = JsonUtility.FromJson<StoryListWrapper>(json);
             allStories = wrapper.stories ?? new List<StoryData>();
-            Debug.Log($"Loaded {allStories.Count} stories");
+            Debug.Log($"Loaded {allStories.Count} stories for teacher: {GetCurrentTeacherId()}");
+            Debug.Log($"📁 File: {filePath}");
         }
         else
         {
             allStories = new List<StoryData>();
-            Debug.Log("No saved stories found, starting fresh.");
+            Debug.Log($"No saved stories found for teacher: {GetCurrentTeacherId()}, starting fresh.");
+            Debug.Log($"📁 Expected file: {filePath}");
         }
-
-        // Also load published stories
-        LoadPublishedStories();
     }
 
     [System.Serializable]
@@ -215,24 +418,22 @@ public class StoryManager : MonoBehaviour
         public List<StoryData> stories;
     }
 
-
-    [System.Serializable]
-    class PublishedStoryWrapper
-    {
-        public List<PublishedStory> publishedStories;
-    }
-
-    // --- BACKGROUND HANDLING ---
+    // --- UPDATED BACKGROUND HANDLING (TEACHER-SPECIFIC) ---
     public string SaveBackground(Texture2D tex, string storyId = null)
     {
-        string folder = Path.Combine(Application.persistentDataPath, "Backgrounds");
-        if (!Directory.Exists(folder))
-            Directory.CreateDirectory(folder);
+        // Get teacher-specific background directory
+        string baseDir = GetTeacherBaseDirectory();
+        string backgroundsDir = Path.Combine(baseDir, "Backgrounds");
+        
+        if (!Directory.Exists(backgroundsDir))
+        {
+            Directory.CreateDirectory(backgroundsDir);
+        }
 
         var story = GetCurrentStory();
         string id = storyId ?? story?.storyId ?? System.Guid.NewGuid().ToString();
 
-        string filePath = Path.Combine(folder, id + ".png");
+        string filePath = Path.Combine(backgroundsDir, id + ".png");
         File.WriteAllBytes(filePath, tex.EncodeToPNG());
 
         if (story != null)
@@ -244,7 +445,6 @@ public class StoryManager : MonoBehaviour
         Debug.Log("✅ Background saved to: " + filePath);
         return filePath;
     }
-
 
     public Texture2D LoadBackground(string filePath)
     {
@@ -260,6 +460,7 @@ public class StoryManager : MonoBehaviour
         return tex;
     }
 
+    // --- PUBLISHED STORIES (UPDATED FOR TEACHER-SPECIFIC STORAGE) ---
     public bool PublishStory(StoryData story, string classCode, string className)
     {
         // Prevent duplicate by storyId and classCode
@@ -295,53 +496,112 @@ public class StoryManager : MonoBehaviour
 
     public List<PublishedStory> GetPublishedStoriesForClass(string classCode)
     {
-        // Make the comparison case-insensitive and trim whitespace
-        var stories = publishedStories.FindAll(p =>
-            string.Equals(p.classCode.Trim(), classCode.Trim(), System.StringComparison.OrdinalIgnoreCase));
-
-        // Debug logging to see what's happening
-        Debug.Log($"[StoryManager] Looking for class: '{classCode.Trim()}'");
-        Debug.Log($"[StoryManager] Total published stories: {publishedStories.Count}");
-
-        foreach (var story in publishedStories)
-        {
-            bool matches = string.Equals(story.classCode.Trim(), classCode.Trim(), System.StringComparison.OrdinalIgnoreCase);
-            Debug.Log($"[StoryManager] Story: '{story.storyTitle}' | Class: '{story.classCode}' | Match: {matches}");
-        }
-
-        Debug.Log($"[StoryManager] Found {stories.Count} matching stories");
-
-        // Sort by publishDateTime (oldest first)
-        stories.Sort((a, b) =>
-        {
-            System.DateTime aTime, bTime;
-            if (!System.DateTime.TryParse(a.publishDateTime, out aTime)) aTime = System.DateTime.MinValue;
-            if (!System.DateTime.TryParse(b.publishDateTime, out bTime)) bTime = System.DateTime.MinValue;
-            return aTime.CompareTo(bTime);
-        });
-        return stories;
+        return publishedStories.FindAll(p => p.classCode == classCode);
     }
 
     private void SavePublishedStories()
     {
+        string filePath = GetTeacherPublishedStoriesFilePath();
         string json = JsonUtility.ToJson(new PublishedStoryWrapper { publishedStories = publishedStories }, true);
-        File.WriteAllText(Path.Combine(Application.persistentDataPath, "published_stories.json"), json);
-        Debug.Log("Published stories saved");
+        File.WriteAllText(filePath, json);
+        Debug.Log($"Published stories saved for teacher: {GetCurrentTeacherId()}");
+        Debug.Log($"📁 File: {filePath}");
     }
 
     private void LoadPublishedStories()
     {
-        string path = Path.Combine(Application.persistentDataPath, "published_stories.json");
-        if (File.Exists(path))
+        string filePath = GetTeacherPublishedStoriesFilePath();
+        if (File.Exists(filePath))
         {
-            string json = File.ReadAllText(path);
+            string json = File.ReadAllText(filePath);
             PublishedStoryWrapper wrapper = JsonUtility.FromJson<PublishedStoryWrapper>(json);
             publishedStories = wrapper.publishedStories ?? new List<PublishedStory>();
-            Debug.Log($"Loaded {publishedStories.Count} published stories");
+            Debug.Log($"Loaded {publishedStories.Count} published stories for teacher: {GetCurrentTeacherId()}");
+            Debug.Log($"📁 File: {filePath}");
         }
         else
         {
             publishedStories = new List<PublishedStory>();
+            Debug.Log($"No published stories found for teacher: {GetCurrentTeacherId()}");
+            Debug.Log($"📁 Expected file: {filePath}");
+        }
+    }
+
+    [System.Serializable]
+    private class PublishedStoryWrapper
+    {
+        public List<PublishedStory> publishedStories;
+    }
+
+    // NEW: Explicit Firestore operations for manual control
+    public async void SaveCurrentStoryToFirestore()
+    {
+        if (!IsFirebaseReady || currentStory == null) return;
+
+        try
+        {
+            bool success = await _creatorModeService.SaveStoryToFirestore(currentStory);
+            if (success)
+            {
+                Debug.Log($"✅ Story '{currentStory.storyTitle}' saved to Firestore");
+            }
+            else
+            {
+                Debug.LogError($"❌ Failed to save story to Firestore");
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Failed to save story to Firestore: {ex.Message}");
+        }
+    }
+
+    public async void LoadStoriesFromFirestore()
+    {
+        if (!IsFirebaseReady) return;
+
+        try
+        {
+            bool success = await _creatorModeService.LoadStoriesFromFirestore();
+            if (success)
+            {
+                Debug.Log("✅ Stories loaded from Firestore");
+            }
+            else
+            {
+                Debug.LogError("❌ Failed to load stories from Firestore");
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Failed to load stories from Firestore: {ex.Message}");
+        }
+    }
+
+    // NEW: Debug method to show file structure
+    [ContextMenu("Debug File Structure")]
+    public void DebugFileStructure()
+    {
+        string baseDir = GetTeacherBaseDirectory();
+        Debug.Log($"📁 TEACHER FILE STRUCTURE FOR: {GetCurrentTeacherId()}");
+        Debug.Log($"📁 Base Directory: {baseDir}");
+
+        if (Directory.Exists(baseDir))
+        {
+            string[] directories = Directory.GetDirectories(baseDir);
+            foreach (string dir in directories)
+            {
+                Debug.Log($"   📂 {Path.GetFileName(dir)}/");
+                string[] files = Directory.GetFiles(dir);
+                foreach (string file in files)
+                {
+                    Debug.Log($"      📄 {Path.GetFileName(file)}");
+                }
+            }
+        }
+        else
+        {
+            Debug.Log("   📁 Directory does not exist yet");
         }
     }
 }
