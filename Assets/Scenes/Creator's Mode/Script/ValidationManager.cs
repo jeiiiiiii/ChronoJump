@@ -196,51 +196,88 @@ public class ValidationManager : MonoBehaviour
         return new ValidationResult { isValid = true };
     }
 
-    public ValidationResult ValidateQuestion(string question)
+    // Add or update these methods in your ValidationManager.cs
+
+public ValidationResult ValidateQuestion(string question)
+{
+    if (string.IsNullOrEmpty(question) || string.IsNullOrWhiteSpace(question))
     {
-        if (string.IsNullOrEmpty(question))
+        return new ValidationResult { isValid = false, message = "Question text is required! Please enter a question." };
+    }
+
+    if (question.Length > maxQuestionLength)
+    {
+        return new ValidationResult
         {
-            return new ValidationResult { isValid = false, message = "Question is required!" };
+            isValid = false,
+            message = $"Question is too long! ({question.Length}/{maxQuestionLength} characters)"
+        };
+    }
+
+    return new ValidationResult { isValid = true };
+}
+
+public ValidationResult ValidateChoices(string[] choices)
+{
+    if (choices == null || choices.Length != 4)
+    {
+        return new ValidationResult { isValid = false, message = "All 4 choices are required!" };
+    }
+
+    for (int i = 0; i < choices.Length; i++)
+    {
+        string choice = choices[i];
+        
+        // Check if empty or whitespace
+        if (string.IsNullOrEmpty(choice) || string.IsNullOrWhiteSpace(choice))
+        {
+            return new ValidationResult { isValid = false, message = $"Choice {i + 1} cannot be empty! Please fill in all choices." };
         }
 
-        if (question.Length > maxQuestionLength)
+        if (choice.Length > maxChoiceLength)
         {
             return new ValidationResult
             {
                 isValid = false,
-                message = $"Question is too long! ({question.Length}/{maxQuestionLength} characters)"
+                message = $"Choice {i + 1} is too long! ({choice.Length}/{maxChoiceLength} characters)"
+            };
+        }
+    }
+
+    // Check for duplicate choices
+    for (int i = 0; i < choices.Length; i++)
+    {
+        for (int j = i + 1; j < choices.Length; j++)
+        {
+            if (choices[i].Trim().Equals(choices[j].Trim(), System.StringComparison.OrdinalIgnoreCase))
+            {
+                return new ValidationResult 
+                { 
+                    isValid = false, 
+                    message = $"Duplicate choices detected! Choice {i + 1} and Choice {j + 1} are the same." 
+                };
+            }
+        }
+    }
+
+    return new ValidationResult { isValid = true };
+}
+
+    // Optional: Add validation for minimum questions
+    public ValidationResult ValidateMinimumQuestions(List<Question> questions, int minimum = 1)
+    {
+        if (questions == null || questions.Count < minimum)
+        {
+            return new ValidationResult
+            {
+                isValid = false,
+                message = $"You must add at least {minimum} question{(minimum > 1 ? "s" : "")} before proceeding!"
             };
         }
 
         return new ValidationResult { isValid = true };
     }
 
-    public ValidationResult ValidateChoices(string[] choices)
-    {
-        if (choices == null || choices.Length != 4)
-        {
-            return new ValidationResult { isValid = false, message = "All 4 choices are required!" };
-        }
-
-        for (int i = 0; i < choices.Length; i++)
-        {
-            if (string.IsNullOrEmpty(choices[i]?.Trim()))
-            {
-                return new ValidationResult { isValid = false, message = $"Choice {i + 1} is required!" };
-            }
-
-            if (choices[i].Length > maxChoiceLength)
-            {
-                return new ValidationResult
-                {
-                    isValid = false,
-                    message = $"Choice {i + 1} is too long! ({choices[i].Length}/{maxChoiceLength} characters)"
-                };
-            }
-        }
-
-        return new ValidationResult { isValid = true };
-    }
 
     public bool HasDialogues(List<DialogueLine> dialogues)
     {

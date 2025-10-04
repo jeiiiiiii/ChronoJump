@@ -187,62 +187,82 @@ public class StoryActionHandler : MonoBehaviour
     }
 
     public void DeleteStory()
+{
+    int storyIndexToDelete = currentStoryIndex;
+
+    if (storyIndexToDelete < 0 || storyIndexToDelete >= StoryManager.Instance.allStories.Count)
     {
-        int storyIndexToDelete = currentStoryIndex;
-        var stories = StoryManager.Instance.allStories;
-
-        if (storyIndexToDelete < 0 || storyIndexToDelete >= stories.Count)
-        {
-            Debug.LogWarning($"DeleteStory called but no valid story is selected! Index: {storyIndexToDelete}");
-            return;
-        }
-
-        StoryData storyToDelete = stories[storyIndexToDelete];
-
-        if (storyToDelete != null)
-        {
-            Debug.Log($"Deleting story: {storyToDelete.storyTitle} (Index: {storyIndexToDelete})");
-
-            if (StoryManager.Instance.UseFirestore && !string.IsNullOrEmpty(storyToDelete.storyId))
-            {
-                DeleteStoryFromFirestore(storyToDelete.storyId);
-            }
-
-            ImageStorage.DeleteImage(storyToDelete.backgroundPath);
-            ImageStorage.DeleteImage(storyToDelete.character1Path);
-            ImageStorage.DeleteImage(storyToDelete.character2Path);
-
-            if (storyIndexToDelete < stories.Count)
-            {
-                stories.RemoveAt(storyIndexToDelete);
-            }
-
-            RemoveFromPublishedStories(storyToDelete.storyId);
-            StoryManager.Instance.SaveStories();
-
-            if (StoryManager.Instance.currentStory == storyToDelete)
-                StoryManager.Instance.currentStory = null;
-
-            if (ImageStorage.CurrentStoryIndex == storyIndexToDelete)
-            {
-                ImageStorage.UploadedTexture = null;
-                ImageStorage.uploadedTexture1 = null;
-                ImageStorage.uploadedTexture2 = null;
-            }
-
-            var viewStoriesScene = FindFirstObjectByType<ViewCreatedStoriesScene>();
-            if (viewStoriesScene != null)
-            {
-                viewStoriesScene.RefreshBackgrounds();
-            }
-
-            Debug.Log($"Story at slot {storyIndexToDelete} deleted successfully.");
-        }
-
-        CloseDeleteConfirmation();
-        ClosePopup();
+        Debug.LogWarning($"DeleteStory called but no valid story is selected! Index: {storyIndexToDelete}");
+        return;
     }
 
+    StoryData storyToDelete = StoryManager.Instance.allStories[storyIndexToDelete];
+
+    if (storyToDelete != null)
+    {
+        Debug.Log($"=== DELETING STORY ===");
+        Debug.Log($"Story: {storyToDelete.storyTitle}");
+        Debug.Log($"Slot Index: {storyIndexToDelete}");
+        Debug.Log($"Story's storyIndex field: {storyToDelete.storyIndex}");
+        
+        Debug.Log("Before deletion:");
+        for (int i = 0; i < StoryManager.Instance.allStories.Count; i++)
+        {
+            var s = StoryManager.Instance.allStories[i];
+            Debug.Log($"  [{i}] = {(s != null ? s.storyTitle : "NULL")}");
+        }
+
+        // Delete from Firestore (including subcollections)
+        if (StoryManager.Instance.UseFirestore && !string.IsNullOrEmpty(storyToDelete.storyId))
+        {
+            DeleteStoryFromFirestore(storyToDelete.storyId);
+        }
+
+        // Delete image files
+        ImageStorage.DeleteImage(storyToDelete.backgroundPath);
+        ImageStorage.DeleteImage(storyToDelete.character1Path);
+        ImageStorage.DeleteImage(storyToDelete.character2Path);
+
+        // ✅ CRITICAL: Set to null, don't remove from list
+        StoryManager.Instance.allStories[storyIndexToDelete] = null;
+        
+        Debug.Log("After setting to null:");
+        for (int i = 0; i < StoryManager.Instance.allStories.Count; i++)
+        {
+            var s = StoryManager.Instance.allStories[i];
+            Debug.Log($"  [{i}] = {(s != null ? s.storyTitle : "NULL")}");
+        }
+
+        RemoveFromPublishedStories(storyToDelete.storyId);
+        
+        // Save after deletion
+        StoryManager.Instance.SaveStories();
+
+        if (StoryManager.Instance.currentStory == storyToDelete)
+            StoryManager.Instance.currentStory = null;
+
+        if (ImageStorage.CurrentStoryIndex == storyIndexToDelete)
+        {
+            ImageStorage.UploadedTexture = null;
+            ImageStorage.uploadedTexture1 = null;
+            ImageStorage.uploadedTexture2 = null;
+        }
+
+        // Refresh the UI
+        var viewStoriesScene = FindFirstObjectByType<ViewCreatedStoriesScene>();
+        if (viewStoriesScene != null)
+        {
+            viewStoriesScene.RefreshBackgrounds();
+        }
+
+        Debug.Log($"=== DELETION COMPLETE ===");
+    }
+
+    CloseDeleteConfirmation();
+    ClosePopup();
+}
+
+    // Updated Firestore deletion with subcollection cleanup
     private async void DeleteStoryFromFirestore(string storyId)
     {
         if (StoryManager.Instance.UseFirestore && StoryManager.Instance.IsFirebaseReady)
@@ -253,7 +273,7 @@ public class StoryActionHandler : MonoBehaviour
 
                 if (success)
                 {
-                    Debug.Log($"Story {storyId} deleted from Firestore");
+                    Debug.Log($"Story {storyId} and all subcollections deleted from Firestore");
                 }
                 else
                 {
@@ -266,6 +286,8 @@ public class StoryActionHandler : MonoBehaviour
             }
         }
     }
+
+
 
     private void RemoveFromPublishedStories(string storyId)
     {

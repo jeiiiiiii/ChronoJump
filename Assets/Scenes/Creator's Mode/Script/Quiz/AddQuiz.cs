@@ -38,7 +38,7 @@ public class AddQuiz : MonoBehaviour
     public Button addQuestionButton;
     public Button nextButton;
 
-    // Reference to current story’s quiz list
+    // Reference to current story's quiz list
     public static List<Question> quizQuestions;
 
     void Start()
@@ -68,7 +68,7 @@ public class AddQuiz : MonoBehaviour
         {
             // Auto-create a story if none exists
             story = StoryManager.Instance.CreateNewStory("Default Story");
-            Debug.LogWarning("⚠️ No current story found. Created a new one: " + story.storyTitle);
+            Debug.LogWarning("No current story found. Created a new one: " + story.storyTitle);
         }
 
         // Make sure the story has its own quiz list
@@ -77,7 +77,7 @@ public class AddQuiz : MonoBehaviour
 
         quizQuestions = story.quizQuestions;
 
-        Debug.Log($"📖 Ready to add quiz for story '{story.storyTitle}'. Current questions: {quizQuestions.Count}");
+        Debug.Log($"Ready to add quiz for story '{story.storyTitle}'. Current questions: {quizQuestions.Count}");
     }
 
     void AddQuestion()
@@ -85,14 +85,22 @@ public class AddQuiz : MonoBehaviour
         var story = StoryManager.Instance.currentStory;
         if (story == null)
         {
-            Debug.LogError("❌ No active story. Cannot add question.");
+            Debug.LogError("No active story. Cannot add question.");
             return;
         }
 
         string qText = questionInput.text.Trim();
-        if (string.IsNullOrEmpty(qText))
+        
+        // Validate question text
+        var questionValidation = ValidationManager.Instance.ValidateQuestion(qText);
+        if (!questionValidation.isValid)
         {
-            Debug.LogWarning("⚠ Question cannot be empty!");
+            ValidationManager.Instance.ShowWarning(
+                "Question Required",
+                questionValidation.message,
+                null,
+                () => { questionInput.Select(); }
+            );
             return;
         }
 
@@ -126,9 +134,9 @@ public class AddQuiz : MonoBehaviour
         {
             ValidationManager.Instance.ShowWarning(
                 "Correct Answer Required",
-                "Please select a correct answer!",
+                "Please select which choice is the correct answer by checking one of the boxes!",
                 null,
-                () => { /* Stay on current scene */ }
+                null
             );
             return;
         }
@@ -136,7 +144,7 @@ public class AddQuiz : MonoBehaviour
         Question newQ = new Question(qText, choices, correctIndex);
         quizQuestions.Add(newQ);
 
-        Debug.Log($"✅ Added Question to '{story.storyTitle}': {qText} (Correct: {choices[correctIndex]})");
+        Debug.Log($"Added Question to '{story.storyTitle}': {qText} (Correct: {choices[correctIndex]})");
 
         // Save to JSON immediately
         StoryManager.Instance.SaveStories();
@@ -177,23 +185,100 @@ public class AddQuiz : MonoBehaviour
 
     void GoNext()
     {
+        Debug.Log("GoNext() called");
+        
         if (quizQuestions == null)
         {
-            Debug.LogWarning("⚠ Cannot go next, no quiz loaded.");
+            Debug.LogWarning("Cannot go next, no quiz loaded.");
             return;
         }
 
-        Debug.Log($"➡ Moving to review scene. Total Questions: {quizQuestions.Count}");
+        Debug.Log($"Current question count: {quizQuestions.Count}");
+
+        // Check if at least one question has been added
+        if (quizQuestions.Count == 0)
+        {
+            Debug.Log("VALIDATION FAILED: No questions added");
+            ValidationManager.Instance.ShowWarning(
+                "No Questions Added",
+                "You must add at least one question before proceeding to the review!",
+                null,
+                () => { questionInput.Select(); }
+            );
+            Debug.Log("Returning from GoNext - should NOT load scene");
+            return; // STOP HERE - don't proceed
+        }
+
+        // Check if there are unsaved inputs
+        if (HasUnsavedQuestion())
+        {
+            Debug.Log("VALIDATION FAILED: Unsaved question detected");
+            ValidationManager.Instance.ShowWarning(
+                "Unsaved Question",
+                "You have unsaved input. Please add the question first or clear the fields.",
+                null,
+                () => { questionInput.Select(); }
+            );
+            Debug.Log("Returning from GoNext - should NOT load scene");
+            return; // STOP HERE - don't proceed
+        }
+
+        // All validation passed - proceed to next scene
+        Debug.Log($"VALIDATION PASSED: Moving to review scene. Total Questions: {quizQuestions.Count}");
         SceneManager.LoadScene("ReviewQuestionsScene");
+    }
+
+    // Helper method to check if there's unsaved input
+    private bool HasUnsavedQuestion()
+    {
+        bool hasQuestionText = !string.IsNullOrEmpty(questionInput.text.Trim());
+        bool hasAnyChoice = !string.IsNullOrEmpty(choice1Input.text.Trim()) ||
+                           !string.IsNullOrEmpty(choice2Input.text.Trim()) ||
+                           !string.IsNullOrEmpty(choice3Input.text.Trim()) ||
+                           !string.IsNullOrEmpty(choice4Input.text.Trim());
+        bool hasSelectedAnswer = toggle1.isOn || toggle2.isOn || toggle3.isOn || toggle4.isOn;
+
+        return hasQuestionText || hasAnyChoice || hasSelectedAnswer;
+    }
+
+    // Optional: Add a button to clear unsaved inputs
+    public void ClearInputs()
+    {
+        ResetInputs();
+        Debug.Log("Inputs cleared");
     }
 
     public void MainMenu()
     {
+        // Check if there are unsaved questions
+        if (HasUnsavedQuestion())
+        {
+            ValidationManager.Instance.ShowWarning(
+                "Unsaved Changes",
+                "You have unsaved input. Please add the question first or clear the fields.",
+                null,
+                null
+            );
+            return; // STOP HERE - don't navigate
+        }
+
         SceneManager.LoadScene("Creator'sModeScene");
     }
 
     public void Back()
     {
+        // Check if there are unsaved questions
+        if (HasUnsavedQuestion())
+        {
+            ValidationManager.Instance.ShowWarning(
+                "Unsaved Changes",
+                "You have unsaved input. Please add the question first or clear the fields.",
+                null,
+                null
+            );
+            return; // STOP HERE - don't navigate
+        }
+
         SceneManager.LoadScene("CreateNewAddFrameScene");
     }
 }

@@ -318,23 +318,65 @@ public class StoryManager : MonoBehaviour
         Debug.Log($"📖 Current story set to: {story.storyTitle}");
     }
 
-    public StoryData CreateNewStory(string title = null)
+    public StoryData CreateNewStory(string title = null, int? forceSlotIndex = null)
     {
+        int targetIndex;
+
+        // If a specific slot was requested (from StorySelector), use it
+        if (forceSlotIndex.HasValue)
+        {
+            targetIndex = forceSlotIndex.Value;
+        }
+        else
+        {
+            // Find the first null slot
+            targetIndex = -1;
+            for (int i = 0; i < allStories.Count && i < 6; i++)
+            {
+                if (allStories[i] == null)
+                {
+                    targetIndex = i;
+                    break;
+                }
+            }
+
+            // If no null slots, check if we can add more
+            if (targetIndex == -1 && allStories.Count < 6)
+            {
+                targetIndex = allStories.Count;
+            }
+        }
+
+        if (targetIndex < 0 || targetIndex >= 6)
+        {
+            Debug.LogError("Maximum 6 stories reached or invalid slot!");
+            return null;
+        }
+
         var s = new StoryData();
+        s.storyIndex = targetIndex;
 
         if (!string.IsNullOrEmpty(title))
             s.storyTitle = title;
         else
             s.storyTitle = "";
 
-        allStories.Add(s);
-        currentStoryIndex = allStories.Count - 1;
+        // Ensure list is large enough
+        while (allStories.Count <= targetIndex)
+        {
+            allStories.Add(null);
+        }
 
-        SaveStories(); // ✅ Save immediately
+        // Place story in its slot
+        allStories[targetIndex] = s;
+        currentStoryIndex = targetIndex;
 
-        Debug.Log($"✅ Created new story: '{(string.IsNullOrEmpty(s.storyTitle) ? "<empty>" : s.storyTitle)}' (Index: {currentStoryIndex})");
+        SaveStories();
+
+        Debug.Log($"Created new story in slot {targetIndex}: '{(string.IsNullOrEmpty(s.storyTitle) ? "<empty>" : s.storyTitle)}'");
         return s;
     }
+
 
     public void DebugCurrentState()
     {
@@ -421,7 +463,6 @@ public class StoryManager : MonoBehaviour
         }
     }
 
-    // Update DeleteStoryFromFirestore to validate ownership
     public async Task<bool> DeleteStoryFromFirestore(string storyId)
     {
         try
@@ -440,7 +481,6 @@ public class StoryManager : MonoBehaviour
 
             string currentTeachId = GetCurrentTeacherId();
 
-            // ✅ FIXED: Verify the story belongs to current teacher before deletion
             DocumentReference storyDocRef = _firestore
                 .Collection("createdStories")
                 .Document(storyId);
@@ -454,16 +494,33 @@ public class StoryManager : MonoBehaviour
 
             var firestoreStory = storySnapshot.ConvertTo<StoryDataFirestore>();
 
-            // ✅ CRITICAL: Check if the story belongs to the current teacher
             if (firestoreStory.teachId != currentTeachId)
             {
-                Debug.LogError($"❌ Permission denied: Story {storyId} belongs to teacher {firestoreStory.teachId}, not current teacher {currentTeachId}");
+                Debug.LogError($"❌ Permission denied: Story {storyId} belongs to teacher {firestoreStory.teachId}");
                 return false;
             }
 
-            // Proceed with deletion
+            // ✅ DELETE DIALOGUES SUBCOLLECTION
+            var dialoguesRef = storyDocRef.Collection("dialogues");
+            var dialoguesSnapshot = await dialoguesRef.GetSnapshotAsync();
+            foreach (var dialogueDoc in dialoguesSnapshot.Documents)
+            {
+                await dialogueDoc.Reference.DeleteAsync();
+            }
+            Debug.Log($"🗑️ Deleted {dialoguesSnapshot.Count} dialogues for story {storyId}");
+
+            // ✅ DELETE QUESTIONS SUBCOLLECTION
+            var questionsRef = storyDocRef.Collection("questions");
+            var questionsSnapshot = await questionsRef.GetSnapshotAsync();
+            foreach (var questionDoc in questionsSnapshot.Documents)
+            {
+                await questionDoc.Reference.DeleteAsync();
+            }
+            Debug.Log($"🗑️ Deleted {questionsSnapshot.Count} questions for story {storyId}");
+
+            // Now delete the main document
             await storyDocRef.DeleteAsync();
-            Debug.Log($"✅ Story {storyId} deleted from Firestore by teacher {currentTeachId}");
+            Debug.Log($"✅ Story {storyId} and all subcollections deleted from Firestore");
             return true;
         }
         catch (System.Exception ex)
@@ -472,6 +529,7 @@ public class StoryManager : MonoBehaviour
             return false;
         }
     }
+
 
 
     // === SUBCOLLECTION METHODS ===
@@ -724,70 +782,79 @@ public class StoryManager : MonoBehaviour
         }
     }
 
-    // In LoadStoriesFromFirestoreAsync method, ensure the query includes teachId filter
     private async Task<bool> LoadStoriesFromFirestoreAsync()
+{
+    try
     {
-        try
+        if (!IsFirebaseReady)
         {
-            if (!IsFirebaseReady)
-            {
-                Debug.LogError("❌ No user logged in, cannot load from Firestore");
-                return false;
-            }
-
-            // Get current teacher ID
-            string currentTeachId = GetCurrentTeacherId();
-            if (string.IsNullOrEmpty(currentTeachId))
-            {
-                Debug.LogError("❌ No teacher ID found, cannot load stories");
-                return false;
-            }
-
-            Debug.Log($"🔍 Loading stories for teacher: {currentTeachId}");
-
-            // ✅ FIXED: Query stories ONLY for the current teacher
-            var storiesQuery = _firestore
-                .Collection("createdStories")
-                .WhereEqualTo("teachId", currentTeachId); // This is the key filter
-
-            var snapshot = await storiesQuery.GetSnapshotAsync();
-
-            var loadedStories = new List<StoryData>();
-            var documents = snapshot.Documents.ToList();
-
-            Debug.Log($"📚 Found {documents.Count} stories in Firestore for teacher {currentTeachId}");
-
-            foreach (var storyDoc in documents)
-            {
-                var firestoreStory = storyDoc.ConvertTo<StoryDataFirestore>();
-
-                // ✅ DOUBLE CHECK: Ensure this story belongs to the current teacher
-                if (firestoreStory.teachId != currentTeachId)
-                {
-                    Debug.LogWarning($"⚠️ Skipping story {firestoreStory.storyId} - belongs to teacher {firestoreStory.teachId}, not current teacher {currentTeachId}");
-                    continue;
-                }
-
-                // Load dialogues and questions
-                var dialogues = await LoadDialoguesFromFirestore(storyDoc.Id);
-                var questions = await LoadQuestionsFromFirestore(storyDoc.Id);
-
-                // Map back to Unity model
-                var unityStory = MapToUnityStory(firestoreStory, dialogues, questions);
-                loadedStories.Add(unityStory);
-            }
-
-            // Update stories list
-            allStories = loadedStories;
-            Debug.Log($"✅ Loaded {loadedStories.Count} stories from Firestore for teacher: {currentTeachId}");
-            return true;
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError($"❌ Failed to load stories from Firestore: {ex.Message}");
+            Debug.LogError("❌ No user logged in, cannot load from Firestore");
             return false;
         }
+
+        string currentTeachId = GetCurrentTeacherId();
+        if (string.IsNullOrEmpty(currentTeachId))
+        {
+            Debug.LogError("❌ No teacher ID found, cannot load stories");
+            return false;
+        }
+
+        Debug.Log($"📂 Loading stories for teacher: {currentTeachId}");
+
+        var storiesQuery = _firestore
+            .Collection("createdStories")
+            .WhereEqualTo("teachId", currentTeachId);
+
+        var snapshot = await storiesQuery.GetSnapshotAsync();
+        var documents = snapshot.Documents.ToList();
+
+        Debug.Log($"📚 Found {documents.Count} stories in Firestore for teacher {currentTeachId}");
+
+        // ✅ KEY FIX: Initialize list with nulls for all 6 slots
+        var loadedStories = new List<StoryData>(6);
+        for (int i = 0; i < 6; i++)
+        {
+            loadedStories.Add(null);
+        }
+
+        foreach (var storyDoc in documents)
+        {
+            var firestoreStory = storyDoc.ConvertTo<StoryDataFirestore>();
+
+            if (firestoreStory.teachId != currentTeachId)
+            {
+                Debug.LogWarning($"⚠️ Skipping story {firestoreStory.storyId}");
+                continue;
+            }
+
+            var dialogues = await LoadDialoguesFromFirestore(storyDoc.Id);
+            var questions = await LoadQuestionsFromFirestore(storyDoc.Id);
+
+            var unityStory = MapToUnityStory(firestoreStory, dialogues, questions);
+
+            // ✅ KEY FIX: Place story in its designated slot
+            int slotIndex = firestoreStory.storyIndex;
+            if (slotIndex >= 0 && slotIndex < 6)
+            {
+                loadedStories[slotIndex] = unityStory;
+                Debug.Log($"📍 Placed story '{unityStory.storyTitle}' in slot {slotIndex}");
+            }
+            else
+            {
+                Debug.LogWarning($"⚠️ Story has invalid index {slotIndex}, skipping");
+            }
+        }
+
+        allStories = loadedStories;
+        Debug.Log($"✅ Loaded stories into correct slots for teacher: {currentTeachId}");
+        return true;
     }
+    catch (System.Exception ex)
+    {
+        Debug.LogError($"❌ Failed to load stories from Firestore: {ex.Message}");
+        return false;
+    }
+}
 
 
     // Keep the public void method for external calls
@@ -844,11 +911,16 @@ public class StoryManager : MonoBehaviour
     private void SaveStoriesLocal()
     {
         string filePath = GetTeacherStoriesFilePath();
-        string json = JsonUtility.ToJson(new StoryListWrapper { stories = allStories }, true);
+
+        // ✅ Only save non-null stories
+        var nonNullStories = allStories.Where(s => s != null).ToList();
+
+        string json = JsonUtility.ToJson(new StoryListWrapper { stories = nonNullStories }, true);
         File.WriteAllText(filePath, json);
         Debug.Log($"✅ Stories saved locally for teacher: {GetCurrentTeacherId()}");
         Debug.Log($"📁 File: {filePath}");
     }
+
 
     // In LoadStoriesLocal method, add teacher validation
     private void LoadStoriesLocal()
@@ -859,19 +931,41 @@ public class StoryManager : MonoBehaviour
             string json = File.ReadAllText(filePath);
             StoryListWrapper wrapper = JsonUtility.FromJson<StoryListWrapper>(json);
 
-            // ✅ FIXED: Always create new list to ensure clean state
-            allStories = wrapper.stories ?? new List<StoryData>();
+            // ✅ Ensure we have 6 slots
+            allStories = new List<StoryData>(6);
+            for (int i = 0; i < 6; i++)
+            {
+                allStories.Add(null);
+            }
 
-            Debug.Log($"📚 Loaded {allStories.Count} local stories for teacher: {GetCurrentTeacherId()}");
+            // Place stories in their correct slots based on storyIndex
+            if (wrapper.stories != null)
+            {
+                foreach (var story in wrapper.stories)
+                {
+                    if (story != null && story.storyIndex >= 0 && story.storyIndex < 6)
+                    {
+                        allStories[story.storyIndex] = story;
+                    }
+                }
+            }
+
+            Debug.Log($"📚 Loaded local stories for teacher: {GetCurrentTeacherId()}");
             Debug.Log($"📁 File: {filePath}");
         }
         else
         {
-            allStories = new List<StoryData>();
+            // Initialize with 6 null slots
+            allStories = new List<StoryData>(6);
+            for (int i = 0; i < 6; i++)
+            {
+                allStories.Add(null);
+            }
             Debug.Log($"❌ No saved stories found for teacher: {GetCurrentTeacherId()}, starting fresh.");
             Debug.Log($"📁 Expected file: {filePath}");
         }
     }
+
 
     
 
