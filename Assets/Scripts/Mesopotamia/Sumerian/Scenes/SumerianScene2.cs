@@ -14,6 +14,7 @@ public class SumerianScene2 : MonoBehaviour
 
     [SerializeField] public TextMeshProUGUI dialogueText;
     [SerializeField] public Button nextButton;
+    public GameObject Cuneiform;
     public Button backButton;
     
     [Header("UI Buttons")]
@@ -32,7 +33,6 @@ public class SumerianScene2 : MonoBehaviour
     public Sprite PlayerReflective;
     public Sprite PlayerEmbarassed;
 
-    public SpriteRenderer EnkicharacterRenderer;
     public Sprite EnkiKind;
     public Sprite EnkiPokerface;
     public Sprite EnkiStern;
@@ -222,7 +222,7 @@ public class SumerianScene2 : MonoBehaviour
 
     void ShowDialogue()
     {
-        EnkicharacterRenderer.enabled = false;
+        Cuneiform.SetActive(false);
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
@@ -253,6 +253,7 @@ public class SumerianScene2 : MonoBehaviour
                 break;
             case 6:
                 ChronocharacterRenderer.sprite = EnkiStern;
+                Cuneiform.SetActive(true);
                 break;
             case 7:
                 ChronocharacterRenderer.sprite = ChronoThinking;

@@ -14,6 +14,7 @@ public class SumerianScene5 : MonoBehaviour
 
     [SerializeField] public TextMeshProUGUI dialogueText;
     [SerializeField] public Button nextButton;
+    public GameObject Gulong;
     public Button backButton;
 
     [Header("UI Buttons")]
@@ -213,6 +214,7 @@ public class SumerianScene5 : MonoBehaviour
     void ShowDialogue()
     {
         IshmacharacterRenderer.enabled = false;
+        Gulong.SetActive(false);
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
@@ -240,6 +242,7 @@ public class SumerianScene5 : MonoBehaviour
                 break;
             case 5:
                 ChronocharacterRenderer.sprite = ChronoThinking;
+                Gulong.SetActive(true);
                 break;
             case 6:
                 ChronocharacterRenderer.sprite = IshmaSmirking;

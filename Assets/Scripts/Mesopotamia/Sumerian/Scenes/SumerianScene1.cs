@@ -14,6 +14,8 @@ public class SumerianScene1 : MonoBehaviour
 
     [SerializeField] public TextMeshProUGUI dialogueText;
     [SerializeField] public Button nextButton;
+    public SpriteRenderer PastBG;
+    public SpriteRenderer NewBG;
     public Button backButton;
     
     [Header("UI Buttons")]
@@ -243,6 +245,8 @@ public class SumerianScene1 : MonoBehaviour
         EnkicharacterRenderer.enabled = false;
         PlayerFulldrawnSprite.enabled = false;
         ChronoFulldrawnSprite.enabled = false;
+        PastBG.enabled = true;
+        NewBG.enabled = false;
         
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
@@ -272,9 +276,13 @@ public class SumerianScene1 : MonoBehaviour
             case 2:
                 PlayercharacterRenderer.sprite = PlayerEager;
                 ChronocharacterRenderer.enabled = true;
+                PastBG.enabled = false;
+                NewBG.enabled = true;
                 break;
             case 3:
                 ChronocharacterRenderer.sprite = ChronoSmile;
+                PastBG.enabled = true;
+                NewBG.enabled = false;
                 break;
             case 4:
                 EnkicharacterRenderer.enabled = true;
