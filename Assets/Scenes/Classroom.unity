@@ -734,7 +734,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 653.35, y: 357}
+  m_AnchoredPosition: {x: 520, y: 357}
   m_SizeDelta: {x: 422.7, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &785705263
@@ -870,8 +870,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 9, y: 32}
-  m_SizeDelta: {x: 621.3, y: 50}
+  m_AnchoredPosition: {x: 13.05, y: 34.22}
+  m_SizeDelta: {x: 439.41, y: 45.56}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &790427794
 MonoBehaviour:
@@ -893,7 +893,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: This is where you can see the created stories list.
+  m_text: TEXTTTTTTT
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8895a9f5f4ca28a4fafbfcf16953c410, type: 2}
   m_sharedMaterial: {fileID: 8910014471443427490, guid: 8895a9f5f4ca28a4fafbfcf16953c410, type: 2}
