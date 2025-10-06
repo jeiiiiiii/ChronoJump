@@ -33,6 +33,7 @@ public class TeacherDashboardManager : MonoBehaviour
 
     private void Awake()
     {
+        EnsureSceneNavigationManager();
         InitializeState();
         LoadTeacherData();
 
@@ -416,8 +417,20 @@ public class TeacherDashboardManager : MonoBehaviour
 
     public void OnBackToMainMenuClicked()
     {
-        SceneManager.LoadScene("TitleScreen");
+        Debug.Log("Back button clicked in Teacher Dashboard");
+
+        if (SceneNavigationManager.Instance != null)
+        {
+            // Use intelligent back navigation
+            SceneNavigationManager.Instance.GoBack();
+        }
+        else
+        {
+            // Fallback
+            SceneManager.LoadScene("TitleScreen");
+        }
     }
+
 
     public void OnPublishedStoriesClicked()
     {
@@ -565,4 +578,15 @@ public class TeacherDashboardManager : MonoBehaviour
             classManager.OnClassEdited -= HandleClassEdited;
         }
     }
+
+    private void EnsureSceneNavigationManager()
+    {
+        if (SceneNavigationManager.Instance == null)
+        {
+            GameObject navigationObject = new GameObject("SceneNavigationManager");
+            navigationObject.AddComponent<SceneNavigationManager>();
+            Debug.Log("Created SceneNavigationManager instance");
+        }
+    }
+
 }

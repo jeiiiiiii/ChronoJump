@@ -279,6 +279,6 @@ public class AddQuiz : MonoBehaviour
             return; // STOP HERE - don't navigate
         }
 
-        SceneManager.LoadScene("CreateNewAddFrameScene");
+        SceneManager.LoadScene("ReviewDialogueScene");
     }
 }

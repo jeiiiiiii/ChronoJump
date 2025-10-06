@@ -170,9 +170,19 @@ public class StoryActionHandler : MonoBehaviour
 
     public void OnPublishedStoriesClicked()
     {
-        Debug.Log("Published Stories button clicked!");
-        SceneManager.LoadScene("StoryPublish");
+        Debug.Log("Published Stories button clicked in Creator's Mode");
+
+        if (SceneNavigationManager.Instance != null)
+        {
+            // This will set previous scene to Creator'sModeScene before navigating
+            SceneNavigationManager.Instance.GoToStoryPublish();
+        }
+        else
+        {
+            SceneManager.LoadScene("StoryPublish");
+        }
     }
+
 
     public void ShowDeleteConfirmation()
     {

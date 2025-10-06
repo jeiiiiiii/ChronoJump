@@ -783,78 +783,78 @@ public class StoryManager : MonoBehaviour
     }
 
     private async Task<bool> LoadStoriesFromFirestoreAsync()
-{
-    try
     {
-        if (!IsFirebaseReady)
+        try
         {
-            Debug.LogError("❌ No user logged in, cannot load from Firestore");
+            if (!IsFirebaseReady)
+            {
+                Debug.LogError("❌ No user logged in, cannot load from Firestore");
+                return false;
+            }
+
+            string currentTeachId = GetCurrentTeacherId();
+            if (string.IsNullOrEmpty(currentTeachId))
+            {
+                Debug.LogError("❌ No teacher ID found, cannot load stories");
+                return false;
+            }
+
+            Debug.Log($"📂 Loading stories for teacher: {currentTeachId}");
+
+            var storiesQuery = _firestore
+                .Collection("createdStories")
+                .WhereEqualTo("teachId", currentTeachId);
+
+            var snapshot = await storiesQuery.GetSnapshotAsync();
+            var documents = snapshot.Documents.ToList();
+
+            Debug.Log($"📚 Found {documents.Count} stories in Firestore for teacher {currentTeachId}");
+
+            // ✅ KEY FIX: Initialize list with nulls for all 6 slots
+            var loadedStories = new List<StoryData>(6);
+            for (int i = 0; i < 6; i++)
+            {
+                loadedStories.Add(null);
+            }
+
+            foreach (var storyDoc in documents)
+            {
+                var firestoreStory = storyDoc.ConvertTo<StoryDataFirestore>();
+
+                if (firestoreStory.teachId != currentTeachId)
+                {
+                    Debug.LogWarning($"⚠️ Skipping story {firestoreStory.storyId}");
+                    continue;
+                }
+
+                var dialogues = await LoadDialoguesFromFirestore(storyDoc.Id);
+                var questions = await LoadQuestionsFromFirestore(storyDoc.Id);
+
+                var unityStory = MapToUnityStory(firestoreStory, dialogues, questions);
+
+                // ✅ KEY FIX: Place story in its designated slot
+                int slotIndex = firestoreStory.storyIndex;
+                if (slotIndex >= 0 && slotIndex < 6)
+                {
+                    loadedStories[slotIndex] = unityStory;
+                    Debug.Log($"📍 Placed story '{unityStory.storyTitle}' in slot {slotIndex}");
+                }
+                else
+                {
+                    Debug.LogWarning($"⚠️ Story has invalid index {slotIndex}, skipping");
+                }
+            }
+
+            allStories = loadedStories;
+            Debug.Log($"✅ Loaded stories into correct slots for teacher: {currentTeachId}");
+            return true;
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Failed to load stories from Firestore: {ex.Message}");
             return false;
         }
-
-        string currentTeachId = GetCurrentTeacherId();
-        if (string.IsNullOrEmpty(currentTeachId))
-        {
-            Debug.LogError("❌ No teacher ID found, cannot load stories");
-            return false;
-        }
-
-        Debug.Log($"📂 Loading stories for teacher: {currentTeachId}");
-
-        var storiesQuery = _firestore
-            .Collection("createdStories")
-            .WhereEqualTo("teachId", currentTeachId);
-
-        var snapshot = await storiesQuery.GetSnapshotAsync();
-        var documents = snapshot.Documents.ToList();
-
-        Debug.Log($"📚 Found {documents.Count} stories in Firestore for teacher {currentTeachId}");
-
-        // ✅ KEY FIX: Initialize list with nulls for all 6 slots
-        var loadedStories = new List<StoryData>(6);
-        for (int i = 0; i < 6; i++)
-        {
-            loadedStories.Add(null);
-        }
-
-        foreach (var storyDoc in documents)
-        {
-            var firestoreStory = storyDoc.ConvertTo<StoryDataFirestore>();
-
-            if (firestoreStory.teachId != currentTeachId)
-            {
-                Debug.LogWarning($"⚠️ Skipping story {firestoreStory.storyId}");
-                continue;
-            }
-
-            var dialogues = await LoadDialoguesFromFirestore(storyDoc.Id);
-            var questions = await LoadQuestionsFromFirestore(storyDoc.Id);
-
-            var unityStory = MapToUnityStory(firestoreStory, dialogues, questions);
-
-            // ✅ KEY FIX: Place story in its designated slot
-            int slotIndex = firestoreStory.storyIndex;
-            if (slotIndex >= 0 && slotIndex < 6)
-            {
-                loadedStories[slotIndex] = unityStory;
-                Debug.Log($"📍 Placed story '{unityStory.storyTitle}' in slot {slotIndex}");
-            }
-            else
-            {
-                Debug.LogWarning($"⚠️ Story has invalid index {slotIndex}, skipping");
-            }
-        }
-
-        allStories = loadedStories;
-        Debug.Log($"✅ Loaded stories into correct slots for teacher: {currentTeachId}");
-        return true;
     }
-    catch (System.Exception ex)
-    {
-        Debug.LogError($"❌ Failed to load stories from Firestore: {ex.Message}");
-        return false;
-    }
-}
 
 
     // Keep the public void method for external calls
@@ -967,7 +967,7 @@ public class StoryManager : MonoBehaviour
     }
 
 
-    
+
 
     [System.Serializable]
     private class StoryListWrapper
@@ -1215,4 +1215,160 @@ public class StoryManager : MonoBehaviour
             Debug.Log("❌ Local stories file does not exist");
         }
     }
+
+    // === FIRESTORE PUBLISHING METHODS ===
+
+    /// <summary>
+    /// Safely publishes a story to a class in Firestore - handles missing stories gracefully
+    /// </summary>
+    public async Task<bool> PublishStoryToFirestore(string storyId, string classCode, string className)
+    {
+        try
+        {
+            if (!IsFirebaseReady)
+            {
+                Debug.LogWarning("⚠️ No user logged in, skipping Firestore publish");
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(storyId))
+            {
+                Debug.LogWarning("⚠️ Story ID is null or empty, skipping Firestore publish");
+                return false;
+            }
+
+            Debug.Log($"📤 Publishing story {storyId} to class {classCode}");
+
+            // Get the story document reference
+            var storyRef = _firestore.Collection("createdStories").Document(storyId);
+            var snapshot = await storyRef.GetSnapshotAsync();
+
+            if (!snapshot.Exists)
+            {
+                Debug.LogWarning($"⚠️ Story {storyId} does not exist in Firestore - saving it first");
+
+                // Try to save the story first
+                var currentStory = GetCurrentStory();
+                if (currentStory != null && currentStory.storyId == storyId)
+                {
+                    bool saveSuccess = await SaveStoryToFirestore(currentStory);
+                    if (!saveSuccess)
+                    {
+                        Debug.LogWarning($"⚠️ Could not save story {storyId} to Firestore");
+                        return false;
+                    }
+
+                    // Now get the fresh snapshot
+                    snapshot = await storyRef.GetSnapshotAsync();
+                    if (!snapshot.Exists)
+                    {
+                        Debug.LogWarning($"⚠️ Still cannot find story {storyId} after saving");
+                        return false;
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"⚠️ Cannot find current story to save to Firestore");
+                    return false;
+                }
+            }
+
+            var firestoreStory = snapshot.ConvertTo<StoryDataFirestore>();
+
+            // Update assigned classes
+            if (firestoreStory.assignedClasses == null)
+            {
+                firestoreStory.assignedClasses = new List<string>();
+            }
+
+            if (!firestoreStory.assignedClasses.Contains(classCode))
+            {
+                firestoreStory.assignedClasses.Add(classCode);
+                Debug.Log($"✅ Added class {classCode} to assigned classes");
+            }
+
+            // Update publishing status
+            firestoreStory.isPublished = firestoreStory.assignedClasses.Count > 0;
+            firestoreStory.updatedAt = Timestamp.GetCurrentTimestamp();
+
+            // Save back to Firestore
+            await storyRef.SetAsync(firestoreStory);
+
+            Debug.Log($"✅ Successfully published story to class {className} ({classCode})");
+            return true;
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"⚠️ Failed to publish story to Firestore: {ex.Message}");
+            return false;
+        }
+    }
+
+
+    /// <summary>
+    /// Safely unpublishes a story from a class in Firestore - won't crash if story doesn't exist
+    /// </summary>
+    public async Task<bool> UnpublishStoryFromFirestore(string storyId, string classCode)
+    {
+        try
+        {
+            if (!IsFirebaseReady)
+            {
+                Debug.LogWarning("⚠️ No user logged in, skipping Firestore unpublish");
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(storyId))
+            {
+                Debug.LogWarning("⚠️ Story ID is null or empty, skipping Firestore unpublish");
+                return false;
+            }
+
+            Debug.Log($"📤 Unpublishing story {storyId} from class {classCode}");
+
+            // Get the story document reference
+            var storyRef = _firestore.Collection("createdStories").Document(storyId);
+            var snapshot = await storyRef.GetSnapshotAsync();
+
+            if (!snapshot.Exists)
+            {
+                Debug.LogWarning($"⚠️ Story {storyId} does not exist in Firestore - this is OK for local-only stories");
+                return true; // Return true because local cleanup is what matters
+            }
+
+            var firestoreStory = snapshot.ConvertTo<StoryDataFirestore>();
+
+            // Verify ownership (optional safety check)
+            string currentTeachId = GetCurrentTeacherId();
+            if (firestoreStory.teachId != currentTeachId)
+            {
+                Debug.LogWarning($"⚠️ Permission warning: Story belongs to teacher {firestoreStory.teachId}");
+                // Continue anyway - might be cleaning up old data
+            }
+
+            // Remove class from assigned classes
+            if (firestoreStory.assignedClasses != null && firestoreStory.assignedClasses.Contains(classCode))
+            {
+                firestoreStory.assignedClasses.Remove(classCode);
+                Debug.Log($"✅ Removed class {classCode} from assigned classes");
+            }
+
+            // Update publishing status
+            firestoreStory.isPublished = firestoreStory.assignedClasses?.Count > 0;
+            firestoreStory.updatedAt = Timestamp.GetCurrentTimestamp();
+
+            // Save back to Firestore
+            await storyRef.SetAsync(firestoreStory);
+
+            Debug.Log($"✅ Successfully unpublished story from class {classCode}");
+            return true;
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"⚠️ Failed to unpublish story from Firestore: {ex.Message} - continuing with local cleanup");
+            return false; // Don't throw, just log and continue
+        }
+    }
+
+
 }

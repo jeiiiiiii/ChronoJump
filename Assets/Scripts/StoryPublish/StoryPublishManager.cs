@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Manages the Story Publish scene UI and handles button interactions
@@ -42,10 +43,11 @@ public class StoryPublishManager : MonoBehaviour
 
     private void Start()
     {
+        EnsureSceneNavigationManager();
         SetupButtonListeners();
         LoadClassData();
         InitializeCreatedSectionText();
-
+        
 
         if (createdListParent != null)
         {
@@ -321,19 +323,36 @@ public class StoryPublishManager : MonoBehaviour
 
     #region Button Click Handlers
 
-    private void OnCreatorModeClicked()
-    {
-        Debug.Log("Creator's Mode button clicked in Story Publish");
+    private void OnBackClicked()
+{
+    Debug.Log("Back button clicked in Story Publish");
 
-        if (SceneNavigationManager.Instance != null)
-        {
-            SceneNavigationManager.Instance.GoToCreatorMode();
-        }
-        else
-        {
-            Debug.LogError("SceneNavigationManager not found! Make sure it exists in the scene.");
-        }
+    if (SceneNavigationManager.Instance != null)
+    {
+        // Use intelligent back navigation
+        SceneNavigationManager.Instance.GoBack();
     }
+    else
+    {
+        Debug.LogError("SceneNavigationManager not found!");
+        SceneManager.LoadScene("TitleScreen");
+    }
+}
+
+private void OnCreatorModeClicked()
+{
+    Debug.Log("Creator's Mode button clicked in Story Publish");
+
+    if (SceneNavigationManager.Instance != null)
+    {
+        // This will set previous scene to StoryPublish before navigating
+        SceneNavigationManager.Instance.GoToCreatorMode();
+    }
+    else
+    {
+        SceneManager.LoadScene("Creator'sModeScene");
+    }
+}
 
     private void OnDashboardClicked()
     {
@@ -344,38 +363,17 @@ public class StoryPublishManager : MonoBehaviour
 
         if (SceneNavigationManager.Instance != null)
         {
+            // This will set previous scene to StoryPublish before navigating
             SceneNavigationManager.Instance.GoToTeacherDashboard();
         }
         else
         {
-            Debug.LogError("SceneNavigationManager not found! Make sure it exists in the scene.");
+            SceneManager.LoadScene("TeacherDashboard");
         }
     }
 
-    private void OnBackClicked()
-    {
-        Debug.Log("Back button clicked in Story Publish");
 
-        if (SceneNavigationManager.Instance != null)
-        {
-            if (SceneNavigationManager.PreviousSceneName == "TeacherDashboard")
-            {
-                SceneNavigationManager.Instance.GoToTeacherDashboard();
-            }
-            else if (SceneNavigationManager.PreviousSceneName == "TitleScreen")
-            {
-                SceneNavigationManager.Instance.GoToTitleScreen();
-            }
-            else
-            {
-                SceneNavigationManager.Instance.GoToTitleScreen();
-            }
-        }
-        else
-        {
-            Debug.LogError("SceneNavigationManager not found! Make sure it exists in the scene.");
-        }
-    }
+
 
     private void OnClassItemClicked(string classCode, string displayName, Button clickedButton)
     {
@@ -499,19 +497,79 @@ public class StoryPublishManager : MonoBehaviour
         Debug.Log("Delete cancelled");
     }
 
-    private void OnDeleteConfirm()
+    private async void OnPublishConfirm()
+{
+    if (string.IsNullOrEmpty(_selectedClassCode) || StoryManager.Instance.currentStory == null)
+    {
+        Debug.LogWarning("⚠️ Cannot publish: No class selected or no current story");
+        return;
+    }
+
+    // Always save locally first (this should never fail)
+    bool localSuccess = StoryManager.Instance.PublishStory(
+        StoryManager.Instance.currentStory,
+        _selectedClassCode,
+        _selectedDisplayName
+    );
+
+    // Try Firestore publishing (optional - won't block if it fails)
+    bool firestoreSuccess = false;
+    if (StoryManager.Instance.UseFirestore)
+    {
+        firestoreSuccess = await StoryManager.Instance.PublishStoryToFirestore(
+            StoryManager.Instance.currentStory.storyId,
+            _selectedClassCode,
+            _selectedDisplayName
+        );
+        
+        if (!firestoreSuccess)
+        {
+            Debug.LogWarning("⚠️ Firestore publish failed, but local publish succeeded");
+        }
+    }
+
+    if (publishPopUp != null)
+        publishPopUp.SetActive(false);
+
+    RefreshCreatedStoriesList();
+    
+    if (localSuccess)
+    {
+        Debug.Log($"✅ Story published to class: {_selectedDisplayName}");
+    }
+}
+
+    private async void OnDeleteConfirm()
     {
         if (_storyToDelete != null)
         {
+            // Always remove locally first (this should never fail)
             StoryManager.Instance.DeletePublishedStory(_storyToDelete.storyId, _storyToDelete.classCode);
+
+            // Try Firestore unpublishing (optional - won't block if it fails)
+            if (StoryManager.Instance.UseFirestore)
+            {
+                bool firestoreSuccess = await StoryManager.Instance.UnpublishStoryFromFirestore(
+                    _storyToDelete.storyId,
+                    _storyToDelete.classCode
+                );
+
+                if (!firestoreSuccess)
+                {
+                    Debug.LogWarning("⚠️ Firestore unpublish failed, but local delete succeeded");
+                }
+            }
+
             StartCoroutine(DelayedRefreshStoriesList());
-            Debug.Log($"Deleted published story: {_storyToDelete.storyTitle}");
+            Debug.Log($"🗑️ Deleted published story: {_storyToDelete.storyTitle}");
             _storyToDelete = null;
         }
 
         if (deletePopUp != null)
             deletePopUp.SetActive(false);
     }
+
+
 
     private System.Collections.IEnumerator DelayedRefreshStoriesList()
     {
@@ -527,27 +585,7 @@ public class StoryPublishManager : MonoBehaviour
         Debug.Log("Publish cancelled");
     }
 
-    private void OnPublishConfirm()
-    {
-        bool publishSuccess = StoryManager.Instance.PublishStory(
-            StoryManager.Instance.currentStory,
-            _selectedClassCode,
-            _selectedDisplayName
-        );
 
-        if (publishPopUp != null)
-            publishPopUp.SetActive(false);
-
-        if (publishSuccess)
-        {
-            RefreshCreatedStoriesList();
-            Debug.Log($"Story published to class: {_selectedDisplayName}");
-        }
-        else
-        {
-            Debug.Log("Failed to publish story - duplicate detected");
-        }
-    }
 
     #endregion
 
@@ -601,4 +639,15 @@ public class StoryPublishManager : MonoBehaviour
         if (publishConfirmButton != null)
             publishConfirmButton.onClick.RemoveAllListeners();
     }
+
+    private void EnsureSceneNavigationManager()
+    {
+        if (SceneNavigationManager.Instance == null)
+        {
+            GameObject navigationObject = new GameObject("SceneNavigationManager");
+            navigationObject.AddComponent<SceneNavigationManager>();
+            Debug.Log("Created SceneNavigationManager instance");
+        }
+    }
+
 }
