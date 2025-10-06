@@ -14,7 +14,10 @@ public class PublishedStory
     public string classCode;
     public string className;
     public string publishDate;
-    
+
+    // Add parameterless constructor for Firestore
+    public PublishedStory() { }
+
     public PublishedStory(StoryData story, string classCode, string className)
     {
         this.storyId = story.storyId;
@@ -39,8 +42,11 @@ public class StoryManager : MonoBehaviour
 
     // Firebase integration
     public bool UseFirestore { get; private set; } = false;
-    public bool IsFirebaseReady => FirebaseManager.Instance != null &&
-                                  FirebaseManager.Instance.CurrentUser != null;
+
+    // Add this property to StoryManager.cs for easier access
+    public bool IsFirebaseReady => FirebaseManager.Instance != null && 
+                              FirebaseManager.Instance.CurrentUser != null &&
+                              _firestore != null;
 
     // Teacher-specific storage
     private string _currentTeachId;
@@ -48,6 +54,7 @@ public class StoryManager : MonoBehaviour
 
     // Firebase Firestore instance
     private FirebaseFirestore _firestore;
+
 
     public StoryData currentStory
     {
@@ -74,18 +81,25 @@ public class StoryManager : MonoBehaviour
     }
 
     private static StoryManager _instance;
-    public static StoryManager Instance
+   public static StoryManager Instance
     {
         get
         {
             if (_instance == null)
             {
+                // ✅ DON'T AUTO-CREATE FOR STUDENTS
+                if (FirebaseManager.Instance?.CurrentUserData?.role == "student")
+                {
+                    Debug.Log("ℹ️ StoryManager: Not creating instance for student user");
+                    return null;
+                }
+
                 // Try to find existing instance in scene
                 _instance = FindFirstObjectByType<StoryManager>();
 
                 if (_instance == null)
                 {
-                    // Create new instance
+                    // Create new instance ONLY for teachers
                     GameObject go = new GameObject("StoryManager");
                     _instance = go.AddComponent<StoryManager>();
                     DontDestroyOnLoad(go);
@@ -93,12 +107,13 @@ public class StoryManager : MonoBehaviour
                     // Initialize
                     _instance.InitializeFirebaseIntegration();
                     _instance.LoadStories();
-                    Debug.Log("✅ StoryManager created and initialized");
+                    Debug.Log("✅ StoryManager created and initialized for teacher");
                 }
             }
             return _instance;
         }
     }
+
 
     private void Awake()
     {
@@ -1370,5 +1385,129 @@ public class StoryManager : MonoBehaviour
         }
     }
 
+    // === FIRESTORE PUBLISHED STORIES FETCHING (FOR STUDENTS) ===
 
+    /// <summary>
+/// Fetch published stories for a specific class from Firestore (for students)
+/// </summary>
+public async Task<List<PublishedStory>> GetPublishedStoriesFromFirestore(string classCode)
+{
+    try
+    {
+        if (!IsFirebaseReady || _firestore == null)
+        {
+            Debug.LogError("Firebase not ready, cannot fetch published stories");
+            return new List<PublishedStory>();
+        }
+
+        Debug.Log($"📥 Fetching published stories for class: {classCode}");
+
+        // Query stories that have this class in their assignedClasses array
+        var storiesQuery = _firestore
+            .Collection("createdStories")
+            .WhereArrayContains("assignedClasses", classCode)
+            .WhereEqualTo("isPublished", true);
+
+        var snapshot = await storiesQuery.GetSnapshotAsync();
+        var publishedStories = new List<PublishedStory>();
+
+        // Get class details including teacher name
+        var classDetails = await GetClassDetailsFromFirestore(classCode);
+        
+        foreach (var storyDoc in snapshot.Documents)
+        {
+            var firestoreStory = storyDoc.ConvertTo<StoryDataFirestore>();
+            
+            // Create PublishedStory from Firestore data with actual class details
+            var publishedStory = new PublishedStory
+            {
+                storyId = firestoreStory.storyId,
+                storyTitle = firestoreStory.title,
+                classCode = classCode,
+                className = classDetails.className ?? "Class",
+                publishDate = firestoreStory.updatedAt != null ? firestoreStory.updatedAt.ToDateTime().ToString("MMM dd, yyyy") : "Unknown"
+            };
+            
+            publishedStories.Add(publishedStory);
+        }
+
+        Debug.Log($"✅ Found {publishedStories.Count} published stories for class {classCode}");
+        return publishedStories;
+    }
+    catch (System.Exception ex)
+    {
+        Debug.LogError($"❌ Failed to fetch published stories from Firestore: {ex.Message}");
+        return new List<PublishedStory>();
+    }
+}
+
+private async Task<ClassDetailsModel> GetClassDetailsFromFirestore(string classCode)
+{
+    try
+    {
+        var classQuery = _firestore
+            .Collection("classes")
+            .WhereEqualTo("classCode", classCode)
+            .Limit(1);
+
+        var snapshot = await classQuery.GetSnapshotAsync();
+        var classDocs = snapshot.Documents.ToList();
+        if (classDocs.Count > 0)
+        {
+            var classData = classDocs[0].ToDictionary();
+            var classDetails = new ClassDetailsModel
+            {
+                classCode = classCode,
+                className = classData.ContainsKey("className") ? classData["className"].ToString() : "Unknown Class",
+                classLevel = classData.ContainsKey("classLevel") ? classData["classLevel"].ToString() : "",
+                teacherName = "Unknown Teacher", // We'll get this next
+                isActive = classData.ContainsKey("isActive") ? (bool)classData["isActive"] : true
+            };
+
+            // Get teacher name if teachId exists
+            if (classData.ContainsKey("teachId"))
+            {
+                string teacherId = classData["teachId"].ToString();
+                classDetails.teacherName = await GetTeacherNameFromFirestore(teacherId);
+            }
+
+            return classDetails;
+        }
+    }
+    catch (System.Exception ex)
+    {
+        Debug.LogWarning($"Failed to fetch class details: {ex.Message}");
+    }
+    
+    return new ClassDetailsModel(classCode, "Unknown Class", "", "Unknown Teacher");
+}
+
+    private async Task<string> GetTeacherNameFromFirestore(string teacherId)
+    {
+        try
+        {
+            var teacherQuery = _firestore
+                .Collection("teachers")
+                .WhereEqualTo("teachId", teacherId)
+                .Limit(1);
+
+            var snapshot = await teacherQuery.GetSnapshotAsync();
+            if (snapshot.Documents.Count() > 0) // ✅ FIXED: Use .Count property
+            {
+                var teacherDoc = snapshot.Documents.First();
+                var teacherData = teacherDoc.ToDictionary();
+                string firstName = teacherData.ContainsKey("teachFirstName") ? teacherData["teachFirstName"].ToString() : "";
+                string lastName = teacherData.ContainsKey("teachLastName") ? teacherData["teachLastName"].ToString() : "";
+
+                string fullName = $"{firstName} {lastName}".Trim();
+                return string.IsNullOrEmpty(fullName) ? "Unknown Teacher" : fullName;
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"Failed to fetch teacher name: {ex.Message}");
+        }
+
+        return "Unknown Teacher";
+    }
 }

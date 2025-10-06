@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using System.Collections;
+using System.Threading.Tasks;
+using System;
 
 public class StudentClassroomManager : MonoBehaviour
 {
@@ -18,6 +20,7 @@ public class StudentClassroomManager : MonoBehaviour
 
     private StudentClassData currentClass;
     private bool isInitialized = false;
+    private bool isLoadingStories = false;
 
     private void OnEnable()
     {
@@ -80,52 +83,103 @@ public class StudentClassroomManager : MonoBehaviour
         LoadPublishedStories();
     }
 
-    private void LoadPublishedStories()
+    private async void LoadPublishedStories()
     {
+        // Prevent multiple simultaneous loads
+        if (isLoadingStories)
+        {
+            Debug.Log("⚠️ Stories are already loading, skipping...");
+            return;
+        }
+
         if (currentClass == null || string.IsNullOrEmpty(currentClass.classCode))
         {
-            Debug.LogError($"No class data available. CurrentClass null: {currentClass == null}, ClassCode: {currentClass?.classCode ?? "NULL"}");
+            Debug.LogError($"❌ No class data available. CurrentClass null: {currentClass == null}, ClassCode: {currentClass?.classCode ?? "NULL"}");
             ShowNoStoriesMessage("No class joined");
             return;
         }
 
+        Debug.Log($"🔍 Loading stories for class: {currentClass.classCode}, Teacher: {currentClass.teacherName}");
+
+        isLoadingStories = true;
         ClearStoryItems();
+        ShowNoStoriesMessage("Loading stories...");
 
-        availableStories = GetPublishedStoriesForClass(currentClass.classCode);
-
-        if (availableStories.Count == 0)
+        try
         {
-            ShowNoStoriesMessage("No stories published yet");
+            // ✅ FIX: Call GetPublishedStoriesFromFirestore directly instead of GetPublishedStoriesFromFirestoreWithRetry
+            var stories = await GetPublishedStoriesFromFirestore(currentClass.classCode);
+
+            if (stories.Count == 0)
+            {
+                ShowNoStoriesMessage("No stories published yet");
+                Debug.Log($"ℹ️ No stories found for class: {currentClass.classCode}");
+            }
+            else
+            {
+                HideNoStoriesMessage();
+                availableStories = stories;
+                DisplayStories();
+                Debug.Log($"✅ Loaded {stories.Count} stories for class: {currentClass.classCode}");
+            }
         }
-        else
+        catch (System.Exception ex)
         {
-            HideNoStoriesMessage();
-            DisplayStories();
+            Debug.LogError($"❌ Failed to load stories: {ex.Message}");
+            ShowNoStoriesMessage("Failed to load stories. Please try again.");
+        }
+        finally
+        {
+            isLoadingStories = false;
         }
     }
 
-    private List<PublishedStory> GetPublishedStoriesForClass(string classCode)
+
+    private async Task<List<PublishedStory>> GetPublishedStoriesFromFirestore(string classCode)
+{
+    try
     {
-        if (StoryManager.Instance == null)
+        Debug.Log($"[DIRECT] Fetching stories for class: '{classCode}'");
+        
+        // Quick check - if Firebase isn't ready, just return empty list
+        if (FirebaseManager.Instance?.DB == null)
         {
-            Debug.LogError("StoryManager instance not found!");
+            Debug.Log("ℹ️ Firebase not available, no stories loaded");
             return new List<PublishedStory>();
         }
 
-        Debug.Log($"[DEBUG] Requesting stories for class: '{classCode}'");
-        Debug.Log($"[DEBUG] StoryManager has {StoryManager.Instance.publishedStories.Count} total published stories");
+        var firestore = FirebaseManager.Instance.DB;
+        
+        var storiesQuery = firestore
+            .Collection("createdStories")
+            .WhereArrayContains("assignedClasses", classCode)
+            .WhereEqualTo("isPublished", true);
 
-        foreach (var story in StoryManager.Instance.publishedStories)
+        var snapshot = await storiesQuery.GetSnapshotAsync();
+        var stories = new List<PublishedStory>();
+
+        foreach (var storyDoc in snapshot.Documents)
         {
-            Debug.Log($"[DEBUG] Published Story: {story.storyTitle} | Class: '{story.classCode}' | Match: {story.classCode == classCode}");
+            var data = storyDoc.ToDictionary();
+            stories.Add(new PublishedStory
+            {
+                storyId = storyDoc.Id,
+                storyTitle = data.ContainsKey("title") ? data["title"].ToString() : "Untitled",
+                classCode = classCode,
+                className = currentClass?.className ?? "Class",
+                publishDate = "Recent"
+            });
         }
 
-        var stories = StoryManager.Instance.GetPublishedStoriesForClass(classCode);
-        Debug.Log($"[DEBUG] GetPublishedStoriesForClass returned {stories.Count} stories for '{classCode}'");
-
+        Debug.Log($"[DIRECT] Found {stories.Count} stories");
         return stories;
     }
-
+    catch (System.Exception ex)
+    {
+        Debug.LogWarning($"⚠️ Couldn't fetch stories: {ex.Message}");
+        return new List<PublishedStory>();
+    }
+}
     private void DisplayStories()
     {
         foreach (PublishedStory story in availableStories)
@@ -155,34 +209,178 @@ public class StudentClassroomManager : MonoBehaviour
         }
     }
 
-    private void OnPlayStory(PublishedStory story)
+    private async void OnPlayStory(PublishedStory story)
     {
         Debug.Log($"Starting story: {story.storyTitle} (ID: {story.storyId})");
 
-        if (StoryManager.Instance != null)
+        try
         {
-            var actualStory = StoryManager.Instance.allStories.Find(s => s.storyId == story.storyId);
-            if (actualStory != null)
+            // ✅ LOAD STORY DIRECTLY - NO STORYMANAGER
+            var storyData = await LoadStoryFromFirestore(story.storyId);
+
+            if (storyData != null)
             {
-                StoryManager.Instance.SetCurrentStory(actualStory);
+                // Store in StudentPrefs for GameScene to use
+                string storyJson = JsonUtility.ToJson(storyData);
+                StudentPrefs.SetString("CurrentStoryData", storyJson);
+                StudentPrefs.SetString("SelectedStoryID", story.storyId);
+                StudentPrefs.SetString("SelectedStoryTitle", story.storyTitle);
+                StudentPrefs.SetString("PlayingFromClass", currentClass.classCode);
+                StudentPrefs.Save();
 
-                PlayerPrefs.SetString("SelectedStoryID", story.storyId);
-                PlayerPrefs.SetString("SelectedStoryTitle", story.storyTitle);
-                PlayerPrefs.SetString("PlayingFromClass", currentClass.classCode);
-                PlayerPrefs.Save();
-
-                Debug.Log($"Loading story gameplay for: {story.storyTitle}");
+                Debug.Log($"✅ Loaded story directly: {story.storyTitle}");
                 UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene");
             }
             else
             {
-                Debug.LogError($"Story with ID {story.storyId} not found in StoryManager!");
+                Debug.LogError($"Failed to load story from Firestore!");
+                ShowNoStoriesMessage("Could not load story. Please try again.");
             }
         }
-        else
+        catch (System.Exception ex)
         {
-            Debug.LogError("StoryManager instance not found!");
+            Debug.LogError($"Error loading story: {ex.Message}");
+            ShowNoStoriesMessage("Error loading story. Please try again.");
         }
+    }
+
+
+// ✅ ADD THIS METHOD TO LOAD STORY FROM FIRESTORE
+private async Task<StoryData> LoadStoryFromFirestore(string storyId)
+{
+    try
+    {
+        if (FirebaseManager.Instance?.DB == null)
+        {
+            Debug.LogError("Firebase not ready");
+            return null;
+        }
+
+        var firestore = FirebaseManager.Instance.DB;
+        
+        // Get the main story document
+        var storyDoc = await firestore.Collection("createdStories").Document(storyId).GetSnapshotAsync();
+        
+        if (!storyDoc.Exists)
+        {
+            Debug.LogError($"Story document {storyId} not found in Firestore");
+            return null;
+        }
+
+        var storyData = storyDoc.ToDictionary();
+        
+        // Load dialogues
+        var dialogues = await LoadDialoguesFromFirestore(storyId);
+        
+        // Load questions
+        var questions = await LoadQuestionsFromFirestore(storyId);
+
+        // Create StoryData object
+        var story = new StoryData
+        {
+            storyId = storyId,
+            storyTitle = storyData.ContainsKey("title") ? storyData["title"].ToString() : "Untitled",
+            storyDescription = storyData.ContainsKey("description") ? storyData["description"].ToString() : "",
+            backgroundPath = storyData.ContainsKey("backgroundUrl") ? storyData["backgroundUrl"].ToString() : "",
+            character1Path = storyData.ContainsKey("character1Url") ? storyData["character1Url"].ToString() : "",
+            character2Path = storyData.ContainsKey("character2Url") ? storyData["character2Url"].ToString() : "",
+            dialogues = dialogues,
+            quizQuestions = questions,
+            assignedClasses = storyData.ContainsKey("assignedClasses") ? 
+                ((List<object>)storyData["assignedClasses"]).ConvertAll(x => x.ToString()) : 
+                new List<string>()
+        };
+
+        Debug.Log($"✅ Loaded story from Firestore: {story.storyTitle}");
+        return story;
+    }
+    catch (System.Exception ex)
+    {
+        Debug.LogError($"❌ Failed to load story from Firestore: {ex.Message}");
+        return null;
+    }
+}
+
+// ✅ ADD THESE HELPER METHODS
+private async Task<List<DialogueLine>> LoadDialoguesFromFirestore(string storyId)
+{
+    var dialogues = new List<DialogueLine>();
+    
+    try
+    {
+        var firestore = FirebaseManager.Instance.DB;
+        var dialoguesSnapshot = await firestore
+            .Collection("createdStories")
+            .Document(storyId)
+            .Collection("dialogues")
+            .OrderBy("orderIndex")
+            .GetSnapshotAsync();
+
+        foreach (var dialogueDoc in dialoguesSnapshot.Documents)
+        {
+            var data = dialogueDoc.ToDictionary();
+            dialogues.Add(new DialogueLine(
+                data.ContainsKey("characterName") ? data["characterName"].ToString() : "",
+                data.ContainsKey("dialogueText") ? data["dialogueText"].ToString() : ""
+            ));
+        }
+    }
+    catch (System.Exception ex)
+    {
+        Debug.LogError($"Failed to load dialogues: {ex.Message}");
+    }
+    
+    return dialogues;
+}
+
+    private async Task<List<Question>> LoadQuestionsFromFirestore(string storyId)
+    {
+        var questions = new List<Question>();
+
+        try
+        {
+            var firestore = FirebaseManager.Instance.DB;
+            var questionsSnapshot = await firestore
+                .Collection("createdStories")
+                .Document(storyId)
+                .Collection("questions")
+                .GetSnapshotAsync();
+
+            foreach (var questionDoc in questionsSnapshot.Documents)
+            {
+                var data = questionDoc.ToDictionary();
+
+                var choices = data.ContainsKey("choices") ?
+                    ((List<object>)data["choices"]).ConvertAll(x => x.ToString()).ToArray() :
+                    new string[0];
+
+                int correctIndex = data.ContainsKey("correctAnswerIndex") ?
+                    Convert.ToInt32(data["correctAnswerIndex"]) : 0;
+
+                questions.Add(new Question(
+                    data.ContainsKey("questionText") ? data["questionText"].ToString() : "",
+                    choices,
+                    correctIndex
+                ));
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"Failed to load questions: {ex.Message}");
+        }
+
+        return questions;
+    }
+
+
+    public void JoinNewClass(string classCode)
+    {
+        // ✅ Use StudentPrefs instead of PlayerPrefs
+        StudentPrefs.SetString("JoinedClassCode", classCode);
+        StudentPrefs.Save();
+
+        isInitialized = false;
+        InitializeClassroom();
     }
 
     private void ClearStoryItems()
@@ -217,6 +415,12 @@ public class StudentClassroomManager : MonoBehaviour
 
     public void RefreshStories()
     {
+        if (isLoadingStories)
+        {
+            Debug.Log("⚠️ Stories are already loading, please wait...");
+            return;
+        }
+
         Debug.Log("Refreshing stories...");
 
         if (classInfoComponent != null)
@@ -225,15 +429,6 @@ public class StudentClassroomManager : MonoBehaviour
         }
 
         LoadPublishedStories();
-    }
-
-    public void JoinNewClass(string classCode)
-    {
-        PlayerPrefs.SetString("JoinedClassCode", classCode);
-        PlayerPrefs.Save();
-
-        isInitialized = false;
-        InitializeClassroom();
     }
 
     public void OnStoryPublished(PublishedStory newStory)

@@ -104,7 +104,6 @@ public class TeacherService
             teachFirstName = GetFieldValue(teacherDoc, "teachFirstName"),
             teachLastName = GetFieldValue(teacherDoc, "teachLastName"),
             title = GetFieldValue(teacherDoc, "title"),
-            teachProfileIcon = GetFieldValue(teacherDoc, "teachProfilePic"),
             classCode = classCodes
         };
     }

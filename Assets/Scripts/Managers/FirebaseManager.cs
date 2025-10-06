@@ -164,20 +164,22 @@ public class FirebaseManager : MonoBehaviour
                             // If we have a teacherId, fetch the teacher's name
                             if (!string.IsNullOrEmpty(teacherId))
                             {
-                                GetTeacherData(teacherId, (teacherData) =>
+                                // Use TeacherService to get teacher data
+                                TeacherService.GetTeacherData(teacherId, (teacherModel) =>
                                 {
                                     string teacherName = "Unknown Teacher";
 
-                                    if (teacherData != null)
+                                    if (teacherModel != null)
                                     {
-                                        // Combine first and last name
-                                        string firstName = teacherData.teachFirstName ?? "";
-                                        string lastName = teacherData.teachLastName ?? "";
-                                        teacherName = $"{firstName} {lastName}".Trim();
+                                        // Use the teacher model properties directly
+                                        teacherName = $"{teacherModel.teachFirstName} {teacherModel.teachLastName}".Trim();
 
-                                        // Fallback if both names are empty
                                         if (string.IsNullOrEmpty(teacherName))
                                             teacherName = "Unknown Teacher";
+                                    }
+                                    else
+                                    {
+                                        Debug.LogError($"❌ Teacher data not found for teacherId: {teacherId}");
                                     }
 
                                     var classDetails = new ClassDetailsModel
@@ -195,6 +197,8 @@ public class FirebaseManager : MonoBehaviour
                             else
                             {
                                 // No teacherId found
+                                Debug.LogError($"❌ No teachId found in class document for class: {classCode}");
+
                                 var classDetails = new ClassDetailsModel
                                 {
                                     classCode = classCode,
@@ -210,10 +214,12 @@ public class FirebaseManager : MonoBehaviour
                         }
                     }
 
+                    Debug.LogError($"❌ Class document not found for class code: {classCode}");
                     callback?.Invoke(null);
                 });
             });
     }
+
 
     public void GetUserData(Action<UserAccountModel> callback)
     {

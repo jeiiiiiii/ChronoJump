@@ -60,7 +60,6 @@ public class UserService
         });
     }
 
-
     private void HandleTeacherRegistration(FirebaseUser user, Action<bool, string> callback)
     {
         var teacherData = new Dictionary<string, object>
@@ -86,7 +85,6 @@ public class UserService
             callback(true, "Teacher registration successful! You can now create classes.");
         });
     }
-
 
     private void HandleStudentRegistration(FirebaseUser user, string classCode, Action<bool, string> callback)
     {
@@ -116,33 +114,33 @@ public class UserService
 
                 var studentData = new Dictionary<string, object>
                 {
-                { "classCode", classCode },
-                { "studName", user.DisplayName },
-                { "teachId", teacherId },
-                { "userId", user.UserId },
-                { "dateUpdated", FieldValue.ServerTimestamp },
-                { "isRemoved", false },
+                    { "classCode", classCode },
+                    { "studName", user.DisplayName },
+                    { "teachId", teacherId },
+                    { "userId", user.UserId },
+                    { "dateUpdated", FieldValue.ServerTimestamp },
+                    { "isRemoved", false },
                 };
 
                 var leaderboardData = new Dictionary<string, object>
                 {
-                { "displayName", user.DisplayName ?? "Unknown" },
-                { "classCode", classCode ?? "" },
-                { "overallScore", "0" },
-                { "perQuizFirstScores", new Dictionary<string, object>() },
-                { "isRemoved", false },
-                { "dateUpdated", FieldValue.ServerTimestamp }
+                    { "displayName", user.DisplayName ?? "Unknown" },
+                    { "classCode", classCode ?? "" },
+                    { "overallScore", "0" },
+                    { "perQuizFirstScores", new Dictionary<string, object>() },
+                    { "isRemoved", false },
+                    { "dateUpdated", FieldValue.ServerTimestamp }
                 };
 
                 var progressData = new Dictionary<string, object>
                 {
-                { "overallScore", "0" },
-                { "successRate", "0%" },
-                { "perQuizBestScores", new Dictionary<string, object>() },
-                { "passedQuizzes", new List<string>() },
-                { "currentStory", null },
-                { "dateUpdated", FieldValue.ServerTimestamp },
-                { "isRemoved", false }
+                    { "overallScore", "0" },
+                    { "successRate", "0%" },
+                    { "perQuizBestScores", new Dictionary<string, object>() },
+                    { "passedQuizzes", new List<string>() },
+                    { "currentStory", null },
+                    { "dateUpdated", FieldValue.ServerTimestamp },
+                    { "isRemoved", false }
                 };
 
                 studentRef.SetAsync(studentData).ContinueWithOnMainThread(studentTask =>
@@ -216,11 +214,12 @@ public class UserService
                                                         classData.ContainsKey("classLevel") ? classData["classLevel"].ToString() : ""
                                                     );
 
-                                                    PlayerPrefs.SetString("JoinedClassCode", classCode);
-                                                    PlayerPrefs.SetString("RegisteredClassData", JsonUtility.ToJson(studentClassData));
-                                                    PlayerPrefs.Save();
+                                                    // ✅ Use StudentPrefs instead of PlayerPrefs
+                                                    StudentPrefs.SetString("JoinedClassCode", classCode);
+                                                    StudentPrefs.SetString("RegisteredClassData", JsonUtility.ToJson(studentClassData));
+                                                    StudentPrefs.Save();
 
-                                                    Debug.Log("✅ Class data cached with teacher name");
+                                                    Debug.Log("✅ Class data cached with teacher name using StudentPrefs");
                                                     callback(true, "Student registration successful!");
                                                 });
                                             return;
@@ -234,8 +233,6 @@ public class UserService
                 });
             });
     }
-
-
 
     public void GetUserData(Action<UserAccountModel> callback)
     {
