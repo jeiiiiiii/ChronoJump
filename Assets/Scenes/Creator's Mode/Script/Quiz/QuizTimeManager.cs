@@ -3,6 +3,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System;
+using System.Threading.Tasks;
+using System.Linq;
 
 public class QuizTimeManager : MonoBehaviour
 {
@@ -25,8 +28,15 @@ public class QuizTimeManager : MonoBehaviour
     private float currentTime;
     private bool isQuizActive = true;
 
+    // Quiz attempt data
+    private string currentStoryId;
+    private string studentId;
+
     void Start()
     {
+        // Get current story and student info
+        LoadQuizContext();
+
         // Pull teacher-created questions
         if (AddQuiz.quizQuestions.Count == 0)
         {
@@ -42,6 +52,29 @@ public class QuizTimeManager : MonoBehaviour
         score = 0;
         currentQuestionIndex = 0;
         ShowQuestion();
+    }
+
+    private void LoadQuizContext()
+    {
+        // Get story ID from StudentPrefs
+        currentStoryId = StudentPrefs.GetString("SelectedStoryID", "");
+
+        // Get student ID
+        studentId = GetStudentId();
+
+        Debug.Log($"📝 Quiz Context - Story: {currentStoryId}, Student: {studentId}");
+    }
+
+    private string GetStudentId()
+    {
+        // Try to get from Firebase auth first
+        if (FirebaseManager.Instance?.CurrentUser != null)
+        {
+            return FirebaseManager.Instance.CurrentUser.UserId;
+        }
+
+        // Fallback to PlayerPrefs/StudentPrefs
+        return StudentPrefs.GetString("StudentId", "unknown_student");
     }
 
     void Update()
@@ -177,7 +210,7 @@ public class QuizTimeManager : MonoBehaviour
         questionText.text = "Ubos na ang oras mo!";
     }
 
-    void ShowQuizResult()
+    async void ShowQuizResult()
     {
         isQuizActive = false;
 
@@ -211,6 +244,9 @@ public class QuizTimeManager : MonoBehaviour
         resultText.text = result;
         timerText.gameObject.SetActive(false);
 
+        // Save quiz attempt to Firebase
+        await SaveQuizAttempt();
+
         nextButton.onClick.RemoveAllListeners();
         nextButton.interactable = true;
         nextButton.onClick.AddListener(() =>
@@ -225,6 +261,89 @@ public class QuizTimeManager : MonoBehaviour
                 SceneManager.LoadScene("Classroom");
             }
         });
+    }
+
+    private async Task SaveQuizAttempt()
+    {
+        try
+        {
+            if (FirebaseManager.Instance?.DB == null)
+            {
+                Debug.LogError("Firebase not available to save quiz attempt");
+                return;
+            }
+
+            var firestore = FirebaseManager.Instance.DB;
+
+            // Generate a unique quiz ID
+            string quizId = $"{currentStoryId}_{DateTime.Now:yyyyMMdd_HHmmss}";
+
+            // Determine if passed (70% to pass)
+            bool isPassed = score >= (questions.Length * 0.7);
+
+            // Get attempt number for this student and story
+            int attemptNumber = await GetNextAttemptNumber();
+
+            // Create quiz attempt using your QuizAttemptModel
+            var quizAttempt = new QuizAttemptModel(
+                quizId: quizId,
+                attemptNum: attemptNumber,
+                score: score,
+                isPassed: isPassed
+            );
+
+            // Save to Firestore with nested structure:
+            // createdStories/{storyId}/quizAttempts/{studentId}/attempts/{attemptId}
+            var attemptRef = firestore
+                .Collection("createdStories")
+                .Document(currentStoryId)
+                .Collection("quizAttempts")
+                .Document(studentId)
+                .Collection("attempts")
+                .Document(); // Auto-generated ID
+
+            await attemptRef.SetAsync(quizAttempt);
+
+            Debug.Log($"✅ Quiz attempt saved: Attempt #{attemptNumber}, Score: {score}/{questions.Length}, Passed: {isPassed}");
+
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"❌ Failed to save quiz attempt: {ex.Message}");
+        }
+    }
+
+    private async Task<int> GetNextAttemptNumber()
+    {
+        try
+        {
+            var firestore = FirebaseManager.Instance.DB;
+
+            var attemptsRef = firestore
+                .Collection("createdStories")
+                .Document(currentStoryId)
+                .Collection("quizAttempts")
+                .Document(studentId)
+                .Collection("attempts");
+
+            var snapshot = await attemptsRef
+                .OrderByDescending("attemptNumber")
+                .Limit(1)
+                .GetSnapshotAsync();
+
+            if (snapshot.Documents.Count() > 0)
+            {
+                var lastAttempt = snapshot.Documents.First().ConvertTo<QuizAttemptModel>();
+                return lastAttempt.attemptNumber + 1;
+            }
+
+            return 1; // First attempt
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"❌ Failed to get next attempt number: {ex.Message}");
+            return 1;
+        }
     }
 
     // Helper method to determine if the current user is a teacher

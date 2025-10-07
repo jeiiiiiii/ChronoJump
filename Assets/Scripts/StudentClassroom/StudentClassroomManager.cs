@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Threading.Tasks;
 using System;
+using System.Linq;
 
 public class StudentClassroomManager : MonoBehaviour
 {
@@ -301,14 +302,22 @@ private async Task<StoryData> LoadStoryFromFirestore(string storyId)
     }
 }
 
-// ✅ ADD THESE HELPER METHODS
+// ✅ CORRECTED DIALOGUE LOADING METHOD
 private async Task<List<DialogueLine>> LoadDialoguesFromFirestore(string storyId)
 {
     var dialogues = new List<DialogueLine>();
     
     try
     {
+        if (FirebaseManager.Instance?.DB == null)
+        {
+            Debug.LogError("Firebase not available for loading dialogues");
+            return dialogues;
+        }
+
         var firestore = FirebaseManager.Instance.DB;
+        Debug.Log($"🔍 Loading dialogues for story: {storyId}");
+        
         var dialoguesSnapshot = await firestore
             .Collection("createdStories")
             .Document(storyId)
@@ -316,61 +325,155 @@ private async Task<List<DialogueLine>> LoadDialoguesFromFirestore(string storyId
             .OrderBy("orderIndex")
             .GetSnapshotAsync();
 
+        Debug.Log($"📄 Found {dialoguesSnapshot.Documents.Count()} dialogue documents");
+
         foreach (var dialogueDoc in dialoguesSnapshot.Documents)
         {
-            var data = dialogueDoc.ToDictionary();
-            dialogues.Add(new DialogueLine(
-                data.ContainsKey("characterName") ? data["characterName"].ToString() : "",
-                data.ContainsKey("dialogueText") ? data["dialogueText"].ToString() : ""
-            ));
+            try
+            {
+                // Use the Firestore data model
+                var dialogueData = dialogueDoc.ConvertTo<DialogueLineFirestore>();
+                
+                Debug.Log($"💬 Processing dialogue: {dialogueData.characterName} - {dialogueData.dialogueText}");
+
+                // Convert to game model - NOTE: using 'text' field instead of 'dialogueText'
+                if (!string.IsNullOrEmpty(dialogueData.dialogueText))
+                {
+                    dialogues.Add(new DialogueLine(
+                        dialogueData.characterName ?? "Unknown",
+                        dialogueData.dialogueText
+                    ));
+                }
+                else
+                {
+                    Debug.LogWarning($"⚠️ Skipping empty dialogue for character: {dialogueData.characterName}");
+                }
+            }
+            catch (System.Exception docEx)
+            {
+                Debug.LogError($"❌ Error processing dialogue document {dialogueDoc.Id}: {docEx.Message}");
+                
+                // Fallback: try dictionary approach
+                try
+                {
+                    var data = dialogueDoc.ToDictionary();
+                    string characterName = data.ContainsKey("characterName") ? data["characterName"].ToString() : "Unknown";
+                    string dialogueText = data.ContainsKey("dialogueText") ? data["dialogueText"].ToString() : "";
+                    
+                    if (!string.IsNullOrEmpty(dialogueText))
+                    {
+                        dialogues.Add(new DialogueLine(characterName, dialogueText));
+                    }
+                }
+                catch (System.Exception fallbackEx)
+                {
+                    Debug.LogError($"❌ Fallback also failed: {fallbackEx.Message}");
+                }
+            }
         }
+        
+        Debug.Log($"✅ Successfully loaded {dialogues.Count} dialogues");
     }
     catch (System.Exception ex)
     {
-        Debug.LogError($"Failed to load dialogues: {ex.Message}");
+        Debug.LogError($"❌ Failed to load dialogues: {ex.Message}");
+        Debug.LogError($"Stack trace: {ex.StackTrace}");
     }
     
     return dialogues;
 }
 
+    // ✅ CORRECTED QUESTION LOADING METHOD
     private async Task<List<Question>> LoadQuestionsFromFirestore(string storyId)
     {
         var questions = new List<Question>();
 
         try
         {
+            if (FirebaseManager.Instance?.DB == null)
+            {
+                Debug.LogError("Firebase not available for loading questions");
+                return questions;
+            }
+
             var firestore = FirebaseManager.Instance.DB;
+            Debug.Log($"🔍 Loading questions for story: {storyId}");
+
             var questionsSnapshot = await firestore
                 .Collection("createdStories")
                 .Document(storyId)
                 .Collection("questions")
+                .OrderBy("orderIndex")
                 .GetSnapshotAsync();
+
+            Debug.Log($"📄 Found {questionsSnapshot.Documents.Count()} question documents");
 
             foreach (var questionDoc in questionsSnapshot.Documents)
             {
-                var data = questionDoc.ToDictionary();
+                try
+                {
+                    // Use the Firestore data model
+                    var questionData = questionDoc.ConvertTo<QuestionFirestore>();
 
-                var choices = data.ContainsKey("choices") ?
-                    ((List<object>)data["choices"]).ConvertAll(x => x.ToString()).ToArray() :
-                    new string[0];
+                    Debug.Log($"❓ Processing question: {questionData.questionText}");
+                    Debug.Log($"📝 Choices count: {questionData.choices?.Count ?? 0}");
 
-                int correctIndex = data.ContainsKey("correctAnswerIndex") ?
-                    Convert.ToInt32(data["correctAnswerIndex"]) : 0;
+                    // Convert to game model
+                    if (questionData.choices != null && questionData.choices.Count >= 2)
+                    {
+                        questions.Add(new Question(
+                            questionData.questionText ?? "No question text",
+                            questionData.choices.ToArray(),
+                            questionData.correctAnswerIndex
+                        ));
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"⚠️ Skipping question with insufficient choices: {questionData.questionText}");
+                    }
+                }
+                catch (System.Exception docEx)
+                {
+                    Debug.LogError($"❌ Error processing question document {questionDoc.Id}: {docEx.Message}");
 
-                questions.Add(new Question(
-                    data.ContainsKey("questionText") ? data["questionText"].ToString() : "",
-                    choices,
-                    correctIndex
-                ));
+                    // Fallback: try dictionary approach
+                    try
+                    {
+                        var data = questionDoc.ToDictionary();
+                        string questionText = data.ContainsKey("questionText") ? data["questionText"].ToString() : "No question text";
+
+                        List<string> choices = new List<string>();
+                        if (data.ContainsKey("choices") && data["choices"] is List<object> choicesList)
+                        {
+                            choices = choicesList.ConvertAll(x => x?.ToString() ?? "");
+                        }
+
+                        int correctIndex = data.ContainsKey("correctAnswerIndex") ?
+                            Convert.ToInt32(data["correctAnswerIndex"]) : 0;
+
+                        if (choices.Count >= 2)
+                        {
+                            questions.Add(new Question(questionText, choices.ToArray(), correctIndex));
+                        }
+                    }
+                    catch (System.Exception fallbackEx)
+                    {
+                        Debug.LogError($"❌ Fallback also failed: {fallbackEx.Message}");
+                    }
+                }
             }
+
+            Debug.Log($"✅ Successfully loaded {questions.Count} questions");
         }
         catch (System.Exception ex)
         {
-            Debug.LogError($"Failed to load questions: {ex.Message}");
+            Debug.LogError($"❌ Failed to load questions: {ex.Message}");
+            Debug.LogError($"Stack trace: {ex.StackTrace}");
         }
 
         return questions;
     }
+
 
 
     public void JoinNewClass(string classCode)

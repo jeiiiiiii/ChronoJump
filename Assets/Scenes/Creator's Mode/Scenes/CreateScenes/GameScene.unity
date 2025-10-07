@@ -3419,6 +3419,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueText: {fileID: 200109244}
   nextButton: {fileID: 1312188699}
+  backgroundImage: {fileID: 1238042642}
+  character1Image: {fileID: 801891956}
+  character2Image: {fileID: 801891956}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

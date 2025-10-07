@@ -85,15 +85,14 @@ public class StoryManager : MonoBehaviour
     {
         get
         {
+            // ✅ IMMEDIATE RETURN NULL FOR STUDENTS
+            if (FirebaseManager.Instance?.CurrentUserData?.role == "student")
+            {
+                return null;
+            }
+
             if (_instance == null)
             {
-                // ✅ DON'T AUTO-CREATE FOR STUDENTS
-                if (FirebaseManager.Instance?.CurrentUserData?.role == "student")
-                {
-                    Debug.Log("ℹ️ StoryManager: Not creating instance for student user");
-                    return null;
-                }
-
                 // Try to find existing instance in scene
                 _instance = FindFirstObjectByType<StoryManager>();
 
@@ -122,9 +121,17 @@ public class StoryManager : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(gameObject);
 
-            InitializeFirebaseIntegration();
-            // ❌ REMOVED: LoadStories() from here - wait for explicit teacher context
-            Debug.Log("✅ StoryManager initialized - waiting for explicit teacher context to load stories");
+            // ✅ CHECK IF USER IS TEACHER BEFORE INITIALIZING
+            if (FirebaseManager.Instance?.CurrentUserData?.role == "teacher")
+            {
+                InitializeFirebaseIntegration();
+                Debug.Log("✅ StoryManager initialized for teacher");
+            }
+            else
+            {
+                Debug.Log("ℹ️ StoryManager: Skipping initialization for student user");
+                // Don't initialize Firebase integration for students
+            }
         }
         else if (_instance != this)
         {
@@ -134,9 +141,17 @@ public class StoryManager : MonoBehaviour
     }
 
 
+
     private void LoadTeacherData()
     {
         if (FirebaseManager.Instance.CurrentUser == null) return;
+
+        // ✅ EXTRA SAFETY CHECK: Only load teacher data for actual teachers
+        if (FirebaseManager.Instance.CurrentUserData?.role != "teacher")
+        {
+            Debug.Log("ℹ️ LoadTeacherData: Skipping - user is not a teacher");
+            return;
+        }
 
         FirebaseManager.Instance.GetTeacherData(FirebaseManager.Instance.CurrentUser.UserId, teacher =>
         {
@@ -163,6 +178,7 @@ public class StoryManager : MonoBehaviour
     }
 
 
+
     // UPDATED: Initialize Firebase integration without CreatorModeService
     private void InitializeFirebaseIntegration()
     {
@@ -172,10 +188,19 @@ public class StoryManager : MonoBehaviour
             UseFirestore = true;
             Debug.Log("✅ StoryManager: Firestore mode enabled");
 
-            // Load teacher data if user is logged in
+            // ✅ CHECK USER ROLE BEFORE LOADING TEACHER DATA
             if (FirebaseManager.Instance.CurrentUser != null)
             {
-                LoadTeacherData();
+                // Only load teacher data if the current user is actually a teacher
+                if (FirebaseManager.Instance.CurrentUserData?.role == "teacher")
+                {
+                    LoadTeacherData();
+                }
+                else
+                {
+                    Debug.Log("ℹ️ StoryManager: Skipping teacher data load for student user");
+                    // Students don't need to load stories, so we're done here
+                }
             }
         }
         else
@@ -183,6 +208,7 @@ public class StoryManager : MonoBehaviour
             Debug.Log("ℹ️ StoryManager: Local JSON mode (Firebase not available)");
         }
     }
+
 
     private static void AutoCreate()
     {
