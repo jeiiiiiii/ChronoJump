@@ -21,6 +21,12 @@ public class RegisterManager : MonoBehaviour
     public Button errorBackButton;
     public Button registerButton; // Reference to the register button
 
+    [Header("Terms and Conditions Popup")]
+    public GameObject termsPopup;          // The popup panel object
+    public Button closeTermsButton;        // Button to close the popup
+    public Button openTermsButton;         // Button or link to open the popup
+    public ScrollRect termsScroll;         // Optional: scroll view for long text
+
     [Header("Loading Spinner")]
     public GameObject loadingSpinner; // Reference to the spinner prefab/GameObject
     public TextMeshProUGUI registerButtonText; // Reference to the button's text component
@@ -43,6 +49,16 @@ public class RegisterManager : MonoBehaviour
         {
             loadingSpinner.SetActive(false);
         }
+
+        // Initialize Terms & Conditions popup properly
+        if (termsPopup != null)
+            termsPopup.SetActive(false);
+
+        if (openTermsButton != null)
+            openTermsButton.onClick.AddListener(OpenTermsPopup);
+
+        if (closeTermsButton != null)
+            closeTermsButton.onClick.AddListener(CloseTermsPopup);
     }
 
     // Navigate to the login scene
@@ -190,6 +206,27 @@ public class RegisterManager : MonoBehaviour
         errorMessagePanel.SetActive(false);
         feedbackText.text = string.Empty;
     }
+
+    public void OpenTermsPopup()
+    {
+        if (termsPopup != null)
+        {
+            termsPopup.SetActive(true);
+
+            if (termsScroll != null)
+                termsScroll.verticalNormalizedPosition = 1f;
+        }
+    }
+
+    public void CloseTermsPopup()
+    {
+        if (termsPopup != null)
+            termsPopup.SetActive(false);
+
+        if (termsToggle != null)
+            termsToggle.isOn = true;
+    }
+
 
     #region Loading State Management
 
