@@ -37,9 +37,6 @@ public class StoryManager : MonoBehaviour
     public List<StoryData> stories => allStories;
     public int currentStoryIndex = -1;
 
-    // ✅ ADD THIS EVENT at the top of StoryManager class
-    public System.Action OnStoriesLoaded;
-
     // Firebase integration
     public bool UseFirestore { get; private set; } = false;
 
@@ -785,6 +782,12 @@ public class StoryManager : MonoBehaviour
 
     private bool _isLoading = false;
 
+    // Add these events at the top of StoryManager class
+    public System.Action OnStoriesLoadingStarted;
+    public System.Action<List<StoryData>> OnStoriesLoaded; // WITH parameters
+    public System.Action<string> OnStoriesLoadFailed;
+
+    // Update the LoadStories method:
     public async void LoadStories()
     {
         // Prevent double loading
@@ -795,6 +798,7 @@ public class StoryManager : MonoBehaviour
         }
 
         _isLoading = true;
+        OnStoriesLoadingStarted?.Invoke();
 
         try
         {
@@ -806,22 +810,31 @@ public class StoryManager : MonoBehaviour
                 {
                     Debug.Log("✅ Stories loaded from Firestore");
                     LoadPublishedStories();
-                    OnStoriesLoaded?.Invoke();
+                    OnStoriesLoaded?.Invoke(allStories); // PASS the stories list
                     _isLoading = false;
                     return;
+                }
+                else
+                {
+                    OnStoriesLoadFailed?.Invoke("Failed to load from Firestore");
                 }
             }
 
             // Fallback to local loading
             LoadStoriesLocal();
             LoadPublishedStories();
-            OnStoriesLoaded?.Invoke();
+            OnStoriesLoaded?.Invoke(allStories); // PASS the stories list
+        }
+        catch (System.Exception ex)
+        {
+            OnStoriesLoadFailed?.Invoke($"Load failed: {ex.Message}");
         }
         finally
         {
             _isLoading = false;
         }
     }
+
 
     private async Task<bool> LoadStoriesFromFirestoreAsync()
     {

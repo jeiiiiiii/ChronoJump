@@ -31,10 +31,37 @@ public class TeacherDashboardManager : MonoBehaviour
     [Header("Confirmation Dialog")]
     public ConfirmationDialog confirmationDialog;
 
+    [Header("Loading State")]
+    private bool _isInitialLoading = true;
+
+    private void ShowInitialLoadingState(bool show)
+{
+    if (dashboardView != null)
+    {
+        dashboardView.SetLoadingState(show);
+    }
+    
+    Debug.Log($"🔄 Dashboard loading: {(show ? "SHOWING" : "HIDING")}");
+}
+
+    private void ShowPartialLoadingState(bool classListLoading, bool teacherInfoLoading)
+    {
+        if (dashboardView != null)
+        {
+            dashboardView.SetPartialLoadingState(classListLoading, teacherInfoLoading);
+        }
+    }
+
+
+    // Update the Awake method:
     private void Awake()
     {
         EnsureSceneNavigationManager();
         InitializeState();
+
+        // Show loading spinner immediately
+        ShowInitialLoadingState(true);
+
         LoadTeacherData();
 
         if (studentProgressView != null)
@@ -48,6 +75,82 @@ public class TeacherDashboardManager : MonoBehaviour
             classManager.OnClassEdited += HandleClassEdited;
         }
     }
+
+
+// Update the OnTeacherDataLoaded method:
+private void OnTeacherDataLoaded(TeacherModel teacherData)
+{
+    if (this == null || !gameObject.activeInHierarchy)
+    {
+        Debug.Log("TeacherDashboardManager was destroyed before teacher data loaded");
+        ShowInitialLoadingState(false);
+        return;
+    }
+
+    if (teacherData == null)
+    {
+        Debug.LogError("No teacher data found.");
+        ShowInitialLoadingState(false);
+        return;
+    }
+
+    _dashboardState.teacherData = teacherData;
+
+    if (ClassDataSync.Instance != null && teacherData.classCode != null)
+    {
+        var cachedData = new Dictionary<string, List<string>>(teacherData.classCode);
+        ClassDataSync.Instance.UpdateCachedData(cachedData);
+    }
+
+    UpdateDashboardView();
+
+    if (_dashboardState.HasClasses)
+    {
+        SetupClassList();
+
+        if (!string.IsNullOrEmpty(_previousSelectedClassCode) &&
+            _dashboardState.teacherData.classCode.ContainsKey(_previousSelectedClassCode))
+        {
+            RestoreClassSelection(_previousSelectedClassCode);
+        }
+        else
+        {
+            SelectFirstClass();
+        }
+    }
+    
+    // Hide loading after data is processed
+    StartCoroutine(HideLoadingAfterDelay());
+}
+
+// Add this coroutine:
+private IEnumerator HideLoadingAfterDelay()
+{
+    yield return new WaitForSeconds(0.3f);
+    ShowInitialLoadingState(false);
+    _isInitialLoading = false;
+    Debug.Log("✅ Dashboard loading complete");
+}
+
+    // Update the UpdateDashboardView method:
+    private void UpdateDashboardView()
+    {
+        string teacherName = $"{_dashboardState.teacherData.title} {_dashboardState.teacherData.teachLastName}";
+        dashboardView.UpdateTeacherInfo(teacherName, null);
+
+        if (_dashboardState.HasClasses)
+        {
+            dashboardView.ShowLandingPage();
+            StartCoroutine(ShowDashboardAfterRender());
+        }
+        else
+        {
+            dashboardView.ShowEmptyLandingPage();
+            ShowInitialLoadingState(false);
+            _isInitialLoading = false;
+        }
+    }
+
 
     private void HandleClassDeleted()
     {
@@ -127,66 +230,6 @@ public class TeacherDashboardManager : MonoBehaviour
 
             FirebaseManager.Instance.GetTeacherData(userData.userId, OnTeacherDataLoaded);
         });
-    }
-
-    private void OnTeacherDataLoaded(TeacherModel teacherData)
-    {
-        // Check if this manager still exists
-        if (this == null || !gameObject.activeInHierarchy)
-        {
-            Debug.Log("TeacherDashboardManager was destroyed before teacher data loaded");
-            return;
-        }
-
-        // Ensure ClassDataSync exists
-        if (teacherData == null)
-        {
-            Debug.LogError("No teacher data found.");
-            return;
-        }
-
-        _dashboardState.teacherData = teacherData;
-
-        // NEW: Update ClassDataSync with the loaded class data
-        if (ClassDataSync.Instance != null && teacherData.classCode != null)
-        {
-            // Update the cached data in ClassDataSync but don't trigger events to avoid loops
-            var cachedData = new Dictionary<string, List<string>>(teacherData.classCode);
-            ClassDataSync.Instance.UpdateCachedData(cachedData);
-        }
-
-        UpdateDashboardView();
-
-        if (_dashboardState.HasClasses)
-        {
-            SetupClassList();
-
-            if (!string.IsNullOrEmpty(_previousSelectedClassCode) &&
-                _dashboardState.teacherData.classCode.ContainsKey(_previousSelectedClassCode))
-            {
-                RestoreClassSelection(_previousSelectedClassCode);
-            }
-            else
-            {
-                SelectFirstClass();
-            }
-        }
-    }
-
-    private void UpdateDashboardView()
-    {
-        string teacherName = $"{_dashboardState.teacherData.title} {_dashboardState.teacherData.teachLastName}";
-        dashboardView.UpdateTeacherInfo(teacherName, null);
-
-        if (_dashboardState.HasClasses)
-        {
-            dashboardView.ShowLandingPage();
-            StartCoroutine(ShowDashboardAfterRender());
-        }
-        else
-        {
-            dashboardView.ShowEmptyLandingPage();
-        }
     }
 
     private void SetupClassList()
@@ -396,8 +439,13 @@ public class TeacherDashboardManager : MonoBehaviour
     private IEnumerator ShowDashboardAfterRender()
     {
         yield return new WaitForEndOfFrame();
+
+        // ✅ Just make it interactive, don't change visibility
         dashboardView.SetDashboardInteractable(true);
+
+        Debug.Log("✅ Dashboard now fully interactive");
     }
+
 
     public void OnCreateNewClassClicked()
     {

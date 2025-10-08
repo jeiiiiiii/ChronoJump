@@ -244,7 +244,7 @@ public class QuizTimeManager : MonoBehaviour
         resultText.text = result;
         timerText.gameObject.SetActive(false);
 
-        // Save quiz attempt to Firebase
+        // Save quiz attempt to Firebase (will be skipped for teachers)
         await SaveQuizAttempt();
 
         nextButton.onClick.RemoveAllListeners();
@@ -263,8 +263,16 @@ public class QuizTimeManager : MonoBehaviour
         });
     }
 
+
     private async Task SaveQuizAttempt()
     {
+        // ✅ Skip saving if teacher is logged in
+        if (IsTeacher())
+        {
+            Debug.Log("👨‍🏫 Teacher mode - Skipping quiz attempt save to Firebase");
+            return;
+        }
+
         try
         {
             if (FirebaseManager.Instance?.DB == null)
@@ -313,8 +321,22 @@ public class QuizTimeManager : MonoBehaviour
         }
     }
 
+    // Helper method to determine if the current user is a teacher
+    private bool IsTeacher()
+    {
+        // Check the user role saved during login
+        string userRole = PlayerPrefs.GetString("UserRole", "student");
+        return userRole.ToLower() == "teacher";
+    }
+
     private async Task<int> GetNextAttemptNumber()
     {
+        // ✅ Skip if teacher
+        if (IsTeacher())
+        {
+            return 0; // Return 0 or any placeholder for teacher
+        }
+
         try
         {
             var firestore = FirebaseManager.Instance.DB;
@@ -346,11 +368,5 @@ public class QuizTimeManager : MonoBehaviour
         }
     }
 
-    // Helper method to determine if the current user is a teacher
-    private bool IsTeacher()
-    {
-        // Check the user role saved during login
-        string userRole = PlayerPrefs.GetString("UserRole", "student");
-        return userRole.ToLower() == "teacher";
-    }
 }
+

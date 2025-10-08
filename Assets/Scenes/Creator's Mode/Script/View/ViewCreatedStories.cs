@@ -1,79 +1,161 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections;
+using System.Collections.Generic;
 
 public class ViewCreatedStoriesScene : MonoBehaviour
 {
     [System.Serializable]
     public class StorySlot
     {
-        public RawImage backgroundImage; // Must be RawImage for Texture2D
+        public RawImage backgroundImage;
+        public GameObject slotContainer; // The parent object for this slot
+        public GameObject loadingSpinner; // Assign your spinner prefab instance here
     }
 
     [SerializeField] private StorySlot[] storySlots = new StorySlot[6];
     [SerializeField] private GameObject storyActionPopup;
     [SerializeField] private Image currentBackgroundImage;
 
-    // Button images for each story slot (buttonStory1.png to buttonStory6.png)
     [SerializeField] private Texture2D[] storyButtonImages = new Texture2D[6];
-
-    // Default background (div (22).png)
     [SerializeField] private Texture2D defaultButtonBackground;
+
+    [SerializeField] private GameObject loadingSpinnerPrefab; // Assign your prefab in Inspector
+
+    private bool _storiesLoaded = false;
 
     void Start()
     {
-        // ✅ ADD THIS: Debug to see current state
-        DebugTeacherContext();
+        // Initialize loading spinners for each slot
+        InitializeSlotSpinners();
 
         if (storyActionPopup != null)
         {
             storyActionPopup.SetActive(false);
         }
 
-        // Wait for stories to load, then update backgrounds
-        StartCoroutine(WaitForStoriesAndUpdate());
+        // Subscribe to StoryManager events
+        if (StoryManager.Instance != null)
+        {
+            StoryManager.Instance.OnStoriesLoadingStarted += OnStoriesLoadingStarted;
+            StoryManager.Instance.OnStoriesLoaded += OnStoriesLoaded;
+            StoryManager.Instance.OnStoriesLoadFailed += OnStoriesLoadFailed;
+        }
+
+        // Start the loading process
+        StartCoroutine(InitializeStories());
+    }
+
+    private void InitializeSlotSpinners()
+    {
+        for (int i = 0; i < storySlots.Length; i++)
+        {
+            var slot = storySlots[i];
+            
+            // Create spinner instance if slot container exists
+            if (slot.slotContainer != null && loadingSpinnerPrefab != null)
+            {
+                // Instantiate spinner as child of the slot container
+                GameObject spinnerInstance = Instantiate(loadingSpinnerPrefab, slot.slotContainer.transform);
+                slot.loadingSpinner = spinnerInstance;
+                
+                // Position it in the center of the slot
+                RectTransform spinnerRect = spinnerInstance.GetComponent<RectTransform>();
+                if (spinnerRect != null)
+                {
+                    spinnerRect.anchorMin = new Vector2(0.5f, 0.5f);
+                    spinnerRect.anchorMax = new Vector2(0.5f, 0.5f);
+                    spinnerRect.pivot = new Vector2(0.5f, 0.5f);
+                    spinnerRect.anchoredPosition = Vector2.zero;
+                }
+                
+                // Hide initially
+                spinnerInstance.SetActive(false);
+                
+                Debug.Log($"✅ Created loading spinner for slot {i}");
+            }
+            else
+            {
+                Debug.LogWarning($"⚠️ Could not create spinner for slot {i} - missing slotContainer or prefab");
+            }
+        }
+    }
+
+    private IEnumerator InitializeStories()
+    {
+        // Wait for StoryManager to be ready
+        yield return new WaitUntil(() => StoryManager.Instance != null);
+
+        // If stories are already loaded, update UI immediately
+        if (StoryManager.Instance.allStories != null && StoryManager.Instance.allStories.Count > 0)
+        {
+            Debug.Log("📚 Stories already loaded, updating UI immediately");
+            UpdateAllStoryBackgrounds();
+            SetLoadingState(false);
+            _storiesLoaded = true;
+        }
+        else
+        {
+            Debug.Log("🔄 Stories not loaded yet, showing loading spinners...");
+            SetLoadingState(true);
+        }
+    }
+
+    private void OnStoriesLoadingStarted()
+{
+    Debug.Log("🔄 Stories loading started...");
+    SetLoadingState(true);
+}
+
+private void OnStoriesLoaded(List<StoryData> stories) // RECEIVE the stories list
+{
+    Debug.Log($"✅ Stories loaded event received: {stories?.Count} stories");
+    
+    // You can now validate the data before updating UI
+    if (stories != null && stories.Count > 0)
+    {
+        Debug.Log("📚 Valid stories data received");
+    }
+    else
+    {
+        Debug.LogWarning("⚠️ Stories list is empty or null");
+    }
+    
+    UpdateAllStoryBackgrounds();
+    SetLoadingState(false);
+    _storiesLoaded = true;
+}
+
+    private void OnStoriesLoadFailed(string error)
+    {
+        Debug.LogError($"❌ Stories load failed: {error}");
+        UpdateAllStoryBackgrounds();
+        SetLoadingState(false);
+        _storiesLoaded = true;
     }
 
 
-    private System.Collections.IEnumerator WaitForStoriesAndUpdate()
+    private void SetLoadingState(bool isLoading)
     {
-        // Wait a frame for StoryManager to initialize
-        yield return null;
-
-        // Wait for Firestore to load (max 10 seconds)
-        float timeout = 10f;
-        float elapsed = 0f;
-
-        while (StoryManager.Instance == null || StoryManager.Instance.allStories == null)
+        // Show/hide individual slot loading spinners
+        for (int i = 0; i < storySlots.Length; i++)
         {
-            yield return new WaitForSeconds(0.1f);
-            elapsed += 0.1f;
-            if (elapsed > timeout)
+            var slot = storySlots[i];
+            
+            if (slot.loadingSpinner != null)
             {
-                Debug.LogError("⏰ Timeout waiting for StoryManager to initialize");
-                yield break;
+                slot.loadingSpinner.SetActive(isLoading);
+            }
+            
+            // Show/hide background image based on loading state
+            if (slot.backgroundImage != null)
+            {
+                slot.backgroundImage.gameObject.SetActive(!isLoading);
             }
         }
 
-        // Wait for stories to actually be loaded
-        yield return new WaitForSeconds(1f);
-
-        Debug.Log($"[ViewCreatedStories] Updating backgrounds - Total stories: {StoryManager.Instance.allStories.Count}");
-
-        // Debug what we actually loaded
-        DebugFirestoreStories();
-
-        UpdateAllStoryBackgrounds();
-    }
-
-
-    void OnDestroy()
-    {
-        // Unsubscribe from events if you add the event-based approach
-        if (StoryManager.Instance != null)
-        {
-            // StoryManager.Instance.OnStoriesLoaded -= UpdateAllStoryBackgrounds;
-        }
+        Debug.Log($"🔄 Loading state: {(isLoading ? "SHOWING spinners" : "HIDING spinners")}");
     }
 
     void UpdateAllStoryBackgrounds()
@@ -85,101 +167,102 @@ public class ViewCreatedStoriesScene : MonoBehaviour
     }
 
     void UpdateStorySlot(int index)
-{
-    if (index < 0 || index >= storySlots.Length) return;
-
-    var slot = storySlots[index];
-    Texture2D backgroundToUse = null;
-
-    bool hasValidSavedStory = false;
-    StoryData story = null;
-
-    if (StoryManager.Instance != null && 
-        StoryManager.Instance.allStories != null && 
-        index < StoryManager.Instance.allStories.Count)
     {
-        story = StoryManager.Instance.allStories[index];
-        hasValidSavedStory = story != null && !string.IsNullOrEmpty(story.createdAt);
-    }
+        if (index < 0 || index >= storySlots.Length) return;
 
-    Debug.Log($"[Slot {index}] HasValidStory: {hasValidSavedStory}, Story: {story != null}");
+        var slot = storySlots[index];
+        Texture2D backgroundToUse = null;
 
-    if (hasValidSavedStory && story != null)
-    {
-        // ✅ UPDATED: Use ImageStorage.ImageExists and ImageStorage.LoadImage with relative paths
-        if (!string.IsNullOrEmpty(story.backgroundPath) && ImageStorage.ImageExists(story.backgroundPath))
+        bool hasValidSavedStory = false;
+        StoryData story = null;
+
+        if (StoryManager.Instance != null && 
+            StoryManager.Instance.allStories != null && 
+            index < StoryManager.Instance.allStories.Count)
         {
-            backgroundToUse = ImageStorage.LoadImage(story.backgroundPath);
-            Debug.Log($"[Slot {index}] Using custom background from relative path: {story.backgroundPath}");
+            story = StoryManager.Instance.allStories[index];
+            hasValidSavedStory = story != null && !string.IsNullOrEmpty(story.createdAt);
         }
-        // Priority 2: Indexed button
-        else if (storyButtonImages != null && index < storyButtonImages.Length && storyButtonImages[index] != null)
+
+        Debug.Log($"[Slot {index}] HasValidStory: {hasValidSavedStory}, Story: {story != null}");
+
+        if (hasValidSavedStory && story != null)
         {
-            backgroundToUse = storyButtonImages[index];
-            Debug.Log($"[Slot {index}] Using indexed button: buttonStory{index + 1}");
+            if (!string.IsNullOrEmpty(story.backgroundPath) && ImageStorage.ImageExists(story.backgroundPath))
+            {
+                backgroundToUse = ImageStorage.LoadImage(story.backgroundPath);
+                Debug.Log($"[Slot {index}] Using custom background from relative path: {story.backgroundPath}");
+            }
+            else if (storyButtonImages != null && index < storyButtonImages.Length && storyButtonImages[index] != null)
+            {
+                backgroundToUse = storyButtonImages[index];
+                Debug.Log($"[Slot {index}] Using indexed button: buttonStory{index + 1}");
+            }
+            else
+            {
+                backgroundToUse = defaultButtonBackground;
+                Debug.Log($"[Slot {index}] Using default background");
+            }
         }
-        // Priority 3: Default
         else
         {
             backgroundToUse = defaultButtonBackground;
-            Debug.Log($"[Slot {index}] Using default background");
+            Debug.Log($"[Slot {index}] Empty slot - using default background");
         }
-    }
-    else
-    {
-        // No valid saved story - ALWAYS use default background
-        backgroundToUse = defaultButtonBackground;
-        Debug.Log($"[Slot {index}] Empty slot - using default background");
-    }
 
-    // Apply background
-    if (backgroundToUse != null)
-    {
-        slot.backgroundImage.texture = backgroundToUse;
-        slot.backgroundImage.gameObject.SetActive(true);
-
-        AspectRatioFitter fitter = slot.backgroundImage.GetComponent<AspectRatioFitter>();
-        if (fitter != null)
+        if (backgroundToUse != null)
         {
-            fitter.aspectRatio = (float)backgroundToUse.width / backgroundToUse.height;
+            slot.backgroundImage.texture = backgroundToUse;
+            slot.backgroundImage.gameObject.SetActive(true);
+
+            AspectRatioFitter fitter = slot.backgroundImage.GetComponent<AspectRatioFitter>();
+            if (fitter != null)
+            {
+                fitter.aspectRatio = (float)backgroundToUse.width / backgroundToUse.height;
+            }
+        }
+        else
+        {
+            slot.backgroundImage.gameObject.SetActive(false);
+            Debug.LogWarning($"[Slot {index}] No background available");
         }
     }
-    else
+
+    void OnDestroy()
     {
-        slot.backgroundImage.gameObject.SetActive(false);
-        Debug.LogWarning($"[Slot {index}] No background available");
+        // Unsubscribe from events
+        if (StoryManager.Instance != null)
+        {
+            StoryManager.Instance.OnStoriesLoadingStarted -= OnStoriesLoadingStarted;
+            StoryManager.Instance.OnStoriesLoaded -= OnStoriesLoaded;
+            StoryManager.Instance.OnStoriesLoadFailed -= OnStoriesLoadFailed;
+        }
     }
-}
 
-// Also update the HasCustomBackground method:
-public bool HasCustomBackground(int storyIndex)
-{
-    if (storyIndex >= 0 && storyIndex < StoryManager.Instance.allStories.Count)
+    // Add manual refresh capability
+    void Update()
     {
-        var story = StoryManager.Instance.allStories[storyIndex];
-        return story != null && !string.IsNullOrEmpty(story.backgroundPath) && ImageStorage.ImageExists(story.backgroundPath);
+        // Auto-refresh when stories become available (backup mechanism)
+        if (!_storiesLoaded && StoryManager.Instance != null && 
+            StoryManager.Instance.allStories != null && 
+            StoryManager.Instance.allStories.Count > 0)
+        {
+            Debug.Log("🔄 Auto-refreshing stories UI (backup)");
+            UpdateAllStoryBackgrounds();
+            SetLoadingState(false);
+            _storiesLoaded = true;
+        }
     }
-    return false;
-}
 
-// Update the GetBackgroundType method:
-public string GetBackgroundType(int storyIndex)
-{
-    if (storyIndex >= 0 && storyIndex < StoryManager.Instance.allStories.Count)
+    // Manual refresh for testing
+    [ContextMenu("Manual Refresh")]
+    public void ManualRefresh()
     {
-        var story = StoryManager.Instance.allStories[storyIndex];
-        if (story == null) return "No Story (Default Background)";
-
-        if (!string.IsNullOrEmpty(story.backgroundPath) && ImageStorage.ImageExists(story.backgroundPath))
-            return $"Custom Background (Relative Path: {story.backgroundPath})";
-        else if (storyIndex < storyButtonImages.Length && storyButtonImages[storyIndex] != null)
-            return $"Indexed Button Image (buttonStory{storyIndex + 1})";
-        else
-            return "Default Background (div 22)";
+        Debug.Log("🔄 Manual refresh triggered");
+        UpdateAllStoryBackgrounds();
     }
-    return "Empty Slot (Default Background)";
-}
 
+    // Your existing methods remain the same...
     public void RefreshBackgrounds()
     {
         UpdateAllStoryBackgrounds();
@@ -188,42 +271,6 @@ public string GetBackgroundType(int storyIndex)
     void OnEnable()
     {
         UpdateAllStoryBackgrounds();
-    }
-
-    // Method to handle background deletion for a specific story
-    public void DeleteStoryBackground(int storyIndex)
-    {
-        if (storyIndex >= 0 && storyIndex < StoryManager.Instance.allStories.Count)
-        {
-            var story = StoryManager.Instance.allStories[storyIndex];
-            if (story != null)
-            {
-                // Clear the background path
-                story.backgroundPath = string.Empty;
-
-                // Save the changes
-                StoryManager.Instance.SaveStories();
-
-                // Update the visual - will revert to default background
-                UpdateStorySlot(storyIndex);
-
-                Debug.Log($"🗑️ Deleted custom background for story {storyIndex} - reverted to default");
-            }
-        }
-    }
-
-    [ContextMenu("Debug All Slot Backgrounds")]
-    public void DebugAllSlotBackgrounds()
-    {
-        Debug.Log("🔍 === BACKGROUND STATUS FOR ALL SLOTS ===");
-        Debug.Log($"StoryManager exists: {StoryManager.Instance != null}");
-        Debug.Log($"Total stories in manager: {StoryManager.Instance?.allStories?.Count ?? 0}");
-
-        for (int i = 0; i < storySlots.Length; i++)
-        {
-            Debug.Log($"Slot {i}: {GetBackgroundType(i)}");
-        }
-        Debug.Log("🔍 === END DEBUG ===");
     }
 
     public void OnEditStory(int storyIndex)

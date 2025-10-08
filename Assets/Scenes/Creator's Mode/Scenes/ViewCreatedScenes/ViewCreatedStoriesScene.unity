@@ -818,11 +818,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   storySlots:
   - backgroundImage: {fileID: 1970197}
+    slotContainer: {fileID: 1647544777}
+    loadingSpinner: {fileID: 4707768058783887125, guid: 0ee5058fe6065134d87e6ce01075b399, type: 3}
   - backgroundImage: {fileID: 1052816357}
+    slotContainer: {fileID: 1181114025}
+    loadingSpinner: {fileID: 4707768058783887125, guid: 0ee5058fe6065134d87e6ce01075b399, type: 3}
   - backgroundImage: {fileID: 1355302741}
+    slotContainer: {fileID: 1455308212}
+    loadingSpinner: {fileID: 4707768058783887125, guid: 0ee5058fe6065134d87e6ce01075b399, type: 3}
   - backgroundImage: {fileID: 1889008845}
+    slotContainer: {fileID: 972790000}
+    loadingSpinner: {fileID: 4707768058783887125, guid: 0ee5058fe6065134d87e6ce01075b399, type: 3}
   - backgroundImage: {fileID: 55026925}
+    slotContainer: {fileID: 696368642}
+    loadingSpinner: {fileID: 4707768058783887125, guid: 0ee5058fe6065134d87e6ce01075b399, type: 3}
   - backgroundImage: {fileID: 1994588322}
+    slotContainer: {fileID: 251918699}
+    loadingSpinner: {fileID: 4707768058783887125, guid: 0ee5058fe6065134d87e6ce01075b399, type: 3}
   storyActionPopup: {fileID: 131443787}
   currentBackgroundImage: {fileID: 0}
   storyButtonImages:
@@ -833,6 +845,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 86a7784578b4072408d43097cb0de775, type: 3}
   - {fileID: 2800000, guid: 75fc0e405a5fc414c9f3fe2a49249b9e, type: 3}
   defaultButtonBackground: {fileID: 2800000, guid: 52810c2dbe24ea240860fab4e9300610, type: 3}
+  loadingSpinnerPrefab: {fileID: 4707768058783887125, guid: 0ee5058fe6065134d87e6ce01075b399, type: 3}
 --- !u!1 &400035749
 GameObject:
   m_ObjectHideFlags: 0

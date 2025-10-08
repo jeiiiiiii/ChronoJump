@@ -11,6 +11,14 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
     public GameObject leaderboardPage;
     public GameObject createNewClassPanel;
 
+    [Header("Loading Prefabs")]
+    public GameObject classListLoadingSpinnerPrefab;
+    public GameObject teacherInfoLoadingSpinnerPrefab;
+
+    [Header("Loading Parent Transforms")]
+    public Transform classListLoadingParent;
+    public Transform teacherInfoLoadingParent;
+
     [Header("Dashboard Visibility")]
     public CanvasGroup landingPageCanvasGroup;
 
@@ -35,7 +43,7 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
 
     [Header("Student Progress Controls")]
     public GameObject viewAllProgressButton;
-    public GameObject deleteStudentButton; // NEW: Delete student button
+    public GameObject deleteStudentButton;
 
     [Header("Leaderboard Controls")]
     public GameObject viewAllLeaderboardButton;
@@ -44,24 +52,158 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
     public GameObject newClassButton;
     public GameObject publishedStoriesButton;
 
+    // Runtime spinner instances
+    private GameObject _classListSpinnerInstance;
+    private GameObject _teacherInfoSpinnerInstance;
+
+    private void Start()
+    {
+        CreateLoadingSpinners();
+        SetLoadingState(true);
+    }
+
+    private void CreateLoadingSpinners()
+    {
+        // Create class list spinner
+        if (classListLoadingSpinnerPrefab != null && classListLoadingParent != null)
+        {
+            _classListSpinnerInstance = Instantiate(classListLoadingSpinnerPrefab, classListLoadingParent);
+            _classListSpinnerInstance.name = "ClassListLoadingSpinner";
+            
+            RectTransform rect = _classListSpinnerInstance.GetComponent<RectTransform>();
+            if (rect != null)
+            {
+                rect.anchorMin = new Vector2(0.5f, 0.5f);
+                rect.anchorMax = new Vector2(0.5f, 0.5f);
+                rect.pivot = new Vector2(0.5f, 0.5f);
+                rect.anchoredPosition = Vector2.zero;
+            }
+            
+            _classListSpinnerInstance.SetActive(false);
+        }
+
+        // Create teacher info spinner
+        if (teacherInfoLoadingSpinnerPrefab != null && teacherInfoLoadingParent != null)
+        {
+            _teacherInfoSpinnerInstance = Instantiate(teacherInfoLoadingSpinnerPrefab, teacherInfoLoadingParent);
+            _teacherInfoSpinnerInstance.name = "TeacherInfoLoadingSpinner";
+            
+            RectTransform rect = _teacherInfoSpinnerInstance.GetComponent<RectTransform>();
+            if (rect != null)
+            {
+                rect.anchorMin = new Vector2(0.5f, 0.5f);
+                rect.anchorMax = new Vector2(0.5f, 0.5f);
+                rect.pivot = new Vector2(0.5f, 0.5f);
+                rect.anchoredPosition = Vector2.zero;
+            }
+            
+            _teacherInfoSpinnerInstance.SetActive(false);
+        }
+
+        Debug.Log("✅ Loading spinners created from prefabs");
+    }
+
+    public void SetLoadingState(bool isLoading)
+    {
+        if (_classListSpinnerInstance != null)
+        {
+            _classListSpinnerInstance.SetActive(isLoading);
+        }
+
+        if (_teacherInfoSpinnerInstance != null)
+        {
+            _teacherInfoSpinnerInstance.SetActive(isLoading);
+        }
+
+        SetDashboardInteractable(!isLoading);
+        Debug.Log($"🔄 TeacherDashboardView Loading: {(isLoading ? "SHOWING" : "HIDING")}");
+    }
+
+    public void SetPartialLoadingState(bool classListLoading, bool teacherInfoLoading)
+    {
+        if (_classListSpinnerInstance != null)
+        {
+            _classListSpinnerInstance.SetActive(classListLoading);
+        }
+
+        if (_teacherInfoSpinnerInstance != null)
+        {
+            _teacherInfoSpinnerInstance.SetActive(teacherInfoLoading);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (_classListSpinnerInstance != null)
+        {
+            Destroy(_classListSpinnerInstance);
+        }
+        if (_teacherInfoSpinnerInstance != null)
+        {
+            Destroy(_teacherInfoSpinnerInstance);
+        }
+    }
+
     public void ShowLandingPage()
     {
         SetActivePanel(landingPage);
-        landingPageCanvasGroup.alpha = 0f;
-        landingPageCanvasGroup.interactable = false;
+
+        // ✅ Show the page immediately, just disable interaction during loading
+        landingPageCanvasGroup.alpha = 1f;           // MAKE VISIBLE
+        landingPageCanvasGroup.interactable = false; // But not interactive yet
         landingPageCanvasGroup.blocksRaycasts = false;
+
+        Debug.Log("✅ Landing page shown (visible but non-interactive)");
     }
+
 
     public void ShowEmptyLandingPage()
     {
         SetActivePanel(emptyLandingPage);
+
+        // ✅ Also make empty page visible immediately
+        var emptyCanvasGroup = emptyLandingPage.GetComponent<CanvasGroup>();
+        if (emptyCanvasGroup != null)
+        {
+            emptyCanvasGroup.alpha = 1f;
+            emptyCanvasGroup.interactable = false;
+            emptyCanvasGroup.blocksRaycasts = false;
+        }
     }
+
+
+    // Update the SetDashboardInteractable method:
+    public void SetDashboardInteractable(bool interactable)
+    {
+        if (landingPageCanvasGroup != null)
+        {
+            // ✅ Keep alpha at 1f, only change interactivity
+            landingPageCanvasGroup.alpha = 1f;  // ALWAYS VISIBLE
+            landingPageCanvasGroup.interactable = interactable;
+            landingPageCanvasGroup.blocksRaycasts = interactable;
+        }
+
+        // ✅ Also handle empty landing page
+        if (emptyLandingPage != null)
+        {
+            var emptyCanvasGroup = emptyLandingPage.GetComponent<CanvasGroup>();
+            if (emptyCanvasGroup != null)
+            {
+                emptyCanvasGroup.alpha = 1f;
+                emptyCanvasGroup.interactable = interactable;
+                emptyCanvasGroup.blocksRaycasts = interactable;
+            }
+        }
+
+        Debug.Log($"🔄 Dashboard interactable: {interactable}");
+    }
+
 
     public void ShowStudentProgressPage()
     {
         SetActivePanel(studentProgressPage);
         SetViewAllProgressButtonVisible(false);
-        SetDeleteStudentButtonVisible(false); // NEW: Hide delete button in full view
+        SetDeleteStudentButtonVisible(false);
     }
 
     public void ShowLeaderboardPage()
@@ -80,7 +222,6 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
         if (teacherNameText != null)
             teacherNameText.text = teacherName;
 
-        // Set profile icon based on title if no specific icon is provided
         if (teacherProfileIcon != null)
         {
             if (profileIcon != null)
@@ -89,9 +230,14 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
             }
             else
             {
-                // Extract title from teacherName and set appropriate icon
                 teacherProfileIcon.sprite = GetIconForTitle(teacherName);
             }
+        }
+
+        // Hide teacher info loading when data is populated
+        if (_teacherInfoSpinnerInstance != null)
+        {
+            _teacherInfoSpinnerInstance.SetActive(false);
         }
     }
 
@@ -100,7 +246,6 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
         if (string.IsNullOrEmpty(teacherName))
             return null;
 
-        // Extract the title (first word) from the teacher name
         string title = teacherName.Split(' ')[0].ToLower();
 
         switch (title)
@@ -118,8 +263,7 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
             case "dr.":
                 return drIcon;
             default:
-                // Return a default icon or null if no match
-                return mrIcon; // or return null;
+                return mrIcon;
         }
     }
 
@@ -133,15 +277,11 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
         
         if (clipboardButton != null)
             clipboardButton.SetClassCode(classCode);
-    }
 
-    public void SetDashboardInteractable(bool interactable)
-    {
-        if (landingPageCanvasGroup != null)
+        // Hide class list loading when class is selected
+        if (_classListSpinnerInstance != null)
         {
-            landingPageCanvasGroup.alpha = interactable ? 1f : 0f;
-            landingPageCanvasGroup.interactable = interactable;
-            landingPageCanvasGroup.blocksRaycasts = interactable;
+            _classListSpinnerInstance.SetActive(false);
         }
     }
 
@@ -169,7 +309,6 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
             viewAllLeaderboardButton.SetActive(visible);
     }
 
-    // NEW: Method to control delete student button visibility
     public void SetDeleteStudentButtonVisible(bool visible)
     {
         if (deleteStudentButton != null)
@@ -184,14 +323,12 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
         leaderboardPage.SetActive(activePanel == leaderboardPage);
         createNewClassPanel.SetActive(false);
 
-        // Control newClassButton visibility (if it should still be conditional)
         if (newClassButton != null)
         {
             bool shouldShowNewClass = (activePanel == landingPage || activePanel == emptyLandingPage);
             newClassButton.SetActive(shouldShowNewClass);
         }
 
-        // Handle view-all buttons
         if (activePanel == landingPage)
         {
             SetViewAllProgressButtonVisible(true);
