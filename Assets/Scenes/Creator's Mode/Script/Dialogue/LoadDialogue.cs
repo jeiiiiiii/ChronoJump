@@ -9,6 +9,7 @@ public class DialoguePlayer : MonoBehaviour
 {
     public TextMeshProUGUI dialogueText;
     public Button nextButton;
+    public Button backButton;
     public RawImage backgroundImage;
     public RawImage character1Image;
     public RawImage character2Image;
@@ -41,6 +42,7 @@ public class DialoguePlayer : MonoBehaviour
         }
 
         nextButton.onClick.AddListener(NextDialogue);
+        backButton.onClick.AddListener(PreviousDialogue); 
 
         // Load background and character images
         LoadStoryAssets();
@@ -357,11 +359,20 @@ public class DialoguePlayer : MonoBehaviour
         }
         else
         {
-            dialogueText.text = "End of Dialogue!";
+            dialogueText.text = "Tapos na ang iyong paglalakbay! Maghanda para sa pagsusulit.";
             nextButton.onClick.RemoveAllListeners();
             nextButton.onClick.AddListener(QuizTime);
 
             Debug.Log("🏁 All dialogues completed, ready for quiz");
+        }
+    }
+
+    public void PreviousDialogue()
+    {
+        if (currentIndex > 0)
+        {
+            currentIndex--;
+            ShowDialogue(currentIndex);
         }
     }
 
