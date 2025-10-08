@@ -9,7 +9,6 @@ public class AddTitle : MonoBehaviour
 
     void Start()
     {
-
         // Add character limit validation
         if (titleInputField != null)
         {
@@ -80,20 +79,39 @@ public class AddTitle : MonoBehaviour
             return;
         }
 
-        // Validate title
+        // ✅ CHANGED: Title is now required - validate it's not empty
+        if (string.IsNullOrEmpty(titleInputField.text) || string.IsNullOrWhiteSpace(titleInputField.text))
+        {
+            ValidationManager.Instance.ShowWarning(
+                "Title Required",
+                "Please enter a story title before proceeding!",
+                null,
+                () => { 
+                    // Focus on title field
+                    if (titleInputField != null)
+                        titleInputField.Select();
+                }
+            );
+            return;
+        }
+
+        // Validate title length
         var titleValidation = ValidationManager.Instance.ValidateTitle(titleInputField.text);
         if (!titleValidation.isValid)
         {
             ValidationManager.Instance.ShowWarning(
                 "Title Validation",
                 titleValidation.message,
-                null, // No confirm action, just close
-                () => { /* Focus on title field */ }
+                null,
+                () => { 
+                    if (titleInputField != null)
+                        titleInputField.Select();
+                }
             );
             return;
         }
 
-        // Validate description
+        // Validate description (still optional)
         var descValidation = ValidationManager.Instance.ValidateDescription(descriptionInputField.text);
         if (!descValidation.isValid)
         {
@@ -101,7 +119,10 @@ public class AddTitle : MonoBehaviour
                 "Description Validation",
                 descValidation.message,
                 null,
-                () => { /* Focus on description field */ }
+                () => { 
+                    if (descriptionInputField != null)
+                        descriptionInputField.Select();
+                }
             );
             return;
         }
@@ -136,7 +157,6 @@ public class AddTitle : MonoBehaviour
         // Move to the next scene
         SceneManager.LoadScene("CreateNewAddCharacterScene");
     }
-
 
     public void MainMenu()
     {

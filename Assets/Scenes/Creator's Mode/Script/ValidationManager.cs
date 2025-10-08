@@ -15,11 +15,11 @@ public class ValidationManager : MonoBehaviour
     [Header("Validation Settings")]
     public int maxTitleLength = 100;
     public int maxDescriptionLength = 120;
-    public int maxCharacterNameLength = 32; 
-    public int maxDialogueLength = 88;     
+    public int maxCharacterNameLength = 32;
+    public int maxDialogueLength = 88;
     public int maxQuestionLength = 110;
     public int maxChoiceLength = 40;
-    
+
     // NEW: Combined limit for name + dialogue
     public int maxNameDialogueCombinedLength = 118;
 
@@ -98,9 +98,14 @@ public class ValidationManager : MonoBehaviour
     // Validation Methods
     public ValidationResult ValidateTitle(string title)
     {
-        if (string.IsNullOrEmpty(title))
+        // ✅ CHANGED: Title is now required
+        if (string.IsNullOrEmpty(title) || string.IsNullOrWhiteSpace(title))
         {
-            return new ValidationResult { isValid = true, message = "Title is optional" };
+            return new ValidationResult
+            {
+                isValid = false,
+                message = "Story title is required! Please enter a title."
+            };
         }
 
         if (title.Length > maxTitleLength)
@@ -114,6 +119,7 @@ public class ValidationManager : MonoBehaviour
 
         return new ValidationResult { isValid = true };
     }
+
 
     public ValidationResult ValidateDescription(string description)
     {
@@ -198,70 +204,70 @@ public class ValidationManager : MonoBehaviour
 
     // Add or update these methods in your ValidationManager.cs
 
-public ValidationResult ValidateQuestion(string question)
-{
-    if (string.IsNullOrEmpty(question) || string.IsNullOrWhiteSpace(question))
+    public ValidationResult ValidateQuestion(string question)
     {
-        return new ValidationResult { isValid = false, message = "Question text is required! Please enter a question." };
-    }
-
-    if (question.Length > maxQuestionLength)
-    {
-        return new ValidationResult
+        if (string.IsNullOrEmpty(question) || string.IsNullOrWhiteSpace(question))
         {
-            isValid = false,
-            message = $"Question is too long! ({question.Length}/{maxQuestionLength} characters)"
-        };
-    }
-
-    return new ValidationResult { isValid = true };
-}
-
-public ValidationResult ValidateChoices(string[] choices)
-{
-    if (choices == null || choices.Length != 4)
-    {
-        return new ValidationResult { isValid = false, message = "All 4 choices are required!" };
-    }
-
-    for (int i = 0; i < choices.Length; i++)
-    {
-        string choice = choices[i];
-        
-        // Check if empty or whitespace
-        if (string.IsNullOrEmpty(choice) || string.IsNullOrWhiteSpace(choice))
-        {
-            return new ValidationResult { isValid = false, message = $"Choice {i + 1} cannot be empty! Please fill in all choices." };
+            return new ValidationResult { isValid = false, message = "Question text is required! Please enter a question." };
         }
 
-        if (choice.Length > maxChoiceLength)
+        if (question.Length > maxQuestionLength)
         {
             return new ValidationResult
             {
                 isValid = false,
-                message = $"Choice {i + 1} is too long! ({choice.Length}/{maxChoiceLength} characters)"
+                message = $"Question is too long! ({question.Length}/{maxQuestionLength} characters)"
             };
         }
+
+        return new ValidationResult { isValid = true };
     }
 
-    // Check for duplicate choices
-    for (int i = 0; i < choices.Length; i++)
+    public ValidationResult ValidateChoices(string[] choices)
     {
-        for (int j = i + 1; j < choices.Length; j++)
+        if (choices == null || choices.Length != 4)
         {
-            if (choices[i].Trim().Equals(choices[j].Trim(), System.StringComparison.OrdinalIgnoreCase))
+            return new ValidationResult { isValid = false, message = "All 4 choices are required!" };
+        }
+
+        for (int i = 0; i < choices.Length; i++)
+        {
+            string choice = choices[i];
+
+            // Check if empty or whitespace
+            if (string.IsNullOrEmpty(choice) || string.IsNullOrWhiteSpace(choice))
             {
-                return new ValidationResult 
-                { 
-                    isValid = false, 
-                    message = $"Duplicate choices detected! Choice {i + 1} and Choice {j + 1} are the same." 
+                return new ValidationResult { isValid = false, message = $"Choice {i + 1} cannot be empty! Please fill in all choices." };
+            }
+
+            if (choice.Length > maxChoiceLength)
+            {
+                return new ValidationResult
+                {
+                    isValid = false,
+                    message = $"Choice {i + 1} is too long! ({choice.Length}/{maxChoiceLength} characters)"
                 };
             }
         }
-    }
 
-    return new ValidationResult { isValid = true };
-}
+        // Check for duplicate choices
+        for (int i = 0; i < choices.Length; i++)
+        {
+            for (int j = i + 1; j < choices.Length; j++)
+            {
+                if (choices[i].Trim().Equals(choices[j].Trim(), System.StringComparison.OrdinalIgnoreCase))
+                {
+                    return new ValidationResult
+                    {
+                        isValid = false,
+                        message = $"Duplicate choices detected! Choice {i + 1} and Choice {j + 1} are the same."
+                    };
+                }
+            }
+        }
+
+        return new ValidationResult { isValid = true };
+    }
 
     // Optional: Add validation for minimum questions
     public ValidationResult ValidateMinimumQuestions(List<Question> questions, int minimum = 1)
@@ -303,18 +309,20 @@ public ValidationResult ValidateChoices(string[] choices)
 
         // Calculate combined length
         int combinedLength = name.Length + dialogue.Length;
-        
+
         if (combinedLength > maxNameDialogueCombinedLength)
         {
-            return new ValidationResult 
-            { 
-                isValid = false, 
+            return new ValidationResult
+            {
+                isValid = false,
                 message = $"Name + Dialogue is too long! ({combinedLength}/{maxNameDialogueCombinedLength} characters total)\nName: {name.Length} chars, Dialogue: {dialogue.Length} chars"
             };
         }
 
         return new ValidationResult { isValid = true };
     }
+    
+    
 }
 
 [System.Serializable]
