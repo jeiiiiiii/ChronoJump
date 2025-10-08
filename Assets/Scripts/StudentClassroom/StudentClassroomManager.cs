@@ -246,61 +246,85 @@ public class StudentClassroomManager : MonoBehaviour
     }
 
 
-// ✅ ADD THIS METHOD TO LOAD STORY FROM FIRESTORE
-private async Task<StoryData> LoadStoryFromFirestore(string storyId)
-{
-    try
+    private async Task<StoryData> LoadStoryFromFirestore(string storyId)
     {
-        if (FirebaseManager.Instance?.DB == null)
+        // ✅ FIRST: Check local cache
+        string localStoryKey = $"CachedStory_{storyId}";
+        string cachedStoryJson = StudentPrefs.GetString(localStoryKey, "");
+
+        if (!string.IsNullOrEmpty(cachedStoryJson))
         {
-            Debug.LogError("Firebase not ready");
-            return null;
+            try
+            {
+                StoryData cachedStory = JsonUtility.FromJson<StoryData>(cachedStoryJson);
+                if (cachedStory != null && cachedStory.dialogues != null && cachedStory.dialogues.Count > 0)
+                {
+                    Debug.Log($"✅ Loaded story from local cache: {cachedStory.storyTitle}");
+                    return cachedStory;
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"⚠️ Failed to load cached story, fetching from Firebase: {ex.Message}");
+            }
         }
 
-        var firestore = FirebaseManager.Instance.DB;
-        
-        // Get the main story document
-        var storyDoc = await firestore.Collection("createdStories").Document(storyId).GetSnapshotAsync();
-        
-        if (!storyDoc.Exists)
+        // ✅ SECOND: Fetch from Firebase if no local cache
+        try
         {
-            Debug.LogError($"Story document {storyId} not found in Firestore");
+            if (FirebaseManager.Instance?.DB == null)
+            {
+                Debug.LogError("Firebase not ready");
+                return null;
+            }
+
+            var firestore = FirebaseManager.Instance.DB;
+            var storyDoc = await firestore.Collection("createdStories").Document(storyId).GetSnapshotAsync();
+
+            if (!storyDoc.Exists)
+            {
+                Debug.LogError($"Story document {storyId} not found in Firestore");
+                return null;
+            }
+
+            var storyData = storyDoc.ToDictionary();
+
+            // Load dialogues and questions
+            var dialogues = await LoadDialoguesFromFirestore(storyId);
+            var questions = await LoadQuestionsFromFirestore(storyId);
+
+            // Create StoryData object
+            var story = new StoryData
+            {
+                storyId = storyId,
+                storyTitle = storyData.ContainsKey("title") ? storyData["title"].ToString() : "Untitled",
+                storyDescription = storyData.ContainsKey("description") ? storyData["description"].ToString() : "",
+                backgroundPath = storyData.ContainsKey("backgroundUrl") ? storyData["backgroundUrl"].ToString() : "",
+                character1Path = storyData.ContainsKey("character1Url") ? storyData["character1Url"].ToString() : "",
+                character2Path = storyData.ContainsKey("character2Url") ? storyData["character2Url"].ToString() : "",
+                dialogues = dialogues,
+                quizQuestions = questions,
+                assignedClasses = storyData.ContainsKey("assignedClasses") ?
+                    ((List<object>)storyData["assignedClasses"]).ConvertAll(x => x.ToString()) :
+                    new List<string>()
+            };
+
+            // ✅ Save to local cache for future use
+            string storyJson = JsonUtility.ToJson(story);
+            StudentPrefs.SetString(localStoryKey, storyJson);
+            StudentPrefs.Save();
+
+            Debug.Log($"✅ Loaded story from Firestore and cached locally: {story.storyTitle}");
+            return story;
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Failed to load story from Firestore: {ex.Message}");
             return null;
         }
-
-        var storyData = storyDoc.ToDictionary();
-        
-        // Load dialogues
-        var dialogues = await LoadDialoguesFromFirestore(storyId);
-        
-        // Load questions
-        var questions = await LoadQuestionsFromFirestore(storyId);
-
-        // Create StoryData object
-        var story = new StoryData
-        {
-            storyId = storyId,
-            storyTitle = storyData.ContainsKey("title") ? storyData["title"].ToString() : "Untitled",
-            storyDescription = storyData.ContainsKey("description") ? storyData["description"].ToString() : "",
-            backgroundPath = storyData.ContainsKey("backgroundUrl") ? storyData["backgroundUrl"].ToString() : "",
-            character1Path = storyData.ContainsKey("character1Url") ? storyData["character1Url"].ToString() : "",
-            character2Path = storyData.ContainsKey("character2Url") ? storyData["character2Url"].ToString() : "",
-            dialogues = dialogues,
-            quizQuestions = questions,
-            assignedClasses = storyData.ContainsKey("assignedClasses") ? 
-                ((List<object>)storyData["assignedClasses"]).ConvertAll(x => x.ToString()) : 
-                new List<string>()
-        };
-
-        Debug.Log($"✅ Loaded story from Firestore: {story.storyTitle}");
-        return story;
     }
-    catch (System.Exception ex)
-    {
-        Debug.LogError($"❌ Failed to load story from Firestore: {ex.Message}");
-        return null;
-    }
-}
+
+
 
 // ✅ CORRECTED DIALOGUE LOADING METHOD
 private async Task<List<DialogueLine>> LoadDialoguesFromFirestore(string storyId)

@@ -421,8 +421,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ae5d52d611a20a499b4f28d688c1989, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterImageOne: {fileID: 801891956}
-  characterImageTwo: {fileID: 1076339302}
+  characterImageOne: {fileID: 1076339302}
+  characterImageTwo: {fileID: 801891956}
 --- !u!1 &200109243
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
+using System.Linq;
 
 /// <summary>
 /// Manages the Story Publish scene UI and handles button interactions
@@ -324,35 +326,35 @@ public class StoryPublishManager : MonoBehaviour
     #region Button Click Handlers
 
     private void OnBackClicked()
-{
-    Debug.Log("Back button clicked in Story Publish");
+    {
+        Debug.Log("Back button clicked in Story Publish");
 
-    if (SceneNavigationManager.Instance != null)
-    {
-        // Use intelligent back navigation
-        SceneNavigationManager.Instance.GoBack();
+        if (SceneNavigationManager.Instance != null)
+        {
+            // Use intelligent back navigation
+            SceneNavigationManager.Instance.GoBack();
+        }
+        else
+        {
+            Debug.LogError("SceneNavigationManager not found!");
+            SceneManager.LoadScene("TitleScreen");
+        }
     }
-    else
-    {
-        Debug.LogError("SceneNavigationManager not found!");
-        SceneManager.LoadScene("TitleScreen");
-    }
-}
 
-private void OnCreatorModeClicked()
-{
-    Debug.Log("Creator's Mode button clicked in Story Publish");
+    private void OnCreatorModeClicked()
+    {
+        Debug.Log("Creator's Mode button clicked in Story Publish");
 
-    if (SceneNavigationManager.Instance != null)
-    {
-        // This will set previous scene to StoryPublish before navigating
-        SceneNavigationManager.Instance.GoToCreatorMode();
+        if (SceneNavigationManager.Instance != null)
+        {
+            // This will set previous scene to StoryPublish before navigating
+            SceneNavigationManager.Instance.GoToCreatorMode();
+        }
+        else
+        {
+            SceneManager.LoadScene("Creator'sModeScene");
+        }
     }
-    else
-    {
-        SceneManager.LoadScene("Creator'sModeScene");
-    }
-}
 
     private void OnDashboardClicked()
     {
@@ -371,9 +373,6 @@ private void OnCreatorModeClicked()
             SceneManager.LoadScene("TeacherDashboard");
         }
     }
-
-
-
 
     private void OnClassItemClicked(string classCode, string displayName, Button clickedButton)
     {
@@ -411,11 +410,21 @@ private void OnCreatorModeClicked()
             publishPopUp.SetActive(true);
     }
 
-    private void RefreshCreatedStoriesList()
+    private async void RefreshCreatedStoriesList()
     {
+        Debug.Log($"=== REFRESHING STORIES FOR CLASS: {_selectedClassCode} ===");
+        
         if (createdListParent == null || string.IsNullOrEmpty(_selectedClassCode))
             return;
 
+        if (StoryManager.Instance == null)
+        {
+            Debug.LogError("❌ StoryManager.Instance is NULL");
+            ShowPlaceholderText(true);
+            return;
+        }
+
+        // Clear UI first
         foreach (Transform child in createdListParent)
         {
             Destroy(child.gameObject);
@@ -423,11 +432,40 @@ private void OnCreatorModeClicked()
 
         LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)createdListParent);
 
-
+        // Get stories from LOCAL storage first (fast)
         var publishedStories = StoryManager.Instance.GetPublishedStoriesForClass(_selectedClassCode);
-        foreach (var s in publishedStories)
+        
+        Debug.Log($"📊 Initial local stories found: {(publishedStories == null ? "NULL" : publishedStories.Count.ToString())}");
+
+        // If no local stories found AND we're using Firestore, try to sync from Firestore
+        if ((publishedStories == null || publishedStories.Count == 0) && StoryManager.Instance.UseFirestore)
         {
-            Debug.Log($"[DEBUG] PublishedStory: {s.storyTitle} (ID: {s.storyId}) for class {s.classCode}");
+            Debug.Log("🔄 No local stories found, syncing from Firestore...");
+            ShowLoadingState(true);
+            
+            bool syncSuccess = await SyncPublishedStoriesFromFirestore(_selectedClassCode);
+            
+            if (syncSuccess)
+            {
+                // Now get the freshly synced local stories
+                publishedStories = StoryManager.Instance.GetPublishedStoriesForClass(_selectedClassCode);
+                Debug.Log($"✅ Firestore sync complete. Found {publishedStories?.Count ?? 0} stories");
+            }
+            else
+            {
+                Debug.LogWarning("❌ Firestore sync failed");
+            }
+            
+            ShowLoadingState(false);
+        }
+
+        // Debug all found stories
+        if (publishedStories != null)
+        {
+            foreach (var s in publishedStories)
+            {
+                Debug.Log($"[DEBUG] PublishedStory: {s.storyTitle} (ID: {s.storyId}) for class {s.classCode}");
+            }
         }
 
         Debug.Log($"Refreshing stories for class {_selectedClassCode}. Found {publishedStories?.Count ?? 0} published stories");
@@ -449,6 +487,108 @@ private void OnCreatorModeClicked()
         {
             createdListParent.gameObject.SetActive(false);
             Debug.Log("No stories found, hiding list");
+        }
+    }
+
+    /// <summary>
+    /// Syncs published stories from Firestore and saves them locally
+    /// </summary>
+    private async Task<bool> SyncPublishedStoriesFromFirestore(string classCode)
+    {
+        if (!StoryManager.Instance.UseFirestore) 
+        {
+            Debug.Log("Firestore not enabled, skipping sync");
+            return false;
+        }
+        
+        try
+        {
+            Debug.Log($"🔄 Starting Firestore sync for class: {classCode}");
+            
+            // Use the existing method in StoryManager to fetch published stories from Firestore
+            List<PublishedStory> firestoreStories = await StoryManager.Instance.GetPublishedStoriesFromFirestore(classCode);
+            
+            if (firestoreStories != null && firestoreStories.Count > 0)
+            {
+                Debug.Log($"📥 Retrieved {firestoreStories.Count} stories from Firestore for class {classCode}");
+                
+                // Save each story locally using the existing PublishStory method
+                foreach (var story in firestoreStories)
+                {
+                    await SavePublishedStoryToLocal(story);
+                }
+                
+                Debug.Log($"✅ Synced {firestoreStories.Count} stories from Firestore to local storage for class {classCode}");
+                return true;
+            }
+            else
+            {
+                Debug.Log($"ℹ️ No stories found in Firestore for class {classCode}");
+                return false;
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"❌ Firestore sync failed for class {classCode}: {e.Message}");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Saves a published story to local storage using existing StoryManager methods
+    /// </summary>
+    private async Task SavePublishedStoryToLocal(PublishedStory story)
+    {
+        try
+        {
+            // Get existing local stories for this class
+            var localStories = StoryManager.Instance.GetPublishedStoriesForClass(story.classCode);
+            
+            // Check if story already exists locally
+            bool exists = localStories?.Any(s => s.storyId == story.storyId) ?? false;
+            
+            if (!exists)
+            {
+                Debug.Log($"💾 Saving story to local storage: {story.storyTitle} (ID: {story.storyId})");
+                
+                // Use the existing PublishStory method to save locally
+                // This will automatically handle the local storage
+                var storyData = StoryManager.Instance.allStories.FirstOrDefault(s => s?.storyId == story.storyId);
+                if (storyData != null)
+                {
+                    bool success = StoryManager.Instance.PublishStory(storyData, story.classCode, story.className);
+                    if (success)
+                    {
+                        Debug.Log($"✅ Successfully saved story to local storage: {story.storyTitle}");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"⚠️ Story already exists locally: {story.storyTitle}");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"⚠️ Could not find story data for: {story.storyTitle} (ID: {story.storyId})");
+                    // Create a minimal story data for local storage
+                    var tempStory = new StoryData
+                    {
+                        storyId = story.storyId,
+                        storyTitle = story.storyTitle
+                    };
+                    StoryManager.Instance.PublishStory(tempStory, story.classCode, story.className);
+                }
+                
+                // Small delay to ensure save operation completes
+                await Task.Delay(10);
+            }
+            else
+            {
+                Debug.Log($"ℹ️ Story already exists locally: {story.storyTitle}");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"❌ Failed to save story to local storage: {e.Message}");
         }
     }
 
@@ -498,46 +638,50 @@ private void OnCreatorModeClicked()
     }
 
     private async void OnPublishConfirm()
-{
-    if (string.IsNullOrEmpty(_selectedClassCode) || StoryManager.Instance.currentStory == null)
     {
-        Debug.LogWarning("⚠️ Cannot publish: No class selected or no current story");
-        return;
-    }
+        if (string.IsNullOrEmpty(_selectedClassCode) || StoryManager.Instance.currentStory == null)
+        {
+            Debug.LogWarning("⚠️ Cannot publish: No class selected or no current story");
+            return;
+        }
 
-    // Always save locally first (this should never fail)
-    bool localSuccess = StoryManager.Instance.PublishStory(
-        StoryManager.Instance.currentStory,
-        _selectedClassCode,
-        _selectedDisplayName
-    );
-
-    // Try Firestore publishing (optional - won't block if it fails)
-    bool firestoreSuccess = false;
-    if (StoryManager.Instance.UseFirestore)
-    {
-        firestoreSuccess = await StoryManager.Instance.PublishStoryToFirestore(
-            StoryManager.Instance.currentStory.storyId,
+        // Always save locally first (this should never fail)
+        bool localSuccess = StoryManager.Instance.PublishStory(
+            StoryManager.Instance.currentStory,
             _selectedClassCode,
             _selectedDisplayName
         );
-        
-        if (!firestoreSuccess)
+
+        // Try Firestore publishing (optional - won't block if it fails)
+        bool firestoreSuccess = false;
+        if (StoryManager.Instance.UseFirestore)
         {
-            Debug.LogWarning("⚠️ Firestore publish failed, but local publish succeeded");
+            firestoreSuccess = await StoryManager.Instance.PublishStoryToFirestore(
+                StoryManager.Instance.currentStory.storyId,
+                _selectedClassCode,
+                _selectedDisplayName
+            );
+            
+            if (!firestoreSuccess)
+            {
+                Debug.LogWarning("⚠️ Firestore publish failed, but local publish succeeded");
+            }
+            else
+            {
+                Debug.Log("✅ Story published to Firestore successfully");
+            }
+        }
+
+        if (publishPopUp != null)
+            publishPopUp.SetActive(false);
+
+        RefreshCreatedStoriesList();
+        
+        if (localSuccess)
+        {
+            Debug.Log($"✅ Story published to class: {_selectedDisplayName}");
         }
     }
-
-    if (publishPopUp != null)
-        publishPopUp.SetActive(false);
-
-    RefreshCreatedStoriesList();
-    
-    if (localSuccess)
-    {
-        Debug.Log($"✅ Story published to class: {_selectedDisplayName}");
-    }
-}
 
     private async void OnDeleteConfirm()
     {
@@ -569,8 +713,6 @@ private void OnCreatorModeClicked()
             deletePopUp.SetActive(false);
     }
 
-
-
     private System.Collections.IEnumerator DelayedRefreshStoriesList()
     {
         yield return null;
@@ -584,8 +726,6 @@ private void OnCreatorModeClicked()
 
         Debug.Log("Publish cancelled");
     }
-
-
 
     #endregion
 
@@ -649,5 +789,4 @@ private void OnCreatorModeClicked()
             Debug.Log("Created SceneNavigationManager instance");
         }
     }
-
 }
