@@ -208,7 +208,7 @@ GameObject:
   - component: {fileID: 239111331}
   - component: {fileID: 239111330}
   m_Layer: 5
-  m_Name: Desctiption
+  m_Name: Description
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -253,18 +253,18 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\tIsang Grade 8 student sa San Isidro National High School, kilala sa
-    pagiging malikot, tamad gumawa ng assignment, at madalas mag-reklamo kapag Araling
-    Panlipunan na ang paksa. Sa halip na magbasa ng mga libro, mas gugustuhin niyang
-    maglaro ng mobile games o manood ng videos online. Ngunit sa kabila ng kawalan
-    ng interes, likas siyang mausisa, mapagmasid, at may kakayahang mag-isip nang
-    malalim kung saktong mapupukaw ang kanyang atensyon.\n\n\tNagbago ang takbo ng
-    kanyang pag-aaral nang isang gabi, biglang tumunog ang kanyang cellphone at lumabas
-    ang isang kakaibang robot na nagsasalita, si Chrono. Mula noon, ang kanyang paglalakbay
-    ay naging kakaibang karanasan: mula sa pagiging tamad at walang gana sa klase,
-    siya\u2019y naging aktibong tagamasid ng kasaysayan mismo. Habang lumalalim ang
-    kanyang karanasan sa mga sinaunang kabihasnan, unti-unti niyang nakikita ang
-    halaga ng mga aral mula sa nakaraan para sa kanyang sariling buhay."
+  m_text: "\tIsang Grade 8 student sa Juan Sumulong Memorial College, kilala sa pagiging
+    malikot, tamad gumawa ng assignment, at madalas mag-reklamo kapag Araling Panlipunan
+    na ang paksa. Sa halip na magbasa ng mga libro, mas gugustuhin niyang maglaro
+    ng mobile games o manood ng videos online. Ngunit sa kabila ng kawalan ng interes,
+    likas siyang mausisa, mapagmasid, at may kakayahang mag-isip nang malalim kung
+    saktong mapupukaw ang kanyang atensyon.\n\n\tNagbago ang takbo ng kanyang pag-aaral
+    nang isang gabi, biglang tumunog ang kanyang cellphone at lumabas ang isang kakaibang
+    robot na nagsasalita, si Chrono. Mula noon, ang kanyang paglalakbay ay naging
+    kakaibang karanasan: mula sa pagiging tamad at walang gana sa klase, siya\u2019y
+    naging aktibong tagamasid ng kasaysayan mismo. Habang lumalalim ang kanyang karanasan
+    sa mga sinaunang kabihasnan, unti-unti niyang nakikita ang halaga ng mga aral
+    mula sa nakaraan para sa kanyang sariling buhay."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e2ff374cafe100449aa9df7f4f74c41f, type: 2}
   m_sharedMaterial: {fileID: -351998005199142813, guid: e2ff374cafe100449aa9df7f4f74c41f, type: 2}
@@ -395,7 +395,7 @@ MonoBehaviour:
   characters:
   - characterName: PLAYER
     characterSprite: {fileID: -3190768291370116357, guid: b211e5fb802469541840eec4c6c37f7e, type: 3}
-    description: "\tIsang Grade 8 student sa San Isidro National High School, kilala
+    description: "\tIsang Grade 8 student sa Juan Sumulong Memorial College, kilala
       sa pagiging malikot, tamad gumawa ng assignment, at madalas mag-reklamo kapag
       Araling Panlipunan na ang paksa. Sa halip na magbasa ng mga libro, mas gugustuhin
       niyang maglaro ng mobile games o manood ng videos online. Ngunit sa kabila

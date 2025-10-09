@@ -15,22 +15,23 @@ public class StudentProgressRowView : MonoBehaviour
     public TextMeshProUGUI ProgressSuccessRate;
     public TextMeshProUGUI ProgressStudOverallScore;
     
-    [Header("Delete Mode UI")]
+    [Header("Buttons")]
     public Button removeButton;
+    public Button overviewButton;
     
     private StudentModel _currentStudent;
     private TeacherDashboardManager _dashboardManager;
-    
+
     public void SetupStudent(StudentModel student, bool showRemoveButton = false, TeacherDashboardManager dashboardManager = null)
     {
         // Store references
         _currentStudent = student;
         _dashboardManager = dashboardManager;
-        
+
         // Set basic student info
         if (studentNameText != null)
             studentNameText.text = student.studName;
-        
+
         // Use the progress data from the student model
         if (student.studentProgress != null)
         {
@@ -40,19 +41,107 @@ public class StudentProgressRowView : MonoBehaviour
         {
             SetDefaultProgressData();
         }
-        
-        // NEW: Handle remove button visibility and setup
+
+        // Handle remove button visibility and setup
         SetupRemoveButton(showRemoveButton);
+        
+        // NEW: Setup overview button
+        SetupOverviewButton();
     }
+    private void SetupOverviewButton()
+    {
+        if (overviewButton != null)
+        {
+            Debug.Log($"Setting up overview button for {_currentStudent?.studName}");
+            overviewButton.gameObject.SetActive(true);
+
+            overviewButton.onClick.RemoveAllListeners();
+            overviewButton.onClick.AddListener(OnOverviewButtonClicked);
+
+            Debug.Log($"Overview button setup complete for {_currentStudent?.studName}");
+        }
+        else
+        {
+            Debug.LogError($"Overview button is NULL for student {_currentStudent?.studName}");
+        }
+    }
+
+    public void SetupStudent(StudentModel student, bool showRemoveButton = false, bool showOverviewButton = false, TeacherDashboardManager dashboardManager = null)
+    {
+        // Store references
+        _currentStudent = student;
+        _dashboardManager = dashboardManager;
+
+        // Set basic student info
+        if (studentNameText != null)
+            studentNameText.text = student.studName;
+
+        // Use the progress data from the student model
+        if (student.studentProgress != null)
+        {
+            SetProgressData(student.studentProgress);
+        }
+        else
+        {
+            SetDefaultProgressData();
+        }
+
+        // Handle remove button visibility and setup
+        SetupRemoveButton(showRemoveButton);
+
+        // NEW: Setup overview button with visibility control
+        SetupOverviewButton(showOverviewButton);
+    }
+
+
+    // UPDATED: Setup overview button with visibility control
+    private void SetupOverviewButton(bool showOverviewButton)
+    {
+        if (overviewButton != null)
+        {
+            overviewButton.gameObject.SetActive(showOverviewButton);
+
+            if (showOverviewButton)
+            {
+                overviewButton.onClick.RemoveAllListeners();
+                overviewButton.onClick.AddListener(OnOverviewButtonClicked);
+                Debug.Log($"Overview button setup for {_currentStudent?.studName}");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"Overview button is NULL for student {_currentStudent?.studName}");
+        }
+    }
+
+
+    // NEW: Handle overview button click
+    private void OnOverviewButtonClicked()
+    {
+        Debug.Log($"Overview button CLICKED for student: {_currentStudent?.studName}");
+
+        if (_dashboardManager != null && _currentStudent != null)
+        {
+            Debug.Log($"Dashboard manager found: {_dashboardManager != null}");
+            Debug.Log($"Student data valid: {_currentStudent != null}");
+            _dashboardManager.OnStudentOverviewClicked(_currentStudent);
+        }
+        else
+        {
+            Debug.LogError("Dashboard manager or student reference is missing in overview button click!");
+        }
+    }
+
+
     
-    // NEW: Setup remove button
+    // Setup remove button
     private void SetupRemoveButton(bool showRemoveButton)
     {
         if (removeButton != null)
         {
             Debug.Log($"Setting up remove button for {_currentStudent?.studName}, show: {showRemoveButton}");
             removeButton.gameObject.SetActive(showRemoveButton);
-            
+
             if (showRemoveButton)
             {
                 // Clear previous listeners to avoid duplicates
@@ -79,12 +168,13 @@ public class StudentProgressRowView : MonoBehaviour
             Debug.LogWarning("Dashboard manager or student reference is missing!");
         }
     }
-    
+
     // Keep existing method for backward compatibility
     public void SetupStudent(StudentModel student)
     {
-        SetupStudent(student, false, null);
+        SetupStudent(student, false, false, null);
     }
+
     
     private void SetProgressData(Dictionary<string, object> progressData)
     {

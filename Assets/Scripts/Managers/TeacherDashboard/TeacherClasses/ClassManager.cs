@@ -41,9 +41,7 @@ public class ClassManager : MonoBehaviour
 {
     if (confirmationDialog != null)
     {
-        string message = $"Warning: Permanent Deletion\n\n" +
-                         $"You are about to delete '{className}' and all student accounts within it. " +
-                         $"Once deleted, this data cannot be recovered.\n\n" +
+        string message = $"You are about to delete '{className}' and all student accounts within it. " +
                          $"Are you certain you want to delete this class?";
         
         confirmationDialog.ShowDialog(
@@ -56,24 +54,41 @@ public class ClassManager : MonoBehaviour
 
 
     private void HandleEditClassRequest(string classCode, string className)
+{
+    classCode = classCode.Trim();
+
+    // FIX: Use the same extraction method as EditClassDialog
+    string actualClassName = ExtractClassNameFromDisplay(className);
+
+    if (editClassDialog != null)
     {
-        classCode = classCode.Trim();
-
-        // Extract only the section name after the dash
-        if (className.Contains("-"))
-        {
-            // Split into ["8 ", " Sectionname"], then take the second part
-            className = className.Split('-')[1].Trim();
-        }
-
-        if (editClassDialog != null)
-        {
-            editClassDialog.ShowDialog(
-                className,
-                (newClassName) => EditClass(classCode, newClassName)
-            );
-        }
+        editClassDialog.ShowDialog(
+            actualClassName,
+            (newClassName) => EditClass(classCode, newClassName)
+        );
     }
+}
+
+// NEW: Add this method to ClassManager
+private string ExtractClassNameFromDisplay(string displayName)
+{
+    if (string.IsNullOrEmpty(displayName))
+        return displayName;
+
+    // If the format is "8 - ClassName", we want to extract "ClassName"
+    // Split by " - " and take the last part
+    string[] parts = displayName.Split(new string[] { " - " }, System.StringSplitOptions.None);
+    
+    if (parts.Length >= 2)
+    {
+        // Return everything after the first " - "
+        return parts[1];
+    }
+    
+    // If no " - " is found, return the original string
+    return displayName;
+}
+
 
 
     private void DeleteClass(string classCode, string className)

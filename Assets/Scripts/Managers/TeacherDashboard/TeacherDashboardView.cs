@@ -10,6 +10,7 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
     public GameObject studentProgressPage;
     public GameObject leaderboardPage;
     public GameObject createNewClassPanel;
+    public GameObject studentOverviewPage;
 
     [Header("Loading Prefabs")]
     public GameObject classListLoadingSpinnerPrefab;
@@ -25,7 +26,7 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
     [Header("Teacher Info")]
     public TextMeshProUGUI teacherNameText;
     public Image teacherProfileIcon;
-    
+
     [Header("Title Profile Icons")]
     public Sprite mrIcon;
     public Sprite msIcon;
@@ -52,9 +53,26 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
     public GameObject newClassButton;
     public GameObject publishedStoriesButton;
 
+    [Header("Dashboard Title")]
+    public TextMeshProUGUI dashboardTitleText; // Assign in Inspector
+
     // Runtime spinner instances
     private GameObject _classListSpinnerInstance;
     private GameObject _teacherInfoSpinnerInstance;
+
+    // Add this new method to update the title
+    public void UpdateDashboardTitle(string title)
+    {
+        if (dashboardTitleText != null)
+        {
+            dashboardTitleText.text = title;
+            Debug.Log($"📝 Dashboard title updated to: {title}");
+        }
+        else
+        {
+            Debug.LogWarning("Dashboard title text reference is missing!");
+        }
+    }
 
     private void Start()
     {
@@ -69,7 +87,7 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
         {
             _classListSpinnerInstance = Instantiate(classListLoadingSpinnerPrefab, classListLoadingParent);
             _classListSpinnerInstance.name = "ClassListLoadingSpinner";
-            
+
             RectTransform rect = _classListSpinnerInstance.GetComponent<RectTransform>();
             if (rect != null)
             {
@@ -78,7 +96,7 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
                 rect.pivot = new Vector2(0.5f, 0.5f);
                 rect.anchoredPosition = Vector2.zero;
             }
-            
+
             _classListSpinnerInstance.SetActive(false);
         }
 
@@ -87,7 +105,7 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
         {
             _teacherInfoSpinnerInstance = Instantiate(teacherInfoLoadingSpinnerPrefab, teacherInfoLoadingParent);
             _teacherInfoSpinnerInstance.name = "TeacherInfoLoadingSpinner";
-            
+
             RectTransform rect = _teacherInfoSpinnerInstance.GetComponent<RectTransform>();
             if (rect != null)
             {
@@ -96,7 +114,7 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
                 rect.pivot = new Vector2(0.5f, 0.5f);
                 rect.anchoredPosition = Vector2.zero;
             }
-            
+
             _teacherInfoSpinnerInstance.SetActive(false);
         }
 
@@ -274,7 +292,7 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
 
         if (selectedClassNameText != null)
             selectedClassNameText.text = className;
-        
+
         if (clipboardButton != null)
             clipboardButton.SetClassCode(classCode);
 
@@ -313,33 +331,99 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
     {
         if (deleteStudentButton != null)
             deleteStudentButton.SetActive(visible);
+        
     }
+
+// NEW: Show student overview page
+public void ShowStudentOverviewPage()
+{
+    Debug.Log("🎯 TEACHER DASHBOARD VIEW: ShowStudentOverviewPage called");
+    if (studentOverviewPage != null)
+    {
+        SetActivePanel(studentOverviewPage);
+        Debug.Log("✅ Overview page activated via SetActivePanel");
+    }
+    else
+    {
+        Debug.LogError("❌ studentOverviewPage is NULL in ShowStudentOverviewPage!");
+    }
+}
+
+// NEW: Hide all pages (for overview page management)
+public void HideAllPages()
+{
+    Debug.Log("📁 TEACHER DASHBOARD VIEW: HideAllPages called");
+    
+    landingPage.SetActive(false);
+    emptyLandingPage.SetActive(false);
+    studentProgressPage.SetActive(false);
+    leaderboardPage.SetActive(false);
+    createNewClassPanel.SetActive(false);
+    
+    // NEW: Also hide overview page
+    if (studentOverviewPage != null)
+    {
+        Debug.Log("👁️ Hiding studentOverviewPage");
+        studentOverviewPage.SetActive(false);
+    }
+    else
+    {
+        Debug.LogError("❌ studentOverviewPage is NULL in HideAllPages!");
+    }
+}
 
     private void SetActivePanel(GameObject activePanel)
+{
+    Debug.Log($"🔄 Setting active panel: {activePanel?.name}");
+
+    landingPage.SetActive(activePanel == landingPage);
+    emptyLandingPage.SetActive(activePanel == emptyLandingPage);
+    studentProgressPage.SetActive(activePanel == studentProgressPage);
+    leaderboardPage.SetActive(activePanel == leaderboardPage);
+    createNewClassPanel.SetActive(false);
+
+    // Handle overview page
+    if (studentOverviewPage != null)
     {
-        landingPage.SetActive(activePanel == landingPage);
-        emptyLandingPage.SetActive(activePanel == emptyLandingPage);
-        studentProgressPage.SetActive(activePanel == studentProgressPage);
-        leaderboardPage.SetActive(activePanel == leaderboardPage);
-        createNewClassPanel.SetActive(false);
-
-        if (newClassButton != null)
-        {
-            bool shouldShowNewClass = (activePanel == landingPage || activePanel == emptyLandingPage);
-            newClassButton.SetActive(shouldShowNewClass);
-        }
-
-        if (activePanel == landingPage)
-        {
-            SetViewAllProgressButtonVisible(true);
-            SetViewAllLeaderboardButtonVisible(true);
-            SetDeleteStudentButtonVisible(true); 
-        }
-        else
-        {   
-            SetViewAllProgressButtonVisible(false);
-            SetViewAllLeaderboardButtonVisible(false);
-            SetDeleteStudentButtonVisible(false); 
-        }
+        studentOverviewPage.SetActive(activePanel == studentOverviewPage);
+        Debug.Log($"📊 Overview page active: {(activePanel == studentOverviewPage)}");
     }
+
+    // ✅ NEW: Update dashboard title based on active panel
+    if (activePanel == studentProgressPage)
+    {
+        UpdateDashboardTitle("Student Progress");
+    }
+    else if (activePanel == leaderboardPage)
+    {
+        UpdateDashboardTitle("Student Leaderboards");
+    }
+    else if (activePanel == studentOverviewPage)
+    {
+        UpdateDashboardTitle("Student Overview");
+    }
+    else if (activePanel == landingPage || activePanel == emptyLandingPage)
+    {
+        UpdateDashboardTitle("Teacher's Dashboard");
+    }
+
+    if (newClassButton != null)
+    {
+        bool shouldShowNewClass = (activePanel == landingPage || activePanel == emptyLandingPage);
+        newClassButton.SetActive(shouldShowNewClass);
+    }
+
+    if (activePanel == landingPage)
+    {
+        SetViewAllProgressButtonVisible(true);
+        SetViewAllLeaderboardButtonVisible(true);
+        SetDeleteStudentButtonVisible(true);
+    }
+    else
+    {
+        SetViewAllProgressButtonVisible(false);
+        SetViewAllLeaderboardButtonVisible(false);
+        SetDeleteStudentButtonVisible(false);
+    }
+}
 }

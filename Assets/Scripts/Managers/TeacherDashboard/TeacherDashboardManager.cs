@@ -13,6 +13,8 @@ public class TeacherDashboardManager : MonoBehaviour
     public StudentProgressView studentProgressView;
     public StudentLeaderboardView studentLeaderboardView;
     public CreateClassView createClassView;
+    public StudentOverviewPage studentOverviewPage;
+
 
     [Header("State")]
     private DashboardState _dashboardState;
@@ -35,14 +37,14 @@ public class TeacherDashboardManager : MonoBehaviour
     private bool _isInitialLoading = true;
 
     private void ShowInitialLoadingState(bool show)
-{
-    if (dashboardView != null)
     {
-        dashboardView.SetLoadingState(show);
+        if (dashboardView != null)
+        {
+            dashboardView.SetLoadingState(show);
+        }
+
+        Debug.Log($"🔄 Dashboard loading: {(show ? "SHOWING" : "HIDING")}");
     }
-    
-    Debug.Log($"🔄 Dashboard loading: {(show ? "SHOWING" : "HIDING")}");
-}
 
     private void ShowPartialLoadingState(bool classListLoading, bool teacherInfoLoading)
     {
@@ -77,60 +79,60 @@ public class TeacherDashboardManager : MonoBehaviour
     }
 
 
-// Update the OnTeacherDataLoaded method:
-private void OnTeacherDataLoaded(TeacherModel teacherData)
-{
-    if (this == null || !gameObject.activeInHierarchy)
+    // Update the OnTeacherDataLoaded method:
+    private void OnTeacherDataLoaded(TeacherModel teacherData)
     {
-        Debug.Log("TeacherDashboardManager was destroyed before teacher data loaded");
-        ShowInitialLoadingState(false);
-        return;
-    }
-
-    if (teacherData == null)
-    {
-        Debug.LogError("No teacher data found.");
-        ShowInitialLoadingState(false);
-        return;
-    }
-
-    _dashboardState.teacherData = teacherData;
-
-    if (ClassDataSync.Instance != null && teacherData.classCode != null)
-    {
-        var cachedData = new Dictionary<string, List<string>>(teacherData.classCode);
-        ClassDataSync.Instance.UpdateCachedData(cachedData);
-    }
-
-    UpdateDashboardView();
-
-    if (_dashboardState.HasClasses)
-    {
-        SetupClassList();
-
-        if (!string.IsNullOrEmpty(_previousSelectedClassCode) &&
-            _dashboardState.teacherData.classCode.ContainsKey(_previousSelectedClassCode))
+        if (this == null || !gameObject.activeInHierarchy)
         {
-            RestoreClassSelection(_previousSelectedClassCode);
+            Debug.Log("TeacherDashboardManager was destroyed before teacher data loaded");
+            ShowInitialLoadingState(false);
+            return;
         }
-        else
-        {
-            SelectFirstClass();
-        }
-    }
-    
-    // Hide loading after data is processed
-    StartCoroutine(HideLoadingAfterDelay());
-}
 
-// Add this coroutine:
-private IEnumerator HideLoadingAfterDelay()
-{
-    yield return new WaitForSeconds(0.3f);
-    ShowInitialLoadingState(false);
-    _isInitialLoading = false;
-    Debug.Log("✅ Dashboard loading complete");
-}
+        if (teacherData == null)
+        {
+            Debug.LogError("No teacher data found.");
+            ShowInitialLoadingState(false);
+            return;
+        }
+
+        _dashboardState.teacherData = teacherData;
+
+        if (ClassDataSync.Instance != null && teacherData.classCode != null)
+        {
+            var cachedData = new Dictionary<string, List<string>>(teacherData.classCode);
+            ClassDataSync.Instance.UpdateCachedData(cachedData);
+        }
+
+        UpdateDashboardView();
+
+        if (_dashboardState.HasClasses)
+        {
+            SetupClassList();
+
+            if (!string.IsNullOrEmpty(_previousSelectedClassCode) &&
+                _dashboardState.teacherData.classCode.ContainsKey(_previousSelectedClassCode))
+            {
+                RestoreClassSelection(_previousSelectedClassCode);
+            }
+            else
+            {
+                SelectFirstClass();
+            }
+        }
+
+        // Hide loading after data is processed
+        StartCoroutine(HideLoadingAfterDelay());
+    }
+
+    // Add this coroutine:
+    private IEnumerator HideLoadingAfterDelay()
+    {
+        yield return new WaitForSeconds(0.3f);
+        ShowInitialLoadingState(false);
+        _isInitialLoading = false;
+        Debug.Log("✅ Dashboard loading complete");
+    }
 
     // Update the UpdateDashboardView method:
     private void UpdateDashboardView()
@@ -550,11 +552,45 @@ private IEnumerator HideLoadingAfterDelay()
             });
     }
 
+    // NEW: Back button method for student overview page - goes back to full progress view
+    public void OnBackToStudentProgressClicked()
+    {
+        Debug.Log("Returning to full student progress view from overview");
+
+        // Hide the overview page
+        if (studentOverviewPage != null)
+        {
+            studentOverviewPage.gameObject.SetActive(false);
+        }
+
+        // Show the full student progress page (keeping the same state)
+        dashboardView.ShowStudentProgressPage();
+
+        // Reload the student progress data to ensure it's current
+        if (!_isLoadingProgress && !string.IsNullOrEmpty(_dashboardState.selectedClassCode))
+        {
+            LoadStudentProgress(_dashboardState.selectedClassCode);
+        }
+
+        Debug.Log("Successfully returned to full student progress view");
+    }
+
+
+    // NEW: Update the existing back method to handle overview page properly
     public void OnBackToLandingPageClicked()
     {
+        Debug.Log("OnBackToLandingPageClicked called");
+
         _isViewingAllStudents = false;
         _isViewingAllLeaderboard = false;
         _isInDeleteMode = false;
+
+        // NEW: Hide overview page if it's open
+        if (studentOverviewPage != null)
+        {
+            studentOverviewPage.gameObject.SetActive(false);
+        }
+
         dashboardView.ShowLandingPage();
 
         if (!_isLoadingProgress && !string.IsNullOrEmpty(_dashboardState.selectedClassCode))
@@ -569,6 +605,8 @@ private IEnumerator HideLoadingAfterDelay()
 
         StartCoroutine(ShowDashboardAfterRender());
     }
+
+
 
     public void RefreshDashboard()
     {
@@ -634,6 +672,47 @@ private IEnumerator HideLoadingAfterDelay()
             GameObject navigationObject = new GameObject("SceneNavigationManager");
             navigationObject.AddComponent<SceneNavigationManager>();
             Debug.Log("Created SceneNavigationManager instance");
+        }
+    }
+
+    // NEW: Handle overview button click
+public void OnStudentOverviewClicked(StudentModel student)
+{
+    Debug.Log($"🎯 TEACHER DASHBOARD MANAGER: Overview button clicked for student: {student.studName}");
+    Debug.Log($"📊 Current state - ViewAll: {_isViewingAllStudents}, DeleteMode: {_isInDeleteMode}");
+
+    // Show the student overview page
+    ShowStudentOverviewPage(student);
+}
+
+    // BEST SOLUTION: Use the existing SetActivePanel system
+    private void ShowStudentOverviewPage(StudentModel student)
+    {
+        Debug.Log("🔄 TEACHER DASHBOARD MANAGER: ShowStudentOverviewPage called");
+
+        // Use dashboardView to handle page switching properly
+        if (dashboardView != null)
+        {
+            Debug.Log("✅ Using dashboardView.ShowStudentOverviewPage()");
+            dashboardView.ShowStudentOverviewPage();
+        }
+        else
+        {
+            Debug.LogError("❌ dashboardView is NULL - cannot show overview page!");
+            return;
+        }
+
+        // Show and setup the overview page
+        if (studentOverviewPage != null)
+        {
+            Debug.Log($"✅ StudentOverviewPage reference found - setting up student: {student.studName}");
+            studentOverviewPage.SetupStudentOverview(student);
+
+            Debug.Log("✅ Student overview page setup complete - should be visible now");
+        }
+        else
+        {
+            Debug.LogError("❌ StudentOverviewPage reference is NULL!");
         }
     }
 

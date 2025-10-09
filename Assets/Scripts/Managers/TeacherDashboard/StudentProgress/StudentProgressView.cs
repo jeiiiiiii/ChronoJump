@@ -111,8 +111,9 @@ public class StudentProgressView : MonoBehaviour
         var studentRowComponent = studentRow.GetComponent<StudentProgressRowView>();
         if (studentRowComponent != null)
         {
-            // NEW: Pass the showRemoveButton and dashboard manager reference
-            studentRowComponent.SetupStudent(student, showRemoveButton, _dashboardManager);
+            // NEW: Determine if we should show overview button (only in full view AND NOT in delete mode)
+            bool showOverviewButton = fullView && !showRemoveButton; // Show overview only in full view AND when NOT in delete mode
+            studentRowComponent.SetupStudent(student, showRemoveButton, showOverviewButton, _dashboardManager);
         }
         else
         {
@@ -121,6 +122,9 @@ public class StudentProgressView : MonoBehaviour
 
         studentRow.SetActive(true);
     }
+
+
+
 
     // For backward compatibility
     public void ShowStudentProgress(List<StudentModel> students)
