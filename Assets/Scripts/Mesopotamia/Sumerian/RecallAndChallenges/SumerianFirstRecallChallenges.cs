@@ -71,7 +71,7 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
             new DialogueLine
             {
                 characterName = "ENKI",
-                line = "Ano ang tawag sa uri ng pagsusulat na ito?"
+                line = "Ano ang tawag sa sinaunang sistema ng pagsusulat na ginamit ng mga Sumerian?"
             },
         };
 

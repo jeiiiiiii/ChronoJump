@@ -30,7 +30,7 @@ public class QuizTimeManager : MonoBehaviour
 
     // Quiz attempt data
     private string currentStoryId;
-    private string studentId;
+    private string studentStudId; // Changed from studentId to studentStudId
 
     void Start()
     {
@@ -59,23 +59,53 @@ public class QuizTimeManager : MonoBehaviour
         // Get story ID from StudentPrefs
         currentStoryId = StudentPrefs.GetString("SelectedStoryID", "");
 
-        // Get student ID
-        studentId = GetStudentId();
+        // Get student studId (not userId)
+        studentStudId = GetStudentStudId();
 
-        Debug.Log($"📝 Quiz Context - Story: {currentStoryId}, Student: {studentId}");
+        Debug.Log($"📝 Quiz Context - Story: {currentStoryId}, Student StudId: {studentStudId}");
     }
 
-    private string GetStudentId()
+    private string GetStudentStudId()
     {
-        // Try to get from Firebase auth first
+        // ✅ FIRST: Try to get from GameProgressManager (most reliable)
+        if (GameProgressManager.Instance != null)
+        {
+            string studIdFromManager = GameProgressManager.Instance.GetCurrentStudentId();
+            if (!string.IsNullOrEmpty(studIdFromManager))
+            {
+                Debug.Log($"✅ Using CurrentStudentId from GameProgressManager: {studIdFromManager}");
+                return studIdFromManager;
+            }
+        }
+
+        // ✅ SECOND: Try StudentPrefs directly
+        string studIdFromPrefs = StudentPrefs.GetString("CurrentStudentId", "");
+        if (!string.IsNullOrEmpty(studIdFromPrefs))
+        {
+            Debug.Log($"✅ Using CurrentStudentId from StudentPrefs: {studIdFromPrefs}");
+            return studIdFromPrefs;
+        }
+
+        // ❌ If we get here, no student ID was saved
+        Debug.LogError("❌ No CurrentStudentId found! Make sure GameProgressManager is initialized properly.");
+
+        // Last resort fallbacks
+        string fallbackStudId = StudentPrefs.GetString("StudentId", "");
+        if (!string.IsNullOrEmpty(fallbackStudId))
+        {
+            Debug.LogWarning($"⚠️ Using fallback StudentId: {fallbackStudId}");
+            return fallbackStudId;
+        }
+
         if (FirebaseManager.Instance?.CurrentUser != null)
         {
+            Debug.LogWarning($"⚠️ CRITICAL: Using Firebase UserId as final fallback - quiz attempts may not be linked to correct student!");
             return FirebaseManager.Instance.CurrentUser.UserId;
         }
 
-        // Fallback to PlayerPrefs/StudentPrefs
-        return StudentPrefs.GetString("StudentId", "unknown_student");
+        return "unknown_student";
     }
+
 
     void Update()
     {
@@ -263,13 +293,19 @@ public class QuizTimeManager : MonoBehaviour
         });
     }
 
-
     private async Task SaveQuizAttempt()
     {
         // ✅ Skip saving if teacher is logged in
         if (IsTeacher())
         {
             Debug.Log("👨‍🏫 Teacher mode - Skipping quiz attempt save to Firebase");
+            return;
+        }
+
+        // ✅ Additional check - make sure we have a valid studId
+        if (string.IsNullOrEmpty(studentStudId) || studentStudId == "unknown_student")
+        {
+            Debug.LogError("❌ Cannot save quiz attempt - invalid studId");
             return;
         }
 
@@ -301,18 +337,18 @@ public class QuizTimeManager : MonoBehaviour
             );
 
             // Save to Firestore with nested structure:
-            // createdStories/{storyId}/quizAttempts/{studentId}/attempts/{attemptId}
+            // createdStories/{storyId}/quizAttempts/{studentStudId}/attempts/{attemptId}
             var attemptRef = firestore
                 .Collection("createdStories")
                 .Document(currentStoryId)
                 .Collection("quizAttempts")
-                .Document(studentId)
+                .Document(studentStudId) // ✅ Now using studentStudId instead of userId
                 .Collection("attempts")
                 .Document(); // Auto-generated ID
 
             await attemptRef.SetAsync(quizAttempt);
 
-            Debug.Log($"✅ Quiz attempt saved: Attempt #{attemptNumber}, Score: {score}/{questions.Length}, Passed: {isPassed}");
+            Debug.Log($"✅ Quiz attempt saved: StudentStudId: {studentStudId}, Attempt #{attemptNumber}, Score: {score}/{questions.Length}, Passed: {isPassed}");
 
         }
         catch (Exception ex)
@@ -337,6 +373,13 @@ public class QuizTimeManager : MonoBehaviour
             return 0; // Return 0 or any placeholder for teacher
         }
 
+        // ✅ Additional check - make sure we have a valid studId
+        if (string.IsNullOrEmpty(studentStudId) || studentStudId == "unknown_student")
+        {
+            Debug.LogError("❌ Cannot get next attempt number - invalid studId");
+            return 1; // Return 1 as fallback
+        }
+
         try
         {
             var firestore = FirebaseManager.Instance.DB;
@@ -345,7 +388,7 @@ public class QuizTimeManager : MonoBehaviour
                 .Collection("createdStories")
                 .Document(currentStoryId)
                 .Collection("quizAttempts")
-                .Document(studentId)
+                .Document(studentStudId) // ✅ Now using studentStudId instead of userId
                 .Collection("attempts");
 
             var snapshot = await attemptsRef
@@ -367,6 +410,4 @@ public class QuizTimeManager : MonoBehaviour
             return 1;
         }
     }
-
 }
-

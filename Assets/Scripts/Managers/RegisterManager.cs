@@ -21,6 +21,12 @@ public class RegisterManager : MonoBehaviour
     public Button errorBackButton;
     public Button registerButton; // Reference to the register button
 
+    [Header("Password Visibility")]
+    public Button showPasswordButton;   // 👁 When holding, show password
+    public Button hidePasswordButton;   // 👁 When released, hide password
+
+
+
     [Header("Loading Spinner")]
     public GameObject loadingSpinner; // Reference to the spinner prefab/GameObject
     public TextMeshProUGUI registerButtonText; // Reference to the button's text component
@@ -37,13 +43,22 @@ public class RegisterManager : MonoBehaviour
     }
 
     private void Start()
-    {
-        // Ensure spinner is initially hidden
-        if (loadingSpinner != null)
-        {
-            loadingSpinner.SetActive(false);
-        }
-    }
+{
+    if (loadingSpinner != null)
+        loadingSpinner.SetActive(false);
+
+    // 👁 Ensure both start hidden
+    passwordField.contentType = TMP_InputField.ContentType.Password;
+    confirmPasswordField.contentType = TMP_InputField.ContentType.Password;
+    passwordField.ForceLabelUpdate();
+    confirmPasswordField.ForceLabelUpdate();
+
+    // 👁 Default icon visibility
+    showPasswordButton.gameObject.SetActive(true);
+    hidePasswordButton.gameObject.SetActive(false);
+}
+
+
 
     // Navigate to the login scene
     public void LoginButtonClicked()
@@ -216,4 +231,40 @@ public class RegisterManager : MonoBehaviour
     }
 
     #endregion
+
+    #region Password Visibility
+
+    #region Password Visibility
+
+    public void OnShowPasswordPressed()
+    {
+        // Show both password fields
+        passwordField.contentType = TMP_InputField.ContentType.Standard;
+        confirmPasswordField.contentType = TMP_InputField.ContentType.Standard;
+        passwordField.ForceLabelUpdate();
+        confirmPasswordField.ForceLabelUpdate();
+
+        showPasswordButton.gameObject.SetActive(false);
+        hidePasswordButton.gameObject.SetActive(true);
+    }
+
+    public void OnShowPasswordReleased()
+    {
+        // Hide both password fields
+        passwordField.contentType = TMP_InputField.ContentType.Password;
+        confirmPasswordField.contentType = TMP_InputField.ContentType.Password;
+        passwordField.ForceLabelUpdate();
+        confirmPasswordField.ForceLabelUpdate();
+
+        showPasswordButton.gameObject.SetActive(true);
+        hidePasswordButton.gameObject.SetActive(false);
+    }
+
+    #endregion
+
+
+
+    #endregion
+
+
 }

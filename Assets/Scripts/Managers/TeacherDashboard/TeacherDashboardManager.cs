@@ -552,14 +552,14 @@ public class TeacherDashboardManager : MonoBehaviour
             });
     }
 
-    // NEW: Back button method for student overview page - goes back to full progress view
     public void OnBackToStudentProgressClicked()
     {
         Debug.Log("Returning to full student progress view from overview");
 
-        // Hide the overview page
+        // Reset the overview page state before hiding it
         if (studentOverviewPage != null)
         {
+            studentOverviewPage.ResetPage(); // ADD THIS LINE
             studentOverviewPage.gameObject.SetActive(false);
         }
 
@@ -574,6 +574,7 @@ public class TeacherDashboardManager : MonoBehaviour
 
         Debug.Log("Successfully returned to full student progress view");
     }
+
 
 
     // NEW: Update the existing back method to handle overview page properly
@@ -656,6 +657,12 @@ public class TeacherDashboardManager : MonoBehaviour
         }
     }
 
+    // NEW: Add this method to provide access to the dashboard state
+    public DashboardState GetDashboardState()
+    {
+        return _dashboardState;
+    }
+
     private void OnDestroy()
     {
         if (classManager != null)
@@ -685,7 +692,6 @@ public void OnStudentOverviewClicked(StudentModel student)
     ShowStudentOverviewPage(student);
 }
 
-    // BEST SOLUTION: Use the existing SetActivePanel system
     private void ShowStudentOverviewPage(StudentModel student)
     {
         Debug.Log("🔄 TEACHER DASHBOARD MANAGER: ShowStudentOverviewPage called");
@@ -706,8 +712,18 @@ public void OnStudentOverviewClicked(StudentModel student)
         if (studentOverviewPage != null)
         {
             Debug.Log($"✅ StudentOverviewPage reference found - setting up student: {student.studName}");
-            studentOverviewPage.SetupStudentOverview(student);
 
+            // SET THE DASHBOARD MANAGER REFERENCE
+            studentOverviewPage.SetDashboardManager(this);
+
+            // Make sure student has studId
+            if (string.IsNullOrEmpty(student.studId))
+            {
+                student.studId = student.userId; // Fallback to userId if studId is not available
+                Debug.Log($"⚠️ studId not found, using userId as fallback: {student.studId}");
+            }
+
+            studentOverviewPage.SetupStudentOverview(student);
             Debug.Log("✅ Student overview page setup complete - should be visible now");
         }
         else
@@ -715,5 +731,6 @@ public void OnStudentOverviewClicked(StudentModel student)
             Debug.LogError("❌ StudentOverviewPage reference is NULL!");
         }
     }
+
 
 }

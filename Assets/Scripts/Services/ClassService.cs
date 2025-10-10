@@ -81,7 +81,8 @@ public class ClassService
                 classLevel,
                 classCode,
                 teachId = teacherId,
-                dateCreated = Timestamp.GetCurrentTimestamp()
+                dateCreated = Timestamp.GetCurrentTimestamp(),
+                isRemoved = false  // NEW: Add isRemoved field on creation
             };
 
             await _firebaseService.DB.Collection("classes").AddAsync(newClass);
@@ -95,6 +96,7 @@ public class ClassService
         }
     }
 
+    // CHANGED: Soft delete instead of hard delete
     public async void DeleteClass(string classCode, Action<bool, string> callback)
     {
         try
@@ -106,11 +108,14 @@ public class ClassService
                 return;
             }
 
+            // Mark class as removed
+            await classDoc.Reference.UpdateAsync(GetRemovedData());
+
+            // Also mark all students in this class as removed
             await MarkCompleteStudentDataAsRemoved(classCode);
 
-            await classDoc.Reference.DeleteAsync();
-            Debug.Log($"[ClassService] Class {classCode} deleted and all student data marked as removed.");
-            callback(true, "Class deleted and all student data marked as removed.");
+            Debug.Log($"[ClassService] Class {classCode} marked as removed (soft delete)");
+            callback(true, "Class and all associated student data have been marked as removed.");
         }
         catch (Exception ex)
         {
@@ -147,14 +152,46 @@ public class ClassService
         }
     }
 
+    // CHANGED: Filter out removed classes
     private async Task<DocumentSnapshot> GetClassByCode(string classCode)
     {
         var snapshot = await _firebaseService.DB.Collection("classes")
             .WhereEqualTo("classCode", classCode)
+            .WhereEqualTo("isRemoved", false)  // NEW: Only get non-removed classes
             .Limit(1)
             .GetSnapshotAsync();
 
         return snapshot.Count > 0 ? snapshot.Documents.First() : null;
+    }
+
+    // NEW: Method to restore a deleted class
+    public async void RestoreClass(string classCode, Action<bool, string> callback)
+    {
+        try
+        {
+            // Get class even if it's removed
+            var snapshot = await _firebaseService.DB.Collection("classes")
+                .WhereEqualTo("classCode", classCode)
+                .Limit(1)
+                .GetSnapshotAsync();
+
+            if (snapshot.Count == 0)
+            {
+                callback(false, "Class not found.");
+                return;
+            }
+
+            var classDoc = snapshot.Documents.First();
+            await classDoc.Reference.UpdateAsync(GetRestoreData());
+
+            Debug.Log($"[ClassService] Class {classCode} restored");
+            callback(true, "Class restored successfully.");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[ClassService] RestoreClass error: {ex.Message}");
+            callback(false, "Failed to restore class.");
+        }
     }
 
     #endregion
@@ -178,13 +215,12 @@ public class ClassService
     {
         var data = studentDoc.ToDictionary();
         string userId = data.ContainsKey("userId") ? data["userId"]?.ToString() : null;
-        string studId = studentDoc.Id; // use the Firestore document ID as studId
+        string studId = studentDoc.Id;
 
         Debug.Log($"[ClassService] Starting removal process for student - userId: {userId}, studId: {studId}");
 
         var tasks = new List<Task>();
-        
-        // Create separate data for each update to avoid race conditions
+
         tasks.Add(studentDoc.Reference.UpdateAsync(GetRemovedData()));
 
         if (!string.IsNullOrEmpty(userId))
@@ -220,60 +256,58 @@ public class ClassService
         }
     }
 
-   private async Task MarkStudentProgressAsRemoved(string studId)
-{
-    try
+    private async Task MarkStudentProgressAsRemoved(string studId)
     {
-        Debug.Log($"[ClassService] Marking student progress {studId} as removed");
-        var progressDoc = await _firebaseService.DB.Collection("studentProgress").Document(studId).GetSnapshotAsync();
+        try
+        {
+            Debug.Log($"[ClassService] Marking student progress {studId} as removed");
+            var progressDoc = await _firebaseService.DB.Collection("studentProgress").Document(studId).GetSnapshotAsync();
 
-        if (progressDoc.Exists)
-        {
-            await progressDoc.Reference.UpdateAsync(GetRemovedData());
-            Debug.Log($"[ClassService] Successfully marked student progress {studId} as removed");
+            if (progressDoc.Exists)
+            {
+                await progressDoc.Reference.UpdateAsync(GetRemovedData());
+                Debug.Log($"[ClassService] Successfully marked student progress {studId} as removed");
+            }
+            else
+            {
+                Debug.LogWarning($"[ClassService] No progress document found for {studId}, skipping");
+            }
         }
-        else
+        catch (Exception ex)
         {
-            Debug.LogWarning($"[ClassService] No progress document found for {studId}, skipping");
-        }
-    }
-    catch (Exception ex)
-    {
-        Debug.LogError($"[ClassService] Failed to mark progress for {studId}: {ex.Message}");
-    }
-}
-
-private async Task MarkStudentLeaderboardAsRemoved(string studId)
-{
-    try
-    {
-        Debug.Log($"[ClassService] Marking leaderboard {studId} as removed");
-        var leaderboardDoc = await _firebaseService.DB.Collection("studentLeaderboards").Document(studId).GetSnapshotAsync();
-
-        if (leaderboardDoc.Exists)
-        {
-            await leaderboardDoc.Reference.UpdateAsync(GetRemovedData());
-            Debug.Log($"[ClassService] Successfully marked leaderboard {studId} as removed");
-        }
-        else
-        {
-            Debug.LogWarning($"[ClassService] No leaderboard document found for {studId}, skipping");
+            Debug.LogError($"[ClassService] Failed to mark progress for {studId}: {ex.Message}");
         }
     }
-    catch (Exception ex)
+
+    private async Task MarkStudentLeaderboardAsRemoved(string studId)
     {
-        Debug.LogError($"[ClassService] Failed to mark leaderboard for {studId}: {ex.Message}");
+        try
+        {
+            Debug.Log($"[ClassService] Marking leaderboard {studId} as removed");
+            var leaderboardDoc = await _firebaseService.DB.Collection("studentLeaderboards").Document(studId).GetSnapshotAsync();
+
+            if (leaderboardDoc.Exists)
+            {
+                await leaderboardDoc.Reference.UpdateAsync(GetRemovedData());
+                Debug.Log($"[ClassService] Successfully marked leaderboard {studId} as removed");
+            }
+            else
+            {
+                Debug.LogWarning($"[ClassService] No leaderboard document found for {studId}, skipping");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[ClassService] Failed to mark leaderboard for {studId}: {ex.Message}");
+        }
     }
-}
-
-
 
     public async void MarkStudentAsRemoved(string userId, string classCode, Action<bool> callback)
     {
         try
         {
             Debug.Log($"[ClassService] Starting MarkStudentAsRemoved for userId: {userId}, classCode: {classCode}");
-            
+
             var query = await _firebaseService.DB.Collection("students")
                 .WhereEqualTo("userId", userId)
                 .WhereEqualTo("classCode", classCode)
@@ -339,7 +373,6 @@ private async Task MarkStudentLeaderboardAsRemoved(string studId)
             var data = studentDoc.ToDictionary();
             string userId = data.ContainsKey("userId") ? data["userId"]?.ToString() : null;
 
-            // Create separate restore data for each operation
             tasks.Add(studentDoc.Reference.UpdateAsync(GetRestoreData()));
 
             if (!string.IsNullOrEmpty(userId))
@@ -351,7 +384,6 @@ private async Task MarkStudentLeaderboardAsRemoved(string studId)
                 .WhereEqualTo("studId", studId)
                 .GetSnapshotAsync();
 
-            // Create separate restore data for each leaderboard document
             foreach (var doc in leaderboardQuery.Documents)
             {
                 tasks.Add(doc.Reference.UpdateAsync(GetRestoreData()));
@@ -385,6 +417,7 @@ private async Task MarkStudentLeaderboardAsRemoved(string studId)
     {
         var snapshot = await _firebaseService.DB.Collection("classes")
             .WhereEqualTo("classCode", classCode)
+            .WhereEqualTo("isRemoved", false)  // NEW: Only check non-removed classes
             .Limit(1)
             .GetSnapshotAsync();
 

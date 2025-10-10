@@ -73,6 +73,17 @@ public class GameProgressManager : MonoBehaviour
 
         CurrentStudentState = studentState;
 
+        // ✅ ADD THIS: Save the student ID to StudentPrefs so quizzes can access it
+        if (!string.IsNullOrEmpty(CurrentStudentState.StudentId))
+        {
+            SetCurrentStudentId(CurrentStudentState.StudentId);
+        }
+        else
+        {
+            Debug.LogError("❌ Cannot save CurrentStudentId: StudentState.StudentId is null or empty");
+        }
+    
+
         if (CurrentStudentState.GameProgress == null)
         {
             Debug.LogWarning("GameProgress is NULL in StudentState! Creating new GameProgress.");
@@ -245,48 +256,53 @@ public class GameProgressManager : MonoBehaviour
     });
 }
 
-// NEW: Method to check if scores need recalculation after loading
-private void CheckAndRecalculateScoresAfterLoad()
-{
-    if (CurrentStudentState?.Progress == null)
+    // FIXED: More aggressive check for score recalculation
+    private void CheckAndRecalculateScoresAfterLoad()
     {
-        Debug.LogWarning("Cannot check scores: StudentProgress is null");
-        TriggerInitializationComplete();
-        return;
+        if (CurrentStudentState?.Progress == null)
+        {
+            Debug.LogWarning("Cannot check scores: StudentProgress is null");
+            TriggerInitializationComplete();
+            return;
+        }
+
+        // MORE AGGRESSIVE CHECK: Recalculate if scores are null, empty, zero, or default
+        bool needsRecalculation =
+            string.IsNullOrEmpty(CurrentStudentState.Progress.overallScore) ||
+            string.IsNullOrEmpty(CurrentStudentState.Progress.successRate) ||
+            CurrentStudentState.Progress.overallScore == "0" ||
+            CurrentStudentState.Progress.overallScore == "0%" ||
+            CurrentStudentState.Progress.successRate == "0%" ||
+            CurrentStudentState.Progress.successRate == "0" ||
+            CurrentStudentState.Progress.overallScore == null ||
+            CurrentStudentState.Progress.successRate == null;
+
+        if (needsRecalculation)
+        {
+            Debug.Log("🚀 Scores need recalculation after loading - triggering recalculation");
+            RecalculateScoresAfterInitialLoad();
+        }
+        else
+        {
+            Debug.Log($"✅ Scores are already set - Overall: {CurrentStudentState.Progress.overallScore}, Success: {CurrentStudentState.Progress.successRate}");
+            TriggerInitializationComplete();
+        }
     }
 
-    // Check if scores are zero/default and need recalculation
-    bool needsRecalculation = string.IsNullOrEmpty(CurrentStudentState.Progress.overallScore) || 
-                             string.IsNullOrEmpty(CurrentStudentState.Progress.successRate) ||
-                             CurrentStudentState.Progress.overallScore == "0" ||
-                             CurrentStudentState.Progress.successRate == "0%" ||
-                             CurrentStudentState.Progress.successRate == "0";
-
-    if (needsRecalculation)
-    {
-        Debug.Log("Scores need recalculation after loading from Firebase");
-        RecalculateScoresAfterInitialLoad();
-    }
-    else
-    {
-        Debug.Log($"Scores are already set - Overall: {CurrentStudentState.Progress.overallScore}, Success: {CurrentStudentState.Progress.successRate}");
-        TriggerInitializationComplete();
-    }
-}
 
 // NEW: Safe score recalculation for initial load
 private void RecalculateScoresAfterInitialLoad()
 {
     if (CurrentStudentState == null) 
     {
-        TriggerInitializationComplete();
+        TriggerInitializationComplete(); // ADD THIS
         return;
     }
     
     if (_isRecalculatingScores)
     {
         Debug.Log("Score recalculation already in progress, skipping...");
-        TriggerInitializationComplete();
+        TriggerInitializationComplete(); // ADD THIS
         return;
     }
 
@@ -303,14 +319,8 @@ private void RecalculateScoresAfterInitialLoad()
             if (!task.IsCompletedSuccessfully || task.Result == null)
             {
                 Debug.LogWarning("Failed to fetch quiz attempts for initial recalculation");
-                // Set default scores
-                if (CurrentStudentState.Progress != null)
-                {
-                    CurrentStudentState.Progress.overallScore = "0";
-                    CurrentStudentState.Progress.successRate = "0%";
-                }
-                _isRecalculatingScores = false;
-                TriggerInitializationComplete();
+                SetDefaultScores();
+                TriggerInitializationComplete(); // ADD THIS
                 return;
             }
 
@@ -320,13 +330,8 @@ private void RecalculateScoresAfterInitialLoad()
             if (allAttempts.Count() == 0)
             {
                 Debug.Log("No quiz attempts found, setting default scores");
-                if (CurrentStudentState.Progress != null)
-                {
-                    CurrentStudentState.Progress.overallScore = "0";
-                    CurrentStudentState.Progress.successRate = "0%";
-                }
-                _isRecalculatingScores = false;
-                TriggerInitializationComplete();
+                SetDefaultScores();
+                TriggerInitializationComplete(); // ADD THIS
                 return;
             }
 
@@ -342,7 +347,7 @@ private void RecalculateScoresAfterInitialLoad()
                 : "0%";
 
             var bestScoresPerQuiz = new Dictionary<string, int>();
-            
+
             foreach (var doc in allAttempts)
             {
                 var attempt = doc.ConvertTo<QuizAttemptModel>();
@@ -369,8 +374,9 @@ private void RecalculateScoresAfterInitialLoad()
         {
             _isRecalculatingScores = false;
             Debug.LogError($"Exception during initial score recalculation: {e.Message}");
-            TriggerInitializationComplete();
+            TriggerInitializationComplete(); // ADD THIS
         }
+        
     });
 }
 
@@ -797,46 +803,161 @@ private void UpdateCurrentStoryTo(string storyId)
     }
 
     // FIXED: Add safeguards to prevent loops in StartNewGame
-public void StartNewGame()
-{
-    if (CurrentStudentState == null)
+    // FIXED: StartNewGame with proper score recalculation triggering
+    public void StartNewGame()
     {
-        Debug.LogError("No student logged in. Cannot start a new game.");
-        return;
+        if (CurrentStudentState == null)
+        {
+            Debug.LogError("No student logged in. Cannot start a new game.");
+            return;
+        }
+
+        // ✅ Ensure student ID is saved even when starting new game
+        if (!string.IsNullOrEmpty(CurrentStudentState.StudentId))
+        {
+            SetCurrentStudentId(CurrentStudentState.StudentId);
+        }
+
+        InvalidateProgressCache();
+        var previousAchievements = CurrentStudentState.GameProgress?.unlockedAchievements ?? new List<string>();
+
+        CurrentStudentState.SetGameProgress(new GameProgressModel
+        {
+            currentHearts = 3,
+            unlockedChapters = new List<string> { "CH001" },
+            unlockedStories = new List<string> { "ST001" },
+            unlockedAchievements = new List<string>(previousAchievements),
+            unlockedArtifacts = new List<string>(),
+            unlockedCivilizations = new List<string> { "Sumerian" },
+            lastUpdated = Timestamp.GetCurrentTimestamp(),
+            isRemoved = false
+        });
+
+        // FIX: Initialize with NULL scores to force recalculation
+        CurrentStudentState.SetProgress(new StudentProgressModel
+        {
+            currentStory = db.Document("stories/ST001"),
+            overallScore = null, // This will force recalculation
+            successRate = null,  // This will force recalculation
+            isRemoved = false,
+            dateUpdated = Timestamp.GetCurrentTimestamp()
+        });
+
+        // Save the initial progress
+        SaveProgress();
+        Debug.Log("Started a new game for student: " + CurrentStudentState.StudentId);
+
+        // FIX: Force immediate recalculation for new games
+        ForceRecalculateScores();
     }
-    
-    InvalidateProgressCache();
-    var previousAchievements = CurrentStudentState.GameProgress?.unlockedAchievements ?? new List<string>();
-
-    CurrentStudentState.SetGameProgress(new GameProgressModel
+    // NEW: Method to force immediate score recalculation
+    private void ForceRecalculateScores()
     {
-        currentHearts = 3,
-        unlockedChapters = new List<string> { "CH001" },
-        unlockedStories = new List<string> { "ST001" },
-        unlockedAchievements = new List<string>(previousAchievements),
-        unlockedArtifacts = new List<string>(),
-        unlockedCivilizations = new List<string> { "Sumerian" },
-        lastUpdated = Timestamp.GetCurrentTimestamp(),
-        isRemoved = false
-    });
+        if (CurrentStudentState == null) return;
 
-    // FIX: Initialize with proper default values that will trigger recalculation if needed
-    CurrentStudentState.SetProgress(new StudentProgressModel
+        if (_isRecalculatingScores)
+        {
+            Debug.Log("Score recalculation already in progress, will retry...");
+            // Retry after a short delay
+            StartCoroutine(DelayedRecalculation());
+            return;
+        }
+
+        _isRecalculatingScores = true;
+        string studId = CurrentStudentState.StudentId;
+
+        Debug.Log($"🚀 FORCE recalculating scores for new game - student {studId}");
+
+        var quizAttemptsRef = db.Collection("quizAttempts").Document(studId).Collection("attempts");
+        quizAttemptsRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            try
+            {
+                if (!task.IsCompletedSuccessfully || task.Result == null)
+                {
+                    Debug.LogWarning("No quiz attempts found for new game, setting default scores");
+                    SetDefaultScores();
+                    return;
+                }
+
+                QuerySnapshot snapshot = task.Result;
+                var allAttempts = snapshot.Documents;
+
+                if (allAttempts.Count() == 0)
+                {
+                    Debug.Log("No quiz attempts found for new game, setting default scores");
+                    SetDefaultScores();
+                    return;
+                }
+
+                RecalculateAndUpdateScores(allAttempts);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Exception during force recalculation: {e.Message}");
+                SetDefaultScores();
+            }
+        });
+    }
+    // NEW: Helper method to recalculate and update scores
+    private void RecalculateAndUpdateScores(IEnumerable<DocumentSnapshot> allAttempts)
     {
-        currentStory = db.Document("stories/ST001"),
-        overallScore = "0", // This will trigger recalculation
-        successRate = "0%", // This will trigger recalculation
-        isRemoved = false,
-        dateUpdated = Timestamp.GetCurrentTimestamp()
-    });
+        int totalAttempts = allAttempts.Count();
+        int passedAttempts = allAttempts.Count(doc =>
+        {
+            var attempt = doc.ConvertTo<QuizAttemptModel>();
+            return attempt.isPassed;
+        });
 
-    // Save the initial progress
-    SaveProgress();
-    Debug.Log("Started a new game for student: " + CurrentStudentState.StudentId);
-    
-    // Force recalculation for new games
-    CheckAndRecalculateScoresAfterLoad();
+        string successRate = totalAttempts > 0
+            ? $"{(int)((float)passedAttempts / totalAttempts * 100)}%"
+            : "0%";
+
+        var bestScoresPerQuiz = new Dictionary<string, int>();
+
+        foreach (var doc in allAttempts)
+        {
+            var attempt = doc.ConvertTo<QuizAttemptModel>();
+            if (!bestScoresPerQuiz.ContainsKey(attempt.quizId) || attempt.score > bestScoresPerQuiz[attempt.quizId])
+            {
+                bestScoresPerQuiz[attempt.quizId] = attempt.score;
+            }
+        }
+
+        int overallScore = bestScoresPerQuiz.Values.Sum();
+
+        // Update local progress
+        if (CurrentStudentState.Progress != null)
+        {
+            CurrentStudentState.Progress.overallScore = overallScore.ToString();
+            CurrentStudentState.Progress.successRate = successRate;
+            Debug.Log($"✅ Recalculated scores - OverallScore: {overallScore}, SuccessRate: {successRate}");
+        }
+
+        // Save to Firebase
+        SaveStudentProgressSafely(overallScore, successRate, bestScoresPerQuiz, totalAttempts, passedAttempts);
+    }
+
+
+// NEW: Helper method to set default scores
+private void SetDefaultScores()
+{
+    if (CurrentStudentState?.Progress != null)
+    {
+        CurrentStudentState.Progress.overallScore = "0";
+        CurrentStudentState.Progress.successRate = "0%";
+        SaveStudentProgressToFirebase();
+    }
+    _isRecalculatingScores = false;
 }
+
+    // NEW: Helper method for delayed recalculation
+    private System.Collections.IEnumerator DelayedRecalculation()
+    {
+        yield return new WaitForSeconds(1f);
+        ForceRecalculateScores();
+    }
+
 
 // FIXED: Add method to manually break any loops
 public void ForceStopAllOperations()
@@ -1618,4 +1739,42 @@ private void RecalculateScoresFromQuizAttemptsAfterSave()
             });
         });
     }
+    #region Student ID Management
+
+/// <summary>
+/// Sets the current student ID in StudentPrefs so other systems (like quizzes) can access it
+/// </summary>
+public void SetCurrentStudentId(string studentId)
+{
+    if (string.IsNullOrEmpty(studentId))
+    {
+        Debug.LogError("Cannot set CurrentStudentId: studentId is null or empty");
+        return;
+    }
+    
+    // Save to StudentPrefs so quiz systems can access it
+    StudentPrefs.SetString("CurrentStudentId", studentId);
+    StudentPrefs.Save();
+    
+    Debug.Log($"✅ Saved CurrentStudentId to StudentPrefs: {studentId}");
+}
+
+/// <summary>
+/// Gets the current student ID from StudentPrefs
+/// </summary>
+public string GetCurrentStudentId()
+{
+    string studentId = StudentPrefs.GetString("CurrentStudentId", "");
+    
+    if (string.IsNullOrEmpty(studentId))
+    {
+        Debug.LogWarning("⚠️ No CurrentStudentId found in StudentPrefs");
+        return "";
+    }
+    
+    return studentId;
+}
+
+    #endregion
+
 }

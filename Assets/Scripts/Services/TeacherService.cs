@@ -75,12 +75,15 @@ public class TeacherService
         return teachQuerySnapshot.Count > 0 ? teachQuerySnapshot.Documents.FirstOrDefault() : null;
     }
 
+    // CHANGED: Filter out removed classes
     private async Task<Dictionary<string, List<string>>> GetTeacherClassCodes(string teacherId)
     {
         Dictionary<string, List<string>> classCodes = new Dictionary<string, List<string>>();
 
+        // NEW: Add filter for isRemoved = false
         Query classQuery = _firebaseService.DB.Collection("classes")
-            .WhereEqualTo("teachId", teacherId);
+            .WhereEqualTo("teachId", teacherId)
+            .WhereEqualTo("isRemoved", false);  // Only get non-removed classes
 
         QuerySnapshot querySnapshot = await classQuery.GetSnapshotAsync();
 
@@ -91,6 +94,8 @@ public class TeacherService
             string classLevel = document.GetValue<string>("classLevel");
             classCodes[classCode] = new List<string> { classLevel, className };
         }
+
+        Debug.Log($"[TeacherService] Found {classCodes.Count} active classes for teacher {teacherId}");
 
         return classCodes;
     }

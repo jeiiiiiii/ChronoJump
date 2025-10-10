@@ -18,6 +18,12 @@ public class LoginManager : MonoBehaviour
     public Button backButton;
     public Button loginButton; // Reference to the login button
 
+    [Header("Password Visibility")]
+    public Button showPasswordButton;   // 👁 When holding, show password
+    public Button hidePasswordButton;   // 👁 When released, hide password
+
+
+
     [Header("Remember Me Feature")]
     public Toggle rememberMeToggle;
 
@@ -49,6 +55,20 @@ public class LoginManager : MonoBehaviour
         {
             loadingSpinner.SetActive(false);
         }
+        // 👇 Make sure the password starts hidden
+        if (passwordField != null)
+        {
+            passwordField.contentType = TMP_InputField.ContentType.Password;
+            passwordField.ForceLabelUpdate();
+        }
+    
+    // 👁 Default icon states
+    if (showPasswordButton != null)
+        showPasswordButton.gameObject.SetActive(true);
+
+        if (hidePasswordButton != null)
+            hidePasswordButton.gameObject.SetActive(false);
+        
     }
 
     // Navigate to the registration scene
@@ -380,4 +400,28 @@ public class LoginManager : MonoBehaviour
         }
     }
     #endregion
+
+    #region Password Visibility
+
+    public void OnShowPasswordPressed()
+    {
+        passwordField.contentType = TMP_InputField.ContentType.Standard; // show text
+        passwordField.ForceLabelUpdate();
+
+        showPasswordButton.gameObject.SetActive(false);
+        hidePasswordButton.gameObject.SetActive(true);
+    }
+
+    public void OnShowPasswordReleased()
+    {
+        passwordField.contentType = TMP_InputField.ContentType.Password; // hide text
+        passwordField.ForceLabelUpdate();
+
+        showPasswordButton.gameObject.SetActive(true);
+        hidePasswordButton.gameObject.SetActive(false);
+    }
+
+    #endregion
+
+
 }

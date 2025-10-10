@@ -116,7 +116,7 @@ private string ExtractClassNameFromDisplay(string displayName)
                 // Notify other systems about the deletion
                 OnClassDeleted?.Invoke();
                 
-                ShowMessage("Success", "Class and all associated student data have been permanently deleted.");
+                ShowMessage("Success", "Class and all associated student data have been deleted.");
             }
             else
             {

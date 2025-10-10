@@ -261,4 +261,211 @@ public class FirebaseManager : MonoBehaviour
         return _firebaseService;
     }
 
+    // Add these methods to your existing FirebaseManager class
+
+public void GetAllChapters(Action<Dictionary<string, Dictionary<string, object>>> callback)
+{
+    DB.Collection("chapters").GetSnapshotAsync().ContinueWith(task =>
+    {
+        UnityDispatcher.RunOnMainThread(() =>
+        {
+            if (task.IsCompletedSuccessfully && task.Result != null)
+            {
+                var chapters = new Dictionary<string, Dictionary<string, object>>();
+                foreach (var document in task.Result.Documents)
+                {
+                    chapters[document.Id] = document.ToDictionary();
+                }
+                callback?.Invoke(chapters);
+            }
+            else
+            {
+                Debug.LogError("Failed to load chapters: " + task.Exception);
+                callback?.Invoke(null);
+            }
+        });
+    });
+}
+
+public void GetStoriesByChapter(string chapterId, Action<Dictionary<string, Dictionary<string, object>>> callback)
+{
+    DocumentReference chapterRef = DB.Collection("chapters").Document(chapterId);
+    
+    DB.Collection("stories")
+        .WhereEqualTo("chapter", chapterRef)
+        .GetSnapshotAsync().ContinueWith(task =>
+        {
+            UnityDispatcher.RunOnMainThread(() =>
+            {
+                if (task.IsCompletedSuccessfully && task.Result != null)
+                {
+                    var stories = new Dictionary<string, Dictionary<string, object>>();
+                    foreach (var document in task.Result.Documents)
+                    {
+                        stories[document.Id] = document.ToDictionary();
+                    }
+                    callback?.Invoke(stories);
+                }
+                else
+                {
+                    Debug.LogError($"Failed to load stories for chapter {chapterId}: " + task.Exception);
+                    callback?.Invoke(null);
+                }
+            });
+        });
+}
+
+    public void GetQuizAttemptsByStudentAndStory(string studentStudId, string storyId, Action<Dictionary<string, Dictionary<string, object>>> callback)
+    {
+        Debug.Log($"🔍 Querying quiz attempts for student studId: {studentStudId}, story: {storyId}");
+
+        // First, we need to get the chapter ID for this story to build the correct quizId
+        DB.Collection("stories").Document(storyId).GetSnapshotAsync().ContinueWith(storyTask =>
+        {
+            UnityDispatcher.RunOnMainThread(() =>
+            {
+                if (storyTask.IsCompletedSuccessfully && storyTask.Result.Exists)
+                {
+                    var storyData = storyTask.Result.ToDictionary();
+                    DocumentReference chapterRef = storyData["chapter"] as DocumentReference;
+                    string chapterId = chapterRef?.Id;
+
+                    if (!string.IsNullOrEmpty(chapterId))
+                    {
+                        // Build the correct quizId format: "CH001_ST002"
+                        string correctQuizId = $"{chapterId}_{storyId}";
+                        Debug.Log($"🎯 Built correct quizId: {correctQuizId}");
+
+                        // Query the subcollection: quizAttempts/{studId}/attempts/
+                        DB.Collection("quizAttempts")
+                            .Document(studentStudId)
+                            .Collection("attempts")
+                            .WhereEqualTo("quizId", correctQuizId)
+                            .GetSnapshotAsync().ContinueWith(attemptsTask =>
+                            {
+                                UnityDispatcher.RunOnMainThread(() =>
+                                {
+                                    if (attemptsTask.IsCompletedSuccessfully && attemptsTask.Result != null)
+                                    {
+                                        var attempts = new Dictionary<string, Dictionary<string, object>>();
+                                        foreach (var document in attemptsTask.Result.Documents)
+                                        {
+                                            var data = document.ToDictionary();
+                                            attempts[document.Id] = data;
+
+                                            Debug.Log($"✅ Found quiz attempt: {document.Id}");
+                                            Debug.Log($"   - quizId: {data.GetValueOrDefault("quizId", "N/A")}");
+                                            Debug.Log($"   - attemptNumber: {data.GetValueOrDefault("attemptNumber", "N/A")}");
+                                            Debug.Log($"   - score: {data.GetValueOrDefault("score", "N/A")}");
+                                            Debug.Log($"   - isPassed: {data.GetValueOrDefault("isPassed", "N/A")}");
+                                        }
+                                        Debug.Log($"📊 Found {attempts.Count} quiz attempts for studId {studentStudId} and quizId {correctQuizId}");
+                                        callback?.Invoke(attempts);
+                                    }
+                                    else if (attemptsTask.IsFaulted)
+                                    {
+                                        Debug.LogError($"❌ Failed to load quiz attempts: {attemptsTask.Exception}");
+                                        callback?.Invoke(new Dictionary<string, Dictionary<string, object>>());
+                                    }
+                                    else
+                                    {
+                                        Debug.Log($"❌ No quiz attempts found in subcollection for studId {studentStudId} and quizId {correctQuizId}");
+                                        callback?.Invoke(new Dictionary<string, Dictionary<string, object>>());
+                                    }
+                                });
+                            });
+                    }
+                    else
+                    {
+                        Debug.LogError($"❌ Could not get chapter ID for story {storyId}");
+                        callback?.Invoke(new Dictionary<string, Dictionary<string, object>>());
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"❌ Could not load story document {storyId}");
+                    callback?.Invoke(new Dictionary<string, Dictionary<string, object>>());
+                }
+            });
+        });
+    }
+
+    // Add these methods to FirebaseManager.cs
+
+public void GetPublishedStoriesByClass(string classCode, Action<Dictionary<string, Dictionary<string, object>>> callback)
+{
+    Debug.Log($"🔍 Querying published stories for class: {classCode}");
+    
+    DB.Collection("createdStories")
+        .WhereEqualTo("isPublished", true)
+        .WhereArrayContains("assignedClasses", classCode)
+        .GetSnapshotAsync().ContinueWith(task =>
+        {
+            UnityDispatcher.RunOnMainThread(() =>
+            {
+                if (task.IsCompletedSuccessfully && task.Result != null)
+                {
+                    var stories = new Dictionary<string, Dictionary<string, object>>();
+                    foreach (var document in task.Result.Documents)
+                    {
+                        stories[document.Id] = document.ToDictionary();
+                        Debug.Log($"✅ Found published story: {document.Id} - {document.GetValue<string>("title")}");
+                    }
+                    Debug.Log($"📊 Returning {stories.Count} published stories for class {classCode}");
+                    callback?.Invoke(stories);
+                }
+                else
+                {
+                    Debug.LogError($"❌ Failed to load published stories: {task.Exception}");
+                    callback?.Invoke(null);
+                }
+            });
+        });
+}
+
+public void GetPublishedStoryQuizAttempts(string storyId, string studentStudId, Action<Dictionary<string, Dictionary<string, object>>> callback)
+{
+    Debug.Log($"🔍 Fetching quiz attempts for published storyId: {storyId}, student: {studentStudId}");
+
+    DB.Collection("createdStories")
+        .Document(storyId)
+        .Collection("quizAttempts")
+        .Document(studentStudId)
+        .Collection("attempts")
+        .GetSnapshotAsync()
+        .ContinueWith(task =>
+        {
+            UnityDispatcher.RunOnMainThread(() =>
+            {
+                var attempts = new Dictionary<string, Dictionary<string, object>>();
+
+                if (task.IsCompletedSuccessfully && task.Result != null)
+                {
+                    foreach (var doc in task.Result.Documents)
+                    {
+                        var data = doc.ToDictionary();
+                        attempts[doc.Id] = data;
+
+                        Debug.Log($"✅ Found quiz attempt for story {storyId}: {doc.Id}");
+                        Debug.Log($"   - quizId: {data.GetValueOrDefault("quizId", "N/A")}");
+                        Debug.Log($"   - attemptNumber: {data.GetValueOrDefault("attemptNumber", "N/A")}");
+                        Debug.Log($"   - score: {data.GetValueOrDefault("score", "N/A")}");
+                        Debug.Log($"   - isPassed: {data.GetValueOrDefault("isPassed", "N/A")}");
+                    }
+                    Debug.Log($"📊 Total {attempts.Count} quiz attempts for story {storyId}");
+                }
+                else if (task.IsFaulted)
+                {
+                    Debug.LogError($"❌ Error fetching quiz attempts for story {storyId}: {task.Exception}");
+                }
+                else
+                {
+                    Debug.Log($"ℹ️ No quiz attempts found for story {storyId}");
+                }
+
+                callback?.Invoke(attempts);
+            });
+        });
+}
+
 }

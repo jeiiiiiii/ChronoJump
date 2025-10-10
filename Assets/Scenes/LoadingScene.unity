@@ -477,6 +477,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LoadingSpinner
       objectReference: {fileID: 0}
+    - target: {fileID: 4707768058783887125, guid: 0ee5058fe6065134d87e6ce01075b399, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8680736038961625709, guid: 0ee5058fe6065134d87e6ce01075b399, type: 3}
       propertyPath: m_Color.a
       value: 1
