@@ -3289,6 +3289,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 781abd705bed5274ea948daf97c99614, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lockedMessagePanel: {fileID: 0}
+  lockedMessageText: {fileID: 0}
+  messageDisplayTime: 3
+  civilizationLoader: {fileID: 0}
 --- !u!1 &1248892204
 GameObject:
   m_ObjectHideFlags: 0
@@ -4542,7 +4546,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 92e3308c643ca6c4b91805e9987c187f, type: 3}
   m_Resource: {fileID: 8300000, guid: 92e3308c643ca6c4b91805e9987c187f, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.38
+  m_Volume: 0.028
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -5746,6 +5750,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31ff60c0e10f1b545a76da6f8f9eef82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sumerianStartScene: SumerianSceneOne
+  akkadianStartScene: AkkadianSceneOne
+  babylonianStartScene: BabylonianSceneOne
+  assyrianStartScene: AssyrianSceneOne
+  indusStartScene: IndusSceneOne
 --- !u!1 &2100023124
 GameObject:
   m_ObjectHideFlags: 0

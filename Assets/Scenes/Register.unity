@@ -710,7 +710,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0.000359146, y: 0}
-  m_SizeDelta: {x: -0.00042725, y: 16162.41}
+  m_SizeDelta: {x: -0.00042725, y: 33658.41}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &155717279
 MonoBehaviour:
@@ -815,7 +815,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 310830728}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.038069196
+  m_Size: 0.018280422
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1055,7 +1055,7 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 366484603}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.9619308}
+  m_AnchorMin: {x: 0, y: 0.98171955}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
@@ -1276,7 +1276,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 33b73515fb364b34999d1cc47999cd49, type: 3}
   m_Resource: {fileID: 8300000, guid: 33b73515fb364b34999d1cc47999cd49, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.5
+  m_Volume: 0.222
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -2962,8 +2962,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 470.51978, y: -8091.205}
-  m_SizeDelta: {x: 901.03955, y: 16142.41}
+  m_AnchoredPosition: {x: 470.51978, y: -16839.205}
+  m_SizeDelta: {x: 901.03955, y: 33638.41}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &744453969
 MonoBehaviour:
@@ -3092,13 +3092,140 @@ MonoBehaviour:
     understood these Terms and Conditions\r\nYou agree to abide by all terms outlined
     above\r\nYou have obtained parental consent if you are under 18 years of age\r\nYou
     understand this is an educational research project\r\nYou consent to data collection
-    for educational and research purposes\r\n\r\nFor Students: Please discuss these
-    terms with your parents or guardians before proceeding.\r\nFor Teachers: By creating
-    an account, you agree to supervise student use and ensure compliance with these
-    terms.\r\n\r\nContact Information: Polytechnic University of the Philippines
-    College of Computer and Information Sciences Sta. Mesa, Manila\r\nResearch Team
-    Email: [capstone.chronojump@gmail.com]\r\n\r\nChronoJump! Development Team \xA9
-    2025 Polytechnic University of the Philippines. All rights reserved.\r\n\r\n\n\n\n\n"
+    for educational and research purposes\r\n\r\n\rPrivacy Policy for ChronoJump!\n\r\nEffective
+    Date: October 11, 2025\r\n Last Updated: October 11, 2025\r\n\r\n1. Introduction\r\nWelcome
+    to ChronoJump!: An Interactive 2D Visual Novel Enhancing Historical Learning
+    for Secondary-level Students through AI-Powered Companion Support and Gamified
+    Storytelling.\r\nThis Privacy Policy explains how we collect, use, store, and
+    protect your personal information when you use our educational application. We
+    are committed to protecting the privacy of our users, especially students under
+    the age of 18.\r\nBy using ChronoJump!, you agree to the collection and use of
+    information in accordance with this Privacy Policy.\r\n\r\n2. Information We
+    Collect\r\n2.1 Personal Information\r\nWe collect the following personal information
+    when you register:\r\nFor Students:\r\nFirst Name\r\nLast Name\r\nEmail Address\r\nPassword
+    (encrypted)\r\nClass Code (when joining a class)\r\nFor Teachers/Educators:\r\nFirst
+    Name\r\nLast Name\r\nEmail Address\r\nPassword (encrypted)\r\nCode (One-Time
+    Code)\r\n2.2 Gameplay and Progress Data\r\nWe automatically collect information
+    about your use of the application:\r\nFor Students:\r\nGame progress (chapters
+    completed, scenes reached)\r\nQuiz scores and results\r\nRecall challenge performance\r\nHeart
+    count and game statistics\r\nUnlocked achievements and artifacts\r\nSave game
+    data (timestamps, progress checkpoints)\r\nAI chatbot interaction logs (questions
+    asked to Chrono)\r\nFor Teachers:\r\nCreated classes and class codes\r\nPublished
+    stories and custom content\r\nStudent progress monitoring data\r\nDashboard activity
+    logs\r\n2.3 Technical Information\r\nWe may collect:\r\nDevice type and operating
+    system\r\nApplication version\r\nLogin timestamps\r\nError logs and crash reports\r\n\r\n3.
+    How We Use Your Information\r\nWe use the collected information for the following
+    purposes:\r\n3.1 Educational Purposes\r\nTo provide personalized learning experiences\r\nTo
+    track student progress and learning outcomes\r\nTo generate educational reports
+    for teachers\r\nTo adapt content difficulty based on performance\r\n3.2 Application
+    Functionality\r\nTo create and authenticate user accounts\r\nTo save and restore
+    game progress\r\nTo enable AI-powered companion support (Chrono)\r\nTo facilitate
+    teacher-student classroom connections\r\nTo display leaderboards and achievements\r\n3.3
+    Communication\r\nTo send important updates about the application\r\nTo provide
+    technical support\r\nTo notify users of new features or content\r\n3.4 Improvement
+    and Analytics\r\nTo improve application performance\r\nTo fix bugs and technical
+    issues\r\nTo understand how users interact with educational content\r\nTo enhance
+    the learning experience\r\n\r\n4. Data Storage and Security\r\n4.1 Where We Store
+    Your Data\r\nAll user data is securely stored using Firebase by Google, which
+    includes:\r\nFirebase Authentication (for user accounts)\r\nCloud Firestore (for
+    user data and progress)\r\nFirebase Storage (for uploaded images and content)\r\n4.2
+    Security Measures\r\nWe implement industry-standard security measures:\r\nPassword
+    encryption using secure hashing algorithms\r\nSecure HTTPS connections for data
+    transmission\r\nRole-based access control (students cannot access teacher functions)\r\nRegular
+    security updates and patches\r\nFirebase security rules to prevent unauthorized
+    access\r\n\r\n4.3 Data Retention\r\nActive Accounts: Data is retained as long
+    as your account is active\r\nInactive Accounts: Accounts inactive for 2 years
+    may be deleted\r\nDeletion Requests: You may request account deletion at any
+    time\r\n\r\n5. Data Sharing and Disclosure\r\n5.1 Who Can Access Your Data\r\nStudents:\r\nYour
+    teacher can view your progress, quiz scores, and gameplay statistics\r\nOther
+    students in your class can see your name on the leaderboards\r\nYou control your
+    own profile and game data\r\nTeachers:\r\nCan view data only for students enrolled
+    in their classes\r\nCannot access student passwords or email credentials\r\nCan
+    see aggregated class performance metrics\r\n5.2 Third-Party Services\r\nWe use
+    the following third-party services:\r\nFirebase (Google LLC)\r\nPurpose: Authentication,
+    database, and cloud storage\r\nPrivacy Policy: https://firebase.google.com/support/privacy\r\nGemini
+    2.0 (Google LLC)\r\nPurpose: AI-powered companion (Chrono) responses\r\nPrivacy
+    Policy: https://policies.google.com/privacy\r\nNote: AI interactions are logged
+    for educational purposes but are not used for advertising\r\n5.3 We Do NOT:\r\nSell
+    your personal information to third parties\r\nUse your data for advertising purposes\r\nShare
+    your information with marketers\r\nTrack you across other websites or applications\r\n5.4
+    Legal Requirements\r\nWe may disclose your information if required by law or
+    in response to:\r\nValid legal processes (court orders, subpoenas)\r\nProtection
+    of our rights or property\r\nEmergency situations involving safety or security\r\n\r\n6.
+    Children's Privacy (DPA Compliance)\r\nChronoJump! is designed for secondary-level
+    students in the Philippines. We recognize that minors require special protection
+    under the Data Privacy Act of 2012 (Republic Act No. 10173).\r\n6.1 Definition
+    of Minors\r\nUnder Philippine law, a minor is any person below 18 years of age
+    or over that age but unable to fully take care of themselves from abuse, neglect,
+    cruelty, exploitation, or discrimination because of a physical or mental disability
+    or condition.\r\n6.2 Parental/Guardian Consent\r\nIn accordance with Section
+    13 of the Data Privacy Act of 2012 and NPC Circular 16-03, processing of personal
+    information of minors requires:\r\nParental or legal guardian consent for students
+    under 18 years of age\r\nSchool authorization when used for legitimate educational
+    purposes\r\nTeachers and schools act as authorized representatives when students
+    join their classes\r\nParents/guardians must be informed about student use of
+    ChronoJump!\r\n6.3 Legitimate Educational Purpose\r\nUnder the DPA, schools may
+    process student personal information for legitimate educational purposes, including:\r\nTracking
+    academic progress and performance\r\nProviding personalized learning experiences\r\nGenerating
+    educational reports and assessments\r\nFacilitating teacher-student educational
+    interactions\r\n6.4 Data Minimization for Minors\r\nWe adhere to the principle
+    of data minimization:\r\nWe collect only the minimum necessary information from
+    students\r\nNo sensitive personal information is collected from minors\r\nStudents
+    cannot share personal information publicly within the app\r\nProfile information
+    is limited to educational purposes only\r\n6.5 Parental/Guardian Rights\r\nParents
+    and legal guardians have the right to:\r\nBe informed of what personal information
+    is collected from their child\r\nReview and access their child's personal information\r\nRequest
+    correction of inaccurate information\r\nRequest deletion or blocking of their
+    child's information\r\nObject to the processing of their child's personal information\r\nRefuse
+    further collection of their child's information\r\nWithdraw consent at any time\r\nTo
+    exercise these rights:\r\n Contact your child's teacher, school administrator,
+    or email us directly at [capstone.chronojump@gmail.com]\r\n6.6 School and Teacher
+    Responsibilities\r\nSchools and teachers using ChronoJump! are responsible for:\r\nObtaining
+    proper parental consent before student enrollment\r\nInforming parents about
+    the application and its data collection practices\r\nEnsuring student data is
+    used only for educational purposes\r\nMonitoring appropriate use of the application\r\nReporting
+    any concerns about student privacy to administrators\r\n6.7 Protection Measures
+    for Minors\r\nSpecial protections for student users include:\r\nNo advertising
+    or commercial use of student data\r\nNo sharing of student information for non-educational
+    purposes\r\nNo direct marketing or promotional communications to students\r\nAge-appropriate
+    content and privacy settings\r\nEnhanced security measures for student accounts\r\nRegular
+    monitoring and auditing of data access\r\n\r\n7. Your Rights and Choices\r\n7.1
+    Access and Control\r\nYou have the right to:\r\nAccess your personal information\r\nUpdate
+    or correct your information\r\nDelete your account and associated data\r\nExport
+    your data in a readable format\r\nOpt-out of non-essential data collection\r\n7.2
+    How to Exercise Your Rights\r\nStudents: Contact your teacher or email us at
+    [capstone.chronojump@gmail.com]\r\n Teachers: Access settings through your dashboard
+    or email us\r\n\r\n8. Cookies and Tracking Technologies\r\nChronoJump! uses minimal
+    cookies and tracking technologies:\r\n8.1 Essential Cookies\r\nAuthentication
+    cookies (to keep you logged in)\r\nSession cookies (for application functionality)\r\n8.2
+    Analytics\r\nWe may use Firebase Analytics to understand app usage\r\nThis data
+    is anonymized and aggregated\r\nYou can opt-out through your device settings\r\nWe
+    do NOT use:\r\nThird-party advertising cookies\r\nSocial media tracking pixels\r\nCross-site
+    tracking technologies\r\n\r\n9. International Data Transfers\r\nYour data may
+    be transferred to and stored on servers located outside your country. Firebase
+    servers are located in various regions worldwide. By using ChronoJump!, you consent
+    to the transfer of your information to these locations.\r\nAll transfers comply
+    with applicable data protection laws, including GDPR for European users.\r\n\r\n10.
+    Changes to This Privacy Policy\r\nWe may update this Privacy Policy from time
+    to time. When we do:\r\nThe \"Last Updated\" date at the top will be revised\r\nSignificant
+    changes will be announced within the application\r\nContinued use after changes
+    constitutes acceptance\r\nWe encourage you to review this Privacy Policy periodically.\r\n\r\n11.
+    Contact Us\r\nIf you have questions, concerns, or requests regarding this Privacy
+    Policy or your personal data:\r\nChronoJump! Development Team\r\n\r\n\r\nEmail:
+    [capstone.chronojump@gmail.com]\r\n Subject Line: Privacy Policy Inquiry - ChronoJump!\r\nTeam
+    Members:\r\nAldas, Dominic Syd V.\r\nFernandez, Cassidy L.\r\nMacatunao, Joshua
+    C.\r\nMondejar, Jeiren J.\r\nResponse Time: We aim to respond to all inquiries
+    within 7 business days.\r\n\r\n12. Consent\r\nBy clicking \"I Agree\" or \"Sign
+    Up\" during registration, you acknowledge that:\r\nYou have read and understood
+    this Privacy Policy\r\nYou consent to the collection, use, and processing of
+    your information as described\r\nIf you are a student under 18, your teacher
+    and/or parent/guardian has been informed\r\nFor Students Under 13: Your teacher
+    has provided consent on behalf of your school for the collection and use of your
+    information for educational purposes.\r\n\r\n13. Governing Law\r\nThis Privacy
+    Policy is governed by the laws of the Republic of the Philippines. Any disputes
+    arising from this policy will be resolved in accordance with Philippine data
+    privacy laws and regulations, including the Data Privacy Act of 2012 (Republic
+    Act No. 10173).\r\n\r\nLast Update: October 11, 2025\r\nVersion: 1.0\r\n\r\n\n\r\r\n\r\n\n\n\n\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a9ac6f365935a6d4b96bed112242cebe, type: 2}
   m_sharedMaterial: {fileID: 1179036257592287434, guid: a9ac6f365935a6d4b96bed112242cebe, type: 2}
@@ -4179,8 +4306,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 407.8, y: 2.999817}
-  m_SizeDelta: {x: 556.6, y: 22.5}
+  m_AnchoredPosition: {x: 683.6, y: 4}
+  m_SizeDelta: {x: 832.4, y: 12.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1093722240
 MonoBehaviour:
@@ -4202,7 +4329,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "I\u2019ve read and accept the terms and conditions"
+  m_text: "I\u2019ve read and accept the Terms and Conditions and Privacy Policy"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4f8cbc7fb76c1a041b4223eabac2222d, type: 2}
   m_sharedMaterial: {fileID: -1769434493705438385, guid: 4f8cbc7fb76c1a041b4223eabac2222d, type: 2}
@@ -4267,7 +4394,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 25.217493, z: -38.80429, w: 24.518303}
+  m_margin: {x: 0, y: 25.217493, z: -1.6842651, w: 24.518303}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -5483,7 +5610,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000005722, y: 0.000017166}
+  m_AnchoredPosition: {x: 0.000005722, y: -4}
   m_SizeDelta: {x: 94, y: 78.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1380735703
@@ -7985,8 +8112,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -176, y: -250}
-  m_SizeDelta: {x: 384.04, y: -25.96}
+  m_AnchoredPosition: {x: -296.96, y: -249.73}
+  m_SizeDelta: {x: 351.86, y: -35.51}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2070513997
 MonoBehaviour:
@@ -8361,7 +8488,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0.69999695, y: 14.7}
+  m_AnchoredPosition: {x: -14, y: 20}
   m_SizeDelta: {x: 94, y: 78.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2146903378
