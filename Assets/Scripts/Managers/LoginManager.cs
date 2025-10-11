@@ -253,9 +253,6 @@ public class LoginManager : MonoBehaviour
                                     // Handle Remember Me for student
                                     HandleRememberMe(email);
 
-                                    // Clear other students' local data, keep only this student's folder
-                                    SaveLoadManager.Instance?.ClearOtherStudentsLocalData(studentState.StudentId);
-
                                     // Now it's safe to load the TitleScreen (keep loading state until scene loads)
                                     SceneManager.LoadScene("TitleScreen");
                                 });

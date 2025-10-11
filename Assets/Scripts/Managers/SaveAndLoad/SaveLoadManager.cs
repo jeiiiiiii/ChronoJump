@@ -423,13 +423,13 @@ public class SaveLoadManager : MonoBehaviour
 
     #endregion
 
-// Helper method to determine if a save should be overwritten
-private bool ShouldOverwriteSave(string existingScene, string newScene)
-{
-    if (string.IsNullOrEmpty(existingScene)) return true;
-    
-    // Define chapter progression order
-    Dictionary<string, int> chapterOrder = new Dictionary<string, int>()
+    // Helper method to determine if a save should be overwritten
+    private bool ShouldOverwriteSave(string existingScene, string newScene)
+    {
+        if (string.IsNullOrEmpty(existingScene)) return true;
+
+        // Define chapter progression order
+        Dictionary<string, int> chapterOrder = new Dictionary<string, int>()
     {
         // Sumerian chapters
         {"SumerianSceneOne", 1}, {"SumerianScene1", 1},
@@ -493,37 +493,37 @@ private bool ShouldOverwriteSave(string existingScene, string newScene)
         {"AssyrianQuizTime", 35}, {"AssyrianArtifactScene", 36},
     };
 
-    int existingChapter = chapterOrder.ContainsKey(existingScene) ? chapterOrder[existingScene] : 0;
-    int newChapter = chapterOrder.ContainsKey(newScene) ? chapterOrder[newScene] : 0;
+        int existingChapter = chapterOrder.ContainsKey(existingScene) ? chapterOrder[existingScene] : 0;
+        int newChapter = chapterOrder.ContainsKey(newScene) ? chapterOrder[newScene] : 0;
 
-    // Only overwrite if existing save is from same or earlier chapter
-    return existingChapter <= newChapter;
-}
+        // Only overwrite if existing save is from same or earlier chapter
+        return existingChapter <= newChapter;
+    }
 
-// Optional: Add this method for cleaner code
-public void UpdateSaveSlot(int slotNumber, string sceneName, int dialogueIndex)
-{
-    var newSaveData = new LocalSaveData(sceneName, dialogueIndex);
-    SaveToLocalFile(slotNumber, newSaveData);
-    SaveToFirebase(slotNumber, newSaveData);
-}
-
-// Then use it in OverwriteAllSavesAfterChallenge:
-public void OverwriteAllSavesAfterChallenge(string nextSceneName, int nextDialogueIndex = 0)
-{
-    for (int slot = 1; slot <= 4; slot++)
+    // Optional: Add this method for cleaner code
+    public void UpdateSaveSlot(int slotNumber, string sceneName, int dialogueIndex)
     {
-        if (HasSaveFile(slot))
+        var newSaveData = new LocalSaveData(sceneName, dialogueIndex);
+        SaveToLocalFile(slotNumber, newSaveData);
+        SaveToFirebase(slotNumber, newSaveData);
+    }
+
+    // Then use it in OverwriteAllSavesAfterChallenge:
+    public void OverwriteAllSavesAfterChallenge(string nextSceneName, int nextDialogueIndex = 0)
+    {
+        for (int slot = 1; slot <= 4; slot++)
         {
-            var existingSave = GetSaveData(slot);
-            if (ShouldOverwriteSave(existingSave.currentScene, nextSceneName))
+            if (HasSaveFile(slot))
             {
-                UpdateSaveSlot(slot, nextSceneName, nextDialogueIndex); // Cleaner call
-                Debug.Log($"Overwritten save slot {slot}");
+                var existingSave = GetSaveData(slot);
+                if (ShouldOverwriteSave(existingSave.currentScene, nextSceneName))
+                {
+                    UpdateSaveSlot(slot, nextSceneName, nextDialogueIndex); // Cleaner call
+                    Debug.Log($"Overwritten save slot {slot}");
+                }
             }
         }
     }
-}
 
     public bool LoadGame(int slotNumber)
     {
@@ -808,44 +808,4 @@ public void OverwriteAllSavesAfterChallenge(string nextSceneName, int nextDialog
         currentGameDialogueIndex = dialogueIndex;
         Debug.Log($"Manually set game state - Scene: {sceneName}, Dialogue: {dialogueIndex}");
     }
-
-    // -----------------------------
-    // Clear local data helpers
-    // -----------------------------
-    public void ClearLocalDataForStudent(string studentId)
-    {
-        if (string.IsNullOrEmpty(studentId)) return;
-
-        string studentFolder = Path.Combine(Application.persistentDataPath, studentId);
-        DeleteDirectoryRecursive(studentFolder);
-        Debug.Log($"Cleared local saves for student {studentId}");
-    }
-
-    public void ClearOtherStudentsLocalData(string keepStudentId)
-    {
-        if (!Directory.Exists(Application.persistentDataPath)) return;
-
-        foreach (string dir in Directory.GetDirectories(Application.persistentDataPath))
-        {
-            string folderName = Path.GetFileName(dir);
-            if (folderName != keepStudentId)
-            {
-                DeleteDirectoryRecursive(dir);
-                Debug.Log($"Removed old local saves for {folderName}");
-            }
-        }
-    }
-
-    private void DeleteDirectoryRecursive(string dirPath)
-    {
-        if (!Directory.Exists(dirPath)) return;
-
-        foreach (var f in Directory.GetFiles(dirPath, "*", SearchOption.AllDirectories))
-        {
-            File.SetAttributes(f, FileAttributes.Normal);
-        }
-
-        Directory.Delete(dirPath, true);
-    }
-
 }
