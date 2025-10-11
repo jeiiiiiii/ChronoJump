@@ -489,7 +489,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 26b45d268af62af41a19dc4fd396eed7, type: 3}
   m_Resource: {fileID: 8300000, guid: 26b45d268af62af41a19dc4fd396eed7, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.15
+  m_Volume: 0.05
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -1384,9 +1384,9 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 2a472f2ccadcdf44ab53d417d04412f0, type: 3}
   m_Resource: {fileID: 8300000, guid: 2a472f2ccadcdf44ab53d417d04412f0, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.05
+  m_Volume: 0.15
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -2049,9 +2049,9 @@ MonoBehaviour:
   m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 24
+  m_fontSizeMax: 36
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -2084,7 +2084,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -46.311554, y: -9.262299, z: -142.87027, w: 13.893425}
+  m_margin: {x: -46.311554, y: -9.262299, z: -142.87027, w: -22.757301}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -2493,7 +2493,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 26b45d268af62af41a19dc4fd396eed7, type: 3}
   m_Resource: {fileID: 8300000, guid: 26b45d268af62af41a19dc4fd396eed7, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.15
+  m_Volume: 0.05
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -2902,7 +2902,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 26b45d268af62af41a19dc4fd396eed7, type: 3}
   m_Resource: {fileID: 8300000, guid: 26b45d268af62af41a19dc4fd396eed7, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.15
+  m_Volume: 0.05
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -3171,7 +3171,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 49833cece1f75e94799ed075bd9300f5, type: 3}
   m_Resource: {fileID: 8300000, guid: 49833cece1f75e94799ed075bd9300f5, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.25
   m_Pitch: 1
   Loop: 0
   Mute: 0

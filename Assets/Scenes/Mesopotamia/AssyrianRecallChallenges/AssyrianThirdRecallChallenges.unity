@@ -1734,8 +1734,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1.2, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1131181979}
+  m_Children: []
   m_Father: {fileID: 922267911}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1872,6 +1871,7 @@ RectTransform:
   - {fileID: 355097130}
   - {fileID: 81652814}
   - {fileID: 919094033}
+  - {fileID: 1131181979}
   - {fileID: 40675573}
   - {fileID: 680884634}
   - {fileID: 889727322}
@@ -2290,9 +2290,9 @@ MonoBehaviour:
   m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 24
+  m_fontSizeMax: 36
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -2325,7 +2325,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -46.311554, y: -9.262299, z: -142.87027, w: 13.893425}
+  m_margin: {x: -46.311554, y: -9.262299, z: -142.87027, w: -29.619308}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -2347,15 +2347,15 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1131181976}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -2.0003052}
-  m_LocalScale: {x: 1, y: 0.83333325, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -1.000305}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 919094033}
+  m_Father: {fileID: 922267911}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -53.000183, y: 37.49878}
+  m_AnchoredPosition: {x: -33.000183, y: -345.0015}
   m_SizeDelta: {x: 964, y: 157.64}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1246413600
@@ -2521,7 +2521,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 26b45d268af62af41a19dc4fd396eed7, type: 3}
   m_Resource: {fileID: 8300000, guid: 26b45d268af62af41a19dc4fd396eed7, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.15
+  m_Volume: 0.05
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -2808,7 +2808,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 26b45d268af62af41a19dc4fd396eed7, type: 3}
   m_Resource: {fileID: 8300000, guid: 26b45d268af62af41a19dc4fd396eed7, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.15
+  m_Volume: 0.05
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -3411,9 +3411,9 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 4437e8a704d05d0498d8804552e8f061, type: 3}
   m_Resource: {fileID: 8300000, guid: 4437e8a704d05d0498d8804552e8f061, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.25
+  m_Volume: 0.15
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -3661,7 +3661,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 49833cece1f75e94799ed075bd9300f5, type: 3}
   m_Resource: {fileID: 8300000, guid: 49833cece1f75e94799ed075bd9300f5, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.25
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -3927,7 +3927,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 26b45d268af62af41a19dc4fd396eed7, type: 3}
   m_Resource: {fileID: 8300000, guid: 26b45d268af62af41a19dc4fd396eed7, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.15
+  m_Volume: 0.05
   m_Pitch: 1
   Loop: 0
   Mute: 0
