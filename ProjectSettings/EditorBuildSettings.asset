@@ -9,17 +9,35 @@ EditorBuildSettings:
     path: Assets/Scenes/LandingPage.unity
     guid: 54b375d6184bdc244ab1f8c8753353ea
   - enabled: 1
+    path: Assets/Scenes/Login.unity
+    guid: 7116ad32dc2216a43b4b4a7234f27775
+  - enabled: 1
+    path: Assets/Scenes/Register.unity
+    guid: 5eb4a7e54fb391c469b09261f829bf5b
+  - enabled: 1
     path: Assets/Scenes/TitleScreen.unity
     guid: 6c4d358ed1cf4984982211abad124d23
+  - enabled: 1
+    path: Assets/Scenes/LoadingScene.unity
+    guid: ed70993a1b3c67c46b05bceab2b36239
+  - enabled: 1
+    path: Assets/Scenes/StoryPublish.unity
+    guid: c7f510c1cbb1ba64cae7434bab2eebc9
+  - enabled: 1
+    path: Assets/Scenes/Classroom.unity
+    guid: 1fc3594edf3202e45a340f20020f76c2
+  - enabled: 1
+    path: Assets/Scenes/SaveAndLoadScene.unity
+    guid: 607dca98a2814e14496abbec404c1cf0
+  - enabled: 1
+    path: Assets/Scenes/TeacherDashboard.unity
+    guid: d95f7f5b706b40b4298c59133fd9d860
   - enabled: 1
     path: Assets/Scenes/ChapterSelect.unity
     guid: 7bdfaea50b88af94583a088591e57bbe
   - enabled: 1
-    path: Assets/Scenes/Classroom.unity
-    guid: 1fc3594edf3202e45a340f20020f76c2
-  - enabled: 0
-    path: Assets/Scenes/CreatorMode.unity
-    guid: a2e536500f52d0246924c67e1411626b
+    path: Assets/Scenes/Mesopotamia/CoordinateSelect.unity
+    guid: a5430632016fe0a47ba3d39ccfb9222e
   - enabled: 1
     path: Assets/Scenes/Mesopotamia/SumerianScene/SumerianSceneOne.unity
     guid: 1a5fe0d85161a2b4c9b5852afbffc0a2
@@ -32,30 +50,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Mesopotamia/SumerianScene/SumerianSceneFour.unity
     guid: cf634cae625df1040bb8c1c01727e851
-  - enabled: 1
-    path: Assets/Scenes/Classroom.unity
-    guid: 1fc3594edf3202e45a340f20020f76c2
-  - enabled: 1
-    path: Assets/Scenes/LoadingScene.unity
-    guid: ed70993a1b3c67c46b05bceab2b36239
-  - enabled: 0
-    path: Assets/Scenes/CreatorMode.unity
-    guid: a2e536500f52d0246924c67e1411626b
-  - enabled: 1
-    path: Assets/Scenes/Login.unity
-    guid: 7116ad32dc2216a43b4b4a7234f27775
-  - enabled: 1
-    path: Assets/Scenes/Register.unity
-    guid: 5eb4a7e54fb391c469b09261f829bf5b
-  - enabled: 1
-    path: Assets/Scenes/SaveAndLoadScene.unity
-    guid: 607dca98a2814e14496abbec404c1cf0
-  - enabled: 1
-    path: Assets/Scenes/StoryPublish.unity
-    guid: c7f510c1cbb1ba64cae7434bab2eebc9
-  - enabled: 1
-    path: Assets/Scenes/TeacherDashboard.unity
-    guid: d95f7f5b706b40b4298c59133fd9d860
   - enabled: 1
     path: Assets/Scenes/Mesopotamia/SumerianScene/SumerianSceneFive.unity
     guid: a26ea92d3fd183440855cafefccf4d16
@@ -216,9 +210,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Mesopotamia/SumerianRecallChallenges/GameOver.unity
     guid: 760369228f53575459d0452a6732a383
   - enabled: 1
-    path: Assets/Scenes/Mesopotamia/CoordinateSelect.unity
-    guid: a5430632016fe0a47ba3d39ccfb9222e
-  - enabled: 1
     path: Assets/Scenes/Mesopotamia/SumerianRecallChallenges/SumerianArtifactScene.unity
     guid: 3cf6039d7c3ff60488024c94b71b1d2d
   - enabled: 1
@@ -327,9 +318,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Mesopotamia/AssyrianScene/AssyrianSceneTwo.unity
     guid: 0bc2aa0374b916c4c9296407501a654b
   - enabled: 1
-    path: Assets/Scenes/Login.unity
-    guid: 7116ad32dc2216a43b4b4a7234f27775
-  - enabled: 1
     path: Assets/Scenes/Mesopotamia/AkkadianScene/AkkadianSceneFive.unity
     guid: c1dd9a5abdfbddc40be9a4fc56cb77ee
   - enabled: 1
@@ -365,9 +353,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Mesopotamia/AkkadianScene/AkkadianSceneTwo.unity
     guid: 5f864e962a794e8499f4bdbb2ba5e980
-  - enabled: 1
-    path: Assets/Scenes/Register.unity
-    guid: 5eb4a7e54fb391c469b09261f829bf5b
   - enabled: 1
     path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/CreateNewAddCharacterScene.unity
     guid: 357e741c5be7fdd4992a931ca068ff51
@@ -410,9 +395,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/Questions/ReviewQuestionsScene.unity
     guid: ffb8c2f88cde7974187a1123f090124e
-  - enabled: 1
-    path: Assets/Scenes/SaveAndLoadScene.unity
-    guid: 607dca98a2814e14496abbec404c1cf0
   - enabled: 1
     path: Assets/Scenes/Settings.unity
     guid: d39246d7dbe0e5946a2c8c617a39f9a3
