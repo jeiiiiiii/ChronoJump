@@ -556,10 +556,10 @@ public class TeacherDashboardManager : MonoBehaviour
     {
         Debug.Log("Returning to full student progress view from overview");
 
-        // Reset the overview page state before hiding it
+        // Just hide the overview page - don't reset it completely
         if (studentOverviewPage != null)
         {
-            studentOverviewPage.ResetPage(); // ADD THIS LINE
+            // studentOverviewPage.ResetPage(); // REMOVE THIS LINE - causing the issue
             studentOverviewPage.gameObject.SetActive(false);
         }
 
@@ -574,6 +574,7 @@ public class TeacherDashboardManager : MonoBehaviour
 
         Debug.Log("Successfully returned to full student progress view");
     }
+
 
 
 
@@ -722,9 +723,13 @@ public void OnStudentOverviewClicked(StudentModel student)
                 student.studId = student.userId; // Fallback to userId if studId is not available
                 Debug.Log($"⚠️ studId not found, using userId as fallback: {student.studId}");
             }
+            Debug.Log($"🔄 TEACHER DASHBOARD: Showing student overview for {student.studName}");
+            Debug.Log($"📊 StudentOverviewPage active: {studentOverviewPage.gameObject.activeInHierarchy}");
 
             studentOverviewPage.SetupStudentOverview(student);
-            Debug.Log("✅ Student overview page setup complete - should be visible now");
+
+            Debug.Log($"✅ TEACHER DASHBOARD: Student overview setup complete");
+            Debug.Log($"📊 StudentOverviewPage active after setup: {studentOverviewPage.gameObject.activeInHierarchy}");
         }
         else
         {

@@ -109,8 +109,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 807.82, y: 16.418488}
-  m_SizeDelta: {x: 1022.1, y: 32.85}
+  m_AnchoredPosition: {x: 838.26, y: 16.418488}
+  m_SizeDelta: {x: 1083, y: 32.85}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8390428953518981769
 CanvasRenderer:
@@ -140,7 +140,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Kabihasnang Sumerian: Simula ng mga Lungsod at Pagsusulat'
+  m_text: 'Sa Anino ng mga Torre ng Nineveh: Pag-angat at Pagbagsak ng Imperyong
+    Assyrian (Assyrian)'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a9ac6f365935a6d4b96bed112242cebe, type: 2}
   m_sharedMaterial: {fileID: 1179036257592287434, guid: a9ac6f365935a6d4b96bed112242cebe, type: 2}
@@ -167,15 +168,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28
-  m_fontSizeBase: 28
+  m_fontSize: 22
+  m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -494,7 +495,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -585,9 +586,6 @@ MonoBehaviour:
   quizAttemptPrefab: {fileID: 4786421081860610634, guid: 692b43cabb1a3dc40a69ea14822af7a2, type: 3}
   quizAttemptsContent: {fileID: 2497743744771900182}
   noAttemptsMessage: {fileID: 7755403559501856804}
-  toggleButton: {fileID: 0}
-  expandIcon: {fileID: 0}
-  collapseIcon: {fileID: 0}
 --- !u!1 &4197423590624399823
 GameObject:
   m_ObjectHideFlags: 0

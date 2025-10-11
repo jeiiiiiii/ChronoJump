@@ -50,28 +50,12 @@ public class StudentOverviewPage : MonoBehaviour
     // Safety flag to prevent callbacks when page is inactive
     private bool _isPageActive = false;
 
-    // Operation tracking
-    private string _currentOperationId;
+    // Simple operation tracking
+    private string _currentStudentId;
 
-    private void StartNewOperation()
+    private bool IsCurrentStudent(string studentId)
     {
-        _currentOperationId = System.Guid.NewGuid().ToString();
-        Debug.Log($"🆕 Starting new operation: {_currentOperationId}");
-    }
-
-    private bool IsCurrentOperation(string operationId)
-    {
-        if (string.IsNullOrEmpty(_currentOperationId) || string.IsNullOrEmpty(operationId))
-        {
-            return false;
-        }
-        
-        bool isCurrent = _currentOperationId == operationId;
-        if (!isCurrent)
-        {
-            Debug.Log($"⛔️ Operation mismatch - Current: {_currentOperationId}, Received: {operationId}");
-        }
-        return isCurrent;
+        return _currentStudentId == studentId;
     }
 
     public void SetDashboardManager(TeacherDashboardManager manager)
@@ -97,23 +81,30 @@ public class StudentOverviewPage : MonoBehaviour
 
         // 1. Stop all previous asynchronous operations
         StopAllCoroutines();
+        CancelInvoke();
 
         // 2. Perform an immediate and full reset of the page state and UI
         ResetPage();
 
-        // 3. Mark the page as active for the new setup
+        // 3. CRITICAL: Ensure GameObject is active
+        if (!gameObject.activeInHierarchy)
+        {
+            Debug.LogWarning("⚠️ GameObject was inactive, activating now!");
+            gameObject.SetActive(true);
+        }
+
+        // 4. Mark the page as active for the new setup
         _isPageActive = true;
 
-        // 4. Start a new, unique operation for this student
-        StartNewOperation();
-        string currentOpId = _currentOperationId;
+        // 5. Set current student ID for operation tracking
+        _currentStudentId = student.userId;
 
-        // 5. Set the new student's data
+        // 6. Set the new student's data
         _currentStudent = student;
         _currentClassCode = student.classCode;
         _currentFilter = "Mesopotamia"; // Default filter
 
-        // 6. Update static UI elements
+        // 7. Update static UI elements
         if (studentNameText != null)
             studentNameText.text = student.studName;
 
@@ -122,10 +113,10 @@ public class StudentOverviewPage : MonoBehaviour
             studentSectionText.text = GetClassNameFromCode(student.classCode);
         }
 
-        // 7. Set up filter button listeners
+        // 8. Set up filter button listeners
         SetupFilterButtons();
 
-        // 8. Begin loading data
+        // 9. Begin loading data
         ShowLoading(true);
 
         // Check cache
@@ -133,12 +124,12 @@ public class StudentOverviewPage : MonoBehaviour
         {
             Debug.Log($"📦 Loading from cache for: {student.studName}");
             _overviewData = _studentOverviewCache[student.userId];
-            ShowOverviewData(currentOpId);
+            ShowOverviewData();
         }
         else
         {
             Debug.Log($"🔄 Loading fresh data for: {student.studName}");
-            LoadStudentOverviewData(currentOpId);
+            LoadStudentOverviewData();
         }
     }
 
@@ -201,10 +192,19 @@ public class StudentOverviewPage : MonoBehaviour
         }
     }
 
+    private bool _isTransitioning = false;
+
     private void OnFilterButtonClicked(string filter)
     {
+        // Prevent filter clicks during transitions
+        if (_isTransitioning)
+        {
+            Debug.LogWarning("⚠️ Filter click ignored - page is transitioning");
+            return;
+        }
+
         Debug.Log($"🔘 === FILTER CLICKED: {filter} ===");
-        
+
         if (!_isPageActive)
         {
             Debug.LogWarning("⚠️ Page not active, ignoring click");
@@ -220,29 +220,25 @@ public class StudentOverviewPage : MonoBehaviour
         // Cancel ALL ongoing operations
         StopAllCoroutines();
         _isLoading = false;
-        
-        // Start fresh operation
-        StartNewOperation();
-        string currentOpId = _currentOperationId;
 
         _currentFilter = filter;
         
-        UpdateContentDisplay(currentOpId);
+        UpdateContentDisplay();
     }
 
-    private void UpdateContentDisplay(string operationId)
+    private void UpdateContentDisplay()
     {
-        Debug.Log($"🔄 UpdateContentDisplay - Filter: {_currentFilter}, OpId: {operationId}");
+        Debug.Log($"🔄 UpdateContentDisplay - Filter: {_currentFilter}");
 
-        if (!_isPageActive || !IsCurrentOperation(operationId))
+        if (!_isPageActive)
         {
-            Debug.LogWarning("⚠️ UpdateContentDisplay cancelled - invalid state");
+            Debug.LogWarning("⚠️ UpdateContentDisplay cancelled - page not active");
             return;
         }
 
         // Clear everything first
         ClearContent();
-        ShowLoading(false); // FIXED: Turn off loading when switching filters
+        ShowLoading(false);
 
         if (string.IsNullOrEmpty(_currentFilter))
         {
@@ -252,22 +248,22 @@ public class StudentOverviewPage : MonoBehaviour
         if (_currentFilter == "Published Stories")
         {
             HideChapterLabels();
-            ShowPublishedStories(operationId);
+            ShowPublishedStories();
         }
         else
         {
             ShowChapterLabels();
-            ShowChapterContent(_currentFilter, operationId);
+            ShowChapterContent(_currentFilter);
         }
     }
 
-    private void ShowChapterContent(string chapterName, string operationId)
+    private void ShowChapterContent(string chapterName)
     {
-        Debug.Log($"📖 ShowChapterContent - Chapter: {chapterName}, OpId: {operationId}");
+        Debug.Log($"📖 ShowChapterContent - Chapter: {chapterName}");
 
-        if (!_isPageActive || !IsCurrentOperation(operationId))
+        if (!_isPageActive)
         {
-            Debug.LogWarning("⚠️ ShowChapterContent cancelled - invalid state");
+            Debug.LogWarning("⚠️ ShowChapterContent cancelled - page not active");
             return;
         }
 
@@ -310,8 +306,7 @@ public class StudentOverviewPage : MonoBehaviour
 
         if (chapter.stories.Count > 0)
         {
-            // FIXED: Show stories immediately without coroutine delay
-            ShowStoriesImmediately(chapter.stories, operationId);
+            ShowStoriesImmediately(chapter.stories);
         }
         else
         {
@@ -320,16 +315,15 @@ public class StudentOverviewPage : MonoBehaviour
         }
     }
 
-    // NEW METHOD: Show stories immediately without delay
-    private void ShowStoriesImmediately(List<StoryProgress> stories, string operationId)
+    private void ShowStoriesImmediately(List<StoryProgress> stories)
     {
-        if (!_isPageActive || !IsCurrentOperation(operationId))
+        if (!_isPageActive)
         {
-            Debug.LogWarning($"⚠️ ShowStoriesImmediately cancelled - OpId: {operationId}");
+            Debug.LogWarning($"⚠️ ShowStoriesImmediately cancelled - page not active");
             return;
         }
 
-        Debug.Log($"📋 ShowStoriesImmediately - {stories.Count} stories, OpId: {operationId}");
+        Debug.Log($"📋 ShowStoriesImmediately - {stories.Count} stories");
         
         ClearContent();
 
@@ -337,7 +331,7 @@ public class StudentOverviewPage : MonoBehaviour
 
         foreach (var story in sortedStories)
         {
-            if (!_isPageActive || !IsCurrentOperation(operationId))
+            if (!_isPageActive)
             {
                 Debug.LogWarning($"⚠️ ShowStoriesImmediately interrupted");
                 break;
@@ -349,20 +343,20 @@ public class StudentOverviewPage : MonoBehaviour
         Debug.Log($"✅ ShowStoriesImmediately completed - {sortedStories.Count} stories displayed");
     }
 
-    private IEnumerator ShowStoriesWithDelay(List<StoryProgress> stories, string operationId)
+    private IEnumerator ShowStoriesWithDelay(List<StoryProgress> stories)
     {
         _isLoading = true;
         ShowLoading(true);
 
         ClearContent();
 
-        Debug.Log($"⏳ ShowStoriesWithDelay started - {stories.Count} stories, OpId: {operationId}");
+        Debug.Log($"⏳ ShowStoriesWithDelay started - {stories.Count} stories");
 
         yield return null; // Wait one frame
 
-        if (!_isPageActive || !IsCurrentOperation(operationId))
+        if (!_isPageActive)
         {
-            Debug.LogWarning($"⚠️ ShowStoriesWithDelay cancelled - OpId: {operationId}");
+            Debug.LogWarning($"⚠️ ShowStoriesWithDelay cancelled - page not active");
             ShowLoading(false);
             _isLoading = false;
             yield break;
@@ -372,7 +366,7 @@ public class StudentOverviewPage : MonoBehaviour
 
         for (int i = 0; i < sortedStories.Count; i++)
         {
-            if (!_isPageActive || !IsCurrentOperation(operationId))
+            if (!_isPageActive)
             {
                 Debug.LogWarning($"⚠️ ShowStoriesWithDelay interrupted at story {i + 1}/{sortedStories.Count}");
                 break;
@@ -388,14 +382,14 @@ public class StudentOverviewPage : MonoBehaviour
         }
 
         // Final check before updating UI state
-        if (_isPageActive && IsCurrentOperation(operationId))
+        if (_isPageActive)
         {
             Debug.Log($"✅ ShowStoriesWithDelay completed - {sortedStories.Count} stories displayed");
             ShowLoading(false);
         }
         else
         {
-            Debug.LogWarning($"⚠️ ShowStoriesWithDelay finished but operation outdated");
+            Debug.LogWarning($"⚠️ ShowStoriesWithDelay finished but page inactive");
         }
 
         _isLoading = false;
@@ -404,6 +398,7 @@ public class StudentOverviewPage : MonoBehaviour
     private void OnDestroy()
     {
         _isPageActive = false;
+        CancelInvoke();
 
         if (mesopotamiaButton != null) mesopotamiaButton.onClick.RemoveAllListeners();
         if (indusButton != null) indusButton.onClick.RemoveAllListeners();
@@ -412,11 +407,11 @@ public class StudentOverviewPage : MonoBehaviour
         if (publishedStoriesButton != null) publishedStoriesButton.onClick.RemoveAllListeners();
     }
 
-    private void LoadStudentOverviewData(string operationId)
+    private void LoadStudentOverviewData()
     {
-        if (!_isPageActive || !IsCurrentOperation(operationId))
+        if (!_isPageActive)
         {
-            Debug.LogWarning("⚠️ LoadStudentOverviewData cancelled");
+            Debug.LogWarning("⚠️ LoadStudentOverviewData cancelled - page not active");
             return;
         }
 
@@ -432,18 +427,20 @@ public class StudentOverviewPage : MonoBehaviour
             chapters = new Dictionary<string, ChapterOverview>()
         };
 
-        LoadAllChapters(operationId);
+        LoadAllChapters();
     }
 
-    private void LoadAllChapters(string operationId)
+    private void LoadAllChapters()
     {
-        Debug.Log($"📥 LoadAllChapters started - OpId: {operationId}");
+        Debug.Log($"📥 LoadAllChapters started");
+
+        string currentStudentId = _currentStudentId;
 
         FirebaseManager.Instance.GetAllChapters(chapters =>
         {
-            if (!_isPageActive || !IsCurrentOperation(operationId))
+            if (!_isPageActive || !IsCurrentStudent(currentStudentId))
             {
-                Debug.LogWarning($"⚠️ GetAllChapters callback cancelled - OpId: {operationId}");
+                Debug.LogWarning($"⚠️ GetAllChapters callback cancelled - wrong student");
                 ShowLoading(false);
                 return;
             }
@@ -474,11 +471,11 @@ public class StudentOverviewPage : MonoBehaviour
                 };
 
                 Debug.Log($"   -> Processing chapter '{chapterOverview.chapterName}' ({chapterId})");
-                LoadStoriesForChapter(chapterId, chapterOverview, operationId, () =>
+                LoadStoriesForChapter(chapterId, chapterOverview, () =>
                 {
-                    if (!_isPageActive || !IsCurrentOperation(operationId))
+                    if (!_isPageActive || !IsCurrentStudent(currentStudentId))
                     {
-                        Debug.LogWarning($"⚠️ Chapter completion callback for '{chapterOverview.chapterName}' cancelled - OpId mismatch.");
+                        Debug.LogWarning($"⚠️ Chapter completion callback for '{chapterOverview.chapterName}' cancelled - wrong student.");
                         return;
                     }
 
@@ -491,23 +488,26 @@ public class StudentOverviewPage : MonoBehaviour
 
                     if (chaptersProcessed >= totalChapters)
                     {
-                        Debug.Log($"🎉 All {chaptersProcessed} chapters processed for OpId: {operationId}!");
+                        Debug.Log($"🎉 All {chaptersProcessed} chapters processed!");
                         _studentOverviewCache[_currentStudent.userId] = _overviewData;
-                        ShowOverviewData(operationId);
+                        ShowOverviewData();
                     }
                 });
             }
         });
     }
 
-    private void LoadStoriesForChapter(string chapterId, ChapterOverview chapterOverview, string operationId, Action onComplete)
+    private void LoadStoriesForChapter(string chapterId, ChapterOverview chapterOverview, Action onComplete)
     {
         Debug.Log($"      -> Loading stories for chapter '{chapterOverview.chapterName}'...");
+        
+        string currentStudentId = _currentStudentId;
+
         FirebaseManager.Instance.GetStoriesByChapter(chapterId, stories =>
         {
-            if (!_isPageActive || !IsCurrentOperation(operationId))
+            if (!_isPageActive || !IsCurrentStudent(currentStudentId))
             {
-                Debug.LogWarning($"⚠️ GetStoriesByChapter callback for '{chapterOverview.chapterName}' cancelled - OpId mismatch.");
+                Debug.LogWarning($"⚠️ GetStoriesByChapter callback for '{chapterOverview.chapterName}' cancelled - wrong student.");
                 return;
             }
 
@@ -542,11 +542,11 @@ public class StudentOverviewPage : MonoBehaviour
                     quizAttempts = new List<QuizAttempt>()
                 };
 
-                LoadQuizAttemptsForStory(storyId, storyProgress, operationId, () =>
+                LoadQuizAttemptsForStory(storyId, storyProgress, () =>
                 {
-                    if (!_isPageActive || !IsCurrentOperation(operationId))
+                    if (!_isPageActive || !IsCurrentStudent(currentStudentId))
                     {
-                        Debug.LogWarning($"⚠️ Quiz attempt completion callback for story '{storyId}' cancelled - OpId mismatch.");
+                        Debug.LogWarning($"⚠️ Quiz attempt completion callback for story '{storyId}' cancelled - wrong student.");
                         return;
                     }
 
@@ -564,15 +564,16 @@ public class StudentOverviewPage : MonoBehaviour
         });
     }
 
-    private void LoadQuizAttemptsForStory(string storyId, StoryProgress storyProgress, string operationId, Action onComplete)
+    private void LoadQuizAttemptsForStory(string storyId, StoryProgress storyProgress, Action onComplete)
     {
         string studentStudId = _currentStudent.studId ?? _currentStudent.userId;
+        string currentStudentId = _currentStudentId;
 
         FirebaseManager.Instance.GetQuizAttemptsByStudentAndStory(studentStudId, storyId, attempts =>
         {
-            if (!_isPageActive || !IsCurrentOperation(operationId))
+            if (!_isPageActive || !IsCurrentStudent(currentStudentId))
             {
-                Debug.LogWarning($"⚠️ GetQuizAttempts for story '{storyId}' cancelled - OpId mismatch.");
+                Debug.LogWarning($"⚠️ GetQuizAttempts for story '{storyId}' cancelled - wrong student.");
                 return;
             }
 
@@ -588,20 +589,19 @@ public class StudentOverviewPage : MonoBehaviour
         });
     }
 
-    private void ShowOverviewData(string operationId)
+    private void ShowOverviewData()
     {
-        Debug.Log($"📊 ShowOverviewData - OpId: {operationId}");
+        Debug.Log($"📊 ShowOverviewData");
 
-        if (!_isPageActive || !IsCurrentOperation(operationId))
+        if (!_isPageActive)
         {
-            Debug.LogWarning("⚠️ ShowOverviewData cancelled");
+            Debug.LogWarning("⚠️ ShowOverviewData cancelled - page not active");
             ShowLoading(false);
             return;
         }
 
         ShowLoading(false);
 
-        // FIXED: Add null check and ensure game object is active
         if (_overviewData == null)
         {
             Debug.LogError("⚠️ _overviewData is null in ShowOverviewData!");
@@ -615,9 +615,7 @@ public class StudentOverviewPage : MonoBehaviour
             Debug.Log($"   - {chapter.Key}: {chapter.Value.stories.Count} stories");
         }
 
-        // The _isPageActive check at the start of this method is the reliable guard.
-        // We can now safely call the update method.
-        UpdateContentDisplay(operationId);
+        UpdateContentDisplay();
     }
 
     private void ProcessQuizAttempt(string attemptId, Dictionary<string, object> attemptData, StoryProgress storyProgress)
@@ -753,7 +751,6 @@ public class StudentOverviewPage : MonoBehaviour
             int childCount = storiesContent.childCount;
             for (int i = childCount - 1; i >= 0; i--)
             {
-                // Use DestroyImmediate to ensure cleanup happens right away
                 DestroyImmediate(storiesContent.GetChild(i).gameObject);
             }
             Debug.Log($"🧹 Cleared {childCount} story items from content");
@@ -770,48 +767,37 @@ public class StudentOverviewPage : MonoBehaviour
     }
 
     public void ResetPage()
-{
-    if (!_isPageActive && _currentStudent == null)
     {
-        return;
-    }
-
-    Debug.Log("🔄 Resetting StudentOverviewPage state and UI...");
-    _isPageActive = false;
-    
-    StopAllCoroutines();
-    _isLoading = false;
-    
-    // Don't null the operation ID immediately - let callbacks check it
-    // _currentOperationId = null;
-    
-    _currentStudent = null;
-    _overviewData = null;
-    _currentFilter = "Mesopotamia";
-    
-    // Force immediate cleanup
-    if (storiesContent != null)
-    {
-        int childCount = storiesContent.childCount;
-        for (int i = childCount - 1; i >= 0; i--)
+        if (!_isPageActive && _currentStudent == null)
         {
-            DestroyImmediate(storiesContent.GetChild(i).gameObject);
+            return;
         }
-    }
-    
-    HideChapterLabels();
-    ShowLoading(false);
-    
-    // Set operation ID to null after a short delay to allow current callbacks to complete
-    StartCoroutine(DelayedOperationReset());
-}
 
-    private IEnumerator DelayedOperationReset()
-    {
-        yield return new WaitForSeconds(0.1f); // Small delay
-        _currentOperationId = null;
-    }
+        Debug.Log("🔄 Resetting StudentOverviewPage state and UI...");
+        _isPageActive = false;
+        _currentStudentId = null;
 
+        StopAllCoroutines();
+        CancelInvoke();
+        _isLoading = false;
+        
+        _currentStudent = null;
+        _overviewData = null;
+        _currentFilter = "Mesopotamia";
+        
+        // Force immediate cleanup
+        if (storiesContent != null)
+        {
+            int childCount = storiesContent.childCount;
+            for (int i = childCount - 1; i >= 0; i--)
+            {
+                DestroyImmediate(storiesContent.GetChild(i).gameObject);
+            }
+        }
+        
+        HideChapterLabels();
+        ShowLoading(false);
+    }
 
     private object GetValueOrDefault(Dictionary<string, object> dict, string key, object defaultValue = null)
     {
@@ -822,27 +808,40 @@ public class StudentOverviewPage : MonoBehaviour
         return defaultValue;
     }
 
-    private void ShowPublishedStories(string operationId)
+    private void ShowPublishedStories()
     {
-        Debug.Log($"📚 ShowPublishedStories - Class: {_currentClassCode}, OpId: {operationId}");
+        Debug.Log($"📚 [START] ShowPublishedStories - Class: {_currentClassCode}, PageActive: {_isPageActive}, GameObject: {gameObject.activeInHierarchy}");
 
-        if (!_isPageActive || !IsCurrentOperation(operationId))
+        if (!_isPageActive)
         {
-            Debug.LogWarning("⚠️ ShowPublishedStories cancelled");
+            Debug.LogWarning($"⚠️ [EARLY EXIT] ShowPublishedStories cancelled - PageActive: {_isPageActive}");
             return;
         }
 
+        // CRITICAL FIX: If GameObject is not active yet, wait for next frame using a different approach
+        if (!gameObject.activeInHierarchy)
+        {
+            Debug.Log($"⏳ [WAIT] GameObject not active yet, using delayed call...");
+            Invoke(nameof(DelayedShowPublishedStories), 0.1f);
+            return;
+        }
+
+        Debug.Log($"🧹 [CLEAR] Clearing content and showing loading...");
         ClearContent();
         HideChapterLabels();
         ShowLoading(true);
 
+        string currentStudentId = _currentStudentId;
+
+        Debug.Log($"🔍 [FIREBASE] Requesting published stories from Firebase for class: {_currentClassCode}");
         FirebaseManager.Instance.GetPublishedStoriesByClass(_currentClassCode, stories =>
         {
-            // CRITICAL: Check if we can even proceed before processing
-            if (!_isPageActive || !IsCurrentOperation(operationId) || !gameObject.activeInHierarchy)
+            Debug.Log($"📥 [CALLBACK-1] GetPublishedStoriesByClass callback received - PageActive: {_isPageActive}, GameObject: {gameObject.activeInHierarchy}, IsCurrentStudent: {IsCurrentStudent(currentStudentId)}");
+
+            if (!_isPageActive || !IsCurrentStudent(currentStudentId))
             {
-                Debug.LogWarning($"⚠️ GetPublishedStoriesByClass callback cancelled - Page inactive or operation outdated");
-                if (IsCurrentOperation(operationId))
+                Debug.LogWarning($"⚠️ [CALLBACK-1 CANCELLED] GetPublishedStoriesByClass - PageActive: {_isPageActive}, IsCurrentStudent: {IsCurrentStudent(currentStudentId)}");
+                if (IsCurrentStudent(currentStudentId))
                 {
                     ShowLoading(false);
                 }
@@ -851,8 +850,8 @@ public class StudentOverviewPage : MonoBehaviour
 
             if (stories == null || stories.Count == 0)
             {
-                Debug.Log("ℹ️ No published stories found");
-                if (IsCurrentOperation(operationId) && _isPageActive && gameObject.activeInHierarchy)
+                Debug.Log($"ℹ️ [NO STORIES] No published stories found - showing empty state");
+                if (IsCurrentStudent(currentStudentId))
                 {
                     ShowLoading(false);
                     ShowEmptyState("No published stories available for this class");
@@ -860,18 +859,31 @@ public class StudentOverviewPage : MonoBehaviour
                 return;
             }
 
-            Debug.Log($"✅ Found {stories.Count} published stories");
+            Debug.Log($"✅ [STORIES FOUND] Found {stories.Count} published stories - preparing to fetch quiz attempts");
 
             int processed = 0;
             int totalStories = stories.Count;
             var storyProgressList = new List<StoryProgress>();
 
+            if (totalStories == 0)
+            {
+                Debug.Log($"⚠️ [EDGE CASE] Total stories is 0 (should not reach here)");
+                if (IsCurrentStudent(currentStudentId))
+                {
+                    ShowLoading(false);
+                    ShowEmptyState("No published stories available for this class");
+                }
+                return;
+            }
+
+            Debug.Log($"🔄 [LOOP START] Starting to process {totalStories} stories...");
             foreach (var entry in stories)
             {
                 string storyId = entry.Key;
                 var storyData = entry.Value;
 
                 string title = storyData.ContainsKey("title") ? storyData["title"].ToString() : "Untitled Story";
+                Debug.Log($"   📖 [STORY {storyId}] Title: {title}");
 
                 var storyProgress = new StoryProgress
                 {
@@ -882,18 +894,21 @@ public class StudentOverviewPage : MonoBehaviour
                 };
 
                 string studentStudId = _currentStudent.studId ?? _currentStudent.userId;
+                Debug.Log($"   🔍 [FIREBASE] Fetching quiz attempts for story {storyId}, student {studentStudId}");
 
                 FirebaseManager.Instance.GetPublishedStoryQuizAttempts(storyId, studentStudId, attempts =>
                 {
-                    // CRITICAL: Check before processing each callback
-                    if (!_isPageActive || !IsCurrentOperation(operationId) || !gameObject.activeInHierarchy)
+                    Debug.Log($"   📥 [CALLBACK-2] Quiz attempts callback for story {storyId} - PageActive: {_isPageActive}, GameObject: {gameObject.activeInHierarchy}, Attempts: {attempts?.Count ?? 0}");
+
+                    if (!_isPageActive || !IsCurrentStudent(currentStudentId))
                     {
-                        Debug.LogWarning($"⚠️ GetPublishedStoryQuizAttempts callback cancelled - Page inactive");
+                        Debug.LogWarning($"   ⚠️ [CALLBACK-2 CANCELLED] Quiz attempts for story '{storyId}' - PageActive: {_isPageActive}, IsCurrentStudent: {IsCurrentStudent(currentStudentId)}");
                         return;
                     }
 
                     if (attempts != null && attempts.Count > 0)
                     {
+                        Debug.Log($"   ✅ [ATTEMPTS] Processing {attempts.Count} quiz attempts for story {storyId}");
                         foreach (var attemptEntry in attempts)
                             ProcessQuizAttempt(attemptEntry.Key, attemptEntry.Value, storyProgress);
 
@@ -901,25 +916,39 @@ public class StudentOverviewPage : MonoBehaviour
                             .OrderBy(a => a.attemptNumber)
                             .ToList();
                     }
+                    else
+                    {
+                        Debug.Log($"   ℹ️ [NO ATTEMPTS] No quiz attempts found for story {storyId}");
+                    }
 
                     storyProgressList.Add(storyProgress);
                     processed++;
 
-                    Debug.Log($"📊 Processed {processed}/{totalStories} published stories");
+                    Debug.Log($"   📊 [PROGRESS] Processed {processed}/{totalStories} published stories");
 
                     if (processed >= totalStories)
                     {
-                        // FINAL CHECK: Only proceed if ALL conditions are met
-                        if (_isPageActive && IsCurrentOperation(operationId) && gameObject.activeInHierarchy)
+                        Debug.Log($"🎯 [ALL PROCESSED] All {totalStories} stories processed! PageActive: {_isPageActive}, GameObject: {gameObject.activeInHierarchy}, IsCurrentStudent: {IsCurrentStudent(currentStudentId)}");
+                        
+                        if (_isPageActive && IsCurrentStudent(currentStudentId))
                         {
-                            Debug.Log($"✅ All published stories loaded, displaying {storyProgressList.Count} items");
-                            // Use the immediate method instead of coroutine to avoid inactive GameObject issues
-                            ShowStoriesImmediately(storyProgressList.OrderBy(s => s.storyId).ToList(), operationId);
+                            Debug.Log($"✅ [DISPLAY CHECK] Checks passed - attempting to display {storyProgressList.Count} items");
+                            
+                            if (gameObject.activeInHierarchy)
+                            {
+                                Debug.Log($"🚀 [COROUTINE] Starting ShowStoriesWithDelay coroutine...");
+                                StartCoroutine(ShowStoriesWithDelay(storyProgressList.OrderBy(s => s.storyId).ToList()));
+                            }
+                            else
+                            {
+                                Debug.LogWarning($"⚠️ [INACTIVE] GameObject inactive, cannot start coroutine - using immediate display");
+                                ShowStoriesImmediately(storyProgressList.OrderBy(s => s.storyId).ToList());
+                            }
                         }
                         else
                         {
-                            Debug.LogWarning($"⚠️ Cannot display published stories - PageActive: {_isPageActive}, CurrentOp: {IsCurrentOperation(operationId)}, GameObjectActive: {gameObject.activeInHierarchy}");
-                            if (IsCurrentOperation(operationId) && _isPageActive)
+                            Debug.LogWarning($"⚠️ [CHECKS FAILED] Cannot display - PageActive: {_isPageActive}, IsCurrentStudent: {IsCurrentStudent(currentStudentId)}");
+                            if (IsCurrentStudent(currentStudentId))
                             {
                                 ShowLoading(false);
                             }
@@ -927,8 +956,24 @@ public class StudentOverviewPage : MonoBehaviour
                     }
                 });
             }
+            Debug.Log($"🔄 [LOOP END] Finished initiating all {totalStories} Firebase requests");
         });
+        
+        Debug.Log($"📚 [END] ShowPublishedStories initial call completed - waiting for Firebase callbacks");
     }
 
+    private void DelayedShowPublishedStories()
+    {
+        Debug.Log($"⏰ [DELAYED CALL] DelayedShowPublishedStories - PageActive: {_isPageActive}, GameObject: {gameObject.activeInHierarchy}");
 
+        if (_isPageActive && gameObject.activeInHierarchy)
+        {
+            Debug.Log($"🔄 [RETRY] Calling ShowPublishedStories again now that GameObject is active");
+            ShowPublishedStories();
+        }
+        else
+        {
+            Debug.LogWarning($"⚠️ [EXPIRED] Operation no longer valid in delayed call - PageActive: {_isPageActive}, GameObjectActive: {gameObject.activeInHierarchy}");
+        }
+    }
 }
