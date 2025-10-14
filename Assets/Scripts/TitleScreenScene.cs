@@ -13,6 +13,7 @@ public class TitleScreen : MonoBehaviour
     public Button dashboardButton;
     public Button creatormodeButton;
     public Button logoutButton;
+    public Button optionsButton;
     public Button publishedStoriesButton;
     public TextMeshProUGUI educatorsModeText;
 
@@ -47,6 +48,7 @@ public class TitleScreen : MonoBehaviour
                 dashboardButton.gameObject.SetActive(true);
                 creatormodeButton.gameObject.SetActive(true);
                 logoutButton.gameObject.SetActive(true);
+                optionsButton.gameObject.SetActive(true);
                 educatorsModeText.gameObject.SetActive(true);
                 publishedStoriesButton.gameObject.SetActive(true);
 
@@ -60,6 +62,7 @@ public class TitleScreen : MonoBehaviour
                 dashboardButton.gameObject.SetActive(false);
                 creatormodeButton.gameObject.SetActive(false);
                 logoutButton.gameObject.SetActive(true);
+                optionsButton.gameObject.SetActive(true);
                 educatorsModeText.gameObject.SetActive(false);
                 publishedStoriesButton.gameObject.SetActive(false);
 
@@ -112,12 +115,18 @@ public class TitleScreen : MonoBehaviour
         else
             Debug.LogError("[TitleScreen] logoutButton is NULL!");
 
+        if (optionsButton != null)
+            optionsButton.gameObject.SetActive(state);
+        else
+            Debug.LogError("[TitleScreen] OptionsButton is NULL!");
+
         if (educatorsModeText != null)
             educatorsModeText.gameObject.SetActive(state);
         else
             Debug.LogError("[TitleScreen] educatorsModeText is NULL!");
     }
 
+    public void Options() => SceneManager.LoadScene("Settings");
 
     public void ContinueGame() => SceneManager.LoadScene("ChapterSelect");
 

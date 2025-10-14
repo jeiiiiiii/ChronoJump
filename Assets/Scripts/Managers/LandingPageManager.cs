@@ -19,6 +19,7 @@ public class LandingPageManager : MonoBehaviour
         SceneManager.LoadScene("Register");
     }
 
+
     public void ExitButtonClicked()
     {
         #if UNITY_EDITOR
@@ -28,4 +29,5 @@ public class LandingPageManager : MonoBehaviour
         #endif
         Debug.Log("Application exited.");
     }
+    
 }

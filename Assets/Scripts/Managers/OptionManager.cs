@@ -5,7 +5,7 @@ public class OptionManager : MonoBehaviour
 {
     public void BacktoMainMenu()
     {
-        SceneManager.LoadScene("TitleSCreen");
+        SceneManager.LoadScene("TitleScreen");
     }
 }
 
