@@ -86,9 +86,6 @@ public class QuizTimeManager : MonoBehaviour
             return studIdFromPrefs;
         }
 
-        // ❌ If we get here, no student ID was saved
-        Debug.LogError("❌ No CurrentStudentId found! Make sure GameProgressManager is initialized properly.");
-
         // Last resort fallbacks
         string fallbackStudId = StudentPrefs.GetString("StudentId", "");
         if (!string.IsNullOrEmpty(fallbackStudId))

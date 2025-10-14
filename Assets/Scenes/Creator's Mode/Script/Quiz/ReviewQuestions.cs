@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class ReviewQuestionManager : MonoBehaviour
 {
@@ -31,6 +32,23 @@ public class ReviewQuestionManager : MonoBehaviour
 
         if (saveButton != null) saveButton.onClick.AddListener(SaveEdit);
         if (cancelButton != null) cancelButton.onClick.AddListener(CancelEdit);
+
+        for (int i = 0; i < choiceToggles.Length; i++)
+        {
+            int index = i;
+            choiceToggles[i].onValueChanged.AddListener((isOn) =>
+            {
+                if (isOn)
+                {
+                    // Uncheck all other toggles
+                    for (int j = 0; j < choiceToggles.Length; j++)
+                    {
+                        if (j != index)
+                            choiceToggles[j].isOn = false;
+                    }
+                }
+            });
+        }
     }
 
     public void RebuildList()
@@ -83,36 +101,45 @@ public class ReviewQuestionManager : MonoBehaviour
     {
         if (editingIndex < 0 || CurrentStory == null) return;
 
-        // ensure at least one toggle is selected
-        int selected = -1;
-        for (int i = 0; i < 4; i++)
-            if (choiceToggles[i].isOn) { selected = i; break; }
-
-        if (selected == -1)
+        // Validate question text
+        var questionValidation = ValidationManager.Instance.ValidateQuestion(questionInput.text);
+        if (!questionValidation.isValid)
         {
-            if (errorText != null) errorText.text = "Please select the correct answer.";
-            else Debug.LogWarning("Please select the correct answer.");
+            ValidationManager.Instance.ShowWarning("Invalid Question", questionValidation.message);
             return;
         }
 
-        // ✅ Update the data
+        // Gather choices
+        string[] updatedChoices = new string[4];
+        for (int i = 0; i < 4; i++) updatedChoices[i] = choiceInputs[i].text.Trim();
+
+        // Validate choices
+        var choiceValidation = ValidationManager.Instance.ValidateChoices(updatedChoices);
+        if (!choiceValidation.isValid)
+        {
+            ValidationManager.Instance.ShowWarning("Invalid Choices", choiceValidation.message);
+            return;
+        }
+
+        // Ensure correct answer
+        int selected = -1;
+        for (int i = 0; i < 4; i++) if (choiceToggles[i].isOn) { selected = i; break; }
+        if (selected == -1)
+        {
+            ValidationManager.Instance.ShowWarning("Missing Answer", "Please select the correct answer!");
+            return;
+        }
+
+        // ✅ If all passed, update the question
         var q = CurrentStory.quizQuestions[editingIndex];
         q.questionText = questionInput.text;
-
-        for (int i = 0; i < 4; i++)
-            q.choices[i] = choiceInputs[i].text;
-
+        q.choices = updatedChoices;
         q.correctAnswerIndex = selected;
-
-        // Save back
-        CurrentStory.quizQuestions[editingIndex] = q;
-
         editPanel.SetActive(false);
         editingIndex = -1;
-        if (errorText != null) errorText.text = "";
-
         RebuildList();
     }
+
 
     // --- Delete ---
     public void OnDeleteQuestion(int index)
@@ -138,7 +165,20 @@ public class ReviewQuestionManager : MonoBehaviour
             RebuildList();
         }
         deletePanel.SetActive(false);
+
+        // ✅ Check if all questions are gone
+        if (CurrentStory.quizQuestions == null || CurrentStory.quizQuestions.Count == 0)
+        {
+                            ValidationManager.Instance.ShowWarning(
+                    "No Questions Left",
+                    "You’ve deleted all questions! Please add at least one before reviewing.",
+                    () => SceneManager.LoadScene("CreateNewAddQuizScene"),
+                    () => SceneManager.LoadScene("CreateNewAddQuizScene")
+                );  
+        }
     }
+
+
 
     public void CancelDelete()
     {

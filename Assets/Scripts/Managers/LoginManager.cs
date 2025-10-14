@@ -162,6 +162,14 @@ public class LoginManager : MonoBehaviour
 
                         feedbackText.text = message;
 
+                        // ✅ FORCE FRESH STORIES LOAD FOR TEACHER
+                        if (StoryManager.Instance != null)
+                        {
+                            // Force a fresh load of stories for the new teacher
+                            StoryManager.Instance.LoadStories();
+                            Debug.Log($"✅ Fresh stories loaded for teacher: {userData.userId}");
+                        }
+
                         // Keep loading state until scene loads
                         SceneManager.LoadScene("TitleScreen");
                     }

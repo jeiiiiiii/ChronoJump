@@ -87,10 +87,21 @@ public class ReviewDialogueManager : MonoBehaviour
         // Save button
         saveEditButton.onClick.AddListener(() =>
         {
+            var validation = ValidationManager.Instance.ValidateNameAndDialogueCombined(
+                nameInputField.text.Trim(), textInputField.text.Trim()
+            );
+
+            if (!validation.isValid)
+            {
+                ValidationManager.Instance.ShowWarning("Dialogue Validation", validation.message);
+                return;
+            }
+
             DialogueStorage.EditDialogue(index, nameInputField.text, textInputField.text);
             editPopup.SetActive(false);
             RefreshList();
         });
+
 
         // Cancel button
         cancelEditButton.onClick.AddListener(() =>
@@ -118,7 +129,17 @@ public class ReviewDialogueManager : MonoBehaviour
             }
             pendingDeleteIndex = -1;
             deletePopup.SetActive(false);
+
+            var remainingDialogues = DialogueStorage.GetAllDialogues();
+            if (remainingDialogues == null || remainingDialogues.Count == 0)
+            ValidationManager.Instance.ShowWarning(
+                "No Dialogues Left",
+                "You’ve deleted all dialogues! Please add at least one before proceeding.",
+                () => SceneManager.LoadScene("CreateNewAddDialogueScene"),
+                () => SceneManager.LoadScene("CreateNewAddDialogueScene")
+            );
         });
+
 
         // No → cancel
         deleteNoButton.onClick.AddListener(() =>
