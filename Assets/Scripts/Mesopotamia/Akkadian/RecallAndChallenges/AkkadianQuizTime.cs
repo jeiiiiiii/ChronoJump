@@ -173,6 +173,7 @@ public class QuizTimeManagerAkkadian : MonoBehaviour
             }
         };
         ShowQuestion();
+        ShuffleQuestionsAndAnswers();
     }
 
     void ShowQuestion()
@@ -239,8 +240,6 @@ public class QuizTimeManagerAkkadian : MonoBehaviour
         NextQuestion();
     }
 
-
-
     void NextQuestion()
     {
         currentQuestionIndex++;
@@ -252,6 +251,32 @@ public class QuizTimeManagerAkkadian : MonoBehaviour
         else
         {
             ShowQuizResult();
+        }
+    }
+
+        private void Shuffle<T>(T[] array)
+    {
+        System.Random rng = new System.Random();
+        int n = array.Length;
+        while (n > 1)
+        {
+            int k = rng.Next(n--);
+            T temp = array[n];
+            array[n] = array[k];
+            array[k] = temp;
+        }
+    }
+
+    // 🔹 Call this after quizQuestions are created
+    private void ShuffleQuestionsAndAnswers()
+    {
+        // Shuffle the questions
+        Shuffle(quizQuestions);
+
+        // Shuffle each question's answers
+        foreach (var q in quizQuestions)
+        {
+            Shuffle(q.answers);
         }
     }
 
