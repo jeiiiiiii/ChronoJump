@@ -15,6 +15,7 @@ public class TitleScreen : MonoBehaviour
     public Button logoutButton;
     public Button optionsButton;
     public Button publishedStoriesButton;
+    public GameObject bgmusic;
     public TextMeshProUGUI educatorsModeText;
 
     private async void Start()
@@ -48,9 +49,10 @@ public class TitleScreen : MonoBehaviour
                 dashboardButton.gameObject.SetActive(true);
                 creatormodeButton.gameObject.SetActive(true);
                 logoutButton.gameObject.SetActive(true);
-                optionsButton.gameObject.SetActive(true);
+                optionsButton.gameObject.SetActive(false);
                 educatorsModeText.gameObject.SetActive(true);
                 publishedStoriesButton.gameObject.SetActive(true);
+                bgmusic.SetActive(false);
 
                 await LoadingManager.Instance.Hide();
             }

@@ -5,8 +5,11 @@ public class AudioSettingsManager : MonoBehaviour
 {
     public static AudioSettingsManager Instance;
 
-    private const string VolumePrefKey = "MusicVolume";
-    private float currentVolume = 0.5f; // Default
+    private const string MusicVolumeKey = "MusicVolume";
+    private const string VoiceVolumeKey = "VoiceVolume";
+
+    private float musicVolume = 0.5f;
+    private float voiceVolume = 0.5f;
 
     void Awake()
     {
@@ -15,9 +18,11 @@ public class AudioSettingsManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            currentVolume = StudentPrefs.GetFloat(VolumePrefKey, 0.5f);
+            // ✅ Load saved values
+            musicVolume = StudentPrefs.GetFloat(MusicVolumeKey, 0.5f);
+            voiceVolume = StudentPrefs.GetFloat(VoiceVolumeKey, 0.5f);
 
-            // ✅ Listen for scene changes to reapply volume automatically
+            // ✅ Apply volumes when new scenes load
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
@@ -28,37 +33,48 @@ public class AudioSettingsManager : MonoBehaviour
 
     void OnDestroy()
     {
-        // ✅ Clean up the event subscription if destroyed
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    // ✅ Called automatically when a new scene loads
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        ApplyVolumeToScene();
+        ApplyVolumesToScene();
     }
 
-    public float GetVolume() => currentVolume;
+    // 🎵 --- MUSIC ---
+    public float GetMusicVolume() => musicVolume;
 
-    public void SetVolume(float volume)
+    public void SetMusicVolume(float volume)
     {
-        currentVolume = volume;
-        StudentPrefs.SetFloat(VolumePrefKey, volume);
+        musicVolume = volume;
+        StudentPrefs.SetFloat(MusicVolumeKey, volume);
         StudentPrefs.Save();
-
-        ApplyVolumeToScene();
+        ApplyVolumesToScene();
     }
 
-    public void ApplyVolumeToScene()
+    // 🗣️ --- VOICE NARRATION ---
+    public float GetVoiceVolume() => voiceVolume;
+
+    public void SetVoiceVolume(float volume)
     {
-        // ✅ Find all AudioSources tagged as "Music" in the active scene
-        AudioSource[] allMusic = Object.FindObjectsByType<AudioSource>(FindObjectsSortMode.None);
-        foreach (AudioSource source in allMusic)
+        voiceVolume = volume;
+        StudentPrefs.SetFloat(VoiceVolumeKey, volume);
+        StudentPrefs.Save();
+        ApplyVolumesToScene();
+    }
+
+    // 🔊 Apply both volumes to the active scene
+    public void ApplyVolumesToScene()
+    {
+        AudioSource[] allAudio = Object.FindObjectsByType<AudioSource>(FindObjectsSortMode.None);
+
+        foreach (AudioSource source in allAudio)
         {
             if (source.CompareTag("Music"))
-            {
-                source.volume = currentVolume;
-            }
+                source.volume = musicVolume;
+
+            if (source.CompareTag("VoiceNarration"))
+                source.volume = voiceVolume;
         }
     }
 }

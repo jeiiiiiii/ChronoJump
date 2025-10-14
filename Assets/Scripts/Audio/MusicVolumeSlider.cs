@@ -1,41 +1,54 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MusicVolumeSlider : MonoBehaviour
+public class VolumeSlider : MonoBehaviour
 {
+    public enum VolumeType { Music, VoiceNarration }
+    public VolumeType volumeType;
+
     [SerializeField] private Slider volumeSlider;
+
     private bool isInitialized = false;
 
     void Start()
     {
-        // ✅ Load saved volume
-        float savedVolume = PlayerPrefs.GetFloat("MusicVolume", 0.5f);
-        volumeSlider.value = savedVolume;
+        float savedValue = 0.5f;
 
-        // ✅ Apply initial volume safely
+        // Load correct saved value depending on type
+        if (volumeType == VolumeType.Music)
+            savedValue = StudentPrefs.GetFloat("MusicVolume", 0.5f);
+        else if (volumeType == VolumeType.VoiceNarration)
+            savedValue = StudentPrefs.GetFloat("VoiceVolume", 0.5f);
+
+        volumeSlider.value = savedValue;
+
+        // Apply immediately
         if (AudioSettingsManager.Instance != null)
-            AudioSettingsManager.Instance.SetVolume(savedVolume);
-        else
-            Debug.LogWarning("AudioSettingsManager not found in scene!");
+            ApplyVolume(savedValue);
 
-        // ✅ Add listener AFTER setting the initial value to avoid triggering
+        // Add listener
         volumeSlider.onValueChanged.AddListener(OnSliderValueChanged);
-
-        // ✅ Delay initialization flag to avoid first-frame callback loop
         isInitialized = true;
     }
 
     private void OnSliderValueChanged(float value)
     {
         if (!isInitialized) return;
+        ApplyVolume(value);
+    }
 
-        if (AudioSettingsManager.Instance != null)
-            AudioSettingsManager.Instance.SetVolume(value);
+    private void ApplyVolume(float value)
+    {
+        if (AudioSettingsManager.Instance == null) return;
+
+        if (volumeType == VolumeType.Music)
+            AudioSettingsManager.Instance.SetMusicVolume(value);
+        else if (volumeType == VolumeType.VoiceNarration)
+            AudioSettingsManager.Instance.SetVoiceVolume(value);
     }
 
     void OnDestroy()
     {
-        // ✅ Clean up listener when the object is destroyed
         volumeSlider.onValueChanged.RemoveListener(OnSliderValueChanged);
     }
 }
