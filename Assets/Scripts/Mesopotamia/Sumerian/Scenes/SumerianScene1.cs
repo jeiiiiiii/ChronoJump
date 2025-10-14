@@ -17,10 +17,12 @@ public class SumerianScene1 : MonoBehaviour
     public SpriteRenderer PastBG;
     public SpriteRenderer NewBG;
     public Button backButton;
+    public Button settingsButton;
     
     [Header("UI Buttons")]
     public Button saveButton;
     public Button homeButton;
+
 
     public int currentDialogueIndex = 0;
     public DialogueLine[] dialogueLines;
@@ -380,4 +382,6 @@ public class SumerianScene1 : MonoBehaviour
         SaveCurrentProgress();
         Debug.Log($"Manual save completed at dialogue {currentDialogueIndex}");
     }
+
+    public void Options() => SceneManager.LoadScene("Settings");
 }
