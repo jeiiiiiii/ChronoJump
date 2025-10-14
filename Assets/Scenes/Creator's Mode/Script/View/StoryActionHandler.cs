@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class StoryActionHandler : MonoBehaviour
 {
@@ -91,17 +92,30 @@ public class StoryActionHandler : MonoBehaviour
 
         if (dateCreatedText != null)
         {
-            dateCreatedText.text = string.IsNullOrEmpty(story.createdAt) 
-                ? "Created: Unknown" 
+            if (!string.IsNullOrEmpty(story.createdAt))
+            {
+                if (DateTime.TryParse(story.createdAt, out DateTime created))
+                    story.createdAt = created.ToString("MMM dd, yyyy hh:mm tt");
+            }
+
+            dateCreatedText.text = string.IsNullOrEmpty(story.createdAt)
+                ? "Created: Unknown"
                 : $"Created: {story.createdAt}";
         }
 
         if (dateUpdatedText != null)
         {
-            dateUpdatedText.text = string.IsNullOrEmpty(story.updatedAt) 
-                ? "Updated: Not modified" 
+            if (!string.IsNullOrEmpty(story.updatedAt))
+            {
+                if (DateTime.TryParse(story.updatedAt, out DateTime updated))
+                    story.updatedAt = updated.ToString("MMM dd, yyyy hh:mm tt");
+            }
+
+            dateUpdatedText.text = string.IsNullOrEmpty(story.updatedAt)
+                ? "Updated: Not modified"
                 : $"Updated: {story.updatedAt}";
         }
+
     }
 
     private void ClearStoryDetailsUI()

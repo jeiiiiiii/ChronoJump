@@ -462,7 +462,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 92244692}
-  - component: {fileID: 92244693}
   - component: {fileID: 92244694}
   m_Layer: 0
   m_Name: StoryPublishManager
@@ -490,21 +489,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &92244693
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 92244691}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b73f3b579eff3304694c88a319879805, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  loadingPanel: {fileID: 0}
-  showLoadingScreen: 1
-  minLoadingTime: 1
 --- !u!114 &92244694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4056,7 +4040,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 92244693}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: SceneNavigationManager, Assembly-CSharp
         m_MethodName: NavigateToTitleScreen
         m_Mode: 1
