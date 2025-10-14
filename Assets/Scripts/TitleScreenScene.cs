@@ -149,21 +149,25 @@ public class TitleScreen : MonoBehaviour
 
     public void Logout()
     {
-        // ✅ Clear StoryManager data on logout
+        Debug.Log("🔄 Starting logout process...");
+
+        // ✅ Use existing cleanup methods
         if (StoryManager.Instance != null)
         {
             StoryManager.Instance.ClearStoriesForNewTeacher();
             StoryManager.Instance.ClearCurrentTeacher();
+            Debug.Log("✅ Teacher data completely reset on logout");
         }
-
-        SceneManager.LoadScene("Login");
         StudentPrefs.DeleteKey("LastScene");
         StudentPrefs.DeleteKey("SaveSource");
         StudentPrefs.SetString("AccessMode", "LoadOnly");
         StudentPrefs.Save();
-
-        Debug.Log("✅ Teacher data cleared on logout");
+        Debug.Log("✅ Logout process completed");
+        
+        SceneManager.LoadScene("Login");
     }
+
+
 
 
 

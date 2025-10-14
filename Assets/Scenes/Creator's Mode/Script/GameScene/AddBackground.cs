@@ -5,10 +5,63 @@ public class BackgroundSetter : MonoBehaviour
 {
     public RawImage backgroundImage;
 
-    private StoryData CurrentStory => StoryManager.Instance.currentStory;
-
     void Start()
     {
+        string userRole = PlayerPrefs.GetString("UserRole", "student");
+
+        // ✅ FIX: Student mode uses StudentPrefs, Teacher mode uses StoryManager
+        if (userRole.ToLower() == "student")
+        {
+            LoadStudentStoryBackground();
+        }
+        else
+        {
+            LoadTeacherStoryBackground();
+        }
+    }
+
+    private void LoadStudentStoryBackground()
+    {
+        // Load from StudentPrefs for student mode
+        string storyJson = StudentPrefs.GetString("CurrentStoryData", "");
+        if (!string.IsNullOrEmpty(storyJson))
+        {
+            try
+            {
+                StoryData studentStory = JsonUtility.FromJson<StoryData>(storyJson);
+                if (studentStory != null && !string.IsNullOrEmpty(studentStory.backgroundPath))
+                {
+                    Texture2D savedBackground = ImageStorage.LoadImage(studentStory.backgroundPath);
+                    if (savedBackground != null)
+                    {
+                        ApplyTexture(savedBackground);
+                        Debug.Log($"📖 Loaded STUDENT background for story '{studentStory.storyTitle}'");
+                        return;
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"❌ Error loading student story background: {ex.Message}");
+            }
+        }
+
+        // Fallback for student mode
+        if (ImageStorage.UploadedTexture != null)
+        {
+            ApplyTexture(ImageStorage.UploadedTexture);
+            Debug.Log("🖼 Applied temporary uploaded background for student");
+        }
+        else
+        {
+            Debug.LogWarning("⚠️ No background found for student story");
+        }
+    }
+
+    private void LoadTeacherStoryBackground()
+    {
+        StoryData CurrentStory = StoryManager.Instance?.currentStory;
+
         if (CurrentStory == null)
         {
             Debug.LogWarning("⚠ No current story found in StoryManager.");
@@ -22,7 +75,7 @@ public class BackgroundSetter : MonoBehaviour
             if (savedBackground != null)
             {
                 ApplyTexture(savedBackground);
-                Debug.Log($"📖 Loaded background for story '{CurrentStory.storyTitle}' from: {CurrentStory.backgroundPath}");
+                Debug.Log($"📖 Loaded TEACHER background for story '{CurrentStory.storyTitle}' from: {CurrentStory.backgroundPath}");
                 return;
             }
         }
@@ -32,10 +85,6 @@ public class BackgroundSetter : MonoBehaviour
         {
             ApplyTexture(ImageStorage.UploadedTexture);
             Debug.Log($"🖼 Applied temporary uploaded background for story '{CurrentStory.storyTitle}'");
-            
-            // ❌ REMOVED: The redundant SaveTextureToFile call
-            // ImageUploader.cs already calls ImageStorage.SaveCurrentImageToStory() when images are uploaded
-            // So we don't need to save again here
         }
     }
 
@@ -49,8 +98,4 @@ public class BackgroundSetter : MonoBehaviour
             fitter.aspectRatio = (float)tex.width / tex.height;
         }
     }
-
-    // ❌ COMPLETELY REMOVE these methods - they're not needed anymore
-    // private Texture2D LoadTextureFromFile(string path) { ... }
-    // private string SaveTextureToFile(Texture2D tex, string storyId) { ... }
 }

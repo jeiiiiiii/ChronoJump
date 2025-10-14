@@ -701,8 +701,8 @@ public class StoryManager : MonoBehaviour
     }
 
     private StoryData MapToUnityStory(StoryDataFirestore firestoreStory,
-                                List<DialogueLine> dialogues,
-                                List<Question> questions)
+                                  List<DialogueLine> dialogues,
+                                  List<Question> questions)
     {
         return new StoryData
         {
@@ -715,11 +715,18 @@ public class StoryManager : MonoBehaviour
             assignedClasses = firestoreStory.assignedClasses ?? new List<string>(),
             dialogues = dialogues,
             quizQuestions = questions,
+            storyIndex = firestoreStory.storyIndex,
 
-            // ✅ FIXED: Use the actual storyIndex from Firestore, not default 0
-            storyIndex = firestoreStory.storyIndex
+            // ✅ Add these:
+            createdAt = firestoreStory.createdAt != null 
+                ? firestoreStory.createdAt.ToDateTime().ToString("MMM dd, yyyy hh:mm tt")
+                : "",
+            updatedAt = firestoreStory.updatedAt != null 
+                ? firestoreStory.updatedAt.ToDateTime().ToString("MMM dd, yyyy hh:mm tt")
+                : ""
         };
     }
+
 
 
     private DialogueLineFirestore MapToFirestoreDialogue(DialogueLine unityDialogue, int orderIndex)
@@ -1549,4 +1556,5 @@ private async Task<ClassDetailsModel> GetClassDetailsFromFirestore(string classC
 
         return "Unknown Teacher";
     }
+
 }

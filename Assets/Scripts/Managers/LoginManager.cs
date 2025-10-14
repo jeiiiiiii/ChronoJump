@@ -61,14 +61,14 @@ public class LoginManager : MonoBehaviour
             passwordField.contentType = TMP_InputField.ContentType.Password;
             passwordField.ForceLabelUpdate();
         }
-    
-    // 👁 Default icon states
-    if (showPasswordButton != null)
-        showPasswordButton.gameObject.SetActive(true);
+
+        // 👁 Default icon states
+        if (showPasswordButton != null)
+            showPasswordButton.gameObject.SetActive(true);
 
         if (hidePasswordButton != null)
             hidePasswordButton.gameObject.SetActive(false);
-        
+
     }
 
     // Navigate to the registration scene
@@ -162,6 +162,14 @@ public class LoginManager : MonoBehaviour
 
                         feedbackText.text = message;
 
+                        // ✅ FORCE FRESH STORIES LOAD FOR TEACHER
+                        if (StoryManager.Instance != null)
+                        {
+                            // Force a fresh load of stories for the new teacher
+                            StoryManager.Instance.LoadStories();
+                            Debug.Log($"✅ Fresh stories loaded for teacher: {userData.userId}");
+                        }
+
                         // Keep loading state until scene loads
                         SceneManager.LoadScene("TitleScreen");
                     }
@@ -223,27 +231,19 @@ public class LoginManager : MonoBehaviour
                                     Debug.Log("Created GameProgressManager instance for student login");
                                 }
 
-                                // Initialize the student's game progress if it doesn't exist
-                                if (studentState.GameProgress == null)
-                                {
-                                    Debug.Log("No GameProgress found for student, creating new one");
-                                    studentState.SetGameProgress(new GameProgressModel
-                                    {
-                                        currentHearts = 3,
-                                        unlockedChapters = new List<string> { "CH001" },
-                                        unlockedStories = new List<string> { "ST001" },
-                                        unlockedAchievements = new List<string>(),
-                                        unlockedArtifacts = new List<string>(),
-                                        unlockedCivilizations = new List<string> { "Sumerian" },
-                                        lastUpdated = Timestamp.GetCurrentTimestamp(),
-                                        isRemoved = false
-                                    });
-                                }
-
                                 feedbackText.text = "Loading game progress...";
 
                                 GameProgressManager.Instance.SetStudentState(studentState, () =>
                                 {
+                                    // Add debug logs to verify data
+                                    if (GameProgressManager.Instance.CurrentStudentState != null)
+                                    {
+                                        var progress = GameProgressManager.Instance.CurrentStudentState.Progress;
+                                        Debug.Log($"🎯 Student Progress After Initialization:");
+                                        Debug.Log($"   - OverallScore: {progress.overallScore}");
+                                        Debug.Log($"   - SuccessRate: {progress.successRate}");
+                                    }
+    
                                     // This callback runs when GameProgressManager is fully initialized
                                     Debug.Log($"Student {studentState.StudentId} fully initialized, navigating to TitleScreen");
 
@@ -252,10 +252,11 @@ public class LoginManager : MonoBehaviour
 
                                     // Handle Remember Me for student
                                     HandleRememberMe(email);
-
-                                    // Now it's safe to load the TitleScreen (keep loading state until scene loads)
+                                    
+                                    // Now it's safe to load the TitleScreen
                                     SceneManager.LoadScene("TitleScreen");
                                 });
+
 
                             });
                     }
@@ -419,6 +420,5 @@ public class LoginManager : MonoBehaviour
     }
 
     #endregion
-
 
 }
