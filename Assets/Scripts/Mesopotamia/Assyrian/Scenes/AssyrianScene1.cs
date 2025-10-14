@@ -20,6 +20,8 @@ public class AssyrianScene1 : MonoBehaviour
     public Button saveButton;
     public Button homeButton;
 
+    public Button settingsButton;
+
     public int currentDialogueIndex = 0;
     public DialogueLine[] dialogueLines;
 
@@ -206,6 +208,24 @@ public class AssyrianScene1 : MonoBehaviour
                     foundHomeButton.onClick.AddListener(Home);
             }
         }
+
+        if (settingsButton != null)
+        {
+            settingsButton.onClick.AddListener(GoToSettings);
+        }
+        else
+        {
+            GameObject settingsButtonObj = GameObject.Find("SettingsBT");
+            if (settingsButtonObj != null)
+            {
+                Button foundSettingsButton = settingsButtonObj.GetComponent<Button>();
+                if (foundSettingsButton != null)
+                {
+                    foundSettingsButton.onClick.AddListener(GoToSettings);
+                    Debug.Log("Settings button found and connected!");
+                }
+            }
+        }
     }
 
     // === Show Dialogue ===
@@ -315,6 +335,20 @@ public class AssyrianScene1 : MonoBehaviour
         StudentPrefs.SetString("CurrentScene", "AssyrianSceneOne");
         StudentPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
         StudentPrefs.Save();
+    }
+
+    public void GoToSettings()
+    {
+        // Save current progress
+        SaveCurrentProgress();
+
+        // Mark that we're coming from a story scene
+        StudentPrefs.SetString("SaveSource", "StoryScene");
+        StudentPrefs.SetString("LastScene", "AssyrianSceneOne");
+        StudentPrefs.Save();
+
+        Debug.Log("Going to Settings from AssyrianSceneOne");
+        SceneManager.LoadScene("Settings");
     }
 
     // === Go Home ===

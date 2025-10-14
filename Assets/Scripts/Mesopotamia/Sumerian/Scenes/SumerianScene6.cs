@@ -20,6 +20,8 @@ public class SumerianScene6 : MonoBehaviour
     public Button saveButton;
     public Button homeButton;
 
+    public Button settingsButton;
+
     public int currentDialogueIndex = 0;
     public DialogueLine[] dialogueLines;
 
@@ -193,6 +195,25 @@ public class SumerianScene6 : MonoBehaviour
                 }
             }
         }
+
+        // Setup settings button
+        if (settingsButton != null)
+        {
+            settingsButton.onClick.AddListener(GoToSettings);
+        }
+        else
+        {
+            GameObject settingsButtonObj = GameObject.Find("SettingsBT");
+            if (settingsButtonObj != null)
+            {
+                Button foundSettingsButton = settingsButtonObj.GetComponent<Button>();
+                if (foundSettingsButton != null)
+                {
+                    foundSettingsButton.onClick.AddListener(GoToSettings);
+                    Debug.Log("Settings button found and connected!");
+                }
+            }
+        }
     }
 
     void ShowDialogue()
@@ -289,6 +310,20 @@ public class SumerianScene6 : MonoBehaviour
 
         Debug.Log($"Going to save menu with dialogue index: {currentDialogueIndex} from SumerianSceneSix");
         SceneManager.LoadScene("SaveAndLoadScene");
+    }
+
+    public void GoToSettings()
+    {
+        // Save current progress
+        SaveCurrentProgress();
+
+        // Mark that we're coming from a story scene
+        StudentPrefs.SetString("SaveSource", "StoryScene");
+        StudentPrefs.SetString("LastScene", "SumerianSceneSix");
+        StudentPrefs.Save();
+
+        Debug.Log("Going to Settings from SumerianSceneSix");
+        SceneManager.LoadScene("Settings");
     }
 
     public void Home()

@@ -20,6 +20,8 @@ public class AkkadianScene1 : MonoBehaviour
     public Button saveButton;
     public Button homeButton;
 
+    public Button settingsButton;
+
     public int currentDialogueIndex = 0;
 
     public DialogueLine[] dialogueLines;
@@ -181,6 +183,25 @@ public class AkkadianScene1 : MonoBehaviour
                     foundHomeButton.onClick.AddListener(Home);
             }
         }
+
+        // Setup settings button
+        if (settingsButton != null)
+        {
+            settingsButton.onClick.AddListener(GoToSettings);
+        }
+        else
+        {
+            GameObject settingsButtonObj = GameObject.Find("SettingsBT");
+            if (settingsButtonObj != null)
+            {
+                Button foundSettingsButton = settingsButtonObj.GetComponent<Button>();
+                if (foundSettingsButton != null)
+                {
+                    foundSettingsButton.onClick.AddListener(GoToSettings);
+                    Debug.Log("Settings button found and connected!");
+                }
+            }
+        }
     }
 
     void ShowDialogue()
@@ -285,6 +306,20 @@ public class AkkadianScene1 : MonoBehaviour
         StudentPrefs.SetString("CurrentScene", "AkkadianSceneOne");
         StudentPrefs.SetString("SaveTimestamp", System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
         StudentPrefs.Save();
+    }
+
+    public void GoToSettings()
+    {
+        // Save current progress
+        SaveCurrentProgress();
+
+        // Mark that we're coming from a story scene
+        StudentPrefs.SetString("SaveSource", "StoryScene");
+        StudentPrefs.SetString("LastScene", "AkkadianSceneOne");
+        StudentPrefs.Save();
+
+        Debug.Log("Going to Settings from AkkadianSceneOne");
+        SceneManager.LoadScene("Settings");
     }
 
     public void Home()
