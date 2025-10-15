@@ -20,4 +20,23 @@ public class QuizAttemptModel
         this.isPassed = isPassed;
         this.dateCompleted = Timestamp.GetCurrentTimestamp();
     }
+    
+    // Correct property for local time display
+    public DateTime LocalDateCompleted 
+    {
+        get 
+        {
+            // Convert Firebase Timestamp to DateTime and then to local time
+            return dateCompleted.ToDateTime().ToLocalTime();
+        }
+    }
+    
+    // Optional: Property for formatted display string
+    public string LocalDateDisplayString 
+    {
+        get 
+        {
+            return LocalDateCompleted.ToString("MMM dd, yyyy 'at' hh:mm tt");
+        }
+    }
 }
