@@ -280,7 +280,6 @@ public class QuizTimeManagerBabylonian : MonoBehaviour
     void ShowQuizResult()
     {
         PlayerProgressManager.UnlockCivilization("Assyrian");
-        UpdateSaveAfterQuizCompletion();
 
         timerText.color = Color.white;
         timerText.gameObject.SetActive(false);
@@ -341,6 +340,7 @@ public class QuizTimeManagerBabylonian : MonoBehaviour
             nextButton.onClick.AddListener(() =>
             {
                 SceneManager.LoadScene("CoordinateSelect");
+                UpdateSaveAfterQuizCompletion();
             });
         }
         else
@@ -350,6 +350,7 @@ public class QuizTimeManagerBabylonian : MonoBehaviour
             {
                 SceneManager.LoadScene("BabylonianArtifactScene");
                 PlayerAchievementManager.UnlockAchievement("Stone");
+                UpdateSaveAfterQuizCompletion();
             });
         }
     }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System;
 
 public class StudentQuizAttemptView : MonoBehaviour
 {
@@ -16,7 +17,21 @@ public class StudentQuizAttemptView : MonoBehaviour
             attemptNumberText.text = $"{attempt.attemptNumber}";
 
         if (dateCompletedText != null)
-            dateCompletedText.text = attempt.dateCompleted.ToString("MMM dd, yyyy 'at' hh:mm tt");
+        {
+            // Use the local time instead of UTC
+            DateTime localDate = attempt.dateCompleted;
+            
+            // Ensure we're working with local time
+            if (attempt.dateCompleted.Kind == DateTimeKind.Utc)
+            {
+                localDate = attempt.dateCompleted.ToLocalTime();
+            }
+            
+            dateCompletedText.text = localDate.ToString("MMM dd, yyyy 'at' hh:mm tt");
+            
+            // Debug log to verify the conversion
+            Debug.Log($"📅 Date conversion - UTC: {attempt.dateCompleted:MMM dd, yyyy 'at' hh:mm tt} -> Local: {localDate:MMM dd, yyyy 'at' hh:mm tt}");
+        }
 
         if (remarksText != null)
         {

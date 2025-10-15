@@ -279,7 +279,6 @@ public class QuizTimeManagerSumerian : MonoBehaviour
     void ShowQuizResult()
     {
         PlayerProgressManager.UnlockCivilization("Akkadian");
-        UpdateSaveAfterQuizCompletion();
 
         timerText.color = Color.white;
         timerText.gameObject.SetActive(false);
@@ -340,6 +339,7 @@ public class QuizTimeManagerSumerian : MonoBehaviour
             nextButton.onClick.AddListener(() =>
             {
                 SceneManager.LoadScene("CoordinateSelect");
+                UpdateSaveAfterQuizCompletion();
             });
         }
         else
@@ -349,6 +349,7 @@ public class QuizTimeManagerSumerian : MonoBehaviour
             {
                 SceneManager.LoadScene("SumerianArtifactScene");
                 PlayerAchievementManager.UnlockAchievement("Tablet");
+                UpdateSaveAfterQuizCompletion();
             });
         }
     }
