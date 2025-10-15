@@ -116,7 +116,7 @@ private string FormatDateForDisplay(string dateString)
     // First try parsing as ISO format (from Firestore)
     if (DateTime.TryParse(dateString, out DateTime date))
     {
-        return date.ToString("MMM dd, yyyy hh:mm tt");
+        return date.ToString("MMM dd, yyyy");
     }
     
     // If that fails, try common formats
