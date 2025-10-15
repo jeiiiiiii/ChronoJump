@@ -283,7 +283,6 @@ public class QuizTimeManagerAkkadian : MonoBehaviour
     void ShowQuizResult()
     {
         PlayerProgressManager.UnlockCivilization("Babylonian");
-        UpdateSaveAfterQuizCompletion();
         
         timerText.color = Color.white;
         timerText.gameObject.SetActive(false);
@@ -344,6 +343,7 @@ public class QuizTimeManagerAkkadian : MonoBehaviour
             nextButton.onClick.AddListener(() =>
             {
                 SceneManager.LoadScene("CoordinateSelect");
+                UpdateSaveAfterQuizCompletion();
             });
         }
         else
@@ -353,6 +353,7 @@ public class QuizTimeManagerAkkadian : MonoBehaviour
             {
                 SceneManager.LoadScene("AkkadianArtifactScene");
                 PlayerAchievementManager.UnlockAchievement("Sword");
+                UpdateSaveAfterQuizCompletion();
             });
         }
     }
