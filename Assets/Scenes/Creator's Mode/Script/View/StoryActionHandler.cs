@@ -69,54 +69,79 @@ public class StoryActionHandler : MonoBehaviour
     }
 
     private void UpdateStoryDetailsUI(StoryData story)
+{
+    if (story == null)
     {
-        if (story == null)
-        {
-            ClearStoryDetailsUI();
-            return;
-        }
+        ClearStoryDetailsUI();
+        return;
+    }
 
-        if (storyTitleText != null)
-        {
-            storyTitleText.text = string.IsNullOrEmpty(story.storyTitle) 
-                ? "Untitled Story" 
-                : story.storyTitle;
-        }
+    if (storyTitleText != null)
+    {
+        storyTitleText.text = string.IsNullOrEmpty(story.storyTitle) 
+            ? "Untitled Story" 
+            : story.storyTitle;
+    }
 
-        if (storyDescriptionText != null)
-        {
-            storyDescriptionText.text = string.IsNullOrEmpty(story.storyDescription) 
-                ? "No description available" 
-                : story.storyDescription;
-        }
+    if (storyDescriptionText != null)
+    {
+        storyDescriptionText.text = string.IsNullOrEmpty(story.storyDescription) 
+            ? "No description available" 
+            : story.storyDescription;
+    }
 
-        if (dateCreatedText != null)
-        {
-            if (!string.IsNullOrEmpty(story.createdAt))
-            {
-                if (DateTime.TryParse(story.createdAt, out DateTime created))
-                    story.createdAt = created.ToString("MMM dd, yyyy hh:mm tt");
-            }
-
-            dateCreatedText.text = string.IsNullOrEmpty(story.createdAt)
-                ? "Created: Unknown"
-                : $"Created: {story.createdAt}";
-        }
+    if (dateCreatedText != null)
+{
+    string createdDisplay = string.IsNullOrEmpty(story.createdAt) 
+        ? "Created: Unknown" 
+        : $"Created: {FormatDateForDisplay(story.createdAt)}";
+    dateCreatedText.text = createdDisplay;
+}
 
         if (dateUpdatedText != null)
         {
-            if (!string.IsNullOrEmpty(story.updatedAt))
-            {
-                if (DateTime.TryParse(story.updatedAt, out DateTime updated))
-                    story.updatedAt = updated.ToString("MMM dd, yyyy hh:mm tt");
-            }
-
-            dateUpdatedText.text = string.IsNullOrEmpty(story.updatedAt)
+            string updatedDisplay = string.IsNullOrEmpty(story.updatedAt)
                 ? "Updated: Not modified"
-                : $"Updated: {story.updatedAt}";
+                : $"Updated: {FormatDateForDisplay(story.updatedAt)}";
+            dateUpdatedText.text = updatedDisplay;
         }
 
+}
+
+private string FormatDateForDisplay(string dateString)
+{
+    if (string.IsNullOrEmpty(dateString))
+        return "Unknown";
+    
+    // First try parsing as ISO format (from Firestore)
+    if (DateTime.TryParse(dateString, out DateTime date))
+    {
+        return date.ToString("MMM dd, yyyy hh:mm tt");
     }
+    
+    // If that fails, try common formats
+    string[] formats = {
+        "yyyy-MM-dd HH:mm:ss",
+        "MM/dd/yyyy HH:mm:ss",
+        "dd/MM/yyyy HH:mm:ss",
+        "yyyy-MM-ddTHH:mm:ssZ",
+        "MMM dd, yyyy hh:mm tt"
+    };
+    
+    foreach (string format in formats)
+    {
+        if (DateTime.TryParseExact(dateString, format, System.Globalization.CultureInfo.InvariantCulture, 
+            System.Globalization.DateTimeStyles.None, out date))
+        {
+            return date.ToString("MMM dd, yyyy hh:mm tt");
+        }
+    }
+    
+    // If all parsing fails, return the original string
+    return dateString;
+}
+
+
 
     private void ClearStoryDetailsUI()
     {

@@ -701,31 +701,47 @@ public class StoryManager : MonoBehaviour
     }
 
     private StoryData MapToUnityStory(StoryDataFirestore firestoreStory,
-                                  List<DialogueLine> dialogues,
-                                  List<Question> questions)
+                              List<DialogueLine> dialogues,
+                              List<Question> questions)
+{
+    // Helper function to convert Timestamp to display string
+    string ConvertTimestampToString(Timestamp timestamp)
     {
-        return new StoryData
+        if (timestamp != null)
         {
-            storyId = firestoreStory.storyId,
-            storyTitle = firestoreStory.title,
-            storyDescription = firestoreStory.description,
-            backgroundPath = firestoreStory.backgroundUrl,
-            character1Path = firestoreStory.character1Url,
-            character2Path = firestoreStory.character2Url,
-            assignedClasses = firestoreStory.assignedClasses ?? new List<string>(),
-            dialogues = dialogues,
-            quizQuestions = questions,
-            storyIndex = firestoreStory.storyIndex,
-
-            // ✅ Add these:
-            createdAt = firestoreStory.createdAt != null 
-                ? firestoreStory.createdAt.ToDateTime().ToString("MMM dd, yyyy hh:mm tt")
-                : "",
-            updatedAt = firestoreStory.updatedAt != null 
-                ? firestoreStory.updatedAt.ToDateTime().ToString("MMM dd, yyyy hh:mm tt")
-                : ""
-        };
+            try
+            {
+                DateTime date = timestamp.ToDateTime();
+                // Store in a format that DateTime.TryParse can handle
+                return date.ToString("yyyy-MM-dd HH:mm:ss");
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"Failed to convert timestamp: {ex.Message}");
+            }
+        }
+        return "";
     }
+
+    return new StoryData
+    {
+        storyId = firestoreStory.storyId,
+        storyTitle = firestoreStory.title,
+        storyDescription = firestoreStory.description,
+        backgroundPath = firestoreStory.backgroundUrl,
+        character1Path = firestoreStory.character1Url,
+        character2Path = firestoreStory.character2Url,
+        assignedClasses = firestoreStory.assignedClasses ?? new List<string>(),
+        dialogues = dialogues,
+        quizQuestions = questions,
+        storyIndex = firestoreStory.storyIndex,
+
+        // ✅ FIXED: Proper timestamp conversion
+        createdAt = ConvertTimestampToString(firestoreStory.createdAt),
+        updatedAt = ConvertTimestampToString(firestoreStory.updatedAt)
+    };
+}
+
 
 
 
