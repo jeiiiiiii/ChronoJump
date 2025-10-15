@@ -903,7 +903,7 @@ private string GetLatestUnlockedStory()
         if (!gp.unlockedArtifacts.Contains(artifactId))
         {
             gp.unlockedArtifacts.Add(artifactId);
-            SaveProgress(); // This will save to both StudentPrefs and Firebase
+            SaveProgress(false, true); // Force save bypassing cooldown
             OnArtifactUnlocked?.Invoke(artifactId);
             Debug.Log($"Artifact {artifactId} unlocked for student {CurrentStudentState.StudentId}");
         }
@@ -912,6 +912,7 @@ private string GetLatestUnlockedStory()
             Debug.Log($"Artifact {artifactId} was already unlocked for student {CurrentStudentState.StudentId}");
         }
     }
+
 
     public void UseHeart()
     {
@@ -1504,38 +1505,36 @@ private bool CanSave()
 
     #endregion
 
-    // FIXED: Add safeguards to the main SaveProgress method
-private void SaveProgress(bool skipStudentProgressSave = false)
-{
-    if (CurrentStudentState?.GameProgress == null) return;
-    
-    // Prevent saves during loading or recalculation
-    if (_isLoadingFromFirebase || _isRecalculatingScores)
+    /// FIXED: Add safeguards to the main SaveProgress method
+    private void SaveProgress(bool skipStudentProgressSave = false, bool forceSave = false)
     {
-        Debug.Log("Skipping SaveProgress - operation in progress");
-        return;
+        if (CurrentStudentState?.GameProgress == null) return;
+
+        // Prevent saves during loading or recalculation (unless forced)
+        if (!forceSave && (_isLoadingFromFirebase || _isRecalculatingScores))
+        {
+            Debug.Log("Skipping SaveProgress - operation in progress");
+            return;
+        }
+
+        if (!forceSave && !CanSave())
+        {
+            Debug.Log("SaveProgress called too frequently, skipping");
+            return;
+        }
+
+        _lastSaveTime = System.DateTime.Now;
+        CurrentStudentState.GameProgress.lastUpdated = Timestamp.GetCurrentTimestamp();
+
+        SaveToStudentPrefs();
+        SaveProgressToFirebase();
+        _cachedHasProgress = true;
+
+        if (!skipStudentProgressSave)
+        {
+            SaveStudentProgressToFirebase();
+        }
     }
-
-    if (!CanSave())
-    {
-        Debug.Log("SaveProgress called too frequently, skipping");
-        return;
-    }
-
-    _lastSaveTime = System.DateTime.Now;
-    CurrentStudentState.GameProgress.lastUpdated = Timestamp.GetCurrentTimestamp();
-    
-    SaveToStudentPrefs();
-    SaveProgressToFirebase();
-    _cachedHasProgress = true;
-
-    if (!skipStudentProgressSave)
-    {
-        SaveStudentProgressToFirebase();
-    }
-}
-
-
 
     #region FIXED: Save Game Loading with GameProgress Restoration
 
