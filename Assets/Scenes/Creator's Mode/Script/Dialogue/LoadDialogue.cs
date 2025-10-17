@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine.Networking;
 
 public class DialoguePlayer : MonoBehaviour
 {
@@ -14,19 +15,28 @@ public class DialoguePlayer : MonoBehaviour
     public RawImage character1Image;
     public RawImage character2Image;
 
+    [Header("Audio Settings")]
+    public AudioSource audioSource;
+    public Button skipAudioButton; // Optional: skip to next dialogue while audio is playing
+    public GameObject audioPlayingIndicator; // Optional: visual indicator
+    
     private int currentIndex = 0;
     private List<DialogueLine> dialogues;
     private StoryData currentStory;
+    private bool isPlayingAudio = false;
 
     void Start()
     {
         Debug.Log("🎬 DialoguePlayer Started");
         Debug.Log($"📊 Data source: {DialogueStorage.GetDataSourceInfo()}");
 
-        // Load story data first
-        LoadStoryData();
+        // Setup audio source
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
 
-        // Load dialogues from DialogueStorage
+        LoadStoryData();
         dialogues = DialogueStorage.GetAllDialogues();
 
         if (dialogues.Count > 0)
@@ -42,18 +52,154 @@ public class DialoguePlayer : MonoBehaviour
         }
 
         nextButton.onClick.AddListener(NextDialogue);
-        backButton.onClick.AddListener(PreviousDialogue); 
+        backButton.onClick.AddListener(PreviousDialogue);
 
-        // Load background and character images
+        if (skipAudioButton != null)
+        {
+            skipAudioButton.onClick.AddListener(SkipAudio);
+            skipAudioButton.gameObject.SetActive(false);
+        }
+
+        if (audioPlayingIndicator != null)
+        {
+            audioPlayingIndicator.SetActive(false);
+        }
+
         LoadStoryAssets();
-
-        // Load quizzes for the quiz scene
         LoadQuizQuestions();
     }
 
+    void ShowDialogue(int index)
+    {
+        if (dialogues == null || index >= dialogues.Count) return;
+
+        var dialogue = dialogues[index];
+        Debug.Log($"💬 Showing dialogue {index + 1}/{dialogues.Count}: {dialogue.characterName} - {dialogue.dialogueText}");
+
+        dialogueText.text = $"{dialogue.characterName}: {dialogue.dialogueText}";
+        UpdateCharacterImages(dialogue.characterName);
+
+        // Play audio if available
+        if (dialogue.hasAudio && !string.IsNullOrEmpty(dialogue.audioFilePath))
+        {
+            StartCoroutine(PlayDialogueAudio(dialogue));
+        }
+        else
+        {
+            Debug.Log($"⚠️ No audio for dialogue: {dialogue.characterName}");
+        }
+    }
+
+    IEnumerator PlayDialogueAudio(DialogueLine dialogue)
+    {
+        isPlayingAudio = true;
+        
+        // Show audio playing indicator
+        if (skipAudioButton != null)
+            skipAudioButton.gameObject.SetActive(true);
+        if (audioPlayingIndicator != null)
+            audioPlayingIndicator.SetActive(true);
+
+        // Disable next/back buttons while audio plays (optional)
+        nextButton.interactable = false;
+        backButton.interactable = false;
+
+        string url = "file://" + dialogue.audioFilePath;
+        
+        using (UnityWebRequest request = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.MPEG))
+        {
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                AudioClip clip = DownloadHandlerAudioClip.GetContent(request);
+                audioSource.clip = clip;
+                audioSource.Play();
+
+                Debug.Log($"🔊 Playing audio for: {dialogue.characterName}");
+
+                // Wait for audio to finish or be skipped
+                while (audioSource.isPlaying && isPlayingAudio)
+                {
+                    yield return null;
+                }
+
+                Debug.Log($"✅ Finished playing audio for: {dialogue.characterName}");
+            }
+            else
+            {
+                Debug.LogError($"❌ Failed to load audio: {request.error}");
+            }
+        }
+
+        // Re-enable buttons
+        nextButton.interactable = true;
+        backButton.interactable = true;
+        
+        if (skipAudioButton != null)
+            skipAudioButton.gameObject.SetActive(false);
+        if (audioPlayingIndicator != null)
+            audioPlayingIndicator.SetActive(false);
+
+        isPlayingAudio = false;
+    }
+
+    void SkipAudio()
+    {
+        if (isPlayingAudio && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+            isPlayingAudio = false;
+            Debug.Log("⏭️ Audio skipped");
+        }
+    }
+
+    void NextDialogue()
+    {
+        // Stop current audio if playing
+        if (isPlayingAudio)
+        {
+            SkipAudio();
+        }
+
+        currentIndex++;
+        if (currentIndex < dialogues.Count)
+        {
+            ShowDialogue(currentIndex);
+        }
+        else
+        {
+            dialogueText.text = "Tapos na ang iyong paglalakbay! Maghanda para sa pagsusulit.";
+            nextButton.onClick.RemoveAllListeners();
+            nextButton.onClick.AddListener(QuizTime);
+            Debug.Log("🏁 All dialogues completed, ready for quiz");
+        }
+    }
+
+    public void PreviousDialogue()
+    {
+        // Stop current audio if playing
+        if (isPlayingAudio)
+        {
+            SkipAudio();
+        }
+
+        if (currentIndex > 0)
+        {
+            currentIndex--;
+            ShowDialogue(currentIndex);
+        }
+    }
+
+    public void QuizTime()
+    {
+        Debug.Log("🎯 Moving to quiz scene");
+        SceneManager.LoadScene("QuizTime");
+    }
+
+    // Keep all your existing methods below
     private void LoadStoryData()
     {
-        // Try to load from StudentPrefs first (student mode)
         string storyJson = StudentPrefs.GetString("CurrentStoryData", "");
         if (!string.IsNullOrEmpty(storyJson))
         {
@@ -72,7 +218,6 @@ public class DialoguePlayer : MonoBehaviour
         }
         else
         {
-            // Fallback to StoryManager (teacher mode)
             currentStory = StoryManager.Instance?.GetCurrentStory();
         }
     }
@@ -85,7 +230,6 @@ public class DialoguePlayer : MonoBehaviour
             return;
         }
 
-        // Load background
         if (!string.IsNullOrEmpty(currentStory.backgroundPath))
         {
             StartCoroutine(LoadBackgroundImage(currentStory.backgroundPath));
@@ -96,7 +240,6 @@ public class DialoguePlayer : MonoBehaviour
             SetDefaultBackground();
         }
 
-        // Load character images
         if (!string.IsNullOrEmpty(currentStory.character1Path))
         {
             StartCoroutine(LoadCharacterImage(currentStory.character1Path, character1Image, 1));
@@ -122,7 +265,6 @@ public class DialoguePlayer : MonoBehaviour
     {
         Debug.Log($"🖼️ Attempting to load background: {imagePath}");
 
-        // First try: Check if it's a local file path that exists
         Texture2D localTexture = ImageStorage.LoadImage(imagePath);
         if (localTexture != null)
         {
@@ -131,19 +273,14 @@ public class DialoguePlayer : MonoBehaviour
             yield break;
         }
 
-        // Second try: Check if it's a Firebase Storage path (starts with gs:// or https://)
         if (IsFirebaseStoragePath(imagePath))
         {
             Debug.Log($"🌐 Background is a Firebase Storage path, will download: {imagePath}");
-
-            // TODO: Implement Firebase Storage download here
-            // For now, set a placeholder and mark for download
             SetDownloadPlaceholder(backgroundImage, "Background");
             yield return StartCoroutine(DownloadImageFromFirebase(imagePath, backgroundImage, true));
         }
         else
         {
-            // Third try: It might be a relative path that doesn't exist locally
             Debug.Log($"⚠️ Background path not found locally and not a Firebase URL: {imagePath}");
             SetDefaultBackground();
         }
@@ -153,7 +290,6 @@ public class DialoguePlayer : MonoBehaviour
     {
         Debug.Log($"👤 Attempting to load character {characterNumber}: {imagePath}");
 
-        // First try: Check if it's a local file path that exists
         Texture2D localTexture = ImageStorage.LoadImage(imagePath);
         if (localTexture != null)
         {
@@ -162,13 +298,9 @@ public class DialoguePlayer : MonoBehaviour
             yield break;
         }
 
-        // Second try: Check if it's a Firebase Storage path
         if (IsFirebaseStoragePath(imagePath))
         {
             Debug.Log($"🌐 Character {characterNumber} is a Firebase Storage path, will download: {imagePath}");
-
-            // TODO: Implement Firebase Storage download here
-            // For now, set a placeholder and mark for download
             SetDownloadPlaceholder(characterImage, $"Character {characterNumber}");
             yield return StartCoroutine(DownloadImageFromFirebase(imagePath, characterImage, false));
         }
@@ -188,14 +320,8 @@ public class DialoguePlayer : MonoBehaviour
     private IEnumerator DownloadImageFromFirebase(string firebasePath, RawImage targetImage, bool isBackground)
     {
         Debug.Log($"⬇️ Starting download from Firebase: {firebasePath}");
-
-        // TODO: Implement actual Firebase Storage download
-        // This is a placeholder for the download implementation
-
-        // Simulate download delay
         yield return new WaitForSeconds(0.5f);
 
-        // For now, we'll create a placeholder texture
         Texture2D placeholderTexture = CreatePlaceholderTexture(isBackground ? "Downloading Background..." : "Downloading Character...");
 
         if (isBackground)
@@ -208,20 +334,11 @@ public class DialoguePlayer : MonoBehaviour
         }
 
         Debug.Log($"📥 Download placeholder set for: {firebasePath}");
-
-        // Note: When you implement the actual download, you should:
-        // 1. Download the image from Firebase Storage
-        // 2. Convert it to Texture2D
-        // 3. Save it locally using ImageStorage.SaveImage()
-        // 4. Update the story data with the local path
-        // 5. Apply the actual texture to the UI
     }
 
     private Texture2D CreatePlaceholderTexture(string message)
     {
         Texture2D texture = new Texture2D(256, 256);
-
-        // Create a simple colored placeholder
         Color[] pixels = new Color[256 * 256];
         Color bgColor = new Color(0.2f, 0.2f, 0.3f, 1f);
 
@@ -232,7 +349,6 @@ public class DialoguePlayer : MonoBehaviour
 
         texture.SetPixels(pixels);
         texture.Apply();
-
         return texture;
     }
 
@@ -242,7 +358,6 @@ public class DialoguePlayer : MonoBehaviour
         image.texture = placeholder;
         image.gameObject.SetActive(true);
 
-        // Add aspect ratio fitter if needed
         AspectRatioFitter fitter = image.GetComponent<AspectRatioFitter>();
         if (fitter != null)
         {
@@ -276,7 +391,6 @@ public class DialoguePlayer : MonoBehaviour
 
     private void SetDefaultBackground()
     {
-        // Create a simple default background
         Texture2D defaultBg = new Texture2D(1, 1);
         defaultBg.SetPixel(0, 0, new Color(0.1f, 0.1f, 0.2f));
         defaultBg.Apply();
@@ -287,7 +401,6 @@ public class DialoguePlayer : MonoBehaviour
 
     private void LoadQuizQuestions()
     {
-        // Try to load from StudentPrefs first (student mode)
         string storyJson = StudentPrefs.GetString("CurrentStoryData", "");
         if (!string.IsNullOrEmpty(storyJson))
         {
@@ -307,7 +420,6 @@ public class DialoguePlayer : MonoBehaviour
             }
         }
 
-        // Fallback to currentStory or StoryManager
         if (currentStory != null && currentStory.quizQuestions != null)
         {
             AddQuiz.quizQuestions = currentStory.quizQuestions;
@@ -328,57 +440,12 @@ public class DialoguePlayer : MonoBehaviour
         }
     }
 
-    void ShowDialogue(int index)
-    {
-        if (dialogues == null || index >= dialogues.Count) return;
-
-        var dialogue = dialogues[index];
-        Debug.Log($"💬 Showing dialogue {index + 1}/{dialogues.Count}: {dialogue.characterName} - {dialogue.dialogueText}");
-
-        dialogueText.text = $"{dialogue.characterName}: {dialogue.dialogueText}";
-
-        UpdateCharacterImages(dialogue.characterName);
-    }
-
     void UpdateCharacterImages(string characterName)
     {
         // Simple character visibility logic - enhance based on your needs
-        // This could show/hide characters based on who's speaking
         if (character1Image != null && character1Image.gameObject.activeInHierarchy)
         {
             // You could add logic here to highlight the speaking character
         }
-    }
-
-    void NextDialogue()
-    {
-        currentIndex++;
-        if (currentIndex < dialogues.Count)
-        {
-            ShowDialogue(currentIndex);
-        }
-        else
-        {
-            dialogueText.text = "Tapos na ang iyong paglalakbay! Maghanda para sa pagsusulit.";
-            nextButton.onClick.RemoveAllListeners();
-            nextButton.onClick.AddListener(QuizTime);
-
-            Debug.Log("🏁 All dialogues completed, ready for quiz");
-        }
-    }
-
-    public void PreviousDialogue()
-    {
-        if (currentIndex > 0)
-        {
-            currentIndex--;
-            ShowDialogue(currentIndex);
-        }
-    }
-
-    public void QuizTime()
-    {
-        Debug.Log("🎯 Moving to quiz scene");
-        SceneManager.LoadScene("QuizTime");
     }
 }

@@ -85,7 +85,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &1145465936240157975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1123,3 +1123,4 @@ MonoBehaviour:
   maxDialogueLength: 150
   maxQuestionLength: 120
   maxChoiceLength: 80
+  maxNameDialogueCombinedLength: 118

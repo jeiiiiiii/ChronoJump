@@ -6,85 +6,159 @@ using UnityEngine.SceneManagement;
 public class ReviewDialogueManager : MonoBehaviour
 {
     [Header("UI References")]
-    public Transform contentParent; // ScrollView Content
+    public Transform contentParent;
     public GameObject dialogueItemPrefab;
-    public GameObject editDialoguePrefab; // assign EditDialogueItems prefab in Inspector
+    public GameObject editDialoguePrefab;
 
-    private GameObject currentEditPanel; // track the open editor
+    private GameObject currentEditPanel;
 
     [Header("Edit Popup References")]
-    public GameObject editPopup;               // The popup panel prefab
-    public TMP_InputField nameInputField;      // Input for character name
-    public TMP_InputField textInputField;      // Input for dialogue texts
-    public Button saveEditButton;              // Save button inside popup
-    public Button cancelEditButton;            // Cancel button inside popup
+    public GameObject editPopup;
+    public TMP_InputField nameInputField;
+    public TMP_InputField textInputField;
+    public Button saveEditButton;
+    public Button cancelEditButton;
 
     [Header("Delete Popup References")]
-    public GameObject deletePopup;             // The popup panel prefab
-    public Button deleteYesButton;             // Yes button inside popup
-    public Button deleteNoButton;              // No button inside popup
+    public GameObject deletePopup;
+    public Button deleteYesButton;
+    public Button deleteNoButton;
 
-    private int pendingDeleteIndex = -1;       // Store which dialogue is pending delete
+    [Header("TTS Generation UI")]
+    public Button generateAllAudioButton;
+    public GameObject ttsProgressPanel;
+    public TextMeshProUGUI progressText;
+    public Slider progressBar;
+    public TextMeshProUGUI statusText;
+
+    private int pendingDeleteIndex = -1;
 
     void Start()
     {
         RefreshList();
 
-        // Make sure popups start hidden
         if (editPopup != null) editPopup.SetActive(false);
         if (deletePopup != null) deletePopup.SetActive(false);
+        if (ttsProgressPanel != null) ttsProgressPanel.SetActive(false);
+
+        if (generateAllAudioButton != null)
+        {
+            generateAllAudioButton.onClick.AddListener(GenerateAllAudio);
+        }
     }
 
     public void RefreshList()
     {
-        // Clear old items
         foreach (Transform child in contentParent)
             Destroy(child.gameObject);
 
-        // Populate with current dialogues
         var allDialogues = DialogueStorage.GetAllDialogues();
         for (int i = 0; i < allDialogues.Count; i++)
         {
-            int index = i; // local copy for buttons
+            int index = i;
             DialogueLine line = allDialogues[i];
 
             GameObject item = Instantiate(dialogueItemPrefab, contentParent);
 
-            // Fill text
             TextMeshProUGUI[] texts = item.GetComponentsInChildren<TextMeshProUGUI>();
             texts[0].text = line.characterName;
-            texts[1].text = line.dialogueText;
+            
+            // Show audio status indicator
+            string audioStatus = line.hasAudio ? " 🔊" : " 🔇";
+            texts[1].text = line.dialogueText + audioStatus;
 
-            // Buttons
             Button[] buttons = item.GetComponentsInChildren<Button>();
             Button editBtn = buttons[0];
             Button deleteBtn = buttons[1];
 
-            deleteBtn.onClick.AddListener(() =>
-            {
-                OpenDeletePopup(index);
-            });
-
-            editBtn.onClick.AddListener(() =>
-            {
-                OpenEditPopup(index, line);
-            });
+            deleteBtn.onClick.AddListener(() => OpenDeletePopup(index));
+            editBtn.onClick.AddListener(() => OpenEditPopup(index, line));
         }
+    }
+
+    public void GenerateAllAudio()
+    {
+        var dialogues = DialogueStorage.GetAllDialogues();
+        
+        if (dialogues == null || dialogues.Count == 0)
+        {
+            ValidationManager.Instance.ShowWarning(
+                "No Dialogues",
+                "There are no dialogues to generate audio for!"
+            );
+            return;
+        }
+
+        Debug.Log($"🎙️ GenerateAllAudio called for {dialogues.Count} dialogues");
+        
+        // Log each dialogue status
+        for (int i = 0; i < dialogues.Count; i++)
+        {
+            Debug.Log($"Dialogue {i+1}: '{dialogues[i].characterName}' - HasAudio: {dialogues[i].hasAudio}, Path: {dialogues[i].audioFilePath}");
+        }
+
+        if (ttsProgressPanel != null) ttsProgressPanel.SetActive(true);
+        if (generateAllAudioButton != null) generateAllAudioButton.interactable = false;
+
+        StartCoroutine(ElevenLabsTTSManager.Instance.GenerateAllTTS(
+            dialogues,
+            OnTTSProgress,
+            OnTTSComplete
+        ));
+    }
+
+    void OnTTSProgress(int completed, int total, string message)
+    {
+        float progress = (float)completed / total;
+        
+        if (progressBar != null)
+            progressBar.value = progress;
+        
+        if (progressText != null)
+            progressText.text = $"{completed}/{total} Generated";
+        
+        if (statusText != null)
+            statusText.text = message;
+
+        Debug.Log($"TTS Progress: {message}");
+    }
+
+    void OnTTSComplete(bool success)
+    {
+        if (ttsProgressPanel != null) ttsProgressPanel.SetActive(false);
+        if (generateAllAudioButton != null) generateAllAudioButton.interactable = true;
+
+        if (success)
+        {
+            ValidationManager.Instance.ShowWarning(
+                "Audio Generated!",
+                "All dialogue audio has been generated successfully!",
+                null,
+                null
+            );
+        }
+        else
+        {
+            ValidationManager.Instance.ShowWarning(
+                "Generation Issues",
+                "Some audio files failed to generate. Check console for details.",
+                null,
+                null
+            );
+        }
+
+        RefreshList(); // Refresh to show audio indicators
     }
 
     public void OpenEditPopup(int index, DialogueLine line)
     {
         editPopup.SetActive(true);
-
-        // Fill inputs with current values
         nameInputField.text = line.characterName;
         textInputField.text = line.dialogueText;
 
-        // Reset listeners
         saveEditButton.onClick.RemoveAllListeners();
         cancelEditButton.onClick.RemoveAllListeners();
 
-        // Save button
         saveEditButton.onClick.AddListener(() =>
         {
             var validation = ValidationManager.Instance.ValidateNameAndDialogueCombined(
@@ -98,16 +172,19 @@ public class ReviewDialogueManager : MonoBehaviour
             }
 
             DialogueStorage.EditDialogue(index, nameInputField.text, textInputField.text);
+            
+            var dialogues = DialogueStorage.GetAllDialogues();
+            if (index < dialogues.Count)
+            {
+                dialogues[index].hasAudio = false;
+                dialogues[index].audioFilePath = "";
+            }
+            
             editPopup.SetActive(false);
             RefreshList();
         });
 
-
-        // Cancel button
-        cancelEditButton.onClick.AddListener(() =>
-        {
-            editPopup.SetActive(false);
-        });
+        cancelEditButton.onClick.AddListener(() => editPopup.SetActive(false));
     }
 
     public void OpenDeletePopup(int index)
@@ -115,11 +192,9 @@ public class ReviewDialogueManager : MonoBehaviour
         pendingDeleteIndex = index;
         deletePopup.SetActive(true);
 
-        // Reset listeners
         deleteYesButton.onClick.RemoveAllListeners();
         deleteNoButton.onClick.RemoveAllListeners();
 
-        // Yes → confirm delete
         deleteYesButton.onClick.AddListener(() =>
         {
             if (pendingDeleteIndex >= 0)
@@ -132,16 +207,14 @@ public class ReviewDialogueManager : MonoBehaviour
 
             var remainingDialogues = DialogueStorage.GetAllDialogues();
             if (remainingDialogues == null || remainingDialogues.Count == 0)
-            ValidationManager.Instance.ShowWarning(
-                "No Dialogues Left",
-                "You’ve deleted all dialogues! Please add at least one before proceeding.",
-                () => SceneManager.LoadScene("CreateNewAddDialogueScene"),
-                () => SceneManager.LoadScene("CreateNewAddDialogueScene")
-            );
+                ValidationManager.Instance.ShowWarning(
+                    "No Dialogues Left",
+                    "You've deleted all dialogues! Please add at least one before proceeding.",
+                    () => SceneManager.LoadScene("CreateNewAddDialogueScene"),
+                    () => SceneManager.LoadScene("CreateNewAddDialogueScene")
+                );
         });
 
-
-        // No → cancel
         deleteNoButton.onClick.AddListener(() =>
         {
             pendingDeleteIndex = -1;
@@ -162,7 +235,6 @@ public class ReviewDialogueManager : MonoBehaviour
             Destroy(currentEditPanel);
     }
 
-    // Navigation buttons
     public void Next() => SceneManager.LoadScene("CreateNewAddQuizScene");
     public void MainMenu() => SceneManager.LoadScene("Creator'sModeScene");
     public void Back() => SceneManager.LoadScene("CreateNewAddDialogueScene");

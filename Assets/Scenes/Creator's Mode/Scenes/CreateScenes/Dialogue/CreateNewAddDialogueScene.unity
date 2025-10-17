@@ -1825,6 +1825,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterNameInput: {fileID: 0}
   dialogueInput: {fileID: 0}
+  characterCountText: {fileID: 0}
 --- !u!1 &1248411482
 GameObject:
   m_ObjectHideFlags: 0
