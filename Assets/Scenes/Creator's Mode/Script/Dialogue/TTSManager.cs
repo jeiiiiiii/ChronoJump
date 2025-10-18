@@ -10,15 +10,10 @@ public class ElevenLabsTTSManager : MonoBehaviour
     public static ElevenLabsTTSManager Instance { get; private set; }
 
     [Header("ElevenLabs API Settings")]
-    [SerializeField] private string apiKey = "YOUR_ELEVENLABS_API_KEY";
-    [SerializeField] private string defaultVoiceId = "21m00Tcm4TlvDq8ikWAM";
-    
-    [Header("Voice Mapping")]
-    [SerializeField] private List<CharacterVoiceMapping> characterVoices = new List<CharacterVoiceMapping>();
+    [SerializeField] private string apiKey = "YOUR_API_KEY_HERE";
     
     private string apiUrl = "https://api.elevenlabs.io/v1/text-to-speech/";
     private string audioSaveDirectory = "DialogueAudio";
-    private Dictionary<string, string> voiceMap = new Dictionary<string, string>();
 
     void Awake()
     {
@@ -26,21 +21,11 @@ public class ElevenLabsTTSManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            InitializeVoiceMapping();
             CreateAudioDirectory();
         }
         else
         {
             Destroy(gameObject);
-        }
-    }
-
-    void InitializeVoiceMapping()
-    {
-        voiceMap.Clear();
-        foreach (var mapping in characterVoices)
-        {
-            voiceMap[mapping.characterName.ToLower()] = mapping.voiceId;
         }
     }
 
@@ -56,15 +41,19 @@ public class ElevenLabsTTSManager : MonoBehaviour
 
     public IEnumerator GenerateTTS(DialogueLine dialogue, Action<bool, string> onComplete)
     {
-        if (string.IsNullOrEmpty(apiKey) || apiKey == "YOUR_ELEVENLABS_API_KEY" || apiKey.Length < 10)
+        if (string.IsNullOrEmpty(apiKey) || apiKey == "YOUR_API_KEY_HERE")
         {
             Debug.LogError("ElevenLabs API Key not set or invalid!");
             onComplete?.Invoke(false, "API Key not configured");
             yield break;
         }
 
-        string selectedVoiceId = GetVoiceIdForCharacter(dialogue.characterName);
-        string url = apiUrl + selectedVoiceId;
+        // Use the dialogue's selected voice ID
+        string voiceId = dialogue.selectedVoiceId;
+        var voice = VoiceLibrary.GetVoiceById(voiceId);
+        string url = apiUrl + voiceId;
+
+        Debug.Log($"🎤 Generating TTS for '{dialogue.characterName}' using voice: {voice.voiceName}");
 
         string jsonPayload = $@"{{
             ""text"": ""{EscapeJson(dialogue.dialogueText)}"",
@@ -89,7 +78,7 @@ public class ElevenLabsTTSManager : MonoBehaviour
             if (request.result == UnityWebRequest.Result.Success)
             {
                 string sanitizedName = SanitizeFileName(dialogue.characterName);
-                string fileName = $"{sanitizedName}_{DateTime.Now.Ticks}.mp3";
+                string fileName = $"{sanitizedName}_{voice.voiceName}_{DateTime.Now.Ticks}.mp3";
                 string filePath = System.IO.Path.Combine(
                     Application.persistentDataPath,
                     audioSaveDirectory,
@@ -101,7 +90,7 @@ public class ElevenLabsTTSManager : MonoBehaviour
                 dialogue.audioFilePath = filePath;
                 dialogue.hasAudio = true;
 
-                Debug.Log($"✅ TTS generated for '{dialogue.characterName}': {fileName}");
+                Debug.Log($"✅ TTS generated: '{dialogue.characterName}' ({voice.voiceName}) → {fileName}");
                 onComplete?.Invoke(true, filePath);
             }
             else
@@ -118,15 +107,26 @@ public class ElevenLabsTTSManager : MonoBehaviour
         int completed = 0;
         int failed = 0;
 
+        Debug.Log($"🎙️ Starting TTS generation for {total} dialogues");
+
         for (int i = 0; i < dialogues.Count; i++)
         {
             DialogueLine dialogue = dialogues[i];
+            var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
             
-            if (dialogue.hasAudio)
+            Debug.Log($"Processing dialogue {i+1}/{total}: '{dialogue.characterName}' (Voice: {voice.voiceName}) - HasAudio: {dialogue.hasAudio}");
+            
+            if (dialogue.hasAudio && !string.IsNullOrEmpty(dialogue.audioFilePath) && System.IO.File.Exists(dialogue.audioFilePath))
             {
                 completed++;
-                onProgress?.Invoke(completed, total, $"Skipped (already generated): {dialogue.characterName}");
+                onProgress?.Invoke(completed, total, $"Skipped: {dialogue.characterName} ({voice.voiceName})");
                 continue;
+            }
+
+            if (dialogue.hasAudio && !System.IO.File.Exists(dialogue.audioFilePath))
+            {
+                Debug.Log($"⚠️ Audio file missing for {dialogue.characterName}, regenerating...");
+                dialogue.hasAudio = false;
             }
 
             bool success = false;
@@ -141,7 +141,7 @@ public class ElevenLabsTTSManager : MonoBehaviour
             if (success)
             {
                 completed++;
-                onProgress?.Invoke(completed, total, $"Generated: {dialogue.characterName}");
+                onProgress?.Invoke(completed, total, $"Generated: {dialogue.characterName} ({voice.voiceName})");
             }
             else
             {
@@ -153,14 +153,8 @@ public class ElevenLabsTTSManager : MonoBehaviour
         }
 
         bool allSuccess = (failed == 0 && completed == total);
-        Debug.Log($"TTS Generation Complete: {completed}/{total} succeeded, {failed} failed");
+        Debug.Log($"🎬 TTS Complete: {completed}/{total} succeeded, {failed} failed");
         onComplete?.Invoke(allSuccess);
-    }
-
-    private string GetVoiceIdForCharacter(string characterName)
-    {
-        string key = characterName.ToLower().Trim();
-        return voiceMap.ContainsKey(key) ? voiceMap[key] : defaultVoiceId;
     }
 
     private string SanitizeFileName(string fileName)
@@ -181,18 +175,4 @@ public class ElevenLabsTTSManager : MonoBehaviour
             .Replace("\r", "\\r")
             .Replace("\t", "\\t");
     }
-
-    public void SetCharacterVoice(string characterName, string voiceId)
-    {
-        string key = characterName.ToLower().Trim();
-        voiceMap[key] = voiceId;
-        Debug.Log($"Set voice for '{characterName}': {voiceId}");
-    }
-}
-
-[System.Serializable]
-public class CharacterVoiceMapping
-{
-    public string characterName;
-    public string voiceId;
 }

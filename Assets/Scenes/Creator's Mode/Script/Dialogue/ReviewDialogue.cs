@@ -61,7 +61,11 @@ public class ReviewDialogueManager : MonoBehaviour
             GameObject item = Instantiate(dialogueItemPrefab, contentParent);
 
             TextMeshProUGUI[] texts = item.GetComponentsInChildren<TextMeshProUGUI>();
-            texts[0].text = line.characterName;
+            
+            // Get voice name
+            var voice = VoiceLibrary.GetVoiceById(line.selectedVoiceId);
+            
+            texts[0].text = $"{line.characterName} ({voice.voiceName})";
             
             // Show audio status indicator
             string audioStatus = line.hasAudio ? " 🔊" : " 🔇";
@@ -234,6 +238,8 @@ public class ReviewDialogueManager : MonoBehaviour
         if (currentEditPanel != null)
             Destroy(currentEditPanel);
     }
+
+    
 
     public void Next() => SceneManager.LoadScene("CreateNewAddQuizScene");
     public void MainMenu() => SceneManager.LoadScene("Creator'sModeScene");

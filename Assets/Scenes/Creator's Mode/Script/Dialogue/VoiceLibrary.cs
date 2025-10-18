@@ -1,0 +1,65 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+public static class VoiceLibrary
+{
+    public static List<VoiceProfile> GetAvailableVoices()
+    {
+        return new List<VoiceProfile>
+        {
+            new VoiceProfile(
+                "Rachel", 
+                "21m00Tcm4TlvDq8ikWAM",
+                "Clear, friendly female voice",
+                "Female",
+                "American"
+            ),
+            new VoiceProfile(
+                "Adam", 
+                "pNInz6obpgDQGcFmaJgB",
+                "Deep, confident male voice",
+                "Male",
+                "American"
+            ),
+            new VoiceProfile(
+                "Bella", 
+                "EXAVITQu4vr4xnSDxMaL",
+                "Soft, gentle female voice",
+                "Female",
+                "American"
+            ),
+            new VoiceProfile(
+                "Antoni", 
+                "ErXwobaYiN019PkySvjV",
+                "Calm, well-spoken male voice",
+                "Male",
+                "American"
+            ),
+            new VoiceProfile(
+                "Elli", 
+                "MF3mGyEYCl7XYWbV9V6O",
+                "Young, energetic female voice",
+                "Female",
+                "American"
+            ),
+            new VoiceProfile(
+                "Josh", 
+                "TxGEqnHWrfWFTfGW9XjX",
+                "Professional, clear male voice",
+                "Male",
+                "American"
+            )
+        };
+    }
+    
+    public static VoiceProfile GetVoiceById(string voiceId)
+    {
+        var voices = GetAvailableVoices();
+        return voices.Find(v => v.voiceId == voiceId) ?? voices[0]; // Default to Rachel
+    }
+    
+    public static VoiceProfile GetDefaultVoice()
+    {
+        return GetAvailableVoices()[0]; // Rachel
+    }
+}

@@ -65,8 +65,17 @@ public static class DialogueStorage
         var dialogues = GetStoryDialogues();
         if (dialogues == null) return;
 
-        dialogues.Add(new DialogueLine(name, text));
-        Debug.Log($"✅ DialogueStorage: Added dialogue - {name}: {text}");
+        // Try to pick up the voice the user selected on the AddDialogue panel
+        string voiceId = VoiceLibrary.GetDefaultVoice().voiceId;
+    var addDialoguePanel = Object.FindFirstObjectByType<AddDialogue>(FindObjectsInactive.Include);
+        if (addDialoguePanel != null)
+        {
+            voiceId = addDialoguePanel.GetSelectedVoiceId();
+        }
+
+        dialogues.Add(new DialogueLine(name, text, voiceId));
+        var voice = VoiceLibrary.GetVoiceById(voiceId);
+        Debug.Log($"✅ DialogueStorage: Added dialogue - {name}: {text} (Voice: {voice.voiceName})");
     }
 
     public static void ClearDialogues()
