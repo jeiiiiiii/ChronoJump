@@ -22,7 +22,7 @@ public static class VoiceLibrary
                 "American"
             ),
             new VoiceProfile(
-                "Bella", 
+                "Sara", 
                 "EXAVITQu4vr4xnSDxMaL",
                 "Soft, gentle female voice",
                 "Female",

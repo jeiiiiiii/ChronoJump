@@ -118,6 +118,16 @@ public class VoiceSelectionUI : MonoBehaviour
         {
             b.onClick.AddListener(() => {
                 Debug.Log($"Voice row clicked → {voice.voiceName} ({voice.voiceId})");
+                // Play the local preview MP3 for this voice (if mapped in VoicePreviewPlayer)
+                var player = VoicePreviewPlayer.Instance;
+                if (player != null)
+                {
+                    player.PlayPreview(voice.voiceId, voice.voiceName);
+                }
+                else
+                {
+                    Debug.LogWarning("⚠️ VoicePreviewPlayer.Instance is null. Add a VoicePreviewPlayer to the scene and assign clips.");
+                }
                 SelectVoice(voice.voiceId, highlightImage);
             });
         }
