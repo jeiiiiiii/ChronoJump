@@ -8,46 +8,46 @@ public static class VoiceLibrary
         return new List<VoiceProfile>
         {
             new VoiceProfile(
-                "Rachel", 
-                "21m00Tcm4TlvDq8ikWAM",
-                "Clear, friendly female voice",
-                "Female",
-                "American"
-            ),
-            new VoiceProfile(
-                "Adam", 
-                "pNInz6obpgDQGcFmaJgB",
-                "Deep, confident male voice",
+                "Tatang Luis Gonzales", // Choose
+                "s2eGmuqaEBjTQPWzMapp",
+                "Matandang lalaking may malalim na boses",
                 "Male",
-                "American"
+                "Filipino"
             ),
             new VoiceProfile(
-                "Sara", 
-                "EXAVITQu4vr4xnSDxMaL",
-                "Soft, gentle female voice",
-                "Female",
-                "American"
-            ),
-            new VoiceProfile(
-                "Antoni", 
-                "ErXwobaYiN019PkySvjV",
-                "Calm, well-spoken male voice",
+                "Sebastian", // Choose
+                "p7cwnUviDFhhX9y8sG2Q",
+                "Batang boses na masigla at masayahin",
                 "Male",
-                "American"
+                "Filipino"
             ),
             new VoiceProfile(
-                "Elli", 
-                "MF3mGyEYCl7XYWbV9V6O",
-                "Young, energetic female voice",
-                "Female",
-                "American"
-            ),
-            new VoiceProfile(
-                "Josh", 
-                "TxGEqnHWrfWFTfGW9XjX",
-                "Professional, clear male voice",
+                "Daniel",
+                "onwK4e9ZLuTAKqWW03F9",
+                "Lalaking boses na may malinis na bigkas",
                 "Male",
-                "American"
+                "Filipino"
+            ),
+            new VoiceProfile(
+                "Nanay Avelina Gonzales", // Choose
+                "HXiggO6rHDAxWaFMzhB7",
+                "Matandang babae na may malambing na boses",
+                "Female",
+                "Filipino"
+            ),
+            new VoiceProfile(
+                "Charlotte", 
+                "XB0fDUnXU5powFXDhCwa",
+                "Boses babae na pwedeng gamitin pang kwento",
+                "Female",
+                "Filipino"
+            ),
+            new VoiceProfile(
+                "Aria", 
+                "9BWtsMINqrJLrRacOk9x",
+                "Pang-teenage na babae na may malinis na bigkas",
+                "Female",
+                "Filipino"
             )
         };
     }
