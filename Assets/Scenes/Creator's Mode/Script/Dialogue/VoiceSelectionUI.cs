@@ -84,8 +84,11 @@ public class VoiceSelectionUI : MonoBehaviour
         TextMeshProUGUI[] texts = buttonObj.GetComponentsInChildren<TextMeshProUGUI>(true);
         if (texts.Length >= 3)
         {
+            // Primary: display the voice name
             texts[0].text = voice.voiceName;
-            texts[1].text = $"{voice.gender} • {voice.accent}";
+            // Secondary: show voice name again (or could show gender/accent) — use name as requested
+            texts[1].text = voice.voiceName;
+            // Tertiary: keep the description (gender/accent can be included here if desired)
             texts[2].text = voice.description;
         }
 
