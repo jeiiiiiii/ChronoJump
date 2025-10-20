@@ -805,7 +805,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: awdawd
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a9ac6f365935a6d4b96bed112242cebe, type: 2}
   m_sharedMaterial: {fileID: 1179036257592287434, guid: a9ac6f365935a6d4b96bed112242cebe, type: 2}
@@ -839,8 +839,8 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -900,8 +900,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 85.68, y: -445.5}
-  m_SizeDelta: {x: 299.35, y: 63.003}
+  m_AnchoredPosition: {x: 70, y: -450}
+  m_SizeDelta: {x: 300, y: 65}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &427968970
 GameObject:
@@ -3134,8 +3134,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -266, y: -452}
-  m_SizeDelta: {x: 306.27, y: 90.025}
+  m_AnchoredPosition: {x: -265, y: -450}
+  m_SizeDelta: {x: 305, y: 90}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1151479762
 GameObject:
@@ -3185,8 +3185,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe1c01e0c82699a4a8012c3b8fdf98d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterNameInput: {fileID: 0}
-  dialogueInput: {fileID: 0}
+  characterNameInput: {fileID: 1407393049}
+  dialogueInput: {fileID: 842691058}
   characterCountText: {fileID: 0}
   selectVoiceButton: {fileID: 1081094888}
   currentVoiceText: {fileID: 348345983}

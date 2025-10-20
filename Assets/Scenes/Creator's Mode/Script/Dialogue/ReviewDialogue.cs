@@ -61,44 +61,24 @@ public class ReviewDialogueManager : MonoBehaviour
         }
     }
 
-
-    public void OpenEditPopup(int index, DialogueLine line)
+    // ✅ NEW: Updated SaveEditedDialogue method to handle voice changes
+    public void SaveEditedDialogue(int index, string newCharacter, string newDialogue, string newVoiceId = null)
     {
-        editPopup.SetActive(true);
-        nameInputField.text = line.characterName;
-        textInputField.text = line.dialogueText;
-
-        saveEditButton.onClick.RemoveAllListeners();
-        cancelEditButton.onClick.RemoveAllListeners();
-
-        saveEditButton.onClick.AddListener(() =>
+        // If a new voice ID is provided, update it
+        if (!string.IsNullOrEmpty(newVoiceId))
         {
-            var validation = ValidationManager.Instance.ValidateNameAndDialogueCombined(
-                nameInputField.text.Trim(), textInputField.text.Trim()
-            );
+            DialogueStorage.UpdateDialogueVoice(index, newVoiceId);
+        }
 
-            if (!validation.isValid)
-            {
-                ValidationManager.Instance.ShowWarning("Dialogue Validation", validation.message);
-                return;
-            }
+        // Update the dialogue text
+        DialogueStorage.EditDialogue(index, newCharacter, newDialogue);
 
-            // Edit dialogue (this will preserve the voice ID)
-            DialogueStorage.EditDialogue(index, nameInputField.text, textInputField.text);
-
-            var dialogues = DialogueStorage.GetAllDialogues();
-            if (index < dialogues.Count)
-            {
-                dialogues[index].hasAudio = false;
-                dialogues[index].audioFilePath = "";
-            }
-
-            editPopup.SetActive(false);
-            RefreshList();
-        });
-
-        cancelEditButton.onClick.AddListener(() => editPopup.SetActive(false));
+        // Refresh the UI
+        if (currentEditPanel != null)
+            Destroy(currentEditPanel);
+        RefreshList();
     }
+
 
 
     public void RefreshList()
@@ -261,4 +241,123 @@ public class ReviewDialogueManager : MonoBehaviour
     public void Next() => SceneManager.LoadScene("CreateNewAddQuizScene");
     public void MainMenu() => SceneManager.LoadScene("Creator'sModeScene");
     public void Back() => SceneManager.LoadScene("CreateNewAddDialogueScene");
+
+
+    [Header("Voice Selection for Editing")]
+    public GameObject voiceSelectionPanel;
+    public Button editVoiceSelectButton;
+    public TextMeshProUGUI editCurrentVoiceText;
+
+    private int currentEditingIndex = -1;
+    private string currentEditingVoiceId = "";
+
+    // Update the OpenEditPopup method
+    public void OpenEditPopup(int index, DialogueLine line)
+    {
+        editPopup.SetActive(true);
+        nameInputField.text = line.characterName;
+        textInputField.text = line.dialogueText;
+
+        // ✅ NEW: Store current editing info for voice selection
+        currentEditingIndex = index;
+        currentEditingVoiceId = line.selectedVoiceId;
+
+        // ✅ NEW: Setup voice selection if available
+        if (editVoiceSelectButton != null)
+        {
+            editVoiceSelectButton.onClick.RemoveAllListeners();
+            editVoiceSelectButton.onClick.AddListener(OpenEditVoiceSelection);
+        }
+
+        UpdateEditVoiceDisplay();
+
+        saveEditButton.onClick.RemoveAllListeners();
+        cancelEditButton.onClick.RemoveAllListeners();
+
+        saveEditButton.onClick.AddListener(() =>
+        {
+            var validation = ValidationManager.Instance.ValidateNameAndDialogueCombined(
+                nameInputField.text.Trim(), textInputField.text.Trim()
+            );
+
+            if (!validation.isValid)
+            {
+                ValidationManager.Instance.ShowWarning("Dialogue Validation", validation.message);
+                return;
+            }
+
+            // ✅ UPDATED: Update voice if changed
+            if (!string.IsNullOrEmpty(currentEditingVoiceId))
+            {
+                DialogueStorage.UpdateDialogueVoice(index, currentEditingVoiceId);
+            }
+
+            // Edit dialogue
+            DialogueStorage.EditDialogue(index, nameInputField.text, textInputField.text);
+
+            var dialogues = DialogueStorage.GetAllDialogues();
+            if (index < dialogues.Count)
+            {
+                dialogues[index].hasAudio = false;
+                dialogues[index].audioFilePath = "";
+            }
+
+            editPopup.SetActive(false);
+            currentEditingIndex = -1;
+            RefreshList();
+        });
+
+        cancelEditButton.onClick.AddListener(() =>
+        {
+            editPopup.SetActive(false);
+            currentEditingIndex = -1;
+        });
+    }
+
+
+    // ✅ NEW: Voice selection methods for editing
+    void OpenEditVoiceSelection()
+    {
+        if (voiceSelectionPanel != null)
+        {
+            var voiceSelectionUI = voiceSelectionPanel.GetComponent<VoiceSelectionUI>();
+            if (voiceSelectionUI != null)
+            {
+                voiceSelectionUI.ShowVoiceSelection(currentEditingVoiceId, OnEditVoiceSelected);
+            }
+            else
+            {
+                Debug.LogError("❌ VoiceSelectionUI component not found on voiceSelectionPanel!");
+            }
+        }
+    }
+
+
+    void OnEditVoiceSelected(string voiceId)
+    {
+        currentEditingVoiceId = voiceId;
+        UpdateEditVoiceDisplay();
+
+        var voice = VoiceLibrary.GetVoiceById(voiceId);
+        Debug.Log($"🎤 Voice selected for editing dialogue {currentEditingIndex}: {voice.voiceName}");
+    }
+
+
+    void UpdateEditVoiceDisplay()
+    {
+        if (editCurrentVoiceText != null)
+        {
+            if (string.IsNullOrEmpty(currentEditingVoiceId))
+            {
+                editCurrentVoiceText.text = "Voice: Select Voice...";
+            }
+            else
+            {
+                var voice = VoiceLibrary.GetVoiceById(currentEditingVoiceId);
+                editCurrentVoiceText.text = $"Voice: {voice.voiceName} ({voice.gender})";
+            }
+        }
+    }
+
+
 }

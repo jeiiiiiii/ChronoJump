@@ -10,7 +10,7 @@ public class DialogueLine
     // ✅ CRITICAL: These must be public fields (not properties) for Unity serialization
     public string audioFilePath = "";
     public bool hasAudio = false;
-    public string selectedVoiceId = "21m00Tcm4TlvDq8ikWAM"; // Default to Rachel
+    public string selectedVoiceId = "";
 
     public DialogueLine(string name, string text)
     {
@@ -18,7 +18,7 @@ public class DialogueLine
         dialogueText = text;
         hasAudio = false;
         audioFilePath = "";
-        selectedVoiceId = "21m00Tcm4TlvDq8ikWAM";
+        selectedVoiceId = "";
     }
 
     public DialogueLine(string name, string text, string voiceId)
@@ -27,19 +27,18 @@ public class DialogueLine
         dialogueText = text;
         hasAudio = false;
         audioFilePath = "";
-        // ✅ Ensure we always have a valid voice ID
-        selectedVoiceId = !string.IsNullOrEmpty(voiceId) ? voiceId : "21m00Tcm4TlvDq8ikWAM";
+        // ✅ CHANGED: Don't force default voice - use what's provided (could be empty)
+        selectedVoiceId = voiceId ?? "";
 
-        UnityEngine.Debug.Log($"📝 Created DialogueLine: '{name}' with voice: {selectedVoiceId}");
+        UnityEngine.Debug.Log($"📝 Created DialogueLine: '{name}' with voice: {(string.IsNullOrEmpty(voiceId) ? "No Voice" : voiceId)}");
     }
 
-    // ✅ Default constructor for JSON deserialization
     public DialogueLine()
     {
         characterName = "";
         dialogueText = "";
         hasAudio = false;
         audioFilePath = "";
-        selectedVoiceId = "21m00Tcm4TlvDq8ikWAM";
+        selectedVoiceId = "";
     }
 }

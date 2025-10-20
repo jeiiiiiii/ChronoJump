@@ -17,50 +17,64 @@ public class AddDialogue : MonoBehaviour
     private string selectedVoiceId;
     private VoiceSelectionUI voiceSelectionUI;
 
-    // Expose the currently selected voice to other systems (e.g., DialogueStorage fallback path)
+    // Expose the currently selected voice to other systems
     public string GetSelectedVoiceId() => selectedVoiceId;
 
-    // In AddDialogue.cs - Update the Start method and AddDialogueLine method
-void Start()
-{
-    // Initialize with default voice or load from storage
-    selectedVoiceId = VoiceStorageManager.LoadVoiceSelection("CurrentSelectedVoice");
-    UpdateVoiceDisplay();
-    
-    // Setup voice selection
-    if (voiceSelectionPanel != null)
+    void Start()
     {
-        voiceSelectionUI = voiceSelectionPanel.GetComponent<VoiceSelectionUI>();
-        voiceSelectionPanel.SetActive(false);
+        // ✅ FIXED: Load the last used voice for this story OR use default
+        selectedVoiceId = LoadLastUsedVoiceForStory();
+        UpdateVoiceDisplay();
+        
+        Debug.Log($"🎤 AddDialogue initialized with voice: {VoiceLibrary.GetVoiceById(selectedVoiceId).voiceName}");
+        
+        // Setup voice selection
+        if (voiceSelectionPanel != null)
+        {
+            voiceSelectionUI = voiceSelectionPanel.GetComponent<VoiceSelectionUI>();
+            voiceSelectionPanel.SetActive(false);
+        }
+        
+        if (selectVoiceButton != null)
+        {
+            selectVoiceButton.onClick.AddListener(OpenVoiceSelection);
+        }
+        
+        // Add listeners to update character count
+        if (characterNameInput != null)
+        {
+            characterNameInput.onValueChanged.AddListener(UpdateCharacterCount);
+        }
+        if (dialogueInput != null)
+        {
+            dialogueInput.onValueChanged.AddListener(UpdateCharacterCount);
+        }
+        UpdateCharacterCount("");
     }
-    
-    if (selectVoiceButton != null)
-    {
-        selectVoiceButton.onClick.AddListener(OpenVoiceSelection);
-    }
-    
-    // Add listeners to update character count
-    if (characterNameInput != null)
-    {
-        characterNameInput.onValueChanged.AddListener(UpdateCharacterCount);
-    }
-    if (dialogueInput != null)
-    {
-        dialogueInput.onValueChanged.AddListener(UpdateCharacterCount);
-    }
-    UpdateCharacterCount("");
-}
 
-void OnVoiceSelected(string voiceId)
-{
-    selectedVoiceId = voiceId;
-    UpdateVoiceDisplay();
-    
-    // Save the current voice selection for this session
-    VoiceStorageManager.SaveVoiceSelection("CurrentSelectedVoice", voiceId);
-    
-    Debug.Log($"🎤 Voice selected: {VoiceLibrary.GetVoiceById(voiceId).voiceName}");
-}
+    string LoadLastUsedVoiceForStory()
+    {
+        // ✅ CHANGED: Start with empty voice instead of defaulting to Rachel
+        return ""; // Empty string means no voice selected
+    }
+
+
+    // ✅ FIXED: Save the selected voice for this story session
+    void OnVoiceSelected(string voiceId)
+    {
+        selectedVoiceId = voiceId;
+        UpdateVoiceDisplay();
+        
+        // Save for this session
+        var story = StoryManager.Instance?.GetCurrentStory();
+        string storyId = story?.storyId ?? "default";
+        string storageKey = $"LastUsedVoice_{storyId}";
+        PlayerPrefs.SetString(storageKey, voiceId);
+        PlayerPrefs.Save();
+        
+        var voice = VoiceLibrary.GetVoiceById(voiceId);
+        Debug.Log($"🎤 Voice selected and saved: {voice.voiceName} for story {storyId}");
+    }
 
     public void AddDialogueLine()
     {
@@ -92,21 +106,34 @@ void OnVoiceSelected(string voiceId)
             return;
         }
 
-        // Add dialogue with selected voice
+        // ✅ Add dialogue with selected voice (could be empty)
         var newDialogue = new DialogueLine(name, dialogue, selectedVoiceId);
         story.dialogues.Add(newDialogue);
 
-        Debug.Log($"✅ Added dialogue: {name} - {dialogue} (Voice: {VoiceLibrary.GetVoiceById(selectedVoiceId).voiceName})");
+        // ✅ Only save voice to persistent storage if it's not empty
+        if (!string.IsNullOrEmpty(selectedVoiceId))
+        {
+            int dialogueIndex = story.dialogues.Count - 1;
+            VoiceStorageManager.SaveVoiceSelection($"Dialogue_{dialogueIndex}", selectedVoiceId);
+        }
 
-        // Clear inputs but KEEP the current voice selection
+        if (string.IsNullOrEmpty(selectedVoiceId))
+        {
+            Debug.Log($"✅ Added dialogue: {name} - {dialogue} (No Voice Selected)");
+        }
+        else
+        {
+            var voice = VoiceLibrary.GetVoiceById(selectedVoiceId);
+            Debug.Log($"✅ Added dialogue: {name} - {dialogue} (Voice: {voice.voiceName})");
+        }
+
+        // Clear inputs but KEEP the current voice selection (empty)
         characterNameInput.text = "";
         dialogueInput.text = "";
         UpdateCharacterCount("");
-
-        // Don't reset to default voice - keep the current selection for next dialogue
     }
 
-    
+
     void OpenVoiceSelection()
     {
         if (voiceSelectionUI != null)
@@ -114,13 +141,20 @@ void OnVoiceSelected(string voiceId)
             voiceSelectionUI.ShowVoiceSelection(selectedVoiceId, OnVoiceSelected);
         }
     }
-    
+
     void UpdateVoiceDisplay()
     {
         if (currentVoiceText != null)
         {
-            var voice = VoiceLibrary.GetVoiceById(selectedVoiceId);
-            currentVoiceText.text = $"Voice: {voice.voiceName} ({voice.gender})";
+            if (string.IsNullOrEmpty(selectedVoiceId))
+            {
+                currentVoiceText.text = "Voice: Select Voice...";
+            }
+            else
+            {
+                var voice = VoiceLibrary.GetVoiceById(selectedVoiceId);
+                currentVoiceText.text = $"Voice: {voice.voiceName} ({voice.gender})";
+            }
         }
     }
 
