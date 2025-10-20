@@ -1984,11 +1984,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1027759858 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5156471053441790836, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
-  m_PrefabInstance: {fileID: 1994786961}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1062734594
 GameObject:
   m_ObjectHideFlags: 0
@@ -2220,7 +2215,7 @@ MonoBehaviour:
   progressText: {fileID: 837414928}
   progressBar: {fileID: 324247750}
   statusText: {fileID: 2033240226}
-  voiceSelectionPanel: {fileID: 1027759858}
+  voiceSelectionPanel: {fileID: 2009242065}
   editVoiceSelectButton: {fileID: 1027759857}
   editCurrentVoiceText: {fileID: 1027759856}
 --- !u!114 &1080294123
@@ -4569,6 +4564,22 @@ PrefabInstance:
       propertyPath: m_text
       value: Generate Audio
       objectReference: {fileID: 0}
+    - target: {fileID: 1554912925526047874, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 611.84
+      objectReference: {fileID: 0}
+    - target: {fileID: 1554912925526047874, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 63
+      objectReference: {fileID: 0}
+    - target: {fileID: 1554912925526047874, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -477.73
+      objectReference: {fileID: 0}
+    - target: {fileID: 1554912925526047874, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -379
+      objectReference: {fileID: 0}
     - target: {fileID: 1699022658166970651, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
       propertyPath: m_Name
       value: EditDialogueItems
@@ -4673,6 +4684,66 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -365
       objectReference: {fileID: 0}
+    - target: {fileID: 7036883861753646149, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
+      propertyPath: m_text
+      value: Edit Voice
+      objectReference: {fileID: 0}
+    - target: {fileID: 7036883861753646149, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8e37122d6e7034f4389c42cbc3516813, type: 2}
+    - target: {fileID: 7036883861753646149, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
+      propertyPath: m_fontColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7036883861753646149, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
+      propertyPath: m_fontColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7036883861753646149, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
+      propertyPath: m_fontColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7036883861753646149, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -9095057548130661126, guid: 8e37122d6e7034f4389c42cbc3516813, type: 2}
+    - target: {fileID: 7036883861753646149, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 7036883861753646149, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7379437972999612111, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7379437972999612111, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -2315362796649885987, guid: 89278699bf5200d4c9c62d09f4d0dbeb, type: 3}
+    - target: {fileID: 8092746913672579000, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 214.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 8092746913672579000, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 55.94
+      objectReference: {fileID: 0}
+    - target: {fileID: 8092746913672579000, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 27.89
+      objectReference: {fileID: 0}
+    - target: {fileID: 8092746913672579000, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -387
+      objectReference: {fileID: 0}
+    - target: {fileID: 8974740768901837231, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7517992833105850884, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
     - {fileID: 788119888305801820, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
@@ -4724,6 +4795,11 @@ RectTransform:
 --- !u!224 &1994786966 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 296690871065486776, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
+  m_PrefabInstance: {fileID: 1994786961}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2009242065 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 944855210129204722, guid: 80cac338b4693284ea85b7f4d07a189a, type: 3}
   m_PrefabInstance: {fileID: 1994786961}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &2013151938
