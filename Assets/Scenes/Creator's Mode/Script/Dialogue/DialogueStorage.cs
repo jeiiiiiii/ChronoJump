@@ -129,60 +129,6 @@ public static class DialogueStorage
         }
     }
 
-    public static void EditDialogue(int index, string newName, string newText)
-    {
-        var dialogues = GetStoryDialogues();
-        if (dialogues == null) return;
-
-        if (index >= 0 && index < dialogues.Count)
-        {
-            // Preserve the existing voice ID when editing
-            string existingVoiceId = dialogues[index].selectedVoiceId;
-
-            dialogues[index].characterName = newName;
-            dialogues[index].dialogueText = newText;
-            dialogues[index].selectedVoiceId = existingVoiceId; // Keep the same voice
-
-            // Clear audio since text changed
-            dialogues[index].hasAudio = false;
-            dialogues[index].audioFilePath = "";
-
-            // Save the voice ID again to ensure persistence
-            VoiceStorageManager.SaveVoiceSelection($"Dialogue_{index}", existingVoiceId);
-
-            var voice = VoiceLibrary.GetVoiceById(existingVoiceId);
-            Debug.Log($"✅ DialogueStorage: Edited dialogue {index} - {newName}: {newText} (Voice preserved: {voice.voiceName})");
-
-            // ✅ Save story after editing
-            SaveCurrentStory();
-        }
-    }
-
-    // ✅ NEW: Update dialogue voice
-    public static void UpdateDialogueVoice(int index, string newVoiceId)
-    {
-        var dialogues = GetStoryDialogues();
-        if (dialogues == null) return;
-
-        if (index >= 0 && index < dialogues.Count)
-        {
-            dialogues[index].selectedVoiceId = newVoiceId;
-
-            // Invalidate audio since voice changed
-            dialogues[index].hasAudio = false;
-            dialogues[index].audioFilePath = "";
-
-            // Save to persistent storage
-            VoiceStorageManager.SaveVoiceSelection($"Dialogue_{index}", newVoiceId);
-
-            var voice = VoiceLibrary.GetVoiceById(newVoiceId);
-            Debug.Log($"🎤 Updated dialogue {index} voice to: {voice.voiceName}");
-
-            // ✅ Save story after updating voice
-            SaveCurrentStory();
-        }
-    }
-
     public static void ClearDialogues()
     {
         var dialogues = GetStoryDialogues();
@@ -269,6 +215,91 @@ public static class DialogueStorage
             }
         }
     }
+
+    public static void UpdateDialogueAudioInfo(int index, string relativePath, string fileName)
+    {
+        var dialogues = GetStoryDialogues();
+        if (dialogues == null) return;
+
+        if (index >= 0 && index < dialogues.Count)
+        {
+            dialogues[index].audioFilePath = relativePath;
+            dialogues[index].audioFileName = fileName;
+            dialogues[index].hasAudio = !string.IsNullOrEmpty(relativePath);
+
+            Debug.Log($"💾 Updated audio info for dialogue {index}: {fileName}");
+
+            // ✅ CRITICAL: Save story to persist audio information
+            SaveCurrentStory();
+        }
+    }
+
+
+    public static void EditDialogue(int index, string newName, string newText)
+    {
+        var dialogues = GetStoryDialogues();
+        if (dialogues == null) return;
+
+        if (index >= 0 && index < dialogues.Count)
+        {
+            // ✅ PRESERVE audio information when editing text
+            string existingVoiceId = dialogues[index].selectedVoiceId;
+            string existingAudioPath = dialogues[index].audioFilePath;
+            string existingAudioFile = dialogues[index].audioFileName;
+            bool existingHasAudio = dialogues[index].hasAudio;
+
+            dialogues[index].characterName = newName;
+            dialogues[index].dialogueText = newText;
+            dialogues[index].selectedVoiceId = existingVoiceId;
+
+            // ✅ PRESERVE audio info unless voice changed
+            dialogues[index].audioFilePath = existingAudioPath;
+            dialogues[index].audioFileName = existingAudioFile;
+            dialogues[index].hasAudio = existingHasAudio;
+
+            // Save the voice ID again to ensure persistence
+            if (!string.IsNullOrEmpty(existingVoiceId))
+            {
+                VoiceStorageManager.SaveVoiceSelection($"Dialogue_{index}", existingVoiceId);
+            }
+
+            var voice = VoiceLibrary.GetVoiceById(existingVoiceId);
+            Debug.Log($"✅ DialogueStorage: Edited dialogue {index} - {newName}: {newText} (Voice: {voice.voiceName}, Audio: {existingHasAudio})");
+
+            // ✅ Save story after editing
+            SaveCurrentStory();
+        }
+    }
+
+    public static void UpdateDialogueVoice(int index, string newVoiceId)
+    {
+        var dialogues = GetStoryDialogues();
+        if (dialogues == null) return;
+
+        if (index >= 0 && index < dialogues.Count)
+        {
+            string oldVoiceId = dialogues[index].selectedVoiceId;
+            dialogues[index].selectedVoiceId = newVoiceId;
+
+            // Only invalidate audio if voice actually changed
+            if (oldVoiceId != newVoiceId)
+            {
+                dialogues[index].hasAudio = false;
+                dialogues[index].audioFilePath = "";
+                dialogues[index].audioFileName = "";
+            }
+
+            // Save to persistent storage
+            VoiceStorageManager.SaveVoiceSelection($"Dialogue_{index}", newVoiceId);
+
+            var voice = VoiceLibrary.GetVoiceById(newVoiceId);
+            Debug.Log($"🎤 Updated dialogue {index} voice to: {voice.voiceName}");
+
+            // ✅ Save story after updating voice
+            SaveCurrentStory();
+        }
+    }
+
 
     // ✅ Debug method
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]

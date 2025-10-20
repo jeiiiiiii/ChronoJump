@@ -746,24 +746,34 @@ public class StoryManager : MonoBehaviour
 
 
     private DialogueLineFirestore MapToFirestoreDialogue(DialogueLine unityDialogue, int orderIndex)
+{
+    return new DialogueLineFirestore
     {
-        return new DialogueLineFirestore(
-            unityDialogue.characterName,
-            unityDialogue.dialogueText,
-            unityDialogue.selectedVoiceId, // Make sure this is passed
-            orderIndex
-        );
-    }
-
+        characterName = unityDialogue.characterName,
+        dialogueText = unityDialogue.dialogueText,
+        selectedVoiceId = unityDialogue.selectedVoiceId,
+        audioFilePath = unityDialogue.audioFilePath,
+        hasAudio = unityDialogue.hasAudio,
+        audioFileName = unityDialogue.audioFileName,
+        audioStoragePath = unityDialogue.audioStoragePath,
+        orderIndex = orderIndex
+    };
+}
 
     private DialogueLine MapToUnityDialogue(DialogueLineFirestore firestoreDialogue)
     {
-        return new DialogueLine(
-            firestoreDialogue.characterName,
-            firestoreDialogue.dialogueText,
-            firestoreDialogue.selectedVoiceId // Make sure this is passed
-        );
+        return new DialogueLine
+        {
+            characterName = firestoreDialogue.characterName,
+            dialogueText = firestoreDialogue.dialogueText,
+            selectedVoiceId = firestoreDialogue.selectedVoiceId,
+            audioFilePath = firestoreDialogue.audioFilePath,
+            hasAudio = firestoreDialogue.hasAudio,
+            audioFileName = firestoreDialogue.audioFileName,
+            audioStoragePath = firestoreDialogue.audioStoragePath
+        };
     }
+
 
 
     private QuestionFirestore MapToFirestoreQuestion(Question unityQuestion, int orderIndex)

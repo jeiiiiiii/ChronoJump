@@ -137,8 +137,18 @@ public class ElevenLabsTTSManager : MonoBehaviour
         return "unknown_story";
     }
 
+    // In TTSManager.cs - Update the GenerateTTS method
     public IEnumerator GenerateTTS(DialogueLine dialogue, Action<bool, string> onComplete)
     {
+        if (string.IsNullOrEmpty(dialogue.selectedVoiceId))
+        {
+            Debug.Log($"🔇 Skipping TTS for '{dialogue.characterName}' - No voice selected");
+            dialogue.hasAudio = false;
+            dialogue.audioFilePath = "";
+            onComplete?.Invoke(true, "No Voice Selected - Skipped");
+            yield break;
+        }
+
         if (string.IsNullOrEmpty(apiKey) || apiKey == "YOUR_API_KEY_HERE")
         {
             Debug.LogError("ElevenLabs API Key not set or invalid!");
@@ -154,13 +164,13 @@ public class ElevenLabsTTSManager : MonoBehaviour
         Debug.Log($"🎤 Generating TTS for '{dialogue.characterName}' using voice: {voice.voiceName}");
 
         string jsonPayload = $@"{{
-            ""text"": ""{EscapeJson(dialogue.dialogueText)}"",
-            ""model_id"": ""eleven_monolingual_v1"",
-            ""voice_settings"": {{
-                ""stability"": 0.5,
-                ""similarity_boost"": 0.75
-            }}
-        }}";
+        ""text"": ""{EscapeJson(dialogue.dialogueText)}"",
+        ""model_id"": ""eleven_monolingual_v1"",
+        ""voice_settings"": {{
+            ""stability"": 0.5,
+            ""similarity_boost"": 0.75
+        }}
+    }}";
 
         byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonPayload);
 
@@ -189,11 +199,17 @@ public class ElevenLabsTTSManager : MonoBehaviour
 
                 File.WriteAllBytes(absolutePath, request.downloadHandler.data);
 
-                dialogue.audioFilePath = absolutePath; // Store absolute path for immediate use
+                // ✅ UPDATED: Store relative path and additional audio info
+                dialogue.audioFilePath = relativePath; // Store RELATIVE path for cross-device
+                dialogue.audioFileName = fileName;     // Store filename separately
                 dialogue.hasAudio = true;
 
+                // ✅ NEW: Update audio info in storage to persist it
+                DialogueStorage.UpdateDialogueAudioInfo(dialogueIndex, relativePath, fileName);
+
                 Debug.Log($"✅ TTS generated: '{dialogue.characterName}' → {relativePath}");
-                onComplete?.Invoke(true, absolutePath);
+
+                onComplete?.Invoke(true, relativePath);
             }
             else
             {
@@ -202,6 +218,7 @@ public class ElevenLabsTTSManager : MonoBehaviour
             }
         }
     }
+
 
     private int GetDialogueIndex(DialogueLine targetDialogue)
     {

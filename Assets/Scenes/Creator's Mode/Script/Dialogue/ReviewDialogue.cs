@@ -95,14 +95,23 @@ public class ReviewDialogueManager : MonoBehaviour
             GameObject item = Instantiate(dialogueItemPrefab, contentParent);
 
             TextMeshProUGUI[] texts = item.GetComponentsInChildren<TextMeshProUGUI>();
-            
-            // Get voice name
-            var voice = VoiceLibrary.GetVoiceById(line.selectedVoiceId);
-            
-            texts[0].text = $"{line.characterName} ({voice.voiceName})";
-            
-            // Show audio status indicator
-            string audioStatus = line.hasAudio ? " 🔊" : " 🔇";
+
+            // ✅ UPDATED: Handle empty voice
+            string voiceDisplay = "No Voice";
+            if (!string.IsNullOrEmpty(line.selectedVoiceId))
+            {
+                var voice = VoiceLibrary.GetVoiceById(line.selectedVoiceId);
+                voiceDisplay = voice.voiceName;
+            }
+
+            texts[0].text = $"{line.characterName} ({voiceDisplay})";
+
+            // Show audio status indicator (only if voice is selected)
+            string audioStatus = "";
+            if (!string.IsNullOrEmpty(line.selectedVoiceId))
+            {
+                audioStatus = line.hasAudio ? " 🔊" : " 🔇";
+            }
             texts[1].text = line.dialogueText + audioStatus;
 
             Button[] buttons = item.GetComponentsInChildren<Button>();
@@ -113,6 +122,7 @@ public class ReviewDialogueManager : MonoBehaviour
             editBtn.onClick.AddListener(() => OpenEditPopup(index, line));
         }
     }
+
 
     public void GenerateAllAudio()
     {

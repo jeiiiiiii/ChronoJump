@@ -29,7 +29,7 @@ public class QuestionFirestore
     [FirestoreProperty] public int orderIndex { get; set; }
 }
 
-// FIXED: Add Firestore attributes to DialogueLineFirestore
+
 [FirestoreData]
 public class DialogueLineFirestore
 {
@@ -38,19 +38,33 @@ public class DialogueLineFirestore
     [FirestoreProperty] public string selectedVoiceId { get; set; }
     [FirestoreProperty] public int orderIndex { get; set; }
 
+    // ✅ Audio fields for voice narration (simplified)
+    [FirestoreProperty] public string audioFilePath { get; set; }
+    [FirestoreProperty] public bool hasAudio { get; set; }
+    [FirestoreProperty] public string audioFileName { get; set; }
+    [FirestoreProperty] public string audioStoragePath { get; set; }
+
     public DialogueLineFirestore()
     {
         characterName = "";
         dialogueText = "";
-        selectedVoiceId = "21m00Tcm4TlvDq8ikWAM"; // Default
+        selectedVoiceId = "";
         orderIndex = 0;
+        audioFilePath = "";
+        hasAudio = false;
+        audioFileName = "";
+        audioStoragePath = "";
     }
 
     public DialogueLineFirestore(string name, string text, string voiceId, int index)
     {
         characterName = name;
         dialogueText = text;
-        selectedVoiceId = voiceId;
+        selectedVoiceId = voiceId ?? "";
         orderIndex = index;
+        audioFilePath = "";
+        hasAudio = false;
+        audioFileName = "";
+        audioStoragePath = "";
     }
 }
