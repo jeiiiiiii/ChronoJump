@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.Collections;
 
 public class StoryActionHandler : MonoBehaviour
 {
@@ -25,6 +26,9 @@ public class StoryActionHandler : MonoBehaviour
     [SerializeField] private Button confirmDeleteButton;
     [SerializeField] private Button cancelDeleteButton;
 
+    [Header("Loading Indicator (Optional)")]
+    [SerializeField] private GameObject loadingIndicator;
+
     private int currentStoryIndex = -1;
 
     void Start()
@@ -39,6 +43,7 @@ public class StoryActionHandler : MonoBehaviour
         if (cancelDeleteButton != null) cancelDeleteButton.onClick.AddListener(CloseDeleteConfirmation);
 
         if (deleteConfirmPopup != null) deleteConfirmPopup.SetActive(false);
+        if (loadingIndicator != null) loadingIndicator.SetActive(false);
     }
 
     public void OnStoryButtonClicked(int storyIndex)
@@ -61,7 +66,7 @@ public class StoryActionHandler : MonoBehaviour
 
         SetCurrentStory(storyIndex);
         UpdateStoryDetailsUI(story);
-        
+
         if (actionPopup != null)
             actionPopup.SetActive(true);
 
@@ -69,34 +74,34 @@ public class StoryActionHandler : MonoBehaviour
     }
 
     private void UpdateStoryDetailsUI(StoryData story)
-{
-    if (story == null)
     {
-        ClearStoryDetailsUI();
-        return;
-    }
+        if (story == null)
+        {
+            ClearStoryDetailsUI();
+            return;
+        }
 
-    if (storyTitleText != null)
-    {
-        storyTitleText.text = string.IsNullOrEmpty(story.storyTitle) 
-            ? "Untitled Story" 
-            : story.storyTitle;
-    }
+        if (storyTitleText != null)
+        {
+            storyTitleText.text = string.IsNullOrEmpty(story.storyTitle)
+                ? "Untitled Story"
+                : story.storyTitle;
+        }
 
-    if (storyDescriptionText != null)
-    {
-        storyDescriptionText.text = string.IsNullOrEmpty(story.storyDescription) 
-            ? "No description available" 
-            : story.storyDescription;
-    }
+        if (storyDescriptionText != null)
+        {
+            storyDescriptionText.text = string.IsNullOrEmpty(story.storyDescription)
+                ? "No description available"
+                : story.storyDescription;
+        }
 
-    if (dateCreatedText != null)
-{
-    string createdDisplay = string.IsNullOrEmpty(story.createdAt) 
-        ? "Created: Unknown" 
-        : $"Created: {FormatDateForDisplay(story.createdAt)}";
-    dateCreatedText.text = createdDisplay;
-}
+        if (dateCreatedText != null)
+        {
+            string createdDisplay = string.IsNullOrEmpty(story.createdAt)
+                ? "Created: Unknown"
+                : $"Created: {FormatDateForDisplay(story.createdAt)}";
+            dateCreatedText.text = createdDisplay;
+        }
 
         if (dateUpdatedText != null)
         {
@@ -105,43 +110,40 @@ public class StoryActionHandler : MonoBehaviour
                 : $"Updated: {FormatDateForDisplay(story.updatedAt)}";
             dateUpdatedText.text = updatedDisplay;
         }
-
-}
-
-private string FormatDateForDisplay(string dateString)
-{
-    if (string.IsNullOrEmpty(dateString))
-        return "Unknown";
-    
-    // First try parsing as ISO format (from Firestore)
-    if (DateTime.TryParse(dateString, out DateTime date))
-    {
-        return date.ToString("MMM dd, yyyy");
     }
-    
-    // If that fails, try common formats
-    string[] formats = {
-        "yyyy-MM-dd HH:mm:ss",
-        "MM/dd/yyyy HH:mm:ss",
-        "dd/MM/yyyy HH:mm:ss",
-        "yyyy-MM-ddTHH:mm:ssZ",
-        "MMM dd, yyyy hh:mm tt"
-    };
-    
-    foreach (string format in formats)
+
+    private string FormatDateForDisplay(string dateString)
     {
-        if (DateTime.TryParseExact(dateString, format, System.Globalization.CultureInfo.InvariantCulture, 
-            System.Globalization.DateTimeStyles.None, out date))
+        if (string.IsNullOrEmpty(dateString))
+            return "Unknown";
+
+        // First try parsing as ISO format (from Firestore)
+        if (DateTime.TryParse(dateString, out DateTime date))
         {
-            return date.ToString("MMM dd, yyyy hh:mm tt");
+            return date.ToString("MMM dd, yyyy");
         }
+
+        // If that fails, try common formats
+        string[] formats = {
+            "yyyy-MM-dd HH:mm:ss",
+            "MM/dd/yyyy HH:mm:ss",
+            "dd/MM/yyyy HH:mm:ss",
+            "yyyy-MM-ddTHH:mm:ssZ",
+            "MMM dd, yyyy hh:mm tt"
+        };
+
+        foreach (string format in formats)
+        {
+            if (DateTime.TryParseExact(dateString, format, System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None, out date))
+            {
+                return date.ToString("MMM dd, yyyy hh:mm tt");
+            }
+        }
+
+        // If all parsing fails, return the original string
+        return dateString;
     }
-    
-    // If all parsing fails, return the original string
-    return dateString;
-}
-
-
 
     private void ClearStoryDetailsUI()
     {
@@ -192,19 +194,83 @@ private string FormatDateForDisplay(string dateString)
         if (currentStoryIndex < 0) return;
         if (currentStoryIndex < StoryManager.Instance.allStories.Count)
         {
-            StoryManager.Instance.currentStory = StoryManager.Instance.allStories[currentStoryIndex];
+            StoryData story = StoryManager.Instance.allStories[currentStoryIndex];
+            StoryManager.Instance.currentStory = story;
+
+            // ✅ Load voices before editing
+            Debug.Log($"📖 Loading story for editing: {story.storyTitle}");
+            DialogueStorage.LoadAllVoices();
+
             SceneManager.LoadScene("CreateNewAddTitleScene");
         }
     }
 
+    // ✅ FIXED: Load voices before viewing the story
     public void ViewStory()
     {
         if (currentStoryIndex < 0) return;
         if (currentStoryIndex < StoryManager.Instance.allStories.Count)
         {
-            StoryManager.Instance.currentStory = StoryManager.Instance.allStories[currentStoryIndex];
-            SceneManager.LoadScene("GameScene");
+            StartCoroutine(LoadStoryAndView());
         }
+    }
+
+    // ✅ NEW: Coroutine to properly load story with voices before viewing
+    private IEnumerator LoadStoryAndView()
+    {
+        if (loadingIndicator != null)
+            loadingIndicator.SetActive(true);
+
+        // Disable buttons during loading
+        if (viewButton != null) viewButton.interactable = false;
+        if (editButton != null) editButton.interactable = false;
+
+        StoryData story = StoryManager.Instance.allStories[currentStoryIndex];
+        StoryManager.Instance.currentStory = story;
+
+        Debug.Log("=== LOADING STORY FOR VIEWING ===");
+        Debug.Log($"📖 Story: {story.storyTitle}");
+        Debug.Log($"📊 Story Index: {story.storyIndex}");
+
+        // ✅ CRITICAL: Load voices from persistent storage
+        Debug.Log("🎤 Loading voice assignments from TeacherPrefs...");
+        DialogueStorage.LoadAllVoices();
+
+        // Wait a frame to ensure everything is loaded
+        yield return null;
+
+        // ✅ Verify dialogues and voices are loaded
+        var dialogues = DialogueStorage.GetAllDialogues();
+        Debug.Log($"✅ Loaded {dialogues.Count} dialogues");
+
+        if (dialogues.Count > 0)
+        {
+            Debug.Log("🎤 Voice assignments:");
+            for (int i = 0; i < dialogues.Count; i++)
+            {
+                var dialogue = dialogues[i];
+                if (string.IsNullOrEmpty(dialogue.selectedVoiceId))
+                {
+                    Debug.LogWarning($"⚠️ Dialogue {i} '{dialogue.characterName}' has NO voice ID! Assigning default...");
+                    dialogue.selectedVoiceId = VoiceLibrary.GetDefaultVoice().voiceId;
+                }
+
+                var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
+                Debug.Log($"   🎤 [{i}] '{dialogue.characterName}' → {voice.voiceName} ({dialogue.selectedVoiceId})");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("⚠️ No dialogues found for this story!");
+        }
+
+        Debug.Log("=== STORY LOADING COMPLETE ===");
+
+        if (loadingIndicator != null)
+            loadingIndicator.SetActive(false);
+
+        // Now transition to GameScene
+        SceneManager.LoadScene("GameScene");
     }
 
     public void OnPublishedStoriesClicked()
@@ -213,7 +279,6 @@ private string FormatDateForDisplay(string dateString)
 
         if (SceneNavigationManager.Instance != null)
         {
-            // This will set previous scene to Creator'sModeScene before navigating
             SceneNavigationManager.Instance.GoToStoryPublish();
         }
         else
@@ -221,7 +286,6 @@ private string FormatDateForDisplay(string dateString)
             SceneManager.LoadScene("StoryPublish");
         }
     }
-
 
     public void ShowDeleteConfirmation()
     {
@@ -236,82 +300,81 @@ private string FormatDateForDisplay(string dateString)
     }
 
     public void DeleteStory()
-{
-    int storyIndexToDelete = currentStoryIndex;
-
-    if (storyIndexToDelete < 0 || storyIndexToDelete >= StoryManager.Instance.allStories.Count)
     {
-        Debug.LogWarning($"DeleteStory called but no valid story is selected! Index: {storyIndexToDelete}");
-        return;
+        int storyIndexToDelete = currentStoryIndex;
+
+        if (storyIndexToDelete < 0 || storyIndexToDelete >= StoryManager.Instance.allStories.Count)
+        {
+            Debug.LogWarning($"DeleteStory called but no valid story is selected! Index: {storyIndexToDelete}");
+            return;
+        }
+
+        StoryData storyToDelete = StoryManager.Instance.allStories[storyIndexToDelete];
+
+        if (storyToDelete != null)
+        {
+            Debug.Log($"=== DELETING STORY ===");
+            Debug.Log($"Story: {storyToDelete.storyTitle}");
+            Debug.Log($"Slot Index: {storyIndexToDelete}");
+            Debug.Log($"Story's storyIndex field: {storyToDelete.storyIndex}");
+
+            Debug.Log("Before deletion:");
+            for (int i = 0; i < StoryManager.Instance.allStories.Count; i++)
+            {
+                var s = StoryManager.Instance.allStories[i];
+                Debug.Log($"  [{i}] = {(s != null ? s.storyTitle : "NULL")}");
+            }
+
+            // Delete from Firestore (including subcollections)
+            if (StoryManager.Instance.UseFirestore && !string.IsNullOrEmpty(storyToDelete.storyId))
+            {
+                DeleteStoryFromFirestore(storyToDelete.storyId);
+            }
+
+            // Delete image files
+            ImageStorage.DeleteImage(storyToDelete.backgroundPath);
+            ImageStorage.DeleteImage(storyToDelete.character1Path);
+            ImageStorage.DeleteImage(storyToDelete.character2Path);
+
+            // ✅ Set to null, don't remove from list
+            StoryManager.Instance.allStories[storyIndexToDelete] = null;
+
+            Debug.Log("After setting to null:");
+            for (int i = 0; i < StoryManager.Instance.allStories.Count; i++)
+            {
+                var s = StoryManager.Instance.allStories[i];
+                Debug.Log($"  [{i}] = {(s != null ? s.storyTitle : "NULL")}");
+            }
+
+            RemoveFromPublishedStories(storyToDelete.storyId);
+
+            // Save after deletion
+            StoryManager.Instance.SaveStories();
+
+            if (StoryManager.Instance.currentStory == storyToDelete)
+                StoryManager.Instance.currentStory = null;
+
+            if (ImageStorage.CurrentStoryIndex == storyIndexToDelete)
+            {
+                ImageStorage.UploadedTexture = null;
+                ImageStorage.uploadedTexture1 = null;
+                ImageStorage.uploadedTexture2 = null;
+            }
+
+            // Refresh the UI
+            var viewStoriesScene = FindFirstObjectByType<ViewCreatedStoriesScene>();
+            if (viewStoriesScene != null)
+            {
+                viewStoriesScene.RefreshBackgrounds();
+            }
+
+            Debug.Log($"=== DELETION COMPLETE ===");
+        }
+
+        CloseDeleteConfirmation();
+        ClosePopup();
     }
 
-    StoryData storyToDelete = StoryManager.Instance.allStories[storyIndexToDelete];
-
-    if (storyToDelete != null)
-    {
-        Debug.Log($"=== DELETING STORY ===");
-        Debug.Log($"Story: {storyToDelete.storyTitle}");
-        Debug.Log($"Slot Index: {storyIndexToDelete}");
-        Debug.Log($"Story's storyIndex field: {storyToDelete.storyIndex}");
-        
-        Debug.Log("Before deletion:");
-        for (int i = 0; i < StoryManager.Instance.allStories.Count; i++)
-        {
-            var s = StoryManager.Instance.allStories[i];
-            Debug.Log($"  [{i}] = {(s != null ? s.storyTitle : "NULL")}");
-        }
-
-        // Delete from Firestore (including subcollections)
-        if (StoryManager.Instance.UseFirestore && !string.IsNullOrEmpty(storyToDelete.storyId))
-        {
-            DeleteStoryFromFirestore(storyToDelete.storyId);
-        }
-
-        // Delete image files
-        ImageStorage.DeleteImage(storyToDelete.backgroundPath);
-        ImageStorage.DeleteImage(storyToDelete.character1Path);
-        ImageStorage.DeleteImage(storyToDelete.character2Path);
-
-        // ✅ CRITICAL: Set to null, don't remove from list
-        StoryManager.Instance.allStories[storyIndexToDelete] = null;
-        
-        Debug.Log("After setting to null:");
-        for (int i = 0; i < StoryManager.Instance.allStories.Count; i++)
-        {
-            var s = StoryManager.Instance.allStories[i];
-            Debug.Log($"  [{i}] = {(s != null ? s.storyTitle : "NULL")}");
-        }
-
-        RemoveFromPublishedStories(storyToDelete.storyId);
-        
-        // Save after deletion
-        StoryManager.Instance.SaveStories();
-
-        if (StoryManager.Instance.currentStory == storyToDelete)
-            StoryManager.Instance.currentStory = null;
-
-        if (ImageStorage.CurrentStoryIndex == storyIndexToDelete)
-        {
-            ImageStorage.UploadedTexture = null;
-            ImageStorage.uploadedTexture1 = null;
-            ImageStorage.uploadedTexture2 = null;
-        }
-
-        // Refresh the UI
-        var viewStoriesScene = FindFirstObjectByType<ViewCreatedStoriesScene>();
-        if (viewStoriesScene != null)
-        {
-            viewStoriesScene.RefreshBackgrounds();
-        }
-
-        Debug.Log($"=== DELETION COMPLETE ===");
-    }
-
-    CloseDeleteConfirmation();
-    ClosePopup();
-}
-
-    // Updated Firestore deletion with subcollection cleanup
     private async void DeleteStoryFromFirestore(string storyId)
     {
         if (StoryManager.Instance.UseFirestore && StoryManager.Instance.IsFirebaseReady)
@@ -335,8 +398,6 @@ private string FormatDateForDisplay(string dateString)
             }
         }
     }
-
-
 
     private void RemoveFromPublishedStories(string storyId)
     {

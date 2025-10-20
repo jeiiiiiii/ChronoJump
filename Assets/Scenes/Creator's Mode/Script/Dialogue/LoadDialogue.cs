@@ -25,6 +25,9 @@ public class DialoguePlayer : MonoBehaviour
     private StoryData currentStory;
     private bool isPlayingAudio = false;
 
+    // LoadDialogue.cs - FIXED Start() method
+    // Replace your existing Start() method with this:
+
     void Start()
     {
         Debug.Log("🎬 DialoguePlayer Started");
@@ -36,13 +39,46 @@ public class DialoguePlayer : MonoBehaviour
             audioSource = gameObject.AddComponent<AudioSource>();
         }
 
+        // ✅ Load story data first
         LoadStoryData();
+
+        // ✅ CRITICAL FIX: Load voices BEFORE getting dialogues
+        // This ensures voice IDs are populated from TeacherPrefs
+        Debug.Log("🎤 Loading voice assignments from persistent storage...");
+        DialogueStorage.LoadAllVoices();
+
+        // ✅ Now get the dialogues (they should have voice IDs loaded)
         dialogues = DialogueStorage.GetAllDialogues();
 
         if (dialogues.Count > 0)
         {
             ShowDialogue(0);
             Debug.Log($"✅ Loaded {dialogues.Count} dialogues for playback");
+
+            // ✅ Debug: Verify voice assignments
+            bool allVoicesValid = true;
+            for (int i = 0; i < dialogues.Count; i++)
+            {
+                var dialogue = dialogues[i];
+
+                // Check if voice ID is valid
+                if (string.IsNullOrEmpty(dialogue.selectedVoiceId))
+                {
+                    Debug.LogError($"❌ Dialogue {i} '{dialogue.characterName}' has NO voice ID!");
+                    dialogue.selectedVoiceId = VoiceLibrary.GetDefaultVoice().voiceId;
+                    allVoicesValid = false;
+                }
+
+                var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
+                Debug.Log($"🎤 Dialogue {i}: '{dialogue.characterName}' → {voice.voiceName} (ID: {dialogue.selectedVoiceId})");
+            }
+
+            if (!allVoicesValid)
+            {
+                Debug.LogWarning("⚠️ Some dialogues had missing voices - assigned defaults");
+                // Save to persist the default assignments
+                DialogueStorage.LoadAllVoices();
+            }
         }
         else
         {
@@ -51,6 +87,7 @@ public class DialoguePlayer : MonoBehaviour
             return;
         }
 
+        // Setup buttons
         nextButton.onClick.AddListener(NextDialogue);
         backButton.onClick.AddListener(PreviousDialogue);
 
@@ -69,25 +106,203 @@ public class DialoguePlayer : MonoBehaviour
         LoadQuizQuestions();
     }
 
-    void ShowDialogue(int index)
+
+
+    // LoadDialogue.cs - FIXED ShowDialogue method
+// Replace your existing ShowDialogue method with this:
+
+void ShowDialogue(int index)
+{
+    if (dialogues == null || index >= dialogues.Count) return;
+
+    var dialogue = dialogues[index];
+    Debug.Log($"💬 Showing dialogue {index + 1}/{dialogues.Count}: {dialogue.characterName} - {dialogue.dialogueText}");
+
+    dialogueText.text = $"{dialogue.characterName}: {dialogue.dialogueText}";
+    UpdateCharacterImages(dialogue.characterName);
+
+    // ✅ CRITICAL FIX: Find the audio file using the correct voice
+    var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
+    Debug.Log($"🔍 Looking for audio - Character: '{dialogue.characterName}', Voice: {voice.voiceName}, Index: {index}");
+
+    // Try to find existing audio file
+    string audioPath = FindAudioFile(dialogue, index);
+    
+    if (!string.IsNullOrEmpty(audioPath) && System.IO.File.Exists(audioPath))
     {
-        if (dialogues == null || index >= dialogues.Count) return;
+        dialogue.audioFilePath = audioPath;
+        dialogue.hasAudio = true;
+        Debug.Log($"✅ Found audio file: {audioPath}");
+        
+        // Play the audio
+        StartCoroutine(PlayDialogueAudio(dialogue));
+    }
+    else
+    {
+        Debug.LogWarning($"⚠️ No audio found for dialogue: {dialogue.characterName}");
+        Debug.LogWarning($"   Expected voice: {voice.voiceName} (ID: {dialogue.selectedVoiceId})");
+        Debug.LogWarning($"   Searched path pattern: dialogue_{index}_{SanitizeFileName(dialogue.characterName)}_{voice.voiceName}_*.mp3");
+    }
+}
 
-        var dialogue = dialogues[index];
-        Debug.Log($"💬 Showing dialogue {index + 1}/{dialogues.Count}: {dialogue.characterName} - {dialogue.dialogueText}");
+// ✅ NEW: Find audio file for a specific dialogue
+string FindAudioFile(DialogueLine dialogue, int dialogueIndex)
+{
+    try
+    {
+        // Get the audio directory
+        string teacherId = GetTeacherId();
+        int storyIndex = GetStoryIndex();
+        string audioDir = System.IO.Path.Combine(
+            Application.persistentDataPath,
+            teacherId,
+            $"story_{storyIndex}",
+            "audio"
+        );
 
-        dialogueText.text = $"{dialogue.characterName}: {dialogue.dialogueText}";
-        UpdateCharacterImages(dialogue.characterName);
-
-        // Play audio if available
-        if (dialogue.hasAudio && !string.IsNullOrEmpty(dialogue.audioFilePath))
+        if (!System.IO.Directory.Exists(audioDir))
         {
-            StartCoroutine(PlayDialogueAudio(dialogue));
+            Debug.LogWarning($"⚠️ Audio directory not found: {audioDir}");
+            return null;
         }
-        else
+
+        string sanitizedName = SanitizeFileName(dialogue.characterName);
+        var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
+
+        // Look for files matching the pattern: dialogue_{index}_{character}_{voice}_*.mp3
+        string searchPattern = $"dialogue_{dialogueIndex}_{sanitizedName}_{voice.voiceName}_*.mp3";
+        Debug.Log($"🔍 Searching in: {audioDir}");
+        Debug.Log($"🔍 Pattern: {searchPattern}");
+
+        string[] files = System.IO.Directory.GetFiles(audioDir, searchPattern);
+
+        if (files.Length > 0)
         {
-            Debug.Log($"⚠️ No audio for dialogue: {dialogue.characterName}");
+            // Return the most recent file
+            System.Array.Sort(files);
+            string latestFile = files[files.Length - 1];
+            Debug.Log($"✅ Found {files.Length} matching file(s), using: {System.IO.Path.GetFileName(latestFile)}");
+            return latestFile;
         }
+
+        // ✅ FALLBACK: Try searching for any file with this character name and dialogue index
+        // This helps if voice was changed after audio generation
+        string fallbackPattern = $"dialogue_{dialogueIndex}_{sanitizedName}_*.mp3";
+        Debug.Log($"🔍 Trying fallback pattern: {fallbackPattern}");
+        
+        files = System.IO.Directory.GetFiles(audioDir, fallbackPattern);
+        if (files.Length > 0)
+        {
+            System.Array.Sort(files);
+            string latestFile = files[files.Length - 1];
+            Debug.LogWarning($"⚠️ Using fallback audio (voice mismatch): {System.IO.Path.GetFileName(latestFile)}");
+            return latestFile;
+        }
+
+        Debug.LogWarning($"❌ No audio file found for pattern: {searchPattern}");
+        return null;
+    }
+    catch (System.Exception ex)
+    {
+        Debug.LogError($"❌ Error finding audio file: {ex.Message}");
+        return null;
+    }
+}
+
+string SanitizeFileName(string fileName)
+{
+    foreach (char c in System.IO.Path.GetInvalidFileNameChars())
+    {
+        fileName = fileName.Replace(c, '_');
+    }
+    return fileName;
+}
+
+string GetTeacherId()
+{
+    // Check current user role
+    string userRole = PlayerPrefs.GetString("UserRole", "student");
+    
+    if (userRole.ToLower() == "student")
+    {
+        // For students, extract from story data
+        string storyJson = StudentPrefs.GetString("CurrentStoryData", "");
+        if (!string.IsNullOrEmpty(storyJson))
+        {
+            try
+            {
+                var studentStory = JsonUtility.FromJson<StoryData>(storyJson);
+                if (!string.IsNullOrEmpty(studentStory.backgroundPath))
+                {
+                    string[] pathParts = studentStory.backgroundPath.Split(System.IO.Path.DirectorySeparatorChar);
+                    if (pathParts.Length > 0)
+                    {
+                        return pathParts[0]; // First part is teacher ID
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"Could not extract teacher ID: {ex.Message}");
+            }
+        }
+    }
+    
+    // For teachers or fallback
+    if (StoryManager.Instance != null && StoryManager.Instance.IsCurrentUserTeacher())
+    {
+        return StoryManager.Instance.GetCurrentTeacherId();
+    }
+    
+    return TeacherPrefs.GetString("CurrentTeachId", "default");
+}
+
+    int GetStoryIndex()
+    {
+        // Try from current story
+        var story = StoryManager.Instance?.GetCurrentStory();
+        if (story != null && story.storyIndex >= 0)
+        {
+            return story.storyIndex;
+        }
+
+        // ✅ CRITICAL FIX: For students, extract from story data
+        string storyJson = StudentPrefs.GetString("CurrentStoryData", "");
+        if (!string.IsNullOrEmpty(storyJson))
+        {
+            try
+            {
+                var studentStory = JsonUtility.FromJson<StoryData>(storyJson);
+
+                // ✅ FIX: If storyIndex is -1, extract from path
+                if (studentStory.storyIndex < 0 && !string.IsNullOrEmpty(studentStory.backgroundPath))
+                {
+                    // Extract from path: "3U2VTjs7ng/story_0/background.png"
+                    string[] pathParts = studentStory.backgroundPath.Split(new char[] { '/', '\\' }, System.StringSplitOptions.RemoveEmptyEntries);
+                    if (pathParts.Length > 1 && pathParts[1].StartsWith("story_"))
+                    {
+                        string indexStr = pathParts[1].Replace("story_", "");
+                        if (int.TryParse(indexStr, out int extractedIndex))
+                        {
+                            Debug.Log($"✅ Extracted story index from path: {extractedIndex}");
+                            return extractedIndex;
+                        }
+                    }
+                }
+
+                // Return the stored index if valid
+                if (studentStory.storyIndex >= 0)
+                {
+                    return studentStory.storyIndex;
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"Could not extract story index: {ex.Message}");
+            }
+        }
+
+        return 0;
     }
 
     IEnumerator PlayDialogueAudio(DialogueLine dialogue)

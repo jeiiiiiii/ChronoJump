@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -69,7 +70,7 @@ public class AddFrame : MonoBehaviour
         Debug.Log($"✅ Valid background found: {story.backgroundPath}");
         return true;
     }
-    
+
     // ADD THE DEBUG METHOD HERE:
     public void DebugBackgroundInfo()
     {
@@ -85,4 +86,39 @@ public class AddFrame : MonoBehaviour
             Debug.Log("❌ No current story");
         }
     }
+    // In AddFrame.cs - add debug logging to the ValidateBackground method
+    private bool ValidateBackground(StoryData story)
+    {
+        Debug.Log($"🔍 ValidateBackground called for story: {story.storyTitle}");
+
+        if (string.IsNullOrEmpty(story.backgroundPath))
+        {
+            Debug.Log("❌ Background path is null or empty");
+            return false;
+        }
+
+        Debug.Log($"📁 Background path: {story.backgroundPath}");
+
+        // Check if it's a relative path
+        string absolutePath = ImageStorage.GetAbsolutePath(story.backgroundPath);
+        Debug.Log($"📁 Absolute path: {absolutePath}");
+
+        bool fileExists = File.Exists(absolutePath);
+        Debug.Log($"📁 File exists: {fileExists}");
+
+        if (!fileExists)
+        {
+            // Check if UploadedTexture exists as fallback
+            bool hasUploadedTexture = ImageStorage.UploadedTexture != null;
+            Debug.Log($"🖼 UploadedTexture exists: {hasUploadedTexture}");
+
+            if (hasUploadedTexture)
+            {
+                Debug.Log($"🖼 UploadedTexture dimensions: {ImageStorage.UploadedTexture.width}x{ImageStorage.UploadedTexture.height}");
+            }
+        }
+
+        return fileExists || ImageStorage.UploadedTexture != null;
+    }
+
 }

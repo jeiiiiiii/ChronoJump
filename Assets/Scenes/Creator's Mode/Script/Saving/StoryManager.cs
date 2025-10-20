@@ -747,21 +747,24 @@ public class StoryManager : MonoBehaviour
 
     private DialogueLineFirestore MapToFirestoreDialogue(DialogueLine unityDialogue, int orderIndex)
     {
-        return new DialogueLineFirestore
-        {
-            characterName = unityDialogue.characterName,
-            dialogueText = unityDialogue.dialogueText,
-            orderIndex = orderIndex
-        };
+        return new DialogueLineFirestore(
+            unityDialogue.characterName,
+            unityDialogue.dialogueText,
+            unityDialogue.selectedVoiceId, // Make sure this is passed
+            orderIndex
+        );
     }
+
 
     private DialogueLine MapToUnityDialogue(DialogueLineFirestore firestoreDialogue)
     {
         return new DialogueLine(
             firestoreDialogue.characterName,
-            firestoreDialogue.dialogueText
+            firestoreDialogue.dialogueText,
+            firestoreDialogue.selectedVoiceId // Make sure this is passed
         );
     }
+
 
     private QuestionFirestore MapToFirestoreQuestion(Question unityQuestion, int orderIndex)
     {

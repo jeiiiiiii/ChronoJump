@@ -33,8 +33,12 @@ public class ReviewDialogueManager : MonoBehaviour
 
     private int pendingDeleteIndex = -1;
 
+    // In ReviewDialogueManager.cs - Update the Start method
     void Start()
     {
+        // ✅ CRITICAL: Load voices from persistent storage before refreshing the list
+        DialogueStorage.LoadAllVoices();
+
         RefreshList();
 
         if (editPopup != null) editPopup.SetActive(false);
@@ -45,7 +49,57 @@ public class ReviewDialogueManager : MonoBehaviour
         {
             generateAllAudioButton.onClick.AddListener(GenerateAllAudio);
         }
+
+        // Debug: Verify voice assignments
+        var dialogues = DialogueStorage.GetAllDialogues();
+        Debug.Log($"🔊 ReviewDialogueManager: Loaded {dialogues.Count} dialogues with voice assignments");
+        for (int i = 0; i < dialogues.Count; i++)
+        {
+            var dialogue = dialogues[i];
+            var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
+            Debug.Log($"🔊 Dialogue {i}: '{dialogue.characterName}' - Voice: {voice.voiceName}");
+        }
     }
+
+
+    public void OpenEditPopup(int index, DialogueLine line)
+    {
+        editPopup.SetActive(true);
+        nameInputField.text = line.characterName;
+        textInputField.text = line.dialogueText;
+
+        saveEditButton.onClick.RemoveAllListeners();
+        cancelEditButton.onClick.RemoveAllListeners();
+
+        saveEditButton.onClick.AddListener(() =>
+        {
+            var validation = ValidationManager.Instance.ValidateNameAndDialogueCombined(
+                nameInputField.text.Trim(), textInputField.text.Trim()
+            );
+
+            if (!validation.isValid)
+            {
+                ValidationManager.Instance.ShowWarning("Dialogue Validation", validation.message);
+                return;
+            }
+
+            // Edit dialogue (this will preserve the voice ID)
+            DialogueStorage.EditDialogue(index, nameInputField.text, textInputField.text);
+
+            var dialogues = DialogueStorage.GetAllDialogues();
+            if (index < dialogues.Count)
+            {
+                dialogues[index].hasAudio = false;
+                dialogues[index].audioFilePath = "";
+            }
+
+            editPopup.SetActive(false);
+            RefreshList();
+        });
+
+        cancelEditButton.onClick.AddListener(() => editPopup.SetActive(false));
+    }
+
 
     public void RefreshList()
     {
@@ -152,43 +206,6 @@ public class ReviewDialogueManager : MonoBehaviour
         }
 
         RefreshList(); // Refresh to show audio indicators
-    }
-
-    public void OpenEditPopup(int index, DialogueLine line)
-    {
-        editPopup.SetActive(true);
-        nameInputField.text = line.characterName;
-        textInputField.text = line.dialogueText;
-
-        saveEditButton.onClick.RemoveAllListeners();
-        cancelEditButton.onClick.RemoveAllListeners();
-
-        saveEditButton.onClick.AddListener(() =>
-        {
-            var validation = ValidationManager.Instance.ValidateNameAndDialogueCombined(
-                nameInputField.text.Trim(), textInputField.text.Trim()
-            );
-
-            if (!validation.isValid)
-            {
-                ValidationManager.Instance.ShowWarning("Dialogue Validation", validation.message);
-                return;
-            }
-
-            DialogueStorage.EditDialogue(index, nameInputField.text, textInputField.text);
-            
-            var dialogues = DialogueStorage.GetAllDialogues();
-            if (index < dialogues.Count)
-            {
-                dialogues[index].hasAudio = false;
-                dialogues[index].audioFilePath = "";
-            }
-            
-            editPopup.SetActive(false);
-            RefreshList();
-        });
-
-        cancelEditButton.onClick.AddListener(() => editPopup.SetActive(false));
     }
 
     public void OpenDeletePopup(int index)

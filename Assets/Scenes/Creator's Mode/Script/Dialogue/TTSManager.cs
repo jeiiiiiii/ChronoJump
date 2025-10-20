@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Text;
+using System.IO;
+using System.Linq;
 
 public class ElevenLabsTTSManager : MonoBehaviour
 {
@@ -11,9 +13,8 @@ public class ElevenLabsTTSManager : MonoBehaviour
 
     [Header("ElevenLabs API Settings")]
     [SerializeField] private string apiKey = "YOUR_API_KEY_HERE";
-    
+
     private string apiUrl = "https://api.elevenlabs.io/v1/text-to-speech/";
-    private string audioSaveDirectory = "DialogueAudio";
 
     void Awake()
     {
@@ -21,7 +22,6 @@ public class ElevenLabsTTSManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            CreateAudioDirectory();
         }
         else
         {
@@ -29,14 +29,112 @@ public class ElevenLabsTTSManager : MonoBehaviour
         }
     }
 
-    void CreateAudioDirectory()
+    private string GetAudioSaveDirectory()
     {
-        string path = System.IO.Path.Combine(Application.persistentDataPath, audioSaveDirectory);
-        if (!System.IO.Directory.Exists(path))
+        string teacherId = GetCurrentTeacherId();
+        int storyIndex = GetCurrentStoryIndex();
+
+        // Follow the same pattern as ImageStorage: teacherid/story_{index}/audio/
+        string relativeDir = Path.Combine(teacherId, $"story_{storyIndex}", "audio");
+        string absolutePath = Path.Combine(Application.persistentDataPath, relativeDir);
+
+        if (!Directory.Exists(absolutePath))
         {
-            System.IO.Directory.CreateDirectory(path);
-            Debug.Log($"Created audio directory: {path}");
+            Directory.CreateDirectory(absolutePath);
+            Debug.Log($"✅ Created audio directory: {absolutePath}");
         }
+        return absolutePath;
+    }
+
+    private string GetAudioRelativePath(string fileName)
+    {
+        string teacherId = GetCurrentTeacherId();
+        int storyIndex = GetCurrentStoryIndex();
+
+        // Return relative path: teacherid/story_{index}/audio/filename.mp3
+        return Path.Combine(teacherId, $"story_{storyIndex}", "audio", fileName);
+    }
+
+    private string GetCurrentTeacherId()
+    {
+        // Use the same logic as ImageStorage
+        if (StoryManager.Instance != null && StoryManager.Instance.IsCurrentUserTeacher())
+        {
+            return StoryManager.Instance.GetCurrentTeacherId();
+        }
+
+        // For students, try to extract from story data
+        string studentStoryJson = StudentPrefs.GetString("CurrentStoryData", "");
+        if (!string.IsNullOrEmpty(studentStoryJson))
+        {
+            try
+            {
+                var studentStory = JsonUtility.FromJson<StoryData>(studentStoryJson);
+                // Extract teacher ID from the path if available
+                if (!string.IsNullOrEmpty(studentStory.backgroundPath))
+                {
+                    string[] pathParts = studentStory.backgroundPath.Split(Path.DirectorySeparatorChar);
+                    if (pathParts.Length > 0)
+                    {
+                        return pathParts[0]; // First part is teacher ID
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"Could not extract teacher ID from student story: {ex.Message}");
+            }
+        }
+
+        return TeacherPrefs.GetString("CurrentTeachId", "default");
+    }
+
+    private int GetCurrentStoryIndex()
+    {
+        var story = StoryManager.Instance?.GetCurrentStory();
+        if (story != null)
+        {
+            return story.storyIndex;
+        }
+
+        // For students, try to extract from story data path
+        string studentStoryJson = StudentPrefs.GetString("CurrentStoryData", "");
+        if (!string.IsNullOrEmpty(studentStoryJson))
+        {
+            try
+            {
+                var studentStory = JsonUtility.FromJson<StoryData>(studentStoryJson);
+                if (!string.IsNullOrEmpty(studentStory.backgroundPath))
+                {
+                    string[] pathParts = studentStory.backgroundPath.Split(Path.DirectorySeparatorChar);
+                    if (pathParts.Length > 1 && pathParts[1].StartsWith("story_"))
+                    {
+                        string indexStr = pathParts[1].Replace("story_", "");
+                        if (int.TryParse(indexStr, out int storyIndex))
+                        {
+                            return storyIndex;
+                        }
+                    }
+                }
+                return studentStory.storyIndex;
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"Could not extract story index from student story: {ex.Message}");
+            }
+        }
+
+        return 0;
+    }
+
+    private string GetCurrentStoryId()
+    {
+        var story = StoryManager.Instance?.GetCurrentStory();
+        if (story != null && !string.IsNullOrEmpty(story.storyId))
+        {
+            return story.storyId;
+        }
+        return "unknown_story";
     }
 
     public IEnumerator GenerateTTS(DialogueLine dialogue, Action<bool, string> onComplete)
@@ -77,21 +175,25 @@ public class ElevenLabsTTSManager : MonoBehaviour
 
             if (request.result == UnityWebRequest.Result.Success)
             {
+                string teacherId = GetCurrentTeacherId();
+                int storyIndex = GetCurrentStoryIndex();
                 string sanitizedName = SanitizeFileName(dialogue.characterName);
-                string fileName = $"{sanitizedName}_{voice.voiceName}_{DateTime.Now.Ticks}.mp3";
-                string filePath = System.IO.Path.Combine(
-                    Application.persistentDataPath,
-                    audioSaveDirectory,
-                    fileName
-                );
 
-                System.IO.File.WriteAllBytes(filePath, request.downloadHandler.data);
+                // Create filename: dialogue_{index}_{character}_{voice}.mp3
+                int dialogueIndex = GetDialogueIndex(dialogue);
+                string fileName = $"dialogue_{dialogueIndex}_{sanitizedName}_{voice.voiceName}_{DateTime.Now.Ticks}.mp3";
 
-                dialogue.audioFilePath = filePath;
+                string audioDir = GetAudioSaveDirectory();
+                string absolutePath = Path.Combine(audioDir, fileName);
+                string relativePath = GetAudioRelativePath(fileName);
+
+                File.WriteAllBytes(absolutePath, request.downloadHandler.data);
+
+                dialogue.audioFilePath = absolutePath; // Store absolute path for immediate use
                 dialogue.hasAudio = true;
 
-                Debug.Log($"✅ TTS generated: '{dialogue.characterName}' ({voice.voiceName}) → {fileName}");
-                onComplete?.Invoke(true, filePath);
+                Debug.Log($"✅ TTS generated: '{dialogue.characterName}' → {relativePath}");
+                onComplete?.Invoke(true, absolutePath);
             }
             else
             {
@@ -101,32 +203,44 @@ public class ElevenLabsTTSManager : MonoBehaviour
         }
     }
 
+    private int GetDialogueIndex(DialogueLine targetDialogue)
+    {
+        var dialogues = DialogueStorage.GetAllDialogues();
+        for (int i = 0; i < dialogues.Count; i++)
+        {
+            if (dialogues[i] == targetDialogue)
+                return i;
+        }
+        return -1;
+    }
+
     public IEnumerator GenerateAllTTS(List<DialogueLine> dialogues, Action<int, int, string> onProgress, Action<bool> onComplete)
     {
         int total = dialogues.Count;
         int completed = 0;
         int failed = 0;
 
-        Debug.Log($"🎙️ Starting TTS generation for {total} dialogues");
+        string teacherId = GetCurrentTeacherId();
+        int storyIndex = GetCurrentStoryIndex();
+
+        Debug.Log($"🎙️ Starting TTS generation for {total} dialogues (Teacher: {teacherId}, Story: {storyIndex})");
 
         for (int i = 0; i < dialogues.Count; i++)
         {
             DialogueLine dialogue = dialogues[i];
             var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
-            
-            Debug.Log($"Processing dialogue {i+1}/{total}: '{dialogue.characterName}' (Voice: {voice.voiceName}) - HasAudio: {dialogue.hasAudio}");
-            
-            if (dialogue.hasAudio && !string.IsNullOrEmpty(dialogue.audioFilePath) && System.IO.File.Exists(dialogue.audioFilePath))
+
+            Debug.Log($"Processing dialogue {i + 1}/{total}: '{dialogue.characterName}' (Voice: {voice.voiceName})");
+
+            // Check if audio already exists for this dialogue
+            string existingAudio = FindExistingAudioFile(dialogue, i);
+            if (!string.IsNullOrEmpty(existingAudio))
             {
+                dialogue.audioFilePath = existingAudio;
+                dialogue.hasAudio = true;
                 completed++;
                 onProgress?.Invoke(completed, total, $"Skipped: {dialogue.characterName} ({voice.voiceName})");
                 continue;
-            }
-
-            if (dialogue.hasAudio && !System.IO.File.Exists(dialogue.audioFilePath))
-            {
-                Debug.Log($"⚠️ Audio file missing for {dialogue.characterName}, regenerating...");
-                dialogue.hasAudio = false;
             }
 
             bool success = false;
@@ -157,9 +271,123 @@ public class ElevenLabsTTSManager : MonoBehaviour
         onComplete?.Invoke(allSuccess);
     }
 
+    private string FindExistingAudioFile(DialogueLine dialogue, int dialogueIndex)
+    {
+        try
+        {
+            string audioDir = GetAudioSaveDirectory();
+            if (!Directory.Exists(audioDir)) return null;
+
+            string sanitizedName = SanitizeFileName(dialogue.characterName);
+            var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
+
+            // Look for files matching the pattern: dialogue_{index}_{character}_{voice}_*.mp3
+            string searchPattern = $"dialogue_{dialogueIndex}_{sanitizedName}_{voice.voiceName}_*.mp3";
+            string[] files = Directory.GetFiles(audioDir, searchPattern);
+
+            if (files.Length > 0)
+            {
+                // Return the most recent file
+                Array.Sort(files);
+                return files[files.Length - 1];
+            }
+
+            return null;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"Error finding existing audio: {ex.Message}");
+            return null;
+        }
+    }
+
+    // Method for students to find audio files
+    public string FindStudentAudioFile(string teacherId, int storyIndex, int dialogueIndex, string characterName, string voiceId)
+    {
+        try
+        {
+            // Build the audio directory path following the same pattern
+            string relativeDir = Path.Combine(teacherId, $"story_{storyIndex}", "audio");
+            string audioDir = Path.Combine(Application.persistentDataPath, relativeDir);
+
+            if (!Directory.Exists(audioDir))
+            {
+                Debug.LogWarning($"Audio directory not found: {audioDir}");
+                return null;
+            }
+
+            string sanitizedName = SanitizeFileName(characterName);
+            var voice = VoiceLibrary.GetVoiceById(voiceId);
+
+            // Look for files matching the pattern
+            string searchPattern = $"dialogue_{dialogueIndex}_{sanitizedName}_{voice.voiceName}_*.mp3";
+            string[] files = Directory.GetFiles(audioDir, searchPattern);
+
+            if (files.Length > 0)
+            {
+                // Return the most recent file
+                Array.Sort(files);
+                string latestFile = files[files.Length - 1];
+                Debug.Log($"✅ Found student audio: {latestFile}");
+                return latestFile;
+            }
+
+            Debug.LogWarning($"No audio file found for pattern: {searchPattern}");
+            return null;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error finding student audio: {ex.Message}");
+            return null;
+        }
+    }
+
+    // Update DialoguePlayer to use this method for students
+    public string GetAudioFilePathForDialogue(DialogueLine dialogue, int dialogueIndex)
+    {
+        // If we're in teacher mode or the path already exists, use it directly
+        if (!string.IsNullOrEmpty(dialogue.audioFilePath) && File.Exists(dialogue.audioFilePath))
+        {
+            return dialogue.audioFilePath;
+        }
+
+        // For students, we need to find the audio file
+        string userRole = PlayerPrefs.GetString("UserRole", "student");
+        if (userRole.ToLower() == "student")
+        {
+            // Extract teacher ID and story index from the story data
+            string storyJson = StudentPrefs.GetString("CurrentStoryData", "");
+            if (!string.IsNullOrEmpty(storyJson))
+            {
+                try
+                {
+                    var studentStory = JsonUtility.FromJson<StoryData>(storyJson);
+                    if (!string.IsNullOrEmpty(studentStory.backgroundPath))
+                    {
+                        string[] pathParts = studentStory.backgroundPath.Split(Path.DirectorySeparatorChar);
+                        if (pathParts.Length >= 2)
+                        {
+                            string teacherId = pathParts[0];
+                            int storyIndex = int.Parse(pathParts[1].Replace("story_", ""));
+
+                            return FindStudentAudioFile(teacherId, storyIndex, dialogueIndex,
+                                dialogue.characterName, dialogue.selectedVoiceId);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"Error getting audio path for student: {ex.Message}");
+                }
+            }
+        }
+
+        return dialogue.audioFilePath;
+    }
+
     private string SanitizeFileName(string fileName)
     {
-        foreach (char c in System.IO.Path.GetInvalidFileNameChars())
+        foreach (char c in Path.GetInvalidFileNameChars())
         {
             fileName = fileName.Replace(c, '_');
         }
@@ -174,5 +402,31 @@ public class ElevenLabsTTSManager : MonoBehaviour
             .Replace("\n", "\\n")
             .Replace("\r", "\\r")
             .Replace("\t", "\\t");
+    }
+
+    [ContextMenu("Debug Audio File Structure")]
+    public void DebugAudioFileStructure()
+    {
+        string teacherId = GetCurrentTeacherId();
+        int storyIndex = GetCurrentStoryIndex();
+        string audioDir = GetAudioSaveDirectory();
+
+        Debug.Log($"🔍 Audio file structure for Teacher: {teacherId}, Story: {storyIndex}");
+        Debug.Log($"📁 Directory: {audioDir}");
+
+        if (Directory.Exists(audioDir))
+        {
+            string[] files = Directory.GetFiles(audioDir, "*.mp3");
+            foreach (string file in files)
+            {
+                FileInfo info = new FileInfo(file);
+                Debug.Log($"   🔊 {Path.GetFileName(file)} ({info.Length / 1024} KB)");
+            }
+            Debug.Log($"📊 Total audio files: {files.Length}");
+        }
+        else
+        {
+            Debug.Log("   No audio directory found");
+        }
     }
 }

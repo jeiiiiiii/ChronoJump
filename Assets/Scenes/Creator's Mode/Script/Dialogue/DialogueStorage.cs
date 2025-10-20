@@ -1,3 +1,4 @@
+// DialogueStorage.cs - COMPLETE FIXED VERSION
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -52,6 +53,9 @@ public static class DialogueStorage
         {
             story.dialogues = dialogues;
             Debug.Log($"✅ DialogueStorage: Set {dialogues.Count} dialogues in StoryManager");
+
+            // ✅ Save story after setting dialogues
+            SaveCurrentStory();
             return;
         }
 
@@ -67,15 +71,116 @@ public static class DialogueStorage
 
         // Try to pick up the voice the user selected on the AddDialogue panel
         string voiceId = VoiceLibrary.GetDefaultVoice().voiceId;
-    var addDialoguePanel = Object.FindFirstObjectByType<AddDialogue>(FindObjectsInactive.Include);
+        var addDialoguePanel = Object.FindFirstObjectByType<AddDialogue>(FindObjectsInactive.Include);
         if (addDialoguePanel != null)
         {
             voiceId = addDialoguePanel.GetSelectedVoiceId();
         }
 
-        dialogues.Add(new DialogueLine(name, text, voiceId));
+        var newDialogue = new DialogueLine(name, text, voiceId);
+        dialogues.Add(newDialogue);
+
+        // Save voice selection persistently
+        VoiceStorageManager.SaveVoiceSelection($"Dialogue_{dialogues.Count - 1}", voiceId);
+
         var voice = VoiceLibrary.GetVoiceById(voiceId);
         Debug.Log($"✅ DialogueStorage: Added dialogue - {name}: {text} (Voice: {voice.voiceName})");
+
+        // ✅ CRITICAL: Save story after adding
+        SaveCurrentStory();
+    }
+
+    // ✅ CRITICAL: Load all voices from persistent storage
+    public static void LoadAllVoices()
+    {
+        var dialogues = GetStoryDialogues();
+        if (dialogues == null || dialogues.Count == 0)
+        {
+            Debug.Log("ℹ️ No dialogues to load voices for");
+            return;
+        }
+
+        Debug.Log($"🎤 Loading voices for {dialogues.Count} dialogues from VoiceStorageManager...");
+
+        // Load voices from TeacherPrefs
+        VoiceStorageManager.LoadAllDialogueVoices(dialogues);
+
+        // Verify and fix any missing voice IDs
+        bool hasChanges = false;
+        for (int i = 0; i < dialogues.Count; i++)
+        {
+            if (string.IsNullOrEmpty(dialogues[i].selectedVoiceId))
+            {
+                Debug.LogWarning($"⚠️ Dialogue {i} '{dialogues[i].characterName}' had no voice ID - assigning default");
+                dialogues[i].selectedVoiceId = VoiceLibrary.GetDefaultVoice().voiceId;
+                VoiceStorageManager.SaveVoiceSelection($"Dialogue_{i}", dialogues[i].selectedVoiceId);
+                hasChanges = true;
+            }
+
+            var voice = VoiceLibrary.GetVoiceById(dialogues[i].selectedVoiceId);
+            Debug.Log($"   🎤 Dialogue {i}: '{dialogues[i].characterName}' → {voice.voiceName} ({dialogues[i].selectedVoiceId})");
+        }
+
+        // ✅ CRITICAL: Save story to persist voice assignments in StoryData
+        if (hasChanges)
+        {
+            Debug.Log("💾 Saving story to persist voice assignments...");
+            SaveCurrentStory();
+        }
+    }
+
+    public static void EditDialogue(int index, string newName, string newText)
+    {
+        var dialogues = GetStoryDialogues();
+        if (dialogues == null) return;
+
+        if (index >= 0 && index < dialogues.Count)
+        {
+            // Preserve the existing voice ID when editing
+            string existingVoiceId = dialogues[index].selectedVoiceId;
+
+            dialogues[index].characterName = newName;
+            dialogues[index].dialogueText = newText;
+            dialogues[index].selectedVoiceId = existingVoiceId; // Keep the same voice
+
+            // Clear audio since text changed
+            dialogues[index].hasAudio = false;
+            dialogues[index].audioFilePath = "";
+
+            // Save the voice ID again to ensure persistence
+            VoiceStorageManager.SaveVoiceSelection($"Dialogue_{index}", existingVoiceId);
+
+            var voice = VoiceLibrary.GetVoiceById(existingVoiceId);
+            Debug.Log($"✅ DialogueStorage: Edited dialogue {index} - {newName}: {newText} (Voice preserved: {voice.voiceName})");
+
+            // ✅ Save story after editing
+            SaveCurrentStory();
+        }
+    }
+
+    // ✅ NEW: Update dialogue voice
+    public static void UpdateDialogueVoice(int index, string newVoiceId)
+    {
+        var dialogues = GetStoryDialogues();
+        if (dialogues == null) return;
+
+        if (index >= 0 && index < dialogues.Count)
+        {
+            dialogues[index].selectedVoiceId = newVoiceId;
+
+            // Invalidate audio since voice changed
+            dialogues[index].hasAudio = false;
+            dialogues[index].audioFilePath = "";
+
+            // Save to persistent storage
+            VoiceStorageManager.SaveVoiceSelection($"Dialogue_{index}", newVoiceId);
+
+            var voice = VoiceLibrary.GetVoiceById(newVoiceId);
+            Debug.Log($"🎤 Updated dialogue {index} voice to: {voice.voiceName}");
+
+            // ✅ Save story after updating voice
+            SaveCurrentStory();
+        }
     }
 
     public static void ClearDialogues()
@@ -85,6 +190,9 @@ public static class DialogueStorage
 
         dialogues.Clear();
         Debug.Log("✅ DialogueStorage: Cleared all dialogues");
+
+        // ✅ Save after clearing
+        SaveCurrentStory();
     }
 
     public static void DeleteDialogue(int index)
@@ -97,26 +205,16 @@ public static class DialogueStorage
             var dialogue = dialogues[index];
             dialogues.RemoveAt(index);
             Debug.Log($"✅ DialogueStorage: Deleted dialogue {index} - {dialogue.characterName}: {dialogue.dialogueText}");
-        }
-    }
 
-    public static void EditDialogue(int index, string newName, string newText)
-    {
-        var dialogues = GetStoryDialogues();
-        if (dialogues == null) return;
-
-        if (index >= 0 && index < dialogues.Count)
-        {
-            dialogues[index].characterName = newName;
-            dialogues[index].dialogueText = newText;
-            Debug.Log($"✅ DialogueStorage: Edited dialogue {index} - {newName}: {newText}");
+            // ✅ Save story after deletion
+            SaveCurrentStory();
         }
     }
 
     public static List<DialogueLine> GetAllDialogues()
     {
         var dialogues = GetStoryDialogues();
-        
+
         if (dialogues == null || dialogues.Count == 0)
         {
             Debug.Log("⚠️ DialogueStorage: No dialogues found, returning empty list");
@@ -127,15 +225,79 @@ public static class DialogueStorage
         return dialogues;
     }
 
-    // New method to check where dialogues are being loaded from
     public static string GetDataSourceInfo()
     {
         if (StoryManager.Instance?.GetCurrentStory() != null)
             return "StoryManager";
-        
+
         if (!string.IsNullOrEmpty(StudentPrefs.GetString("CurrentStoryData", "")))
             return "StudentPrefs";
-        
+
         return "FallbackStorage";
+    }
+
+    // ✅ CRITICAL: Save the current story
+    private static void SaveCurrentStory()
+    {
+        var story = StoryManager.Instance?.GetCurrentStory();
+        if (story == null)
+        {
+            Debug.LogWarning("⚠️ Cannot save story - no current story in StoryManager");
+            return;
+        }
+
+        // Call StoryManager's save method
+        if (StoryManager.Instance != null)
+        {
+            try
+            {
+                // Try SaveStories method first
+                var saveMethod = StoryManager.Instance.GetType().GetMethod("SaveStories");
+                if (saveMethod != null)
+                {
+                    saveMethod.Invoke(StoryManager.Instance, null);
+                    Debug.Log($"💾 Story '{story.storyTitle}' saved via StoryManager.SaveStories()");
+                }
+                else
+                {
+                    Debug.LogWarning("⚠️ StoryManager.SaveStories() method not found");
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"❌ Error saving story: {ex.Message}");
+            }
+        }
+    }
+
+    // ✅ Debug method
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    public static void DebugVoiceStorage()
+    {
+        string teacherId = TeacherPrefs.GetString("CurrentTeachId", "default");
+        var story = StoryManager.Instance?.GetCurrentStory();
+
+        Debug.Log("=== VOICE STORAGE DEBUG ===");
+        Debug.Log($"Teacher ID: {teacherId}");
+        Debug.Log($"Story: {story?.storyTitle ?? "NULL"}");
+        Debug.Log($"Story Index: {story?.storyIndex ?? -1}");
+        Debug.Log($"Story ID: {story?.storyId ?? "NULL"}");
+
+        var dialogues = GetAllDialogues();
+        Debug.Log($"Total Dialogues: {dialogues.Count}");
+
+        for (int i = 0; i < dialogues.Count; i++)
+        {
+            string key = $"{teacherId}_{story?.storyId ?? "CurrentStory"}_Dialogue_{i}_VoiceId";
+            string storedVoice = TeacherPrefs.GetString(key, "NOT_FOUND");
+            var voice = VoiceLibrary.GetVoiceById(dialogues[i].selectedVoiceId);
+
+            Debug.Log($"Dialogue {i}: '{dialogues[i].characterName}'");
+            Debug.Log($"  In Memory: {dialogues[i].selectedVoiceId} ({voice.voiceName})");
+            Debug.Log($"  In TeacherPrefs: {storedVoice}");
+            Debug.Log($"  Storage Key: {key}");
+        }
+
+        Debug.Log("=== END DEBUG ===");
     }
 }

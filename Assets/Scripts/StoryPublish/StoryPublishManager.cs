@@ -412,10 +412,14 @@ public class StoryPublishManager : MonoBehaviour
 
     private async void RefreshCreatedStoriesList()
     {
-        Debug.Log($"=== REFRESHING STORIES FOR CLASS: {_selectedClassCode} ===");
-        
-        if (createdListParent == null || string.IsNullOrEmpty(_selectedClassCode))
+        // ✅ CRITICAL FIX: Check if this component is still valid
+        if (this == null || createdListParent == null || string.IsNullOrEmpty(_selectedClassCode))
+        {
+            Debug.LogWarning("RefreshCreatedStoriesList called but component or parent is destroyed");
             return;
+        }
+
+        Debug.Log($"=== REFRESHING STORIES FOR CLASS: {_selectedClassCode} ===");
 
         if (StoryManager.Instance == null)
         {
@@ -424,17 +428,27 @@ public class StoryPublishManager : MonoBehaviour
             return;
         }
 
-        // Clear UI first
-        foreach (Transform child in createdListParent)
+        // ✅ Clear UI with null checks
+        if (createdListParent != null)
         {
-            Destroy(child.gameObject);
-        }
+            foreach (Transform child in createdListParent)
+            {
+                if (child != null && child.gameObject != null)
+                {
+                    Destroy(child.gameObject);
+                }
+            }
 
-        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)createdListParent);
+            // ✅ Check if still valid before rebuilding layout
+            if (createdListParent != null && createdListParent.gameObject != null)
+            {
+                LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)createdListParent);
+            }
+        }
 
         // Get stories from LOCAL storage first (fast)
         var publishedStories = StoryManager.Instance.GetPublishedStoriesForClass(_selectedClassCode);
-        
+
         Debug.Log($"📊 Initial local stories found: {(publishedStories == null ? "NULL" : publishedStories.Count.ToString())}");
 
         // If no local stories found AND we're using Firestore, try to sync from Firestore
@@ -442,9 +456,16 @@ public class StoryPublishManager : MonoBehaviour
         {
             Debug.Log("🔄 No local stories found, syncing from Firestore...");
             ShowLoadingState(true);
-            
+
             bool syncSuccess = await SyncPublishedStoriesFromFirestore(_selectedClassCode);
-            
+
+            // ✅ Check if component is still valid after async operation
+            if (this == null || createdListParent == null)
+            {
+                Debug.LogWarning("Component destroyed during async operation");
+                return;
+            }
+
             if (syncSuccess)
             {
                 // Now get the freshly synced local stories
@@ -455,8 +476,15 @@ public class StoryPublishManager : MonoBehaviour
             {
                 Debug.LogWarning("❌ Firestore sync failed");
             }
-            
+
             ShowLoadingState(false);
+        }
+
+        // ✅ Final check before updating UI
+        if (this == null || createdListParent == null)
+        {
+            Debug.LogWarning("Component destroyed before UI update");
+            return;
         }
 
         // Debug all found stories
@@ -473,22 +501,72 @@ public class StoryPublishManager : MonoBehaviour
         bool hasStories = publishedStories != null && publishedStories.Count > 0;
         ShowPlaceholderText(!hasStories);
 
-        if (hasStories)
+        if (hasStories && createdListParent != null)
         {
             createdListParent.gameObject.SetActive(true);
 
             foreach (var publishedStory in publishedStories)
             {
+                // ✅ Check before each UI update
+                if (this == null || createdListParent == null)
+                {
+                    Debug.LogWarning("Component destroyed during story item creation");
+                    return;
+                }
+
                 Debug.Log($"Creating UI for story: {publishedStory.storyTitle} (ID: {publishedStory.storyId}) in class: {publishedStory.classCode}");
                 CreatePublishedStoryItem(publishedStory);
             }
         }
-        else
+        else if (createdListParent != null)
         {
             createdListParent.gameObject.SetActive(false);
             Debug.Log("No stories found, hiding list");
         }
     }
+
+
+    // ✅ Also update OnDestroy to handle cleanup better
+    private void OnDestroy()
+    {
+        // Stop all coroutines to prevent callbacks after destruction
+        StopAllCoroutines();
+
+        // Remove button listeners
+        if (creatorModeButton != null)
+            creatorModeButton.onClick.RemoveAllListeners();
+
+        if (dashboardButton != null)
+            dashboardButton.onClick.RemoveAllListeners();
+
+        if (backButton != null)
+            backButton.onClick.RemoveAllListeners();
+
+        if (deleteBackButton != null)
+            deleteBackButton.onClick.RemoveAllListeners();
+
+        if (deleteConfirmButton != null)
+            deleteConfirmButton.onClick.RemoveAllListeners();
+
+        if (publishBackButton != null)
+            publishBackButton.onClick.RemoveAllListeners();
+
+        if (publishConfirmButton != null)
+            publishConfirmButton.onClick.RemoveAllListeners();
+
+        Debug.Log("StoryPublishManager destroyed - cleaned up all listeners and coroutines");
+    }
+
+
+    // ✅ Also add null checks to helper methods
+    private void ShowPlaceholderText(bool show)
+    {
+        if (this != null && placeholderText != null)
+        {
+            placeholderText.SetActive(show);
+        }
+    }
+
 
     /// <summary>
     /// Syncs published stories from Firestore and saves them locally
@@ -730,17 +808,6 @@ public class StoryPublishManager : MonoBehaviour
     #endregion
 
     /// <summary>
-    /// Shows or hides the placeholder text
-    /// </summary>
-    private void ShowPlaceholderText(bool show)
-    {
-        if (placeholderText != null)
-        {
-            placeholderText.SetActive(show);
-        }
-    }
-
-    /// <summary>
     /// Public method to get the currently selected class (if needed by other scripts)
     /// </summary>
     public string GetSelectedClassCode()
@@ -756,29 +823,6 @@ public class StoryPublishManager : MonoBehaviour
         return _selectedDisplayName;
     }
 
-    private void OnDestroy()
-    {
-        if (creatorModeButton != null)
-            creatorModeButton.onClick.RemoveAllListeners();
-
-        if (dashboardButton != null)
-            dashboardButton.onClick.RemoveAllListeners();
-
-        if (backButton != null)
-            backButton.onClick.RemoveAllListeners();
-
-        if (deleteBackButton != null)
-            deleteBackButton.onClick.RemoveAllListeners();
-
-        if (deleteConfirmButton != null)
-            deleteConfirmButton.onClick.RemoveAllListeners();
-
-        if (publishBackButton != null)
-            publishBackButton.onClick.RemoveAllListeners();
-
-        if (publishConfirmButton != null)
-            publishConfirmButton.onClick.RemoveAllListeners();
-    }
 
     private void EnsureSceneNavigationManager()
     {

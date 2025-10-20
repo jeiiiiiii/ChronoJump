@@ -20,20 +20,37 @@ public class StoryDataFirestore
 }
 
 [FirestoreData]
-public class DialogueLineFirestore
-{
-    [FirestoreDocumentId] public string dialogueId { get; set; } 
-    [FirestoreProperty] public string characterName { get; set; }
-    [FirestoreProperty] public string dialogueText { get; set; }
-    [FirestoreProperty] public int orderIndex { get; set; }
-}
-
-[FirestoreData]
 public class QuestionFirestore
 {
-    [FirestoreDocumentId] public string questionId { get; set; } 
+    [FirestoreDocumentId] public string questionId { get; set; }
     [FirestoreProperty] public string questionText { get; set; }
     [FirestoreProperty] public List<string> choices { get; set; }
     [FirestoreProperty] public int correctAnswerIndex { get; set; }
     [FirestoreProperty] public int orderIndex { get; set; }
+}
+
+// FIXED: Add Firestore attributes to DialogueLineFirestore
+[FirestoreData]
+public class DialogueLineFirestore
+{
+    [FirestoreProperty] public string characterName { get; set; }
+    [FirestoreProperty] public string dialogueText { get; set; }
+    [FirestoreProperty] public string selectedVoiceId { get; set; }
+    [FirestoreProperty] public int orderIndex { get; set; }
+
+    public DialogueLineFirestore()
+    {
+        characterName = "";
+        dialogueText = "";
+        selectedVoiceId = "21m00Tcm4TlvDq8ikWAM"; // Default
+        orderIndex = 0;
+    }
+
+    public DialogueLineFirestore(string name, string text, string voiceId, int index)
+    {
+        characterName = name;
+        dialogueText = text;
+        selectedVoiceId = voiceId;
+        orderIndex = index;
+    }
 }

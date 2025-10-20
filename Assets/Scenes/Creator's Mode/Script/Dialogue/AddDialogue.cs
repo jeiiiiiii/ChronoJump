@@ -20,59 +20,47 @@ public class AddDialogue : MonoBehaviour
     // Expose the currently selected voice to other systems (e.g., DialogueStorage fallback path)
     public string GetSelectedVoiceId() => selectedVoiceId;
 
-    void Start()
+    // In AddDialogue.cs - Update the Start method and AddDialogueLine method
+void Start()
+{
+    // Initialize with default voice or load from storage
+    selectedVoiceId = VoiceStorageManager.LoadVoiceSelection("CurrentSelectedVoice");
+    UpdateVoiceDisplay();
+    
+    // Setup voice selection
+    if (voiceSelectionPanel != null)
     {
-        // Initialize with default voice
-        selectedVoiceId = VoiceLibrary.GetDefaultVoice().voiceId;
-        UpdateVoiceDisplay();
-        
-        // Setup voice selection
-        if (voiceSelectionPanel != null)
-        {
-            voiceSelectionUI = voiceSelectionPanel.GetComponent<VoiceSelectionUI>();
-            voiceSelectionPanel.SetActive(false);
-        }
-        
-        if (selectVoiceButton != null)
-        {
-            selectVoiceButton.onClick.AddListener(OpenVoiceSelection);
-        }
-        
-        // Add listeners to update character count
-        if (characterNameInput != null)
-        {
-            characterNameInput.onValueChanged.AddListener(UpdateCharacterCount);
-        }
-        if (dialogueInput != null)
-        {
-            dialogueInput.onValueChanged.AddListener(UpdateCharacterCount);
-        }
-        UpdateCharacterCount("");
+        voiceSelectionUI = voiceSelectionPanel.GetComponent<VoiceSelectionUI>();
+        voiceSelectionPanel.SetActive(false);
     }
     
-    void OpenVoiceSelection()
+    if (selectVoiceButton != null)
     {
-        if (voiceSelectionUI != null)
-        {
-            voiceSelectionUI.ShowVoiceSelection(selectedVoiceId, OnVoiceSelected);
-        }
+        selectVoiceButton.onClick.AddListener(OpenVoiceSelection);
     }
     
-    void OnVoiceSelected(string voiceId)
+    // Add listeners to update character count
+    if (characterNameInput != null)
     {
-        selectedVoiceId = voiceId;
-        UpdateVoiceDisplay();
-        Debug.Log($"🎤 Voice selected: {VoiceLibrary.GetVoiceById(voiceId).voiceName}");
+        characterNameInput.onValueChanged.AddListener(UpdateCharacterCount);
     }
+    if (dialogueInput != null)
+    {
+        dialogueInput.onValueChanged.AddListener(UpdateCharacterCount);
+    }
+    UpdateCharacterCount("");
+}
+
+void OnVoiceSelected(string voiceId)
+{
+    selectedVoiceId = voiceId;
+    UpdateVoiceDisplay();
     
-    void UpdateVoiceDisplay()
-    {
-        if (currentVoiceText != null)
-        {
-            var voice = VoiceLibrary.GetVoiceById(selectedVoiceId);
-            currentVoiceText.text = $"Voice: {voice.voiceName} ({voice.gender})";
-        }
-    }
+    // Save the current voice selection for this session
+    VoiceStorageManager.SaveVoiceSelection("CurrentSelectedVoice", voiceId);
+    
+    Debug.Log($"🎤 Voice selected: {VoiceLibrary.GetVoiceById(voiceId).voiceName}");
+}
 
     public void AddDialogueLine()
     {
@@ -93,8 +81,9 @@ public class AddDialogue : MonoBehaviour
                 "Dialogue Validation",
                 validation.message,
                 null,
-                () => { 
-                    if (string.IsNullOrEmpty(name)) 
+                () =>
+                {
+                    if (string.IsNullOrEmpty(name))
                         characterNameInput.Select();
                     else if (string.IsNullOrEmpty(dialogue))
                         dialogueInput.Select();
@@ -109,13 +98,32 @@ public class AddDialogue : MonoBehaviour
 
         Debug.Log($"✅ Added dialogue: {name} - {dialogue} (Voice: {VoiceLibrary.GetVoiceById(selectedVoiceId).voiceName})");
 
-        // Clear inputs and reset to default voice
+        // Clear inputs but KEEP the current voice selection
         characterNameInput.text = "";
         dialogueInput.text = "";
-        selectedVoiceId = VoiceLibrary.GetDefaultVoice().voiceId;
-        UpdateVoiceDisplay();
         UpdateCharacterCount("");
+
+        // Don't reset to default voice - keep the current selection for next dialogue
     }
+
+    
+    void OpenVoiceSelection()
+    {
+        if (voiceSelectionUI != null)
+        {
+            voiceSelectionUI.ShowVoiceSelection(selectedVoiceId, OnVoiceSelected);
+        }
+    }
+    
+    void UpdateVoiceDisplay()
+    {
+        if (currentVoiceText != null)
+        {
+            var voice = VoiceLibrary.GetVoiceById(selectedVoiceId);
+            currentVoiceText.text = $"Voice: {voice.voiceName} ({voice.gender})";
+        }
+    }
+
 
     private void UpdateCharacterCount(string value)
     {
