@@ -28,7 +28,23 @@ public static class VoiceStorageManager
         string storageKey = $"{storyId}_{dialogueKey}_VoiceId";
         string voiceId = TeacherPrefs.GetString(storageKey, "");
 
-        // If not found, use default
+        // ✅ FIX: For students, also try loading from the story data directly
+        if (string.IsNullOrEmpty(voiceId))
+        {
+            // Try to get from current story dialogues
+            var dialogues = DialogueStorage.GetAllDialogues();
+            if (int.TryParse(dialogueKey.Replace("Dialogue_", ""), out int dialogueIndex) &&
+                dialogueIndex >= 0 && dialogueIndex < dialogues.Count)
+            {
+                voiceId = dialogues[dialogueIndex].selectedVoiceId;
+                if (!string.IsNullOrEmpty(voiceId))
+                {
+                    Debug.Log($"📖 VoiceStorage FALLBACK: Got voice from dialogue data: {voiceId}");
+                }
+            }
+        }
+
+        // If still not found, use default
         if (string.IsNullOrEmpty(voiceId))
         {
             voiceId = VoiceLibrary.GetDefaultVoice().voiceId;
@@ -42,6 +58,7 @@ public static class VoiceStorageManager
 
         return voiceId;
     }
+
 
     // Save all dialogue voices for the current story
     public static void SaveAllDialogueVoices(List<DialogueLine> dialogues)

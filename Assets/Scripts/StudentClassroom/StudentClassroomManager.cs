@@ -252,15 +252,21 @@ public class StudentClassroomManager : MonoBehaviour
         string localStoryKey = $"CachedStory_{storyId}";
         string cachedStoryJson = StudentPrefs.GetString(localStoryKey, "");
 
+        StoryData story = null;
+
         if (!string.IsNullOrEmpty(cachedStoryJson))
         {
             try
             {
-                StoryData cachedStory = JsonUtility.FromJson<StoryData>(cachedStoryJson);
-                if (cachedStory != null && cachedStory.dialogues != null && cachedStory.dialogues.Count > 0)
+                story = JsonUtility.FromJson<StoryData>(cachedStoryJson);
+                if (story != null && story.dialogues != null && story.dialogues.Count > 0)
                 {
-                    Debug.Log($"✅ Loaded story from local cache: {cachedStory.storyTitle}");
-                    return cachedStory;
+                    Debug.Log($"✅ Loaded story from local cache: {story.storyTitle}");
+
+                    // ✅ CRITICAL FIX: Load voice assignments for cached story
+                    await LoadVoiceAssignmentsForStory(storyId, story.dialogues);
+
+                    return story;
                 }
             }
             catch (System.Exception ex)
@@ -293,8 +299,11 @@ public class StudentClassroomManager : MonoBehaviour
             var dialogues = await LoadDialoguesFromFirestore(storyId);
             var questions = await LoadQuestionsFromFirestore(storyId);
 
+            // ✅ CRITICAL: Load voice assignments BEFORE creating the story
+            await LoadVoiceAssignmentsForStory(storyId, dialogues);
+
             // Create StoryData object
-            var story = new StoryData
+            story = new StoryData
             {
                 storyId = storyId,
                 storyTitle = storyData.ContainsKey("title") ? storyData["title"].ToString() : "Untitled",
@@ -323,6 +332,81 @@ public class StudentClassroomManager : MonoBehaviour
             return null;
         }
     }
+
+
+    // ✅ NEW: Load voice assignments for all dialogues in a story
+    private async Task LoadVoiceAssignmentsForStory(string storyId, List<DialogueLine> dialogues)
+    {
+        try
+        {
+            Debug.Log($"🎤 Loading voice assignments for story: {storyId}");
+
+            bool hasChanges = false;
+
+            for (int i = 0; i < dialogues.Count; i++)
+            {
+                // Use the same key format as VoiceStorageManager
+                string voiceKey = $"{storyId}_Dialogue_{i}_VoiceId";
+
+                // Try to load from TeacherPrefs (this works for students too)
+                string voiceId = TeacherPrefs.GetString(voiceKey, "");
+
+                if (!string.IsNullOrEmpty(voiceId))
+                {
+                    // Only update if different
+                    if (dialogues[i].selectedVoiceId != voiceId)
+                    {
+                        dialogues[i].selectedVoiceId = voiceId;
+                        hasChanges = true;
+
+                        var voice = VoiceLibrary.GetVoiceById(voiceId);
+                        Debug.Log($"✅ Loaded voice for dialogue {i}: {voice.voiceName}");
+                    }
+                }
+                else
+                {
+                    // Fallback: use default voice
+                    if (string.IsNullOrEmpty(dialogues[i].selectedVoiceId))
+                    {
+                        dialogues[i].selectedVoiceId = VoiceLibrary.GetDefaultVoice().voiceId;
+                        hasChanges = true;
+                        Debug.LogWarning($"⚠️ No voice found for dialogue {i}, using default");
+                    }
+                }
+            }
+
+            // ✅ CRITICAL: If we made changes, update the cached story
+            if (hasChanges)
+            {
+                string localStoryKey = $"CachedStory_{storyId}";
+                string currentStoryJson = StudentPrefs.GetString(localStoryKey, "");
+                if (!string.IsNullOrEmpty(currentStoryJson))
+                {
+                    try
+                    {
+                        var currentStory = JsonUtility.FromJson<StoryData>(currentStoryJson);
+                        if (currentStory != null)
+                        {
+                            currentStory.dialogues = dialogues;
+                            string updatedStoryJson = JsonUtility.ToJson(currentStory);
+                            StudentPrefs.SetString(localStoryKey, updatedStoryJson);
+                            StudentPrefs.Save();
+                            Debug.Log($"💾 Updated cached story with voice assignments");
+                        }
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Debug.LogError($"❌ Failed to update cached story: {ex.Message}");
+                    }
+                }
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Failed to load voice assignments: {ex.Message}");
+        }
+    }
+
 
 
 

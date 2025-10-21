@@ -145,69 +145,82 @@ void ShowDialogue(int index)
     }
 }
 
-// ✅ NEW: Find audio file for a specific dialogue
-string FindAudioFile(DialogueLine dialogue, int dialogueIndex)
-{
-    try
+    // ✅ NEW: Find audio file for a specific dialogue
+    string FindAudioFile(DialogueLine dialogue, int dialogueIndex)
     {
-        // Get the audio directory
-        string teacherId = GetTeacherId();
-        int storyIndex = GetStoryIndex();
-        string audioDir = System.IO.Path.Combine(
-            Application.persistentDataPath,
-            teacherId,
-            $"story_{storyIndex}",
-            "audio"
-        );
-
-        if (!System.IO.Directory.Exists(audioDir))
+        try
         {
-            Debug.LogWarning($"⚠️ Audio directory not found: {audioDir}");
+            // Get the audio directory
+            string teacherId = GetTeacherId();
+            int storyIndex = GetStoryIndex();
+            string audioDir = System.IO.Path.Combine(
+                Application.persistentDataPath,
+                teacherId,
+                $"story_{storyIndex}",
+                "audio"
+            );
+
+            if (!System.IO.Directory.Exists(audioDir))
+            {
+                Debug.LogWarning($"⚠️ Audio directory not found: {audioDir}");
+                return null;
+            }
+
+            string sanitizedName = SanitizeFileName(dialogue.characterName);
+            var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
+
+            // Look for files matching the pattern: dialogue_{index}_{character}_{voice}_*.mp3
+            string searchPattern = $"dialogue_{dialogueIndex}_{sanitizedName}_{voice.voiceName}_*.mp3";
+            Debug.Log($"🔍 Searching in: {audioDir}");
+            Debug.Log($"🔍 Pattern: {searchPattern}");
+
+            string[] files = System.IO.Directory.GetFiles(audioDir, searchPattern);
+
+            if (files.Length > 0)
+            {
+                // Return the most recent file
+                System.Array.Sort(files);
+                string latestFile = files[files.Length - 1];
+                Debug.Log($"✅ Found {files.Length} matching file(s), using: {System.IO.Path.GetFileName(latestFile)}");
+                return latestFile;
+            }
+
+            // ✅ FALLBACK 1: Try searching for any file with this character name and dialogue index
+            string fallbackPattern = $"dialogue_{dialogueIndex}_{sanitizedName}_*.mp3";
+            Debug.Log($"🔍 Trying fallback pattern: {fallbackPattern}");
+
+            files = System.IO.Directory.GetFiles(audioDir, fallbackPattern);
+            if (files.Length > 0)
+            {
+                System.Array.Sort(files);
+                string latestFile = files[files.Length - 1];
+                Debug.LogWarning($"⚠️ Using fallback audio (voice mismatch): {System.IO.Path.GetFileName(latestFile)}");
+                return latestFile;
+            }
+
+            // ✅ FALLBACK 2: Try any file with this dialogue index
+            string indexPattern = $"dialogue_{dialogueIndex}_*.mp3";
+            Debug.Log($"🔍 Trying index-only pattern: {indexPattern}");
+
+            files = System.IO.Directory.GetFiles(audioDir, indexPattern);
+            if (files.Length > 0)
+            {
+                System.Array.Sort(files);
+                string latestFile = files[files.Length - 1];
+                Debug.LogWarning($"⚠️ Using index-only fallback: {System.IO.Path.GetFileName(latestFile)}");
+                return latestFile;
+            }
+
+            Debug.LogWarning($"❌ No audio file found for any pattern in: {audioDir}");
             return null;
         }
-
-        string sanitizedName = SanitizeFileName(dialogue.characterName);
-        var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
-
-        // Look for files matching the pattern: dialogue_{index}_{character}_{voice}_*.mp3
-        string searchPattern = $"dialogue_{dialogueIndex}_{sanitizedName}_{voice.voiceName}_*.mp3";
-        Debug.Log($"🔍 Searching in: {audioDir}");
-        Debug.Log($"🔍 Pattern: {searchPattern}");
-
-        string[] files = System.IO.Directory.GetFiles(audioDir, searchPattern);
-
-        if (files.Length > 0)
+        catch (System.Exception ex)
         {
-            // Return the most recent file
-            System.Array.Sort(files);
-            string latestFile = files[files.Length - 1];
-            Debug.Log($"✅ Found {files.Length} matching file(s), using: {System.IO.Path.GetFileName(latestFile)}");
-            return latestFile;
+            Debug.LogError($"❌ Error finding audio file: {ex.Message}");
+            return null;
         }
-
-        // ✅ FALLBACK: Try searching for any file with this character name and dialogue index
-        // This helps if voice was changed after audio generation
-        string fallbackPattern = $"dialogue_{dialogueIndex}_{sanitizedName}_*.mp3";
-        Debug.Log($"🔍 Trying fallback pattern: {fallbackPattern}");
-        
-        files = System.IO.Directory.GetFiles(audioDir, fallbackPattern);
-        if (files.Length > 0)
-        {
-            System.Array.Sort(files);
-            string latestFile = files[files.Length - 1];
-            Debug.LogWarning($"⚠️ Using fallback audio (voice mismatch): {System.IO.Path.GetFileName(latestFile)}");
-            return latestFile;
-        }
-
-        Debug.LogWarning($"❌ No audio file found for pattern: {searchPattern}");
-        return null;
     }
-    catch (System.Exception ex)
-    {
-        Debug.LogError($"❌ Error finding audio file: {ex.Message}");
-        return null;
-    }
-}
+
 
 string SanitizeFileName(string fileName)
 {

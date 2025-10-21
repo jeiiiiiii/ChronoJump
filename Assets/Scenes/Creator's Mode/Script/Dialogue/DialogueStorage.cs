@@ -105,16 +105,28 @@ public static class DialogueStorage
         // Load voices from TeacherPrefs
         VoiceStorageManager.LoadAllDialogueVoices(dialogues);
 
-        // Verify and fix any missing voice IDs
+        // ✅ FIX: For students, verify we actually have voice IDs
         bool hasChanges = false;
         for (int i = 0; i < dialogues.Count; i++)
         {
             if (string.IsNullOrEmpty(dialogues[i].selectedVoiceId))
             {
-                Debug.LogWarning($"⚠️ Dialogue {i} '{dialogues[i].characterName}' had no voice ID - assigning default");
-                dialogues[i].selectedVoiceId = VoiceLibrary.GetDefaultVoice().voiceId;
-                VoiceStorageManager.SaveVoiceSelection($"Dialogue_{i}", dialogues[i].selectedVoiceId);
-                hasChanges = true;
+                Debug.LogWarning($"⚠️ Dialogue {i} '{dialogues[i].characterName}' had no voice ID - checking story data");
+
+                // Try to get voice ID from the actual dialogue data
+                var currentDialogues = GetStoryDialogues();
+                if (currentDialogues != null && i < currentDialogues.Count &&
+                    !string.IsNullOrEmpty(currentDialogues[i].selectedVoiceId))
+                {
+                    dialogues[i].selectedVoiceId = currentDialogues[i].selectedVoiceId;
+                    Debug.Log($"✅ Restored voice ID from story data: {dialogues[i].selectedVoiceId}");
+                }
+                else
+                {
+                    dialogues[i].selectedVoiceId = VoiceLibrary.GetDefaultVoice().voiceId;
+                    VoiceStorageManager.SaveVoiceSelection($"Dialogue_{i}", dialogues[i].selectedVoiceId);
+                    hasChanges = true;
+                }
             }
 
             var voice = VoiceLibrary.GetVoiceById(dialogues[i].selectedVoiceId);
@@ -128,6 +140,7 @@ public static class DialogueStorage
             SaveCurrentStory();
         }
     }
+
 
     public static void ClearDialogues()
     {
