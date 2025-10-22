@@ -11,11 +11,24 @@ public class ReviewQuestionConfirm : MonoBehaviour
     public Image ConfirmImage;
     public Button FinishButton;
     public Button BackButton;
+    public Button SaveButton; // Reference to your Save button
+    public Button SaveAndPublishButton; // Reference to your Save & Publish button
+    
+    [Header("Save Progress UI")]
+    public GameObject saveProgressPanel;
+    public TextMeshProUGUI saveStatusText;
+
+    private bool isSaving = false;
 
     void Start()
     {
         BlurBGImage.gameObject.SetActive(false);
         ConfirmImage.gameObject.SetActive(false);
+        
+        if (saveProgressPanel != null)
+        {
+            saveProgressPanel.SetActive(false);
+        }
 
         if (FinishButton != null)
         {
@@ -49,23 +62,71 @@ public class ReviewQuestionConfirm : MonoBehaviour
         SceneManager.LoadScene("CreateNewAddQuizScene");
     }
 
+    // ✅ SUPER SIMPLE: Just disable buttons and proceed
     public void Save()
     {
-        Debug.Log("💾 Save button clicked - Saving story to Firestore");
-        SaveCurrentStory(true); // ✅ CHANGED: Now saves to Firestore too
+        if (isSaving) return;
+        
+        Debug.Log("💾 Save button clicked");
+        isSaving = true;
+        SetButtonsInteractable(false);
+        ShowSaveProgress("Saving...");
+        
+        // Save locally immediately
+        SaveCurrentStoryLocal();
+        
+        // Firestore save happens in background (fire and forget)
+        if (StoryManager.Instance.UseFirestore)
+        {
+            _ = StoryManager.Instance.SaveCurrentStoryToFirestore();
+        }
+        
+        // Proceed to next scene immediately
         SceneManager.LoadScene("Creator'sModeScene");
     }
 
     public void SaveAndPublish()
     {
-        Debug.Log("🚀 Save and Publish button clicked - Saving to Firestore and preparing for publish");
-        SaveCurrentStory(true); // ✅ Save to Firestore
+        if (isSaving) return;
+
+        Debug.Log("🚀 Save and Publish button clicked");
+        isSaving = true;
+        SetButtonsInteractable(false);
+        ShowSaveProgress("Saving...");
+
+        // Save locally immediately
+        SaveCurrentStoryLocal();
+
+        // Firestore save happens in background (fire and forget)
+        if (StoryManager.Instance.UseFirestore)
+        {
+            _ = StoryManager.Instance.SaveCurrentStoryToFirestore();
+        }
+
+        // Proceed to publish scene immediately
         SceneManager.LoadScene("StoryPublish");
     }
 
-    public void SaveCurrentStory(bool saveToFirestore = true)
+
+    // ✅ NEW: Enable/disable all action buttons
+    private void SetButtonsInteractable(bool interactable)
     {
-        if (StoryManager.Instance.currentStory == null)
+        if (SaveButton != null)
+            SaveButton.interactable = interactable;
+        
+        if (SaveAndPublishButton != null)
+            SaveAndPublishButton.interactable = interactable;
+        
+        if (FinishButton != null)
+            FinishButton.interactable = interactable;
+        
+        // You can add more buttons here as needed
+    }
+
+    // Local save only (synchronous)
+    private void SaveCurrentStoryLocal()
+    {
+        if (StoryManager.Instance?.currentStory == null)
         {
             Debug.LogError("❌ No current story to save!");
             return;
@@ -90,15 +151,15 @@ public class ReviewQuestionConfirm : MonoBehaviour
         }
         s.updatedAt = System.DateTime.Now.ToString();
 
-        // ✅ FIXED: Get the intended slot index from ImageStorage
+        // Get story index
         int storyIndex = ImageStorage.CurrentStoryIndex;
         if (storyIndex < 0 || storyIndex > 5)
         {
             Debug.LogError($"❌ Invalid story index from ImageStorage: {storyIndex}");
-            storyIndex = 0; // fallback to first slot
+            storyIndex = 0;
         }
 
-        s.storyIndex = storyIndex; // Ensure the story knows its index
+        s.storyIndex = storyIndex;
 
         var stories = StoryManager.Instance.allStories;
 
@@ -115,17 +176,25 @@ public class ReviewQuestionConfirm : MonoBehaviour
         // Always save locally
         StoryManager.Instance.SaveStories();
         Debug.Log($"✅ Story saved locally: {s.storyTitle}");
+    }
 
-        // Save to Firestore if requested
-        if (saveToFirestore && StoryManager.Instance.UseFirestore)
+    private void ShowSaveProgress(string message)
+    {
+        if (saveProgressPanel != null)
         {
-            Debug.Log($"🔥 Saving story to Firestore: {s.storyTitle}");
-            StoryManager.Instance.SaveCurrentStoryToFirestore();
+            saveProgressPanel.SetActive(true);
         }
-        else if (saveToFirestore && !StoryManager.Instance.UseFirestore)
+        if (saveStatusText != null)
         {
-            Debug.Log("ℹ️ Firestore not available, local save only");
+            saveStatusText.text = message;
         }
     }
 
+    private void HideSaveProgress()
+    {
+        if (saveProgressPanel != null)
+        {
+            saveProgressPanel.SetActive(false);
+        }
+    }
 }

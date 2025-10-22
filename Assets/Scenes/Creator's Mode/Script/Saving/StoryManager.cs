@@ -1267,9 +1267,13 @@ public class StoryManager : MonoBehaviour
     }
 
     // UPDATED: Explicit Firestore operations
-    public async void SaveCurrentStoryToFirestore()
+    public async Task<bool> SaveCurrentStoryToFirestore()
     {
-        if (!IsFirebaseReady || currentStory == null) return;
+        if (!IsFirebaseReady || currentStory == null)
+        {
+            Debug.LogWarning("⚠️ Cannot save to Firestore: Firebase not ready or no current story");
+            return false;
+        }
 
         try
         {
@@ -1277,17 +1281,21 @@ public class StoryManager : MonoBehaviour
             if (success)
             {
                 Debug.Log($"✅ Story '{currentStory.storyTitle}' saved to Firestore");
+                return true;
             }
             else
             {
                 Debug.LogError($"❌ Failed to save story to Firestore");
+                return false;
             }
         }
         catch (System.Exception ex)
         {
             Debug.LogError($"❌ Failed to save story to Firestore: {ex.Message}");
+            return false;
         }
     }
+
 
     [ContextMenu("Debug Local Stories File")]
     public void DebugLocalStoriesFile()

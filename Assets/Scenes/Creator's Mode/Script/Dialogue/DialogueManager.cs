@@ -14,6 +14,9 @@ public class DialogueLine
     public long audioFileSize = 0;
     public string audioStoragePath = ""; // For Firebase storage
 
+    // ✅ NEW: Track if dialogue was edited and needs audio regeneration
+    public bool needsAudioRegeneration = false;
+
     public DialogueLine(string name, string text)
     {
         characterName = name;

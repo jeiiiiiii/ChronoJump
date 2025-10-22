@@ -322,20 +322,26 @@ public static class DialogueStorage
 
         if (index >= 0 && index < dialogues.Count)
         {
-            // ✅ PRESERVE audio information when editing text
+            // ✅ PRESERVE voice selection
             string existingVoiceId = dialogues[index].selectedVoiceId;
-            string existingAudioPath = dialogues[index].audioFilePath;
-            string existingAudioFile = dialogues[index].audioFileName;
-            bool existingHasAudio = dialogues[index].hasAudio;
+
+            // ✅ NEW: Check if dialogue text actually changed
+            bool dialogueTextChanged = dialogues[index].dialogueText != newText;
+            bool characterNameChanged = dialogues[index].characterName != newName;
 
             dialogues[index].characterName = newName;
             dialogues[index].dialogueText = newText;
             dialogues[index].selectedVoiceId = existingVoiceId;
 
-            // ✅ PRESERVE audio info unless voice changed
-            dialogues[index].audioFilePath = existingAudioPath;
-            dialogues[index].audioFileName = existingAudioFile;
-            dialogues[index].hasAudio = existingHasAudio;
+            // ✅ FIXED: Always invalidate audio if dialogue text changed
+            // (because the audio content is now outdated)
+            if (dialogueTextChanged || characterNameChanged)
+            {
+                dialogues[index].hasAudio = false;
+                dialogues[index].audioFilePath = "";
+                dialogues[index].audioFileName = "";
+                Debug.Log($"🔇 Invalidated audio for dialogue {index} (text or name changed)");
+            }
 
             // Save the voice ID again to ensure persistence
             if (!string.IsNullOrEmpty(existingVoiceId))
@@ -344,12 +350,14 @@ public static class DialogueStorage
             }
 
             var voice = VoiceLibrary.GetVoiceById(existingVoiceId);
-            Debug.Log($"✅ DialogueStorage: Edited dialogue {index} - {newName}: {newText} (Voice: {voice.voiceName}, Audio: {existingHasAudio})");
+            Debug.Log($"✅ DialogueStorage: Edited dialogue {index} - {newName}: {newText} (Voice: {voice.voiceName}, Audio Invalidated: {dialogueTextChanged || characterNameChanged})");
 
             // ✅ Save story after editing
             SaveCurrentStory();
         }
     }
+
+
 
     public static void UpdateDialogueVoice(int index, string newVoiceId)
     {

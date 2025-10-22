@@ -139,26 +139,27 @@ public class ReviewDialogueManager : MonoBehaviour
                 return;
             }
 
+            // ✅ Get the original dialogue to compare changes
+            var originalDialogue = DialogueStorage.GetAllDialogues()[index];
+            bool textChanged = originalDialogue.dialogueText != textInputField.text.Trim();
+            bool nameChanged = originalDialogue.characterName != nameInputField.text.Trim();
+
             // ✅ UPDATED: Update voice if changed
             if (!string.IsNullOrEmpty(currentEditingVoiceId) || VoiceLibrary.IsNoVoice(currentEditingVoiceId))
             {
                 DialogueStorage.UpdateDialogueVoice(index, currentEditingVoiceId);
             }
 
-            // Edit dialogue
+            // Edit dialogue - this will handle audio invalidation
             DialogueStorage.EditDialogue(index, nameInputField.text, textInputField.text);
 
-            var dialogues = DialogueStorage.GetAllDialogues();
-            if (index < dialogues.Count)
-            {
-                dialogues[index].hasAudio = false;
-                dialogues[index].audioFilePath = "";
-            }
+            Debug.Log($"✏️ Edited dialogue {index}: TextChanged={textChanged}, NameChanged={nameChanged}");
 
             editPopup.SetActive(false);
             currentEditingIndex = -1;
             RefreshList();
         });
+
 
         cancelEditButton.onClick.AddListener(() =>
         {
@@ -166,6 +167,7 @@ public class ReviewDialogueManager : MonoBehaviour
             currentEditingIndex = -1;
         });
     }
+
 
     void OpenEditVoiceSelection()
     {
@@ -182,6 +184,7 @@ public class ReviewDialogueManager : MonoBehaviour
             }
         }
     }
+
 
     void OnEditVoiceSelected(string voiceId)
     {
@@ -349,7 +352,38 @@ public class ReviewDialogueManager : MonoBehaviour
         });
     }
 
-    public void Next() => SceneManager.LoadScene("CreateNewAddQuizScene");
+    public void Next()
+    {
+        var dialogues = DialogueStorage.GetAllDialogues();
+
+        // ✅ SINGLE VALIDATION: Check if any voice-selected dialogues lack audio
+        var audioValidation = ValidationManager.Instance.ValidateAudioRegeneration(dialogues);
+        if (!audioValidation.isValid)
+        {
+            ValidationManager.Instance.ShowWarning(
+                "Audio Generation Needed",
+                audioValidation.message,
+                () =>
+                {
+                    // Generate audio but stay in current scene
+                    Debug.Log("🎙️ Starting audio generation...");
+                    GenerateAllAudio();
+                },
+                () =>
+                {
+                    // Cancel - just close warning
+                    Debug.Log("User cancelled audio generation");
+                }
+            );
+            return;
+        }
+
+        SceneManager.LoadScene("CreateNewAddQuizScene");
+    }
+
+
+
+
     public void MainMenu() => SceneManager.LoadScene("Creator'sModeScene");
     public void Back() => SceneManager.LoadScene("CreateNewAddDialogueScene");
 }

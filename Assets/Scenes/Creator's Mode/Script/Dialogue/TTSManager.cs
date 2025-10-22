@@ -148,7 +148,7 @@ public class ElevenLabsTTSManager : MonoBehaviour
             onComplete?.Invoke(true, "No Voice Selected - Skipped");
             yield break;
         }
-    
+
 
         if (string.IsNullOrEmpty(apiKey) || apiKey == "YOUR_API_KEY_HERE")
         {
@@ -190,9 +190,14 @@ public class ElevenLabsTTSManager : MonoBehaviour
                 int storyIndex = GetCurrentStoryIndex();
                 string sanitizedName = SanitizeFileName(dialogue.characterName);
 
-                // Create filename: dialogue_{index}_{character}_{voice}.mp3
+                // ✅ FIXED: Use consistent filename WITHOUT timestamp
                 int dialogueIndex = GetDialogueIndex(dialogue);
-                string fileName = $"dialogue_{dialogueIndex}_{sanitizedName}_{voice.voiceName}_{DateTime.Now.Ticks}.mp3";
+
+                // ✅ NEW: Delete existing audio files for this dialogue index first
+                DeleteExistingAudioFiles(dialogueIndex, sanitizedName, voice.voiceName);
+
+                // ✅ FIXED: Create filename WITHOUT timestamp: dialogue_{index}_{character}_{voice}.mp3
+                string fileName = $"dialogue_{dialogueIndex}_{sanitizedName}_{voice.voiceName}.mp3";
 
                 string audioDir = GetAudioSaveDirectory();
                 string absolutePath = Path.Combine(audioDir, fileName);
@@ -204,6 +209,7 @@ public class ElevenLabsTTSManager : MonoBehaviour
                 dialogue.audioFilePath = relativePath; // Store RELATIVE path for cross-device
                 dialogue.audioFileName = fileName;     // Store filename separately
                 dialogue.hasAudio = true;
+                dialogue.needsAudioRegeneration = false;
 
                 // ✅ NEW: Update audio info in storage to persist it
                 DialogueStorage.UpdateDialogueAudioInfo(dialogueIndex, relativePath, fileName);
@@ -212,6 +218,7 @@ public class ElevenLabsTTSManager : MonoBehaviour
 
                 onComplete?.Invoke(true, relativePath);
             }
+
             else
             {
                 Debug.LogError($"❌ TTS failed for '{dialogue.characterName}': {request.error}");
@@ -219,6 +226,50 @@ public class ElevenLabsTTSManager : MonoBehaviour
             }
         }
     }
+
+    // ✅ NEW: Delete existing audio files for a dialogue to prevent duplicates
+    private void DeleteExistingAudioFiles(int dialogueIndex, string characterName, string voiceName)
+    {
+        try
+        {
+            string audioDir = GetAudioSaveDirectory();
+            if (!Directory.Exists(audioDir)) return;
+
+            string sanitizedName = SanitizeFileName(characterName);
+
+            // Pattern 1: Exact match (without timestamp)
+            string exactPattern = $"dialogue_{dialogueIndex}_{sanitizedName}_{voiceName}.mp3";
+
+            // Pattern 2: Old pattern with timestamps
+            string timestampPattern = $"dialogue_{dialogueIndex}_{sanitizedName}_{voiceName}_*.mp3";
+
+            // Delete exact match files
+            string[] exactFiles = Directory.GetFiles(audioDir, exactPattern);
+            foreach (string file in exactFiles)
+            {
+                File.Delete(file);
+                Debug.Log($"🗑️ Deleted existing audio: {Path.GetFileName(file)}");
+            }
+
+            // Delete timestamped files
+            string[] timestampFiles = Directory.GetFiles(audioDir, timestampPattern);
+            foreach (string file in timestampFiles)
+            {
+                File.Delete(file);
+                Debug.Log($"🗑️ Deleted old timestamped audio: {Path.GetFileName(file)}");
+            }
+
+            if (exactFiles.Length > 0 || timestampFiles.Length > 0)
+            {
+                Debug.Log($"✅ Cleared {exactFiles.Length + timestampFiles.Length} existing audio files for dialogue {dialogueIndex}");
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"⚠️ Error deleting existing audio files: {ex.Message}");
+        }
+    }
+
 
 
     private int GetDialogueIndex(DialogueLine targetDialogue)

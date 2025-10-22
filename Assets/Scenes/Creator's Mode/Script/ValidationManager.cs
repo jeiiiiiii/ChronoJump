@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Linq;
 
 public class ValidationManager : MonoBehaviour
 {
@@ -321,8 +322,48 @@ public class ValidationManager : MonoBehaviour
 
         return new ValidationResult { isValid = true };
     }
-    
-    
+
+    // ✅ SINGLE VALIDATION: Check if dialogues with selected voices need audio
+    public ValidationResult ValidateAudioRegeneration(List<DialogueLine> dialogues)
+    {
+        if (dialogues == null || dialogues.Count == 0)
+        {
+            return new ValidationResult { isValid = true, message = "No dialogues to validate" };
+        }
+
+        List<string> dialoguesNeedingAudio = new List<string>();
+
+        for (int i = 0; i < dialogues.Count; i++)
+        {
+            var dialogue = dialogues[i];
+
+            // Skip if no voice is selected (intentional)
+            if (string.IsNullOrEmpty(dialogue.selectedVoiceId) || VoiceLibrary.IsNoVoice(dialogue.selectedVoiceId))
+            {
+                continue;
+            }
+
+            // Check if voice is selected but no audio exists
+            if (!dialogue.hasAudio || string.IsNullOrEmpty(dialogue.audioFilePath))
+            {
+                dialoguesNeedingAudio.Add($"Dialogue {i + 1}: '{dialogue.characterName}'");
+            }
+        }
+
+        if (dialoguesNeedingAudio.Count > 0)
+        {
+            string dialogueList = string.Join("\n", dialoguesNeedingAudio);
+            return new ValidationResult
+            {
+                isValid = false,
+                message = $"\n{dialogueList}\nSome dialogues need audio generation! Please generate audio before proceeding."
+            };
+        }
+
+        return new ValidationResult { isValid = true };
+    }
+
+
 }
 
 [System.Serializable]
