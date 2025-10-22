@@ -1,5 +1,6 @@
 // DialogueStorage.cs - COMPLETE FIXED VERSION
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public static class DialogueStorage
@@ -148,6 +149,10 @@ public static class DialogueStorage
         if (index >= 0 && index < dialogues.Count)
         {
             var dialogue = dialogues[index];
+
+            // ✅ NEW: Delete corresponding audio files before removing dialogue
+            DeleteDialogueAudioFiles(index, dialogue);
+
             dialogues.RemoveAt(index);
             Debug.Log($"✅ DialogueStorage: Deleted dialogue {index} - {dialogue.characterName}: {dialogue.dialogueText}");
 
@@ -158,6 +163,102 @@ public static class DialogueStorage
             SaveCurrentStory();
         }
     }
+
+
+    // ✅ NEW: Delete audio files for a specific dialogue
+    private static void DeleteDialogueAudioFiles(int dialogueIndex, DialogueLine dialogue)
+    {
+        try
+        {
+            string teacherId = GetCurrentTeacherId();
+            int storyIndex = GetCurrentStoryIndex();
+
+            string audioDir = Path.Combine(
+                Application.persistentDataPath,
+                teacherId,
+                $"story_{storyIndex}",
+                "audio"
+            );
+
+            if (!Directory.Exists(audioDir))
+            {
+                Debug.Log($"ℹ️ Audio directory not found: {audioDir}");
+                return;
+            }
+
+            string sanitizedName = SanitizeFileName(dialogue.characterName);
+            var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
+
+            // Delete all possible audio file patterns for this dialogue
+            string[] patterns = {
+            $"dialogue_{dialogueIndex}_{sanitizedName}_{voice.voiceName}.mp3",           // Exact match
+            $"dialogue_{dialogueIndex}_{sanitizedName}_{voice.voiceName}_*.mp3",         // Timestamped versions
+            $"dialogue_{dialogueIndex}_{sanitizedName}_*.mp3",                           // Voice mismatch fallback
+            $"dialogue_{dialogueIndex}_*.mp3"                                            // Index-only fallback
+        };
+
+            int deletedCount = 0;
+            foreach (string pattern in patterns)
+            {
+                string[] files = Directory.GetFiles(audioDir, pattern);
+                foreach (string file in files)
+                {
+                    try
+                    {
+                        File.Delete(file);
+                        deletedCount++;
+                        Debug.Log($"🗑️ Deleted audio file: {Path.GetFileName(file)}");
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Debug.LogWarning($"⚠️ Could not delete audio file {file}: {ex.Message}");
+                    }
+                }
+            }
+
+            if (deletedCount > 0)
+            {
+                Debug.Log($"✅ Deleted {deletedCount} audio files for dialogue {dialogueIndex}");
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Error deleting audio files for dialogue {dialogueIndex}: {ex.Message}");
+        }
+    }
+
+
+    // ✅ Helper method to sanitize file names (add this if not exists)
+    private static string SanitizeFileName(string fileName)
+    {
+        foreach (char c in Path.GetInvalidFileNameChars())
+        {
+            fileName = fileName.Replace(c, '_');
+        }
+        return fileName;
+    }
+
+    // ✅ Helper method to get current teacher ID (add this if not exists)
+    private static string GetCurrentTeacherId()
+    {
+        if (StoryManager.Instance != null && StoryManager.Instance.IsCurrentUserTeacher())
+        {
+            return StoryManager.Instance.GetCurrentTeacherId();
+        }
+        return TeacherPrefs.GetString("CurrentTeachId", "default");
+    }
+
+        // ✅ Helper method to get current story index (add this if not exists)
+        private static int GetCurrentStoryIndex()
+        {
+            var story = StoryManager.Instance?.GetCurrentStory();
+            if (story != null)
+            {
+                return story.storyIndex;
+            }
+            return 0;
+        }
+
 
 
     // ✅ NEW: Re-index voice storage after deletion
@@ -336,7 +437,7 @@ public static class DialogueStorage
             // ✅ FIXED: Always invalidate audio if dialogue text changed
             // (because the audio content is now outdated)
             if (dialogueTextChanged || characterNameChanged)
-            {
+            {   
                 dialogues[index].hasAudio = false;
                 dialogues[index].audioFilePath = "";
                 dialogues[index].audioFileName = "";
