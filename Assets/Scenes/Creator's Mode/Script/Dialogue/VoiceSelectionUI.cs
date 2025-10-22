@@ -11,14 +11,13 @@ public class VoiceSelectionUI : MonoBehaviour
     public TextMeshProUGUI selectedVoiceText;
     public Button confirmButton;
     public Button closeButton;
-    
+
     private string currentSelectedVoiceId;
     private System.Action<string> onVoiceSelected;
-    private RectTransform buttonsParentRT; // resolved parent (ScrollRect.content or a layout RectTransform)
-    
+    private RectTransform buttonsParentRT;
+
     private void OnEnable()
     {
-        // Wire buttons
         if (confirmButton != null)
         {
             confirmButton.onClick.RemoveAllListeners();
@@ -30,32 +29,32 @@ public class VoiceSelectionUI : MonoBehaviour
             closeButton.onClick.AddListener(Cancel);
         }
     }
-    
+
     public void ShowVoiceSelection(string currentVoiceId, System.Action<string> callback)
     {
         currentSelectedVoiceId = currentVoiceId;
         onVoiceSelected = callback;
-        
-        // Resolve to the proper Content under the Scroll View
+
         buttonsParentRT = ResolveButtonsParent();
 
-        // Clear existing buttons under the resolved parent
         foreach (Transform child in buttonsParentRT)
         {
             Destroy(child.gameObject);
         }
-        
+
+        // ✅ NEW: Add "No Voice" option at the top
+        CreateVoiceButton(VoiceLibrary.GetNoVoiceProfile());
+
         // Create buttons for each voice
         var voices = VoiceLibrary.GetAvailableVoices();
         foreach (var voice in voices)
         {
             CreateVoiceButton(voice);
         }
-        
+
         UpdateSelectedVoiceDisplay();
         gameObject.SetActive(true);
 
-        // Rebuild layout next frame so items position correctly
         StartCoroutine(RebuildLayoutNextFrame());
     }
 
@@ -70,43 +69,48 @@ public class VoiceSelectionUI : MonoBehaviour
         if (buttonsParentRT == null)
             buttonsParentRT = ResolveButtonsParent();
 
-    GameObject buttonObj = Instantiate(voiceButtonPrefab, buttonsParentRT, false);
+        GameObject buttonObj = Instantiate(voiceButtonPrefab, buttonsParentRT, false);
 
-    // Ensure each item cooperates with Vertical Layout Group
-    var layout = buttonObj.GetComponent<LayoutElement>();
-    if (layout == null) layout = buttonObj.AddComponent<LayoutElement>();
-    layout.minHeight = 80f;
-    layout.preferredHeight = 100f;
-    layout.flexibleHeight = 0f;
-
+        var layout = buttonObj.GetComponent<LayoutElement>();
+        if (layout == null) layout = buttonObj.AddComponent<LayoutElement>();
+        layout.minHeight = 80f;
+        layout.preferredHeight = 100f;
+        layout.flexibleHeight = 0f;
 
         // Set up button visuals
         TextMeshProUGUI[] texts = buttonObj.GetComponentsInChildren<TextMeshProUGUI>(true);
         if (texts.Length >= 3)
         {
-            // Primary: display the voice name
             texts[0].text = voice.voiceName;
-            // Secondary: show voice name again (or could show gender/accent) — use name as requested
             texts[1].text = voice.voiceName;
-            // Tertiary: keep the description (gender/accent can be included here if desired)
             texts[2].text = voice.description;
+
+            // ✅ Optional: Style "No Voice" option differently
+            if (VoiceLibrary.IsNoVoice(voice.voiceId))
+            {
+                texts[0].fontStyle = FontStyles.Italic;
+                texts[1].fontStyle = FontStyles.Italic;
+                texts[2].fontStyle = FontStyles.Italic;
+                texts[0].color = new Color(0.7f, 0.7f, 0.7f);
+            }
         }
 
-        // Determine main highlight image (prefer root image)
         Image highlightImage = buttonObj.GetComponent<Image>();
         if (highlightImage == null)
         {
-            // fallback to first child Image
             highlightImage = buttonObj.GetComponentInChildren<Image>(true);
         }
 
         if (highlightImage == null)
         {
-            Debug.LogWarning($"⚠️ No Image found to highlight in prefab '{buttonObj.name}'. Selection will still work.");
+            Debug.LogWarning($"⚠️ No Image found to highlight in prefab '{buttonObj.name}'.");
         }
 
-        // Highlight if currently selected
-        if (voice.voiceId == currentSelectedVoiceId && highlightImage != null)
+        // ✅ FIXED: Properly compare empty strings for highlighting
+        bool isSelected = (string.IsNullOrEmpty(voice.voiceId) && string.IsNullOrEmpty(currentSelectedVoiceId)) ||
+                         voice.voiceId == currentSelectedVoiceId;
+
+        if (isSelected && highlightImage != null)
         {
             highlightImage.color = new Color(0.3f, 0.6f, 1f, 0.5f);
         }
@@ -115,60 +119,57 @@ public class VoiceSelectionUI : MonoBehaviour
             highlightImage.color = Color.white;
         }
 
-        // Add selection listener to ALL buttons in this row to be robust
         var allButtons = buttonObj.GetComponentsInChildren<Button>(true);
         foreach (var b in allButtons)
         {
-            b.onClick.AddListener(() => {
-                Debug.Log($"Voice row clicked → {voice.voiceName} ({voice.voiceId})");
-                // Play the local preview MP3 for this voice (if mapped in VoicePreviewPlayer)
-                var player = VoicePreviewPlayer.Instance;
-                if (player != null)
+            b.onClick.AddListener(() =>
+            {
+                Debug.Log($"Voice row clicked → {voice.voiceName} ({(string.IsNullOrEmpty(voice.voiceId) ? "NO_VOICE" : voice.voiceId)})");
+
+                // ✅ Only play preview if it's an actual voice (not "No Voice")
+                if (!VoiceLibrary.IsNoVoice(voice.voiceId))
                 {
-                    player.PlayPreview(voice.voiceId, voice.voiceName);
+                    var player = VoicePreviewPlayer.Instance;
+                    if (player != null)
+                    {
+                        player.PlayPreview(voice.voiceId, voice.voiceName);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("⚠️ VoicePreviewPlayer.Instance is null.");
+                    }
                 }
-                else
-                {
-                    Debug.LogWarning("⚠️ VoicePreviewPlayer.Instance is null. Add a VoicePreviewPlayer to the scene and assign clips.");
-                }
+
                 SelectVoice(voice.voiceId, highlightImage);
             });
         }
     }
-    
-    // Find the correct parent to place buttons under (ScrollRect.content or a layout container)
+
     private RectTransform ResolveButtonsParent()
     {
-        // If user dragged the Scroll View object, prefer its ScrollRect.content
         if (voiceButtonsParent != null)
         {
             var sr = voiceButtonsParent.GetComponentInParent<ScrollRect>();
             if (sr != null && sr.content != null)
                 return sr.content;
 
-            // Or find a VerticalLayoutGroup in children (commonly on Content)
             var layout = voiceButtonsParent.GetComponentInChildren<VerticalLayoutGroup>(true);
             if (layout != null)
                 return layout.transform as RectTransform;
 
-            // If the assigned transform itself has a layout, use it
             var ownLayout = voiceButtonsParent.GetComponent<VerticalLayoutGroup>();
             if (ownLayout != null)
                 return voiceButtonsParent as RectTransform;
         }
 
-        // Fallback to our own transform
         return transform as RectTransform;
     }
-    
 
-    
     void SelectVoice(string voiceId, Image buttonImage)
     {
         currentSelectedVoiceId = voiceId;
         UpdateSelectedVoiceDisplay();
-        
-        // Reset all button colors
+
         var parent = buttonsParentRT != null ? buttonsParentRT : voiceButtonsParent;
         foreach (Transform child in parent)
         {
@@ -178,27 +179,37 @@ public class VoiceSelectionUI : MonoBehaviour
                 img.color = Color.white;
             }
         }
-        
-        // Highlight selected
+
         if (buttonImage != null)
             buttonImage.color = new Color(0.3f, 0.6f, 1f, 0.5f);
     }
-    
+
     void UpdateSelectedVoiceDisplay()
     {
-        var voice = VoiceLibrary.GetVoiceById(currentSelectedVoiceId);
-        if (selectedVoiceText != null && voice != null)
+        if (selectedVoiceText != null)
         {
-            selectedVoiceText.text = $"Selected: {voice.voiceName}";
+            // ✅ FIXED: Handle empty voice properly
+            if (string.IsNullOrEmpty(currentSelectedVoiceId))
+            {
+                selectedVoiceText.text = "Selected: No Voice";
+            }
+            else
+            {
+                var voice = VoiceLibrary.GetVoiceById(currentSelectedVoiceId);
+                if (voice != null)
+                {
+                    selectedVoiceText.text = $"Selected: {voice.voiceName}";
+                }
+            }
         }
     }
-    
+
     public void ConfirmSelection()
     {
         onVoiceSelected?.Invoke(currentSelectedVoiceId);
         gameObject.SetActive(false);
     }
-    
+
     public void Cancel()
     {
         gameObject.SetActive(false);
@@ -206,7 +217,7 @@ public class VoiceSelectionUI : MonoBehaviour
 
     private System.Collections.IEnumerator RebuildLayoutNextFrame()
     {
-        yield return null; // wait a frame so children exist
+        yield return null;
         if (buttonsParentRT != null)
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(buttonsParentRT);

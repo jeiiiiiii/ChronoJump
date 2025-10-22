@@ -140,14 +140,15 @@ public class ElevenLabsTTSManager : MonoBehaviour
     // In TTSManager.cs - Update the GenerateTTS method
     public IEnumerator GenerateTTS(DialogueLine dialogue, Action<bool, string> onComplete)
     {
-        if (string.IsNullOrEmpty(dialogue.selectedVoiceId))
+        if (string.IsNullOrEmpty(dialogue.selectedVoiceId) || VoiceLibrary.IsNoVoice(dialogue.selectedVoiceId))
         {
-            Debug.Log($"🔇 Skipping TTS for '{dialogue.characterName}' - No voice selected");
+            Debug.Log($"🔇 Skipping TTS for '{dialogue.characterName}' - No voice selected (intentional)");
             dialogue.hasAudio = false;
             dialogue.audioFilePath = "";
             onComplete?.Invoke(true, "No Voice Selected - Skipped");
             yield break;
         }
+    
 
         if (string.IsNullOrEmpty(apiKey) || apiKey == "YOUR_API_KEY_HERE")
         {

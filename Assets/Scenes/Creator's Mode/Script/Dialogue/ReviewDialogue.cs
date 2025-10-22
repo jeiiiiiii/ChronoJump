@@ -31,9 +31,15 @@ public class ReviewDialogueManager : MonoBehaviour
     public Slider progressBar;
     public TextMeshProUGUI statusText;
 
-    private int pendingDeleteIndex = -1;
+    [Header("Voice Selection for Editing")]
+    public GameObject voiceSelectionPanel;
+    public Button editVoiceSelectButton;
+    public TextMeshProUGUI editCurrentVoiceText;
 
-    // In ReviewDialogueManager.cs - Update the Start method
+    private int pendingDeleteIndex = -1;
+    private int currentEditingIndex = -1;
+    private string currentEditingVoiceId = "";
+
     void Start()
     {
         // ✅ CRITICAL: Load voices from persistent storage before refreshing the list
@@ -52,34 +58,14 @@ public class ReviewDialogueManager : MonoBehaviour
 
         // Debug: Verify voice assignments
         var dialogues = DialogueStorage.GetAllDialogues();
-        Debug.Log($"🔊 ReviewDialogueManager: Loaded {dialogues.Count} dialogues with voice assignments");
+        Debug.Log($"📊 ReviewDialogueManager: Loaded {dialogues.Count} dialogues with voice assignments");
         for (int i = 0; i < dialogues.Count; i++)
         {
             var dialogue = dialogues[i];
             var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
-            Debug.Log($"🔊 Dialogue {i}: '{dialogue.characterName}' - Voice: {voice.voiceName}");
+            Debug.Log($"📊 Dialogue {i}: '{dialogue.characterName}' - Voice: {voice.voiceName}");
         }
     }
-
-    // ✅ NEW: Updated SaveEditedDialogue method to handle voice changes
-    public void SaveEditedDialogue(int index, string newCharacter, string newDialogue, string newVoiceId = null)
-    {
-        // If a new voice ID is provided, update it
-        if (!string.IsNullOrEmpty(newVoiceId))
-        {
-            DialogueStorage.UpdateDialogueVoice(index, newVoiceId);
-        }
-
-        // Update the dialogue text
-        DialogueStorage.EditDialogue(index, newCharacter, newDialogue);
-
-        // Refresh the UI
-        if (currentEditPanel != null)
-            Destroy(currentEditPanel);
-        RefreshList();
-    }
-
-
 
     public void RefreshList()
     {
@@ -96,19 +82,15 @@ public class ReviewDialogueManager : MonoBehaviour
 
             TextMeshProUGUI[] texts = item.GetComponentsInChildren<TextMeshProUGUI>();
 
-            // ✅ UPDATED: Handle empty voice
-            string voiceDisplay = "No Voice";
-            if (!string.IsNullOrEmpty(line.selectedVoiceId))
-            {
-                var voice = VoiceLibrary.GetVoiceById(line.selectedVoiceId);
-                voiceDisplay = voice.voiceName;
-            }
+            // ✅ FIXED: Use VoiceLibrary.GetVoiceById which now handles empty voice properly
+            var voice = VoiceLibrary.GetVoiceById(line.selectedVoiceId);
+            string voiceDisplay = voice.voiceName; // Will be "No Voice" if empty
 
             texts[0].text = $"{line.characterName} ({voiceDisplay})";
 
-            // Show audio status indicator (only if voice is selected)
+            // ✅ Show audio status indicator (only if voice is selected)
             string audioStatus = "";
-            if (!string.IsNullOrEmpty(line.selectedVoiceId))
+            if (!VoiceLibrary.IsNoVoice(line.selectedVoiceId))
             {
                 audioStatus = line.hasAudio ? " 🔊" : " 🔇";
             }
@@ -123,11 +105,146 @@ public class ReviewDialogueManager : MonoBehaviour
         }
     }
 
+    public void OpenEditPopup(int index, DialogueLine line)
+    {
+        editPopup.SetActive(true);
+        nameInputField.text = line.characterName;
+        textInputField.text = line.dialogueText;
+
+        // ✅ NEW: Store current editing info for voice selection
+        currentEditingIndex = index;
+        currentEditingVoiceId = line.selectedVoiceId;
+
+        // ✅ NEW: Setup voice selection if available
+        if (editVoiceSelectButton != null)
+        {
+            editVoiceSelectButton.onClick.RemoveAllListeners();
+            editVoiceSelectButton.onClick.AddListener(OpenEditVoiceSelection);
+        }
+
+        UpdateEditVoiceDisplay();
+
+        saveEditButton.onClick.RemoveAllListeners();
+        cancelEditButton.onClick.RemoveAllListeners();
+
+        saveEditButton.onClick.AddListener(() =>
+        {
+            var validation = ValidationManager.Instance.ValidateNameAndDialogueCombined(
+                nameInputField.text.Trim(), textInputField.text.Trim()
+            );
+
+            if (!validation.isValid)
+            {
+                ValidationManager.Instance.ShowWarning("Dialogue Validation", validation.message);
+                return;
+            }
+
+            // ✅ UPDATED: Update voice if changed
+            if (!string.IsNullOrEmpty(currentEditingVoiceId) || VoiceLibrary.IsNoVoice(currentEditingVoiceId))
+            {
+                DialogueStorage.UpdateDialogueVoice(index, currentEditingVoiceId);
+            }
+
+            // Edit dialogue
+            DialogueStorage.EditDialogue(index, nameInputField.text, textInputField.text);
+
+            var dialogues = DialogueStorage.GetAllDialogues();
+            if (index < dialogues.Count)
+            {
+                dialogues[index].hasAudio = false;
+                dialogues[index].audioFilePath = "";
+            }
+
+            editPopup.SetActive(false);
+            currentEditingIndex = -1;
+            RefreshList();
+        });
+
+        cancelEditButton.onClick.AddListener(() =>
+        {
+            editPopup.SetActive(false);
+            currentEditingIndex = -1;
+        });
+    }
+
+    void OpenEditVoiceSelection()
+    {
+        if (voiceSelectionPanel != null)
+        {
+            var voiceSelectionUI = voiceSelectionPanel.GetComponent<VoiceSelectionUI>();
+            if (voiceSelectionUI != null)
+            {
+                voiceSelectionUI.ShowVoiceSelection(currentEditingVoiceId, OnEditVoiceSelected);
+            }
+            else
+            {
+                Debug.LogError("❌ VoiceSelectionUI component not found on voiceSelectionPanel!");
+            }
+        }
+    }
+
+    void OnEditVoiceSelected(string voiceId)
+    {
+        currentEditingVoiceId = voiceId;
+        UpdateEditVoiceDisplay();
+
+        var voice = VoiceLibrary.GetVoiceById(voiceId);
+        Debug.Log($"🎤 Voice selected for editing dialogue {currentEditingIndex}: {voice.voiceName}");
+    }
+
+    void UpdateEditVoiceDisplay()
+    {
+        if (editCurrentVoiceText != null)
+        {
+            // ✅ FIXED: Handle empty voice properly
+            if (VoiceLibrary.IsNoVoice(currentEditingVoiceId))
+            {
+                editCurrentVoiceText.text = "Voice: No Voice Selected";
+            }
+            else
+            {
+                var voice = VoiceLibrary.GetVoiceById(currentEditingVoiceId);
+                editCurrentVoiceText.text = $"Voice: {voice.voiceName} ({voice.gender})";
+            }
+        }
+    }
+
+    // ✅ RESTORED: SaveEditedDialogue methods
+    public void SaveEditedDialogue(int index, string newCharacter, string newDialogue, string newVoiceId = null)
+    {
+        // If a new voice ID is provided, update it
+        if (!string.IsNullOrEmpty(newVoiceId) || VoiceLibrary.IsNoVoice(newVoiceId))
+        {
+            DialogueStorage.UpdateDialogueVoice(index, newVoiceId);
+        }
+
+        // Update the dialogue text
+        DialogueStorage.EditDialogue(index, newCharacter, newDialogue);
+
+        // Refresh the UI
+        if (currentEditPanel != null)
+            Destroy(currentEditPanel);
+        RefreshList();
+    }
+
+    public void SaveEditedDialogue(int index, string newCharacter, string newDialogue)
+    {
+        DialogueStorage.EditDialogue(index, newCharacter, newDialogue);
+        Destroy(currentEditPanel);
+        RefreshList();
+    }
+
+    // ✅ RESTORED: CancelEdit method
+    public void CancelEdit()
+    {
+        if (currentEditPanel != null)
+            Destroy(currentEditPanel);
+    }
 
     public void GenerateAllAudio()
     {
         var dialogues = DialogueStorage.GetAllDialogues();
-        
+
         if (dialogues == null || dialogues.Count == 0)
         {
             ValidationManager.Instance.ShowWarning(
@@ -138,11 +255,10 @@ public class ReviewDialogueManager : MonoBehaviour
         }
 
         Debug.Log($"🎙️ GenerateAllAudio called for {dialogues.Count} dialogues");
-        
-        // Log each dialogue status
+
         for (int i = 0; i < dialogues.Count; i++)
         {
-            Debug.Log($"Dialogue {i+1}: '{dialogues[i].characterName}' - HasAudio: {dialogues[i].hasAudio}, Path: {dialogues[i].audioFilePath}");
+            Debug.Log($"Dialogue {i + 1}: '{dialogues[i].characterName}' - HasAudio: {dialogues[i].hasAudio}, Path: {dialogues[i].audioFilePath}");
         }
 
         if (ttsProgressPanel != null) ttsProgressPanel.SetActive(true);
@@ -158,13 +274,13 @@ public class ReviewDialogueManager : MonoBehaviour
     void OnTTSProgress(int completed, int total, string message)
     {
         float progress = (float)completed / total;
-        
+
         if (progressBar != null)
             progressBar.value = progress;
-        
+
         if (progressText != null)
             progressText.text = $"{completed}/{total} Generated";
-        
+
         if (statusText != null)
             statusText.text = message;
 
@@ -195,7 +311,7 @@ public class ReviewDialogueManager : MonoBehaviour
             );
         }
 
-        RefreshList(); // Refresh to show audio indicators
+        RefreshList();
     }
 
     public void OpenDeletePopup(int index)
@@ -233,141 +349,7 @@ public class ReviewDialogueManager : MonoBehaviour
         });
     }
 
-    public void SaveEditedDialogue(int index, string newCharacter, string newDialogue)
-    {
-        DialogueStorage.EditDialogue(index, newCharacter, newDialogue);
-        Destroy(currentEditPanel);
-        RefreshList();
-    }
-
-    public void CancelEdit()
-    {
-        if (currentEditPanel != null)
-            Destroy(currentEditPanel);
-    }
-
-    
-
     public void Next() => SceneManager.LoadScene("CreateNewAddQuizScene");
     public void MainMenu() => SceneManager.LoadScene("Creator'sModeScene");
     public void Back() => SceneManager.LoadScene("CreateNewAddDialogueScene");
-
-
-    [Header("Voice Selection for Editing")]
-    public GameObject voiceSelectionPanel;
-    public Button editVoiceSelectButton;
-    public TextMeshProUGUI editCurrentVoiceText;
-
-    private int currentEditingIndex = -1;
-    private string currentEditingVoiceId = "";
-
-    // Update the OpenEditPopup method
-    public void OpenEditPopup(int index, DialogueLine line)
-    {
-        editPopup.SetActive(true);
-        nameInputField.text = line.characterName;
-        textInputField.text = line.dialogueText;
-
-        // ✅ NEW: Store current editing info for voice selection
-        currentEditingIndex = index;
-        currentEditingVoiceId = line.selectedVoiceId;
-
-        // ✅ NEW: Setup voice selection if available
-        if (editVoiceSelectButton != null)
-        {
-            editVoiceSelectButton.onClick.RemoveAllListeners();
-            editVoiceSelectButton.onClick.AddListener(OpenEditVoiceSelection);
-        }
-
-        UpdateEditVoiceDisplay();
-
-        saveEditButton.onClick.RemoveAllListeners();
-        cancelEditButton.onClick.RemoveAllListeners();
-
-        saveEditButton.onClick.AddListener(() =>
-        {
-            var validation = ValidationManager.Instance.ValidateNameAndDialogueCombined(
-                nameInputField.text.Trim(), textInputField.text.Trim()
-            );
-
-            if (!validation.isValid)
-            {
-                ValidationManager.Instance.ShowWarning("Dialogue Validation", validation.message);
-                return;
-            }
-
-            // ✅ UPDATED: Update voice if changed
-            if (!string.IsNullOrEmpty(currentEditingVoiceId))
-            {
-                DialogueStorage.UpdateDialogueVoice(index, currentEditingVoiceId);
-            }
-
-            // Edit dialogue
-            DialogueStorage.EditDialogue(index, nameInputField.text, textInputField.text);
-
-            var dialogues = DialogueStorage.GetAllDialogues();
-            if (index < dialogues.Count)
-            {
-                dialogues[index].hasAudio = false;
-                dialogues[index].audioFilePath = "";
-            }
-
-            editPopup.SetActive(false);
-            currentEditingIndex = -1;
-            RefreshList();
-        });
-
-        cancelEditButton.onClick.AddListener(() =>
-        {
-            editPopup.SetActive(false);
-            currentEditingIndex = -1;
-        });
-    }
-
-
-    // ✅ NEW: Voice selection methods for editing
-    void OpenEditVoiceSelection()
-    {
-        if (voiceSelectionPanel != null)
-        {
-            var voiceSelectionUI = voiceSelectionPanel.GetComponent<VoiceSelectionUI>();
-            if (voiceSelectionUI != null)
-            {
-                voiceSelectionUI.ShowVoiceSelection(currentEditingVoiceId, OnEditVoiceSelected);
-            }
-            else
-            {
-                Debug.LogError("❌ VoiceSelectionUI component not found on voiceSelectionPanel!");
-            }
-        }
-    }
-
-
-    void OnEditVoiceSelected(string voiceId)
-    {
-        currentEditingVoiceId = voiceId;
-        UpdateEditVoiceDisplay();
-
-        var voice = VoiceLibrary.GetVoiceById(voiceId);
-        Debug.Log($"🎤 Voice selected for editing dialogue {currentEditingIndex}: {voice.voiceName}");
-    }
-
-
-    void UpdateEditVoiceDisplay()
-    {
-        if (editCurrentVoiceText != null)
-        {
-            if (string.IsNullOrEmpty(currentEditingVoiceId))
-            {
-                editCurrentVoiceText.text = "Voice: Select Voice...";
-            }
-            else
-            {
-                var voice = VoiceLibrary.GetVoiceById(currentEditingVoiceId);
-                editCurrentVoiceText.text = $"Voice: {voice.voiceName} ({voice.gender})";
-            }
-        }
-    }
-
-
 }

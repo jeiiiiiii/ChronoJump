@@ -19,7 +19,6 @@ public static class VoiceStorageManager
         Debug.Log($"💾 VoiceStorage SAVE: Key='{storageKey}' Voice='{voice.voiceName}' ({voiceId})");
     }
 
-    // Load voice selection for current teacher/story
     public static string LoadVoiceSelection(string dialogueKey)
     {
         string storyId = GetCurrentStoryId();
@@ -28,36 +27,21 @@ public static class VoiceStorageManager
         string storageKey = $"{storyId}_{dialogueKey}_VoiceId";
         string voiceId = TeacherPrefs.GetString(storageKey, "");
 
-        // ✅ FIX: For students, also try loading from the story data directly
+        // ✅ FIXED: Completely remove the default voice fallback
+        // If no voice is stored, return empty string - this means "No Voice"
         if (string.IsNullOrEmpty(voiceId))
         {
-            // Try to get from current story dialogues
-            var dialogues = DialogueStorage.GetAllDialogues();
-            if (int.TryParse(dialogueKey.Replace("Dialogue_", ""), out int dialogueIndex) &&
-                dialogueIndex >= 0 && dialogueIndex < dialogues.Count)
-            {
-                voiceId = dialogues[dialogueIndex].selectedVoiceId;
-                if (!string.IsNullOrEmpty(voiceId))
-                {
-                    Debug.Log($"📖 VoiceStorage FALLBACK: Got voice from dialogue data: {voiceId}");
-                }
-            }
-        }
-
-        // If still not found, use default
-        if (string.IsNullOrEmpty(voiceId))
-        {
-            voiceId = VoiceLibrary.GetDefaultVoice().voiceId;
-            Debug.LogWarning($"⚠️ VoiceStorage LOAD: Key='{storageKey}' NOT FOUND - using default");
+            Debug.Log($"📖 VoiceStorage LOAD: Key='{storageKey}' - No voice selected (intentional)");
+            return ""; // Return empty string for "No Voice"
         }
         else
         {
             var voice = VoiceLibrary.GetVoiceById(voiceId);
             Debug.Log($"📖 VoiceStorage LOAD: Key='{storageKey}' Voice='{voice.voiceName}' ({voiceId})");
+            return voiceId;
         }
-
-        return voiceId;
     }
+
 
 
     // Save all dialogue voices for the current story

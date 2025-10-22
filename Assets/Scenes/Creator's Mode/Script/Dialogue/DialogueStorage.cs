@@ -111,24 +111,10 @@ public static class DialogueStorage
         {
             if (string.IsNullOrEmpty(dialogues[i].selectedVoiceId))
             {
-                Debug.LogWarning($"⚠️ Dialogue {i} '{dialogues[i].characterName}' had no voice ID - checking story data");
-
-                // Try to get voice ID from the actual dialogue data
-                var currentDialogues = GetStoryDialogues();
-                if (currentDialogues != null && i < currentDialogues.Count &&
-                    !string.IsNullOrEmpty(currentDialogues[i].selectedVoiceId))
-                {
-                    dialogues[i].selectedVoiceId = currentDialogues[i].selectedVoiceId;
-                    Debug.Log($"✅ Restored voice ID from story data: {dialogues[i].selectedVoiceId}");
-                }
-                else
-                {
-                    dialogues[i].selectedVoiceId = VoiceLibrary.GetDefaultVoice().voiceId;
-                    VoiceStorageManager.SaveVoiceSelection($"Dialogue_{i}", dialogues[i].selectedVoiceId);
-                    hasChanges = true;
-                }
+                Debug.Log($"ℹ️ Dialogue {i} '{dialogues[i].characterName}' has no voice - this is allowed");
+                // Keep it empty - no need to assign a default
+                dialogues[i].selectedVoiceId = ""; // This should stay empty
             }
-
             var voice = VoiceLibrary.GetVoiceById(dialogues[i].selectedVoiceId);
             Debug.Log($"   🎤 Dialogue {i}: '{dialogues[i].characterName}' → {voice.voiceName} ({dialogues[i].selectedVoiceId})");
         }
@@ -165,10 +151,91 @@ public static class DialogueStorage
             dialogues.RemoveAt(index);
             Debug.Log($"✅ DialogueStorage: Deleted dialogue {index} - {dialogue.characterName}: {dialogue.dialogueText}");
 
+            // ✅ CRITICAL FIX: Re-index all subsequent voice storage keys
+            ReindexVoiceStorageAfterDeletion(index);
+
             // ✅ Save story after deletion
             SaveCurrentStory();
         }
     }
+
+
+    // ✅ NEW: Re-index voice storage after deletion
+    private static void ReindexVoiceStorageAfterDeletion(int deletedIndex)
+    {
+        var dialogues = GetStoryDialogues();
+        if (dialogues == null) return;
+
+        string storyId = GetCurrentStoryId();
+
+        // For all dialogues after the deleted one, shift their voice storage down by one
+        for (int i = deletedIndex; i < dialogues.Count; i++)
+        {
+            string oldKey = $"{storyId}_Dialogue_{i + 1}_VoiceId";
+            string newKey = $"{storyId}_Dialogue_{i}_VoiceId";
+
+            string voiceId = TeacherPrefs.GetString(oldKey, "");
+
+            if (!string.IsNullOrEmpty(voiceId))
+            {
+                // Move the voice from old position to new position
+                TeacherPrefs.SetString(newKey, voiceId);
+                TeacherPrefs.DeleteKey(oldKey);
+                Debug.Log($"🔄 Re-indexed voice: {oldKey} → {newKey} ({voiceId})");
+            }
+            else
+            {
+                // Clear the new position if no voice exists
+                TeacherPrefs.DeleteKey(newKey);
+            }
+        }
+
+        // Delete the last key (which is now empty)
+        string lastKey = $"{storyId}_Dialogue_{dialogues.Count}_VoiceId";
+        TeacherPrefs.DeleteKey(lastKey);
+
+        TeacherPrefs.Save();
+    }
+
+
+    // ✅ NEW: Helper method to get current story ID (extracted from existing code)
+    private static string GetCurrentStoryId()
+    {
+        var story = StoryManager.Instance?.GetCurrentStory();
+        if (story != null && !string.IsNullOrEmpty(story.storyId))
+        {
+            return story.storyId;
+        }
+
+        string userRole = PlayerPrefs.GetString("UserRole", "student");
+        if (userRole.ToLower() == "student")
+        {
+            string storyJson = StudentPrefs.GetString("CurrentStoryData", "");
+            if (!string.IsNullOrEmpty(storyJson))
+            {
+                try
+                {
+                    var studentStory = JsonUtility.FromJson<StoryData>(storyJson);
+                    if (!string.IsNullOrEmpty(studentStory.storyId))
+                    {
+                        return studentStory.storyId;
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    Debug.LogError($"Error parsing student story: {ex.Message}");
+                }
+            }
+        }
+
+        if (story != null && story.storyIndex >= 0)
+        {
+            return $"Story_{story.storyIndex}";
+        }
+
+        return "CurrentStory";
+    }
+
 
     public static List<DialogueLine> GetAllDialogues()
     {
@@ -344,4 +411,39 @@ public static class DialogueStorage
 
         Debug.Log("=== END DEBUG ===");
     }
+
+    // ✅ NEW: Debug method to check voice storage alignment
+    public static void DebugVoiceStorageAlignment()
+    {
+        var dialogues = GetAllDialogues();
+        string storyId = GetCurrentStoryId();
+
+        Debug.Log("=== VOICE STORAGE ALIGNMENT CHECK ===");
+        Debug.Log($"Total Dialogues: {dialogues.Count}");
+
+        for (int i = 0; i < dialogues.Count; i++)
+        {
+            string storageKey = $"{storyId}_Dialogue_{i}_VoiceId";
+            string storedVoiceId = TeacherPrefs.GetString(storageKey, "NOT_FOUND");
+            string memoryVoiceId = dialogues[i].selectedVoiceId ?? "";
+
+            var storedVoice = VoiceLibrary.GetVoiceById(storedVoiceId);
+            var memoryVoice = VoiceLibrary.GetVoiceById(memoryVoiceId);
+
+            bool matches = storedVoiceId == memoryVoiceId;
+
+            Debug.Log($"Dialogue {i}: '{dialogues[i].characterName}'");
+            Debug.Log($"  Memory: {memoryVoiceId} ({memoryVoice.voiceName})");
+            Debug.Log($"  Storage: {storedVoiceId} ({storedVoice.voiceName})");
+            Debug.Log($"  Match: {matches}");
+            Debug.Log($"  Storage Key: {storageKey}");
+
+            if (!matches)
+            {
+                Debug.LogError($"❌ MISMATCH at index {i}!");
+            }
+        }
+        Debug.Log("=== END ALIGNMENT CHECK ===");
+    }
+
 }

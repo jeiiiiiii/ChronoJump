@@ -55,30 +55,46 @@ public class DialoguePlayer : MonoBehaviour
             ShowDialogue(0);
             Debug.Log($"✅ Loaded {dialogues.Count} dialogues for playback");
 
-            // ✅ Debug: Verify voice assignments
+            // ✅ FIXED: Debug: Verify voice assignments
             bool allVoicesValid = true;
             for (int i = 0; i < dialogues.Count; i++)
             {
                 var dialogue = dialogues[i];
 
-                // Check if voice ID is valid
+                // ✅ FIXED: Handle empty voice IDs properly
                 if (string.IsNullOrEmpty(dialogue.selectedVoiceId))
                 {
-                    Debug.LogError($"❌ Dialogue {i} '{dialogue.characterName}' has NO voice ID!");
-                    dialogue.selectedVoiceId = VoiceLibrary.GetDefaultVoice().voiceId;
-                    allVoicesValid = false;
+                    // This is VALID - means "No Voice" was intentionally selected
+                    Debug.Log($"🔇 Dialogue {i} '{dialogue.characterName}' - No voice selected (will skip TTS)");
+                    // DON'T assign default voice - keep it empty!
                 }
+                else
+                {
+                    // Validate that non-empty voice IDs exist in library
+                    var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
+                    if (voice == null || VoiceLibrary.IsNoVoice(voice.voiceId))
+                    {
+                        Debug.LogWarning($"⚠️ Dialogue {i} '{dialogue.characterName}' has invalid voice ID: {dialogue.selectedVoiceId}");
+                        allVoicesValid = false;
 
-                var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
-                Debug.Log($"🎤 Dialogue {i}: '{dialogue.characterName}' → {voice.voiceName} (ID: {dialogue.selectedVoiceId})");
+                        // Optional: You could set it to empty here if you want to auto-fix invalid IDs
+                        // dialogue.selectedVoiceId = "";
+                    }
+                    else
+                    {
+                        Debug.Log($"🎤 Dialogue {i}: '{dialogue.characterName}' → {voice.voiceName} (ID: {dialogue.selectedVoiceId})");
+                    }
+                }
             }
+
 
             if (!allVoicesValid)
             {
-                Debug.LogWarning("⚠️ Some dialogues had missing voices - assigned defaults");
-                // Save to persist the default assignments
+                Debug.LogWarning("⚠️ Some dialogues had invalid voices - they will be treated as 'No Voice'");
+                // Save to persist any corrections
                 DialogueStorage.LoadAllVoices();
             }
+
         }
         else
         {
@@ -109,45 +125,53 @@ public class DialoguePlayer : MonoBehaviour
 
 
     // LoadDialogue.cs - FIXED ShowDialogue method
-// Replace your existing ShowDialogue method with this:
+    // Replace your existing ShowDialogue method with this:
 
-void ShowDialogue(int index)
-{
-    if (dialogues == null || index >= dialogues.Count) return;
-
-    var dialogue = dialogues[index];
-    Debug.Log($"💬 Showing dialogue {index + 1}/{dialogues.Count}: {dialogue.characterName} - {dialogue.dialogueText}");
-
-    dialogueText.text = $"{dialogue.characterName}: {dialogue.dialogueText}";
-    UpdateCharacterImages(dialogue.characterName);
-
-    // ✅ CRITICAL FIX: Find the audio file using the correct voice
-    var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
-    Debug.Log($"🔍 Looking for audio - Character: '{dialogue.characterName}', Voice: {voice.voiceName}, Index: {index}");
-
-    // Try to find existing audio file
-    string audioPath = FindAudioFile(dialogue, index);
-    
-    if (!string.IsNullOrEmpty(audioPath) && System.IO.File.Exists(audioPath))
+    void ShowDialogue(int index)
     {
-        dialogue.audioFilePath = audioPath;
-        dialogue.hasAudio = true;
-        Debug.Log($"✅ Found audio file: {audioPath}");
-        
-        // Play the audio
-        StartCoroutine(PlayDialogueAudio(dialogue));
+        if (dialogues == null || index >= dialogues.Count) return;
+
+        var dialogue = dialogues[index];
+        Debug.Log($"💬 Showing dialogue {index + 1}/{dialogues.Count}: {dialogue.characterName} - {dialogue.dialogueText}");
+
+        dialogueText.text = $"{dialogue.characterName}: {dialogue.dialogueText}";
+        UpdateCharacterImages(dialogue.characterName);
+
+        // ✅ CRITICAL FIX: Find the audio file using the correct voice
+        var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
+        Debug.Log($"🔍 Looking for audio - Character: '{dialogue.characterName}', Voice: {voice.voiceName}, Index: {index}");
+
+        // Try to find existing audio file
+        string audioPath = FindAudioFile(dialogue, index);
+
+        if (!string.IsNullOrEmpty(audioPath) && System.IO.File.Exists(audioPath))
+        {
+            dialogue.audioFilePath = audioPath;
+            dialogue.hasAudio = true;
+            Debug.Log($"✅ Found audio file: {audioPath}");
+
+            // Play the audio
+            StartCoroutine(PlayDialogueAudio(dialogue));
+        }
+        else
+        {
+            Debug.LogWarning($"⚠️ No audio found for dialogue: {dialogue.characterName}");
+            Debug.LogWarning($"   Expected voice: {voice.voiceName} (ID: {dialogue.selectedVoiceId})");
+            Debug.LogWarning($"   Searched path pattern: dialogue_{index}_{SanitizeFileName(dialogue.characterName)}_{voice.voiceName}_*.mp3");
+        }
     }
-    else
-    {
-        Debug.LogWarning($"⚠️ No audio found for dialogue: {dialogue.characterName}");
-        Debug.LogWarning($"   Expected voice: {voice.voiceName} (ID: {dialogue.selectedVoiceId})");
-        Debug.LogWarning($"   Searched path pattern: dialogue_{index}_{SanitizeFileName(dialogue.characterName)}_{voice.voiceName}_*.mp3");
-    }
-}
+
 
     // ✅ NEW: Find audio file for a specific dialogue
     string FindAudioFile(DialogueLine dialogue, int dialogueIndex)
     {
+        // ✅ FIXED: If no voice is selected, don't look for audio files
+        if (string.IsNullOrEmpty(dialogue.selectedVoiceId) || VoiceLibrary.IsNoVoice(dialogue.selectedVoiceId))
+        {
+            Debug.Log($"🔇 Dialogue {dialogueIndex}: '{dialogue.characterName}' - No voice selected, skipping audio search");
+            return null;
+        }
+        
         try
         {
             // Get the audio directory
