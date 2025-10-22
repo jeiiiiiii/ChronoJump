@@ -49,6 +49,9 @@ public class SumerianScene1 : MonoBehaviour
     public Sprite ChronoSmile;
     public Sprite ChronoThinking;
 
+    public Animator chronoAnimator;
+    public Animator playerAnimator;
+
     // ======= VOICE NARRATION ADDITION #1 =======
     // Add these two variables for voice narration
     public AudioSource audioSource;
@@ -268,20 +271,18 @@ public class SumerianScene1 : MonoBehaviour
         ChronoFulldrawnSprite.enabled = false;
         PastBG.enabled = true;
         NewBG.enabled = false;
-        
+
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
-        // ======= VOICE NARRATION ADDITION #2 =======
-        // This is the CORE voice narration code - plays audio for current dialogue
+        // Voice narration code
         if (audioSource != null && dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
         {
             audioSource.clip = dialogueClips[currentDialogueIndex];
             audioSource.Play();
         }
-        // ==========================================
 
-        // Your existing sprite logic
+        // Animation logic using Play() instead of SetTrigger()
         switch (currentDialogueIndex)
         {
             case 0:
@@ -289,48 +290,87 @@ public class SumerianScene1 : MonoBehaviour
                 PlayercharacterRenderer.enabled = false;
                 ChronocharacterRenderer.enabled = false;
                 break;
+
             case 1:
                 ChronoFulldrawnSprite.enabled = true;
                 PlayercharacterRenderer.enabled = true;
-                PlayercharacterRenderer.sprite = PlayerEager;
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Eager", 0, 0f);
                 break;
+
             case 2:
-                PlayercharacterRenderer.sprite = PlayerEager;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 ChronocharacterRenderer.enabled = true;
                 PastBG.enabled = false;
                 NewBG.enabled = true;
                 break;
+
             case 3:
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Smiling", 0, 0f);
                 PastBG.enabled = true;
                 NewBG.enabled = false;
                 break;
+
             case 4:
                 EnkicharacterRenderer.enabled = true;
                 break;
+
             case 5:
-                ChronocharacterRenderer.sprite = EnkiPokerface;
-                PlayercharacterRenderer.sprite = PlayerSmile;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Enki_Pokerface", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 break;
+
             case 6:
-                ChronocharacterRenderer.sprite = EnkiKind;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Enki_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Smiling", 0, 0f);
                 break;
+
             case 7:
-                ChronocharacterRenderer.sprite = ChronoCheerful;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
                 break;
+
             case 8:
-                ChronocharacterRenderer.sprite = EnkiPokerface;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Enki_Talking", 0, 0f);
                 break;
+
             case 9:
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Reflective", 0, 0f);
                 break;
+
+            case 10:
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Thinking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
+                break;
+
             case 11:
-                PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = EnkiKind;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Enki_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Eager", 0, 0f);
                 break;
+
             case 12:
-                PlayercharacterRenderer.sprite = PlayerSmile;
-                ChronocharacterRenderer.sprite = ChronoThinking;
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Reflective", 0, 0f);
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
                 break;
         }
     }

@@ -1,0 +1,819 @@
+fileFormatVersion: 2
+guid: 4f995a16a7bfd9640aa7176a13093285
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1816317046380145974
+    second: Chrono - Sad_0
+  - first:
+      213: -2753409566541015305
+    second: Chrono - Sad_1
+  - first:
+      213: 7170162440828818691
+    second: Chrono - Sad_2
+  - first:
+      213: 6622731891028674186
+    second: Chrono - Sad_3
+  - first:
+      213: -7105046378342927016
+    second: Chrono - Sad_4
+  - first:
+      213: -6857920377901590403
+    second: Chrono - Sad_5
+  - first:
+      213: 3968209349967658676
+    second: Chrono - Sad_6
+  - first:
+      213: -7499793055131355037
+    second: Chrono - Sad_7
+  - first:
+      213: -8671152817631491685
+    second: Chrono - Sad_8
+  - first:
+      213: -997168266655699925
+    second: Chrono - Sad_9
+  - first:
+      213: -4932412558564134238
+    second: Chrono - Sad_10
+  - first:
+      213: -2488398629757608030
+    second: Chrono - Sad_11
+  - first:
+      213: 740217266317442467
+    second: Chrono - Sad_12
+  - first:
+      213: -1176176279874120463
+    second: Chrono - Sad_13
+  - first:
+      213: 3446801474485440287
+    second: Chrono - Sad_14
+  - first:
+      213: -7956458126133738311
+    second: Chrono - Sad_15
+  - first:
+      213: -6685691547266466741
+    second: Chrono - Sad_16
+  - first:
+      213: 2147131209362386452
+    second: Chrono - Sad_17
+  - first:
+      213: -8417798016566194396
+    second: Chrono - Sad_18
+  - first:
+      213: -1524318049176037287
+    second: Chrono - Sad_19
+  - first:
+      213: 8287048918182558974
+    second: Chrono - Sad_20
+  - first:
+      213: 3947481012790919909
+    second: Chrono - Sad_21
+  - first:
+      213: -5505033031760419275
+    second: Chrono - Sad_22
+  - first:
+      213: 5193977208334537831
+    second: Chrono - Sad_23
+  - first:
+      213: -3930783161802834870
+    second: Chrono - Sad_24
+  - first:
+      213: 2515927667603928600
+    second: Chrono - Sad_25
+  - first:
+      213: 652874390444806906
+    second: Chrono - Sad_26
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Chrono - Sad_0
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 4219
+        width: 545
+        height: 779
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63da9fcfabad43910800000000000000
+      internalID: 1816317046380145974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_1
+      rect:
+        serializedVersion: 2
+        x: 1243
+        y: 4219
+        width: 545
+        height: 778
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f61921669ce9c9d0800000000000000
+      internalID: -2753409566541015305
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_2
+      rect:
+        serializedVersion: 2
+        x: 2268
+        y: 4225
+        width: 543
+        height: 767
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 305137330c8818360800000000000000
+      internalID: 7170162440828818691
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_3
+      rect:
+        serializedVersion: 2
+        x: 3295
+        y: 4227
+        width: 547
+        height: 750
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a864a6fe09ba8eb50800000000000000
+      internalID: 6622731891028674186
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_4
+      rect:
+        serializedVersion: 2
+        x: 4328
+        y: 4227
+        width: 552
+        height: 742
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 855b13a86fdc56d90800000000000000
+      internalID: -7105046378342927016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_5
+      rect:
+        serializedVersion: 2
+        x: 5369
+        y: 4228
+        width: 552
+        height: 753
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d78534940c5c3d0a0800000000000000
+      internalID: -6857920377901590403
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_6
+      rect:
+        serializedVersion: 2
+        x: 254
+        y: 3204
+        width: 551
+        height: 757
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4beb43b1169e11730800000000000000
+      internalID: 3968209349967658676
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_7
+      rect:
+        serializedVersion: 2
+        x: 1278
+        y: 3205
+        width: 550
+        height: 755
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36834f3b3f16be790800000000000000
+      internalID: -7499793055131355037
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_8
+      rect:
+        serializedVersion: 2
+        x: 2299
+        y: 3207
+        width: 550
+        height: 750
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9982ff3470e9a780800000000000000
+      internalID: -8671152817631491685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_9
+      rect:
+        serializedVersion: 2
+        x: 3316
+        y: 3204
+        width: 554
+        height: 747
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2ce1b4aeb85922f0800000000000000
+      internalID: -997168266655699925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_10
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 3195
+        width: 560
+        height: 758
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a2fb1939ec8c8bb0800000000000000
+      internalID: -4932412558564134238
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_11
+      rect:
+        serializedVersion: 2
+        x: 5325
+        y: 3196
+        width: 560
+        height: 769
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2af9abd51ae677dd0800000000000000
+      internalID: -2488398629757608030
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_12
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 2173
+        width: 554
+        height: 774
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ad367f8ea7c54a00800000000000000
+      internalID: 740217266317442467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_13
+      rect:
+        serializedVersion: 2
+        x: 1226
+        y: 2174
+        width: 549
+        height: 772
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f4dcd4b7e16dafe0800000000000000
+      internalID: -1176176279874120463
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_14
+      rect:
+        serializedVersion: 2
+        x: 2255
+        y: 2176
+        width: 550
+        height: 765
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f1f4ff9ddaf75df20800000000000000
+      internalID: 3446801474485440287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_15
+      rect:
+        serializedVersion: 2
+        x: 3294
+        y: 2164
+        width: 555
+        height: 776
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b447894d7bf49190800000000000000
+      internalID: -7956458126133738311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_16
+      rect:
+        serializedVersion: 2
+        x: 4332
+        y: 2166
+        width: 559
+        height: 781
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4cb957c5f6a733a0800000000000000
+      internalID: -6685691547266466741
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_17
+      rect:
+        serializedVersion: 2
+        x: 5360
+        y: 2166
+        width: 557
+        height: 787
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41e233c75742ccd10800000000000000
+      internalID: 2147131209362386452
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_18
+      rect:
+        serializedVersion: 2
+        x: 234
+        y: 1143
+        width: 554
+        height: 782
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42f8597ad49fd2b80800000000000000
+      internalID: -8417798016566194396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_19
+      rect:
+        serializedVersion: 2
+        x: 1253
+        y: 1143
+        width: 555
+        height: 777
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 958552a7fc888dae0800000000000000
+      internalID: -1524318049176037287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_20
+      rect:
+        serializedVersion: 2
+        x: 2277
+        y: 1145
+        width: 554
+        height: 777
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: efc7e8c9513810370800000000000000
+      internalID: 8287048918182558974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_21
+      rect:
+        serializedVersion: 2
+        x: 3301
+        y: 1145
+        width: 554
+        height: 777
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e28005011548c630800000000000000
+      internalID: 3947481012790919909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_22
+      rect:
+        serializedVersion: 2
+        x: 4326
+        y: 1146
+        width: 552
+        height: 776
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 536e021ef913a93b0800000000000000
+      internalID: -5505033031760419275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_23
+      rect:
+        serializedVersion: 2
+        x: 5344
+        y: 1147
+        width: 556
+        height: 769
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 764514a80c6b41840800000000000000
+      internalID: 5193977208334537831
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_24
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 123
+        width: 558
+        height: 748
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4cb7af5a8d0379c0800000000000000
+      internalID: -3930783161802834870
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_25
+      rect:
+        serializedVersion: 2
+        x: 1221
+        y: 123
+        width: 561
+        height: 741
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 816fb1c32ee5ae220800000000000000
+      internalID: 2515927667603928600
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Sad_26
+      rect:
+        serializedVersion: 2
+        x: 2244
+        y: 123
+        width: 561
+        height: 752
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af2996d8cc97f0900800000000000000
+      internalID: 652874390444806906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Chrono - Sad_0: 1816317046380145974
+      Chrono - Sad_1: -2753409566541015305
+      Chrono - Sad_10: -4932412558564134238
+      Chrono - Sad_11: -2488398629757608030
+      Chrono - Sad_12: 740217266317442467
+      Chrono - Sad_13: -1176176279874120463
+      Chrono - Sad_14: 3446801474485440287
+      Chrono - Sad_15: -7956458126133738311
+      Chrono - Sad_16: -6685691547266466741
+      Chrono - Sad_17: 2147131209362386452
+      Chrono - Sad_18: -8417798016566194396
+      Chrono - Sad_19: -1524318049176037287
+      Chrono - Sad_2: 7170162440828818691
+      Chrono - Sad_20: 8287048918182558974
+      Chrono - Sad_21: 3947481012790919909
+      Chrono - Sad_22: -5505033031760419275
+      Chrono - Sad_23: 5193977208334537831
+      Chrono - Sad_24: -3930783161802834870
+      Chrono - Sad_25: 2515927667603928600
+      Chrono - Sad_26: 652874390444806906
+      Chrono - Sad_3: 6622731891028674186
+      Chrono - Sad_4: -7105046378342927016
+      Chrono - Sad_5: -6857920377901590403
+      Chrono - Sad_6: 3968209349967658676
+      Chrono - Sad_7: -7499793055131355037
+      Chrono - Sad_8: -8671152817631491685
+      Chrono - Sad_9: -997168266655699925
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

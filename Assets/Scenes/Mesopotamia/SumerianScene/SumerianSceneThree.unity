@@ -269,6 +269,7 @@ GameObject:
   - component: {fileID: 305678652}
   - component: {fileID: 305678651}
   - component: {fileID: 305678650}
+  - component: {fileID: 305678653}
   m_Layer: 5
   m_Name: PlayerIm
   m_TagString: Untagged
@@ -388,6 +389,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 305678648}
   m_CullTransparentMesh: 1
+--- !u!95 &305678653
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 305678648}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1eeb02e71cbc75e4c81b8673dfff793d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &321097497
 GameObject:
   m_ObjectHideFlags: 0
@@ -1669,6 +1692,7 @@ GameObject:
   - component: {fileID: 808504573}
   - component: {fileID: 808504572}
   - component: {fileID: 808504571}
+  - component: {fileID: 808504574}
   m_Layer: 5
   m_Name: ChronoIM
   m_TagString: Untagged
@@ -1692,7 +1716,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -768, y: -374}
+  m_AnchoredPosition: {x: -768, y: -333}
   m_SizeDelta: {x: 326.93, y: 345.09}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &808504571
@@ -1788,6 +1812,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 808504569}
   m_CullTransparentMesh: 1
+--- !u!95 &808504574
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808504569}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3e46b261b4fde1149a8ef32b97fa2085, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &875935520
 GameObject:
   m_ObjectHideFlags: 0
@@ -3459,6 +3505,8 @@ MonoBehaviour:
   EnkiPokerface: {fileID: 1077576088502714225, guid: bab085adb23a3e04eb12e22f8d36cec8, type: 3}
   EnkiStern: {fileID: -2357418720243824720, guid: 80e0140b401b85947aec87723f1f43c2, type: 3}
   EnkiTesting: {fileID: -9032671620723716314, guid: 5ea8c885caa4aee46bd8617016edca1e, type: 3}
+  chronoAnimator: {fileID: 808504574}
+  playerAnimator: {fileID: 305678653}
   audioSource: {fileID: 1999673391}
   dialogueClips:
   - {fileID: 8300000, guid: 183a386c2f7b25d488f5378fd1743a3e, type: 3}
