@@ -137,7 +137,6 @@ public class ElevenLabsTTSManager : MonoBehaviour
         return "unknown_story";
     }
 
-    // In TTSManager.cs - Update the GenerateTTS method
     public IEnumerator GenerateTTS(DialogueLine dialogue, Action<bool, string> onComplete)
     {
         if (string.IsNullOrEmpty(dialogue.selectedVoiceId) || VoiceLibrary.IsNoVoice(dialogue.selectedVoiceId))
@@ -149,7 +148,19 @@ public class ElevenLabsTTSManager : MonoBehaviour
             yield break;
         }
 
+        // ✅ CRITICAL FIX: Get dialogue index BEFORE any file operations
+        int dialogueIndex = GetDialogueIndex(dialogue);
+        if (dialogueIndex < 0)
+        {
+            Debug.LogError($"❌ Could not find dialogue index for: {dialogue.characterName}");
+            onComplete?.Invoke(false, "Dialogue index not found");
+            yield break;
+        }
 
+        // ✅ NEW: Delete ALL existing audio files for this dialogue index first
+        DeleteAllAudioFilesForDialogue(dialogueIndex, dialogue.characterName);
+
+        // Rest of your existing GenerateTTS code...
         if (string.IsNullOrEmpty(apiKey) || apiKey == "YOUR_API_KEY_HERE")
         {
             Debug.LogError("ElevenLabs API Key not set or invalid!");
@@ -162,7 +173,7 @@ public class ElevenLabsTTSManager : MonoBehaviour
         var voice = VoiceLibrary.GetVoiceById(voiceId);
         string url = apiUrl + voiceId;
 
-        Debug.Log($"🎤 Generating TTS for '{dialogue.characterName}' using voice: {voice.voiceName}");
+        Debug.Log($"🎤 Generating TTS for '{dialogue.characterName}' using voice: {voice.voiceName} (Index: {dialogueIndex})");
 
         string jsonPayload = $@"{{
         ""text"": ""{EscapeJson(dialogue.dialogueText)}"",
@@ -190,8 +201,8 @@ public class ElevenLabsTTSManager : MonoBehaviour
                 int storyIndex = GetCurrentStoryIndex();
                 string sanitizedName = SanitizeFileName(dialogue.characterName);
 
-                // ✅ FIXED: Use consistent filename WITHOUT timestamp
-                int dialogueIndex = GetDialogueIndex(dialogue);
+                // ✅ FIXED: Use the dialogueIndex variable that's already declared above
+                // Remove this line: int dialogueIndex = GetDialogueIndex(dialogue);
 
                 // ✅ NEW: Delete existing audio files for this dialogue index first
                 DeleteExistingAudioFiles(dialogueIndex, sanitizedName, voice.voiceName);
@@ -218,7 +229,6 @@ public class ElevenLabsTTSManager : MonoBehaviour
 
                 onComplete?.Invoke(true, relativePath);
             }
-
             else
             {
                 Debug.LogError($"❌ TTS failed for '{dialogue.characterName}': {request.error}");
@@ -226,6 +236,54 @@ public class ElevenLabsTTSManager : MonoBehaviour
             }
         }
     }
+
+
+    // ✅ NEW: Comprehensive method to delete ALL audio files for a specific dialogue index
+    private void DeleteAllAudioFilesForDialogue(int dialogueIndex, string characterName)
+    {
+        try
+        {
+            string audioDir = GetAudioSaveDirectory();
+            if (!Directory.Exists(audioDir)) return;
+
+            string sanitizedName = SanitizeFileName(characterName);
+
+            // Delete ALL possible audio file patterns for this dialogue index
+            string[] patterns = {
+            $"dialogue_{dialogueIndex}_{sanitizedName}_*.mp3",  // All voices for this character
+            $"dialogue_{dialogueIndex}_*.mp3"                   // Any file with this index
+        };
+
+            int deletedCount = 0;
+            foreach (string pattern in patterns)
+            {
+                string[] files = Directory.GetFiles(audioDir, pattern);
+                foreach (string file in files)
+                {
+                    try
+                    {
+                        File.Delete(file);
+                        deletedCount++;
+                        Debug.Log($"🗑️ Deleted audio file during voice change: {Path.GetFileName(file)}");
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Debug.LogWarning($"⚠️ Could not delete audio file {file}: {ex.Message}");
+                    }
+                }
+            }
+
+            if (deletedCount > 0)
+            {
+                Debug.Log($"✅ Deleted {deletedCount} audio files for dialogue {dialogueIndex} during voice change");
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Error deleting audio files during voice change: {ex.Message}");
+        }
+    }
+
 
     // ✅ NEW: Delete existing audio files for a dialogue to prevent duplicates
     private void DeleteExistingAudioFiles(int dialogueIndex, string characterName, string voiceName)

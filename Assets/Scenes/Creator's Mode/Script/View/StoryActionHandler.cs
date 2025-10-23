@@ -215,7 +215,6 @@ public class StoryActionHandler : MonoBehaviour
         }
     }
 
-    // ✅ NEW: Coroutine to properly load story with voices before viewing
     private IEnumerator LoadStoryAndView()
     {
         if (loadingIndicator != null)
@@ -231,40 +230,40 @@ public class StoryActionHandler : MonoBehaviour
         Debug.Log("=== LOADING STORY FOR VIEWING ===");
         Debug.Log($"📖 Story: {story.storyTitle}");
         Debug.Log($"📊 Story Index: {story.storyIndex}");
+        Debug.Log($"🆔 Story ID: {story.storyId}");
 
-        // ✅ CRITICAL: Load voices from persistent storage
-        Debug.Log("🎤 Loading voice assignments from TeacherPrefs...");
-        DialogueStorage.LoadAllVoices();
-
-        // Wait a frame to ensure everything is loaded
-        yield return null;
-
-        // ✅ Verify dialogues and voices are loaded
-        var dialogues = DialogueStorage.GetAllDialogues();
-        Debug.Log($"✅ Loaded {dialogues.Count} dialogues");
-
-        if (dialogues.Count > 0)
+        // ✅ CRITICAL FIX: Don't call LoadAllVoices() - voices are already in story.dialogues from Firebase
+        var dialogues = story.dialogues;
+        if (dialogues == null || dialogues.Count == 0)
         {
-            Debug.Log("🎤 Voice assignments:");
-            for (int i = 0; i < dialogues.Count; i++)
-            {
-                var dialogue = dialogues[i];
-                if (string.IsNullOrEmpty(dialogue.selectedVoiceId))
-                {
-                    Debug.LogWarning($"⚠️ Dialogue {i} '{dialogue.characterName}' has NO voice ID! Assigning default...");
-                    dialogue.selectedVoiceId = VoiceLibrary.GetDefaultVoice().voiceId;
-                }
-
-                var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
-                Debug.Log($"   🎤 [{i}] '{dialogue.characterName}' → {voice.voiceName} ({dialogue.selectedVoiceId})");
-            }
+            Debug.LogWarning("⚠️ No dialogues found in story!");
         }
         else
         {
-            Debug.LogWarning("⚠️ No dialogues found for this story!");
+            Debug.Log($"✅ Story has {dialogues.Count} dialogues with voices:");
+
+            for (int i = 0; i < dialogues.Count; i++)
+            {
+                var dialogue = dialogues[i];
+
+                if (string.IsNullOrEmpty(dialogue.selectedVoiceId))
+                {
+                    Debug.Log($"   🔇 [{i}] '{dialogue.characterName}' → No Voice (intentional)");
+                }
+                else
+                {
+                    var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
+                    Debug.Log($"   🎤 [{i}] '{dialogue.characterName}' → {voice.voiceName} ({dialogue.selectedVoiceId})");
+                }
+            }
+
+            Debug.Log("✅ All dialogues have voice IDs from Firebase - no need to load from TeacherPrefs");
         }
 
         Debug.Log("=== STORY LOADING COMPLETE ===");
+
+        // Wait a frame to ensure everything is loaded
+        yield return null;
 
         if (loadingIndicator != null)
             loadingIndicator.SetActive(false);
@@ -272,6 +271,8 @@ public class StoryActionHandler : MonoBehaviour
         // Now transition to GameScene
         SceneManager.LoadScene("GameScene");
     }
+
+
 
     public void OnPublishedStoriesClicked()
     {
@@ -437,4 +438,31 @@ public class StoryActionHandler : MonoBehaviour
         SetCurrentStory(storyIndex);
         UpdateButtonStates();
     }
+
+    // Add this in StoryActionHandler.cs after loading the story
+    [ContextMenu("Debug Story Voice IDs")]
+    public void DebugStoryVoiceIds()
+    {
+        var story = StoryManager.Instance.currentStory;
+        if (story == null)
+        {
+            Debug.LogError("No current story!");
+            return;
+        }
+
+        Debug.Log($"=== STORY VOICE DEBUG: {story.storyTitle} ===");
+        Debug.Log($"Story ID: {story.storyId}");
+        Debug.Log($"Dialogues count: {story.dialogues?.Count ?? 0}");
+
+        if (story.dialogues != null)
+        {
+            for (int i = 0; i < story.dialogues.Count; i++)
+            {
+                var d = story.dialogues[i];
+                Debug.Log($"[{i}] '{d.characterName}' - Voice ID: '{d.selectedVoiceId}' (IsNull: {string.IsNullOrEmpty(d.selectedVoiceId)})");
+            }
+        }
+        Debug.Log("=== END DEBUG ===");
+    }
+
 }

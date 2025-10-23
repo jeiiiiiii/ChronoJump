@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using UnityEngine.Networking;
+using System.Linq;
 
 public class DialoguePlayer : MonoBehaviour
 {
@@ -25,9 +26,6 @@ public class DialoguePlayer : MonoBehaviour
     private StoryData currentStory;
     private bool isPlayingAudio = false;
 
-    // LoadDialogue.cs - FIXED Start() method
-    // Replace your existing Start() method with this:
-
     void Start()
     {
         Debug.Log("🎬 DialoguePlayer Started");
@@ -42,59 +40,45 @@ public class DialoguePlayer : MonoBehaviour
         // ✅ Load story data first
         LoadStoryData();
 
-        // ✅ CRITICAL FIX: Load voices BEFORE getting dialogues
-        // This ensures voice IDs are populated from TeacherPrefs
-        Debug.Log("🎤 Loading voice assignments from persistent storage...");
-        DialogueStorage.LoadAllVoices();
-
-        // ✅ Now get the dialogues (they should have voice IDs loaded)
+        // ✅ Get the dialogues (they should already have voice IDs from Firebase)
         dialogues = DialogueStorage.GetAllDialogues();
 
         if (dialogues.Count > 0)
         {
-            ShowDialogue(0);
-            Debug.Log($"✅ Loaded {dialogues.Count} dialogues for playback");
+            // ✅ CRITICAL FIX: Check if voices are already loaded from Firebase
+            bool hasVoicesFromFirebase = dialogues.All(d =>
+                !string.IsNullOrEmpty(d.selectedVoiceId) ||
+                string.IsNullOrEmpty(d.selectedVoiceId) // Empty is valid = "No Voice"
+            );
 
-            // ✅ FIXED: Debug: Verify voice assignments
-            bool allVoicesValid = true;
-            for (int i = 0; i < dialogues.Count; i++)
+            if (hasVoicesFromFirebase)
             {
-                var dialogue = dialogues[i];
+                Debug.Log("✅ Voices already loaded from Firebase - skipping TeacherPrefs load");
 
-                // ✅ FIXED: Handle empty voice IDs properly
-                if (string.IsNullOrEmpty(dialogue.selectedVoiceId))
+                // Just verify and log
+                for (int i = 0; i < dialogues.Count; i++)
                 {
-                    // This is VALID - means "No Voice" was intentionally selected
-                    Debug.Log($"🔇 Dialogue {i} '{dialogue.characterName}' - No voice selected (will skip TTS)");
-                    // DON'T assign default voice - keep it empty!
-                }
-                else
-                {
-                    // Validate that non-empty voice IDs exist in library
-                    var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
-                    if (voice == null || VoiceLibrary.IsNoVoice(voice.voiceId))
+                    var dialogue = dialogues[i];
+                    if (string.IsNullOrEmpty(dialogue.selectedVoiceId))
                     {
-                        Debug.LogWarning($"⚠️ Dialogue {i} '{dialogue.characterName}' has invalid voice ID: {dialogue.selectedVoiceId}");
-                        allVoicesValid = false;
-
-                        // Optional: You could set it to empty here if you want to auto-fix invalid IDs
-                        // dialogue.selectedVoiceId = "";
+                        Debug.Log($"🔇 Dialogue {i} '{dialogue.characterName}' - No voice selected (will skip TTS)");
                     }
                     else
                     {
+                        var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
                         Debug.Log($"🎤 Dialogue {i}: '{dialogue.characterName}' → {voice.voiceName} (ID: {dialogue.selectedVoiceId})");
                     }
                 }
             }
-
-
-            if (!allVoicesValid)
+            else
             {
-                Debug.LogWarning("⚠️ Some dialogues had invalid voices - they will be treated as 'No Voice'");
-                // Save to persist any corrections
+                // Only load from TeacherPrefs if voices are missing
+                Debug.Log("🎤 Loading voice assignments from persistent storage...");
                 DialogueStorage.LoadAllVoices();
             }
 
+            ShowDialogue(0);
+            Debug.Log($"✅ Loaded {dialogues.Count} dialogues for playback");
         }
         else
         {
@@ -121,7 +105,6 @@ public class DialoguePlayer : MonoBehaviour
         LoadStoryAssets();
         LoadQuizQuestions();
     }
-
 
 
     // LoadDialogue.cs - FIXED ShowDialogue method

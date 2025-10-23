@@ -62,8 +62,7 @@ public static class VoiceStorageManager
         Debug.Log($"💾 Saved {dialogues.Count} dialogue voices");
     }
 
-    // Load all dialogue voices for the current story
-    public static void LoadAllDialogueVoices(List<DialogueLine> dialogues)
+    public static void LoadAllDialogueVoices(List<DialogueLine> dialogues, bool overwriteExisting = true)
     {
         if (dialogues == null || dialogues.Count == 0)
         {
@@ -73,12 +72,21 @@ public static class VoiceStorageManager
 
         string storyId = GetCurrentStoryId();
 
-        Debug.Log($"📖 === LOADING ALL VOICES ===");
+        Debug.Log($"📖 === LOADING VOICES FROM TEACHERPREFS ===");
         Debug.Log($"📖 Story ID: {storyId}");
+        Debug.Log($"📖 Overwrite Existing: {overwriteExisting}");
         Debug.Log($"📖 Loading voices for {dialogues.Count} dialogues...");
 
         for (int i = 0; i < dialogues.Count; i++)
         {
+            // ✅ CRITICAL FIX: Skip if voice already exists and we don't want to overwrite
+            if (!overwriteExisting && !string.IsNullOrEmpty(dialogues[i].selectedVoiceId))
+            {
+                var existingVoice = VoiceLibrary.GetVoiceById(dialogues[i].selectedVoiceId);
+                Debug.Log($"📖   Dialogue {i}: Keeping existing voice → {existingVoice.voiceName} (from Firebase)");
+                continue;
+            }
+
             string loadedVoiceId = LoadVoiceSelection($"Dialogue_{i}");
 
             // Update the dialogue with loaded voice
@@ -90,6 +98,7 @@ public static class VoiceStorageManager
 
         Debug.Log($"📖 === LOAD COMPLETE ===");
     }
+
 
     private static string GetCurrentStoryId()
     {

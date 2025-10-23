@@ -91,7 +91,6 @@ public static class DialogueStorage
         SaveCurrentStory();
     }
 
-    // ✅ CRITICAL: Load all voices from persistent storage
     public static void LoadAllVoices()
     {
         var dialogues = GetStoryDialogues();
@@ -101,32 +100,39 @@ public static class DialogueStorage
             return;
         }
 
-        Debug.Log($"🎤 Loading voices for {dialogues.Count} dialogues from VoiceStorageManager...");
+        Debug.Log($"🎤 Checking voices for {dialogues.Count} dialogues...");
 
-        // Load voices from TeacherPrefs
-        VoiceStorageManager.LoadAllDialogueVoices(dialogues);
+        bool needsLoadingFromStorage = false;
+        int voicesAlreadySet = 0;
 
-        // ✅ FIX: For students, verify we actually have voice IDs
-        bool hasChanges = false;
+        // ✅ CRITICAL FIX: Check if voices are ALREADY in the dialogue data (from Firebase)
         for (int i = 0; i < dialogues.Count; i++)
         {
-            if (string.IsNullOrEmpty(dialogues[i].selectedVoiceId))
+            if (!string.IsNullOrEmpty(dialogues[i].selectedVoiceId))
             {
-                Debug.Log($"ℹ️ Dialogue {i} '{dialogues[i].characterName}' has no voice - this is allowed");
-                // Keep it empty - no need to assign a default
-                dialogues[i].selectedVoiceId = ""; // This should stay empty
+                voicesAlreadySet++;
+                var voice = VoiceLibrary.GetVoiceById(dialogues[i].selectedVoiceId);
+                Debug.Log($"   ✅ Dialogue {i}: '{dialogues[i].characterName}' already has voice from Firebase → {voice.voiceName}");
             }
-            var voice = VoiceLibrary.GetVoiceById(dialogues[i].selectedVoiceId);
-            Debug.Log($"   🎤 Dialogue {i}: '{dialogues[i].characterName}' → {voice.voiceName} ({dialogues[i].selectedVoiceId})");
+            else
+            {
+                needsLoadingFromStorage = true;
+                Debug.Log($"   ⚠️ Dialogue {i}: '{dialogues[i].characterName}' has NO voice - will try loading from TeacherPrefs");
+            }
         }
 
-        // ✅ CRITICAL: Save story to persist voice assignments in StoryData
-        if (hasChanges)
+        // ✅ ONLY load from TeacherPrefs if voices are missing
+        if (needsLoadingFromStorage)
         {
-            Debug.Log("💾 Saving story to persist voice assignments...");
-            SaveCurrentStory();
+            Debug.Log($"🔄 Loading missing voices from TeacherPrefs ({voicesAlreadySet}/{dialogues.Count} already set from Firebase)...");
+            VoiceStorageManager.LoadAllDialogueVoices(dialogues, false); // false = don't overwrite existing
+        }
+        else
+        {
+            Debug.Log($"✅ All {dialogues.Count} dialogues have voices from Firebase - skipping TeacherPrefs load");
         }
     }
+
 
 
     public static void ClearDialogues()
@@ -470,12 +476,17 @@ public static class DialogueStorage
             string oldVoiceId = dialogues[index].selectedVoiceId;
             dialogues[index].selectedVoiceId = newVoiceId;
 
-            // Only invalidate audio if voice actually changed
+            // ✅ CRITICAL FIX: Always invalidate audio when voice changes
             if (oldVoiceId != newVoiceId)
             {
                 dialogues[index].hasAudio = false;
                 dialogues[index].audioFilePath = "";
                 dialogues[index].audioFileName = "";
+
+                // ✅ NEW: Delete old audio files when voice changes
+                DeleteDialogueAudioFiles(index, dialogues[index]);
+
+                Debug.Log($"🔇 Invalidated audio for dialogue {index} (voice changed from {oldVoiceId} to {newVoiceId})");
             }
 
             // Save to persistent storage
@@ -488,6 +499,7 @@ public static class DialogueStorage
             SaveCurrentStory();
         }
     }
+
 
 
     // ✅ Debug method
