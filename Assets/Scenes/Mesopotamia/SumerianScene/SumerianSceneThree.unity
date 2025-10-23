@@ -1974,6 +1974,7 @@ GameObject:
   - component: {fileID: 1130987367}
   - component: {fileID: 1130987366}
   - component: {fileID: 1130987365}
+  - component: {fileID: 1130987368}
   m_Layer: 5
   m_Name: NPCIM
   m_TagString: Untagged
@@ -1997,7 +1998,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -39, y: -9}
+  m_AnchoredPosition: {x: 35, y: -23}
   m_SizeDelta: {x: 1019.1, y: 961.26}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &1130987365
@@ -2093,6 +2094,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1130987363}
   m_CullTransparentMesh: 1
+--- !u!95 &1130987368
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1130987363}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d59196bf61877a847be22c1b6f8a6f8e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1170712473
 GameObject:
   m_ObjectHideFlags: 0
@@ -3507,6 +3530,7 @@ MonoBehaviour:
   EnkiTesting: {fileID: -9032671620723716314, guid: 5ea8c885caa4aee46bd8617016edca1e, type: 3}
   chronoAnimator: {fileID: 808504574}
   playerAnimator: {fileID: 305678653}
+  NPCFulldrawnAnimator: {fileID: 0}
   audioSource: {fileID: 1999673391}
   dialogueClips:
   - {fileID: 8300000, guid: 183a386c2f7b25d488f5378fd1743a3e, type: 3}

@@ -249,7 +249,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 2
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -301,10 +301,10 @@ TextureImporter:
       name: Player - Embarrassed_0
       rect:
         serializedVersion: 2
-        x: 178
-        y: 5175
-        width: 771
-        height: 865
+        x: 0
+        y: 5120
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -323,10 +323,10 @@ TextureImporter:
       name: Player - Embarrassed_1
       rect:
         serializedVersion: 2
-        x: 1202
-        y: 5175
-        width: 771
-        height: 865
+        x: 1024
+        y: 5120
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -345,10 +345,10 @@ TextureImporter:
       name: Player - Embarrassed_2
       rect:
         serializedVersion: 2
-        x: 2226
-        y: 5175
-        width: 772
-        height: 865
+        x: 2048
+        y: 5120
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -367,10 +367,10 @@ TextureImporter:
       name: Player - Embarrassed_3
       rect:
         serializedVersion: 2
-        x: 3250
-        y: 5175
-        width: 771
-        height: 865
+        x: 3072
+        y: 5120
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -389,10 +389,10 @@ TextureImporter:
       name: Player - Embarrassed_4
       rect:
         serializedVersion: 2
-        x: 4272
-        y: 5175
-        width: 774
-        height: 865
+        x: 4096
+        y: 5120
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -411,10 +411,10 @@ TextureImporter:
       name: Player - Embarrassed_5
       rect:
         serializedVersion: 2
-        x: 5272
-        y: 5175
-        width: 780
-        height: 853
+        x: 5120
+        y: 5120
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -433,10 +433,10 @@ TextureImporter:
       name: Player - Embarrassed_6
       rect:
         serializedVersion: 2
-        x: 6195
-        y: 5175
-        width: 844
-        height: 819
+        x: 6144
+        y: 5120
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -455,10 +455,10 @@ TextureImporter:
       name: Player - Embarrassed_7
       rect:
         serializedVersion: 2
-        x: 8
-        y: 4151
-        width: 884
-        height: 817
+        x: 0
+        y: 4096
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -477,10 +477,10 @@ TextureImporter:
       name: Player - Embarrassed_8
       rect:
         serializedVersion: 2
-        x: 1059
-        y: 4151
-        width: 857
-        height: 817
+        x: 1024
+        y: 4096
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -499,10 +499,10 @@ TextureImporter:
       name: Player - Embarrassed_9
       rect:
         serializedVersion: 2
-        x: 2058
-        y: 4151
-        width: 882
-        height: 817
+        x: 2048
+        y: 4096
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -521,10 +521,10 @@ TextureImporter:
       name: Player - Embarrassed_10
       rect:
         serializedVersion: 2
-        x: 3097
-        y: 4151
-        width: 867
-        height: 817
+        x: 3072
+        y: 4096
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -543,10 +543,10 @@ TextureImporter:
       name: Player - Embarrassed_11
       rect:
         serializedVersion: 2
-        x: 4109
-        y: 4151
-        width: 879
-        height: 817
+        x: 4096
+        y: 4096
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -565,10 +565,10 @@ TextureImporter:
       name: Player - Embarrassed_12
       rect:
         serializedVersion: 2
-        x: 5142
-        y: 4151
-        width: 870
-        height: 817
+        x: 5120
+        y: 4096
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -587,10 +587,10 @@ TextureImporter:
       name: Player - Embarrassed_13
       rect:
         serializedVersion: 2
-        x: 6164
-        y: 4151
-        width: 872
-        height: 817
+        x: 6144
+        y: 4096
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -609,10 +609,10 @@ TextureImporter:
       name: Player - Embarrassed_14
       rect:
         serializedVersion: 2
-        x: 6
-        y: 3127
-        width: 880
-        height: 814
+        x: 0
+        y: 3072
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -631,10 +631,10 @@ TextureImporter:
       name: Player - Embarrassed_15
       rect:
         serializedVersion: 2
-        x: 1023
-        y: 3127
-        width: 880
-        height: 809
+        x: 1024
+        y: 3072
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -654,9 +654,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 2048
-        y: 3127
-        width: 885
-        height: 814
+        y: 3072
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -675,10 +675,10 @@ TextureImporter:
       name: Player - Embarrassed_17
       rect:
         serializedVersion: 2
-        x: 3193
-        y: 3766
-        width: 161
-        height: 168
+        x: 3072
+        y: 3072
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -697,10 +697,10 @@ TextureImporter:
       name: Player - Embarrassed_18
       rect:
         serializedVersion: 2
-        x: 3245
-        y: 3127
-        width: 783
-        height: 830
+        x: 4096
+        y: 3072
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -719,10 +719,10 @@ TextureImporter:
       name: Player - Embarrassed_19
       rect:
         serializedVersion: 2
-        x: 4301
-        y: 3127
-        width: 789
-        height: 846
+        x: 5120
+        y: 3072
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -741,10 +741,10 @@ TextureImporter:
       name: Player - Embarrassed_20
       rect:
         serializedVersion: 2
-        x: 5332
-        y: 3127
-        width: 785
-        height: 831
+        x: 6144
+        y: 3072
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -763,10 +763,10 @@ TextureImporter:
       name: Player - Embarrassed_21
       rect:
         serializedVersion: 2
-        x: 6351
-        y: 3127
-        width: 790
-        height: 844
+        x: 0
+        y: 2048
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -785,10 +785,10 @@ TextureImporter:
       name: Player - Embarrassed_22
       rect:
         serializedVersion: 2
-        x: 213
-        y: 2103
-        width: 784
-        height: 830
+        x: 1024
+        y: 2048
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -807,10 +807,10 @@ TextureImporter:
       name: Player - Embarrassed_23
       rect:
         serializedVersion: 2
-        x: 1230
-        y: 2103
-        width: 790
-        height: 841
+        x: 2048
+        y: 2048
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -829,10 +829,10 @@ TextureImporter:
       name: Player - Embarrassed_24
       rect:
         serializedVersion: 2
-        x: 2173
-        y: 2103
-        width: 808
-        height: 820
+        x: 3072
+        y: 2048
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -851,10 +851,10 @@ TextureImporter:
       name: Player - Embarrassed_25
       rect:
         serializedVersion: 2
-        x: 3076
-        y: 2103
-        width: 869
-        height: 806
+        x: 4096
+        y: 2048
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -873,10 +873,10 @@ TextureImporter:
       name: Player - Embarrassed_26
       rect:
         serializedVersion: 2
-        x: 4095
-        y: 2103
-        width: 857
-        height: 797
+        x: 5120
+        y: 2048
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -895,10 +895,10 @@ TextureImporter:
       name: Player - Embarrassed_27
       rect:
         serializedVersion: 2
-        x: 5119
-        y: 2605
-        width: 85
-        height: 152
+        x: 6144
+        y: 2048
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -917,10 +917,10 @@ TextureImporter:
       name: Player - Embarrassed_28
       rect:
         serializedVersion: 2
-        x: 5205
-        y: 2103
-        width: 773
-        height: 799
+        x: 0
+        y: 1024
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -939,10 +939,10 @@ TextureImporter:
       name: Player - Embarrassed_29
       rect:
         serializedVersion: 2
-        x: 6143
-        y: 2602
-        width: 79
-        height: 164
+        x: 1024
+        y: 1024
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -961,10 +961,10 @@ TextureImporter:
       name: Player - Embarrassed_30
       rect:
         serializedVersion: 2
-        x: 6229
-        y: 2103
-        width: 773
-        height: 799
+        x: 2048
+        y: 1024
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -983,10 +983,10 @@ TextureImporter:
       name: Player - Embarrassed_31
       rect:
         serializedVersion: 2
-        x: 5174
-        y: 2554
-        width: 43
-        height: 43
+        x: 3072
+        y: 1024
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1005,10 +1005,10 @@ TextureImporter:
       name: Player - Embarrassed_32
       rect:
         serializedVersion: 2
-        x: 6194
-        y: 2550
-        width: 44
-        height: 44
+        x: 4096
+        y: 1024
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1027,10 +1027,10 @@ TextureImporter:
       name: Player - Embarrassed_33
       rect:
         serializedVersion: 2
-        x: 0
-        y: 1079
-        width: 858
-        height: 799
+        x: 5120
+        y: 1024
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1049,10 +1049,10 @@ TextureImporter:
       name: Player - Embarrassed_34
       rect:
         serializedVersion: 2
-        x: 1023
-        y: 1580
-        width: 81
-        height: 160
+        x: 6144
+        y: 1024
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1071,10 +1071,10 @@ TextureImporter:
       name: Player - Embarrassed_35
       rect:
         serializedVersion: 2
-        x: 1109
-        y: 1079
-        width: 773
-        height: 799
+        x: 0
+        y: 0
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1093,10 +1093,10 @@ TextureImporter:
       name: Player - Embarrassed_36
       rect:
         serializedVersion: 2
-        x: 2047
-        y: 1590
-        width: 91
-        height: 157
+        x: 1024
+        y: 0
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1115,10 +1115,10 @@ TextureImporter:
       name: Player - Embarrassed_37
       rect:
         serializedVersion: 2
-        x: 2143
-        y: 1079
-        width: 769
-        height: 800
+        x: 2048
+        y: 0
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1137,10 +1137,10 @@ TextureImporter:
       name: Player - Embarrassed_38
       rect:
         serializedVersion: 2
-        x: 3071
-        y: 1598
-        width: 104
-        height: 152
+        x: 3072
+        y: 0
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1159,10 +1159,10 @@ TextureImporter:
       name: Player - Embarrassed_39
       rect:
         serializedVersion: 2
-        x: 3177
-        y: 1079
-        width: 763
-        height: 803
+        x: 4096
+        y: 0
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1177,605 +1177,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_40
-      rect:
-        serializedVersion: 2
-        x: 4095
-        y: 1597
-        width: 98
-        height: 162
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 4abf161a6d0f51a20800000000000000
-      internalID: 3032594728725117860
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_41
-      rect:
-        serializedVersion: 2
-        x: 4200
-        y: 1079
-        width: 764
-        height: 803
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f4335a4c4ccdf26f0800000000000000
-      internalID: -707103878803016881
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_42
-      rect:
-        serializedVersion: 2
-        x: 5119
-        y: 1600
-        width: 105
-        height: 148
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0ec9351f0e89143b0800000000000000
-      internalID: -5529970775545373472
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_43
-      rect:
-        serializedVersion: 2
-        x: 5225
-        y: 1079
-        width: 763
-        height: 803
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 8bc3f0ddc926ca620800000000000000
-      internalID: 2786710695298677944
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_44
-      rect:
-        serializedVersion: 2
-        x: 6143
-        y: 1597
-        width: 99
-        height: 161
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0347bf3593eb97150800000000000000
-      internalID: 5870932742685553712
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_45
-      rect:
-        serializedVersion: 2
-        x: 6249
-        y: 1079
-        width: 763
-        height: 803
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2bbd107da4d0e3d70800000000000000
-      internalID: 9024665318383016882
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_46
-      rect:
-        serializedVersion: 2
-        x: 1075
-        y: 1527
-        width: 45
-        height: 45
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 60c4dd3f172c0be90800000000000000
-      internalID: -7011890825137402874
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_47
-      rect:
-        serializedVersion: 2
-        x: 2109
-        y: 1537
-        width: 43
-        height: 45
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 37cb03296886d8310800000000000000
-      internalID: 1408897185624407155
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_48
-      rect:
-        serializedVersion: 2
-        x: 3143
-        y: 1550
-        width: 43
-        height: 42
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c102b0b431251eda0800000000000000
-      internalID: -5917358192571244516
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_49
-      rect:
-        serializedVersion: 2
-        x: 4163
-        y: 1544
-        width: 44
-        height: 45
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b935480382cdcc300800000000000000
-      internalID: 273835742533538715
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_50
-      rect:
-        serializedVersion: 2
-        x: 5192
-        y: 1551
-        width: 42
-        height: 41
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 360eb54e45a9c06c0800000000000000
-      internalID: -4175793065080135581
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_51
-      rect:
-        serializedVersion: 2
-        x: 6211
-        y: 1544
-        width: 44
-        height: 45
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2582c1c758b681db0800000000000000
-      internalID: -4820985180043073454
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_52
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 574
-        width: 103
-        height: 152
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 1244bbeab30950690800000000000000
-      internalID: -7636539007127829471
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_53
-      rect:
-        serializedVersion: 2
-        x: 105
-        y: 55
-        width: 763
-        height: 803
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 16fcf13abc34c72f0800000000000000
-      internalID: -973828877524676767
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_54
-      rect:
-        serializedVersion: 2
-        x: 1023
-        y: 573
-        width: 99
-        height: 160
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 198ab38fa77cc7eb0800000000000000
-      internalID: -4720678978426525551
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_55
-      rect:
-        serializedVersion: 2
-        x: 1129
-        y: 55
-        width: 763
-        height: 803
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 995dbc783f8f98980800000000000000
-      internalID: -8536017893865040487
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_56
-      rect:
-        serializedVersion: 2
-        x: 2047
-        y: 577
-        width: 102
-        height: 146
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 697991079616a42d0800000000000000
-      internalID: -3293713071987910762
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_57
-      rect:
-        serializedVersion: 2
-        x: 2153
-        y: 55
-        width: 763
-        height: 803
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b85009de5082209c0800000000000000
-      internalID: -3962560716207028853
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_58
-      rect:
-        serializedVersion: 2
-        x: 3071
-        y: 580
-        width: 98
-        height: 141
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: cef3fa877cb756ae0800000000000000
-      internalID: -1556701999533178900
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_59
-      rect:
-        serializedVersion: 2
-        x: 3177
-        y: 54
-        width: 763
-        height: 804
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 017f955c8e9814310800000000000000
-      internalID: 1387541793043248912
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_60
-      rect:
-        serializedVersion: 2
-        x: 4095
-        y: 577
-        width: 98
-        height: 150
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 34cfbfa0c1bab0d80800000000000000
-      internalID: -8283338952686175165
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_61
-      rect:
-        serializedVersion: 2
-        x: 4202
-        y: 54
-        width: 763
-        height: 804
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 1de7d0570b165f430800000000000000
-      internalID: 3816063669772320465
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_62
-      rect:
-        serializedVersion: 2
-        x: 71
-        y: 525
-        width: 43
-        height: 43
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 3404223fcac822df0800000000000000
-      internalID: -206447958464249789
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_63
-      rect:
-        serializedVersion: 2
-        x: 1091
-        y: 520
-        width: 44
-        height: 45
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 64c79d3b6a5ace810800000000000000
-      internalID: 1795992486814514246
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_64
-      rect:
-        serializedVersion: 2
-        x: 2118
-        y: 529
-        width: 41
-        height: 40
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b25975025ef75caa0800000000000000
-      internalID: -6141361894782954197
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_65
-      rect:
-        serializedVersion: 2
-        x: 3139
-        y: 530
-        width: 39
-        height: 42
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 4710ddae9c16be870800000000000000
-      internalID: 8713165423935029620
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player - Embarrassed_66
-      rect:
-        serializedVersion: 2
-        x: 4164
-        y: 529
-        width: 39
-        height: 41
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0f519fc52e0dcced0800000000000000
-      internalID: -2392307631399561744
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 4a7dee552f2c0ed48ad82f127648ddcc
     internalID: 0
     vertices: []
     indices: 
@@ -1820,35 +1226,8 @@ TextureImporter:
       Player - Embarrassed_38: 6563497008834843903
       Player - Embarrassed_39: -517984938186497537
       Player - Embarrassed_4: 1792292851144678739
-      Player - Embarrassed_40: 3032594728725117860
-      Player - Embarrassed_41: -707103878803016881
-      Player - Embarrassed_42: -5529970775545373472
-      Player - Embarrassed_43: 2786710695298677944
-      Player - Embarrassed_44: 5870932742685553712
-      Player - Embarrassed_45: 9024665318383016882
-      Player - Embarrassed_46: -7011890825137402874
-      Player - Embarrassed_47: 1408897185624407155
-      Player - Embarrassed_48: -5917358192571244516
-      Player - Embarrassed_49: 273835742533538715
       Player - Embarrassed_5: 8866705229309437403
-      Player - Embarrassed_50: -4175793065080135581
-      Player - Embarrassed_51: -4820985180043073454
-      Player - Embarrassed_52: -7636539007127829471
-      Player - Embarrassed_53: -973828877524676767
-      Player - Embarrassed_54: -4720678978426525551
-      Player - Embarrassed_55: -8536017893865040487
-      Player - Embarrassed_56: -3293713071987910762
-      Player - Embarrassed_57: -3962560716207028853
-      Player - Embarrassed_58: -1556701999533178900
-      Player - Embarrassed_59: 1387541793043248912
       Player - Embarrassed_6: -8236259866117223725
-      Player - Embarrassed_60: -8283338952686175165
-      Player - Embarrassed_61: 3816063669772320465
-      Player - Embarrassed_62: -206447958464249789
-      Player - Embarrassed_63: 1795992486814514246
-      Player - Embarrassed_64: -6141361894782954197
-      Player - Embarrassed_65: 8713165423935029620
-      Player - Embarrassed_66: -2392307631399561744
       Player - Embarrassed_7: -701796522554893158
       Player - Embarrassed_8: 763750915043161511
       Player - Embarrassed_9: 3667331922313735302

@@ -45,6 +45,7 @@ public class SumerianScene4 : MonoBehaviour
     public Sprite PatesiExplaining;
     public Animator chronoAnimator;
     public Animator playerAnimator;
+    public Animator NPCFulldrawnAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -248,6 +249,12 @@ public class SumerianScene4 : MonoBehaviour
                 break;
             case 2:
                 PatesicharacterRenderer.enabled = true;
+                if (NPCFulldrawnAnimator != null)
+                    NPCFulldrawnAnimator.Play("Patesi_FullDrawn", 0, 0f);
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Smiling", 0, 0f);
                 break;
             case 3:
                 if (chronoAnimator != null)

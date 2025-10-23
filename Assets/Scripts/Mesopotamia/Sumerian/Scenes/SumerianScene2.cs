@@ -45,10 +45,8 @@ public class SumerianScene2 : MonoBehaviour
     public Sprite ChronoSad;
     public Sprite ChronoSmile;
     public Sprite ChronoThinking;
-
     public Animator chronoAnimator;
     public Animator playerAnimator;
-
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
     

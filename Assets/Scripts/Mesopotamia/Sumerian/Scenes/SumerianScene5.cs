@@ -43,6 +43,7 @@ public class SumerianScene5 : MonoBehaviour
     public Sprite IshmaSmirking;
     public Animator chronoAnimator;
     public Animator playerAnimator;
+    public Animator NPCFulldrawnAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -251,6 +252,8 @@ public class SumerianScene5 : MonoBehaviour
         {
             case 0:
                 IshmacharacterRenderer.enabled = true;
+                if (NPCFulldrawnAnimator != null)
+                    NPCFulldrawnAnimator.Play("Patesi_FullDrawn", 0, 0f);
                 if (chronoAnimator != null)
                     chronoAnimator.Play("Patesi_Formal (Idle)", 0, 0f);
                 if (playerAnimator != null)

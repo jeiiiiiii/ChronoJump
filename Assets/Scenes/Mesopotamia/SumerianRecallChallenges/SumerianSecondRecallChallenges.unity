@@ -265,6 +265,7 @@ GameObject:
   - component: {fileID: 81652817}
   - component: {fileID: 81652816}
   - component: {fileID: 81652815}
+  - component: {fileID: 81652818}
   m_Layer: 5
   m_Name: PlayerIm
   m_TagString: Untagged
@@ -288,7 +289,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 763, y: -351}
+  m_AnchoredPosition: {x: 763, y: -340}
   m_SizeDelta: {x: 335.81, y: 403.34}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &81652815
@@ -384,6 +385,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 81652813}
   m_CullTransparentMesh: 1
+--- !u!95 &81652818
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 81652813}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4ac3b79af98d0ad45b6229a9324cb524, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &206160652
 GameObject:
   m_ObjectHideFlags: 0
@@ -604,6 +627,7 @@ GameObject:
   - component: {fileID: 355097133}
   - component: {fileID: 355097132}
   - component: {fileID: 355097131}
+  - component: {fileID: 355097134}
   m_Layer: 5
   m_Name: ChronoIM
   m_TagString: Untagged
@@ -627,7 +651,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -757, y: -370.99997}
+  m_AnchoredPosition: {x: -757, y: -339}
   m_SizeDelta: {x: 326.93, y: 345.09}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &355097131
@@ -723,6 +747,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 355097129}
   m_CullTransparentMesh: 1
+--- !u!95 &355097134
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 355097129}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 04f0d1af925c6ef4c945d247f68b135f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &415228588
 GameObject:
   m_ObjectHideFlags: 0
@@ -2195,7 +2241,7 @@ MonoBehaviour:
   imbakNaUlanClips:
   - {fileID: 8300000, guid: a7832e9cfa81d0c49aaf8673240cdf57, type: 3}
   - {fileID: 8300000, guid: 970c0843db656024196feb370e50e2d8, type: 3}
-  - {fileID: 0}
+  - {fileID: 8300000, guid: 50ae6d41e57294c4b963c3909c667ce6, type: 3}
   PlayercharacterRenderer: {fileID: 81652815}
   ChronocharacterRenderer: {fileID: 355097131}
   PlayerSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}
@@ -2209,6 +2255,8 @@ MonoBehaviour:
   ZulNeutral: {fileID: -5564143730511675996, guid: 0fd82e1c7d4aae64eace1d11868a00ee, type: 3}
   ZulFriendly: {fileID: -2779335563430141220, guid: ba5f9ba78f8b30f4fb8a73fda73fbb55, type: 3}
   BlurBG: {fileID: 1061096143}
+  chronoAnimator: {fileID: 355097134}
+  playerAnimator: {fileID: 81652818}
 --- !u!1 &1416260132
 GameObject:
   m_ObjectHideFlags: 0

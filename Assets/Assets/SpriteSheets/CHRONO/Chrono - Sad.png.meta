@@ -129,7 +129,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 1.6
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -181,10 +181,10 @@ TextureImporter:
       name: Chrono - Sad_0
       rect:
         serializedVersion: 2
-        x: 219
-        y: 4219
-        width: 545
-        height: 779
+        x: 0
+        y: 4096
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -203,10 +203,10 @@ TextureImporter:
       name: Chrono - Sad_1
       rect:
         serializedVersion: 2
-        x: 1243
-        y: 4219
-        width: 545
-        height: 778
+        x: 1024
+        y: 4096
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -225,10 +225,10 @@ TextureImporter:
       name: Chrono - Sad_2
       rect:
         serializedVersion: 2
-        x: 2268
-        y: 4225
-        width: 543
-        height: 767
+        x: 2048
+        y: 4096
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -247,10 +247,10 @@ TextureImporter:
       name: Chrono - Sad_3
       rect:
         serializedVersion: 2
-        x: 3295
-        y: 4227
-        width: 547
-        height: 750
+        x: 3072
+        y: 4096
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -269,10 +269,10 @@ TextureImporter:
       name: Chrono - Sad_4
       rect:
         serializedVersion: 2
-        x: 4328
-        y: 4227
-        width: 552
-        height: 742
+        x: 4096
+        y: 4096
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -291,10 +291,10 @@ TextureImporter:
       name: Chrono - Sad_5
       rect:
         serializedVersion: 2
-        x: 5369
-        y: 4228
-        width: 552
-        height: 753
+        x: 5120
+        y: 4096
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -313,10 +313,10 @@ TextureImporter:
       name: Chrono - Sad_6
       rect:
         serializedVersion: 2
-        x: 254
-        y: 3204
-        width: 551
-        height: 757
+        x: 0
+        y: 3072
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -335,10 +335,10 @@ TextureImporter:
       name: Chrono - Sad_7
       rect:
         serializedVersion: 2
-        x: 1278
-        y: 3205
-        width: 550
-        height: 755
+        x: 1024
+        y: 3072
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -357,10 +357,10 @@ TextureImporter:
       name: Chrono - Sad_8
       rect:
         serializedVersion: 2
-        x: 2299
-        y: 3207
-        width: 550
-        height: 750
+        x: 2048
+        y: 3072
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -379,10 +379,10 @@ TextureImporter:
       name: Chrono - Sad_9
       rect:
         serializedVersion: 2
-        x: 3316
-        y: 3204
-        width: 554
-        height: 747
+        x: 3072
+        y: 3072
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -401,10 +401,10 @@ TextureImporter:
       name: Chrono - Sad_10
       rect:
         serializedVersion: 2
-        x: 4320
-        y: 3195
-        width: 560
-        height: 758
+        x: 4096
+        y: 3072
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -423,10 +423,10 @@ TextureImporter:
       name: Chrono - Sad_11
       rect:
         serializedVersion: 2
-        x: 5325
-        y: 3196
-        width: 560
-        height: 769
+        x: 5120
+        y: 3072
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -445,10 +445,10 @@ TextureImporter:
       name: Chrono - Sad_12
       rect:
         serializedVersion: 2
-        x: 200
-        y: 2173
-        width: 554
-        height: 774
+        x: 0
+        y: 2048
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -467,10 +467,10 @@ TextureImporter:
       name: Chrono - Sad_13
       rect:
         serializedVersion: 2
-        x: 1226
-        y: 2174
-        width: 549
-        height: 772
+        x: 1024
+        y: 2048
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -489,10 +489,10 @@ TextureImporter:
       name: Chrono - Sad_14
       rect:
         serializedVersion: 2
-        x: 2255
-        y: 2176
-        width: 550
-        height: 765
+        x: 2048
+        y: 2048
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -511,10 +511,10 @@ TextureImporter:
       name: Chrono - Sad_15
       rect:
         serializedVersion: 2
-        x: 3294
-        y: 2164
-        width: 555
-        height: 776
+        x: 3072
+        y: 2048
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -533,10 +533,10 @@ TextureImporter:
       name: Chrono - Sad_16
       rect:
         serializedVersion: 2
-        x: 4332
-        y: 2166
-        width: 559
-        height: 781
+        x: 4096
+        y: 2048
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -555,10 +555,10 @@ TextureImporter:
       name: Chrono - Sad_17
       rect:
         serializedVersion: 2
-        x: 5360
-        y: 2166
-        width: 557
-        height: 787
+        x: 5120
+        y: 2048
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -577,10 +577,10 @@ TextureImporter:
       name: Chrono - Sad_18
       rect:
         serializedVersion: 2
-        x: 234
-        y: 1143
-        width: 554
-        height: 782
+        x: 0
+        y: 1024
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -599,10 +599,10 @@ TextureImporter:
       name: Chrono - Sad_19
       rect:
         serializedVersion: 2
-        x: 1253
-        y: 1143
-        width: 555
-        height: 777
+        x: 1024
+        y: 1024
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -621,10 +621,10 @@ TextureImporter:
       name: Chrono - Sad_20
       rect:
         serializedVersion: 2
-        x: 2277
-        y: 1145
-        width: 554
-        height: 777
+        x: 2048
+        y: 1024
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -643,10 +643,10 @@ TextureImporter:
       name: Chrono - Sad_21
       rect:
         serializedVersion: 2
-        x: 3301
-        y: 1145
-        width: 554
-        height: 777
+        x: 3072
+        y: 1024
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -665,10 +665,10 @@ TextureImporter:
       name: Chrono - Sad_22
       rect:
         serializedVersion: 2
-        x: 4326
-        y: 1146
-        width: 552
-        height: 776
+        x: 4096
+        y: 1024
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -687,10 +687,10 @@ TextureImporter:
       name: Chrono - Sad_23
       rect:
         serializedVersion: 2
-        x: 5344
-        y: 1147
-        width: 556
-        height: 769
+        x: 5120
+        y: 1024
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -709,10 +709,10 @@ TextureImporter:
       name: Chrono - Sad_24
       rect:
         serializedVersion: 2
-        x: 212
-        y: 123
-        width: 558
-        height: 748
+        x: 0
+        y: 0
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -731,10 +731,10 @@ TextureImporter:
       name: Chrono - Sad_25
       rect:
         serializedVersion: 2
-        x: 1221
-        y: 123
-        width: 561
-        height: 741
+        x: 1024
+        y: 0
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -753,10 +753,10 @@ TextureImporter:
       name: Chrono - Sad_26
       rect:
         serializedVersion: 2
-        x: 2244
-        y: 123
-        width: 561
-        height: 752
+        x: 2048
+        y: 0
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -775,7 +775,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: fab0d6fe04626194b8a343f1f83e6032
     internalID: 0
     vertices: []
     indices: 

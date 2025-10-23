@@ -49,6 +49,7 @@ public class SumerianScene3 : MonoBehaviour
     public Sprite EnkiTesting;
     public Animator chronoAnimator;
     public Animator playerAnimator;
+    public Animator NPCFulldrawnAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -276,6 +277,12 @@ public class SumerianScene3 : MonoBehaviour
                 break;
             case 1:
                 ZulcharacterRenderer.enabled = true;
+                if (NPCFulldrawnAnimator != null)
+                    NPCFulldrawnAnimator.Play("Zul_FullDrawn", 0, 0f);
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Enki_Kind", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Smiling", 0, 0f);
                 break;
             case 2:
                 if (chronoAnimator != null)

@@ -58,7 +58,10 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
     public Sprite EnkiKind;
     public Sprite EnkiTesting;
     public SpriteRenderer BlurBG;
-    
+    public Animator chronoAnimator;
+    public Animator playerAnimator;
+
+
     void Start()
     {
         AchievementUnlockedRenderer.SetActive(false);
@@ -200,9 +203,10 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerSmile;
-                    ChronocharacterRenderer.sprite = ChronoSmile;
-                    
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     if (!challengeCompleted)
                     {
                         challengeCompleted = true;
@@ -220,12 +224,16 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
                     break;
                 case 1:
                     AchievementUnlockedRenderer.SetActive(false);
-                    PlayercharacterRenderer.sprite = PlayerEager;
-                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Eager", 0, 0f);
                     break;
                 case 2:
-                    PlayercharacterRenderer.sprite = PlayerSmile;
-                    ChronocharacterRenderer.sprite = EnkiKind;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Enki_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Smiling", 0, 0f);
                     break;
                 case 3:
                     foreach (Button btn in answerButtons)
@@ -238,14 +246,22 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
                         heart.gameObject.SetActive(false);
                     }
                     BlurBG.gameObject.SetActive(false);
-                    PlayercharacterRenderer.sprite = PlayerEager;
-                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Eager", 0, 0f);
                     break;
                 case 4:
-                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Cheerful", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 5:
-                    ChronocharacterRenderer.sprite = ChronoSmile;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Smiling", 0, 0f);
                     break;
             }
         }
@@ -254,11 +270,22 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoSad;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Sad", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 1:
-                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Embarassed", 0, 0f);
+                    break;
+                case 2:
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }
@@ -267,11 +294,22 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoSad;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Sad", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 1:
-                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Embarassed", 0, 0f);
+                    break;
+                case 2:
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }
@@ -280,8 +318,10 @@ public class SumerianFifthRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerSmile;
-                    ChronocharacterRenderer.sprite = EnkiTesting;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Enki_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }

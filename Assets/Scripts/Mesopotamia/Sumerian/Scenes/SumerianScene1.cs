@@ -52,6 +52,10 @@ public class SumerianScene1 : MonoBehaviour
     public Animator chronoAnimator;
     public Animator playerAnimator;
 
+    public Animator playerFulldrawnAnimator;  
+    public Animator chronoFulldrawnAnimator;  
+    public Animator NPCFulldrawnAnimator;
+
     // ======= VOICE NARRATION ADDITION #1 =======
     // Add these two variables for voice narration
     public AudioSource audioSource;
@@ -289,11 +293,17 @@ public class SumerianScene1 : MonoBehaviour
                 PlayerFulldrawnSprite.enabled = true;
                 PlayercharacterRenderer.enabled = false;
                 ChronocharacterRenderer.enabled = false;
+                if (playerFulldrawnAnimator != null)
+                    playerFulldrawnAnimator.Play("Player_FullDrawn", 0, 0f);
                 break;
 
             case 1:
                 ChronoFulldrawnSprite.enabled = true;
                 PlayercharacterRenderer.enabled = true;
+                if (playerFulldrawnAnimator != null)
+                    playerFulldrawnAnimator.Play("Player_FullDrawn", 0, 0f);
+                if (chronoFulldrawnAnimator != null)
+                    chronoFulldrawnAnimator.Play("Chrono_FullDrawn", 0, 0f);
                 if (playerAnimator != null)
                     playerAnimator.Play("Player_Eager", 0, 0f);
                 break;
@@ -319,6 +329,12 @@ public class SumerianScene1 : MonoBehaviour
 
             case 4:
                 EnkicharacterRenderer.enabled = true;
+                if (NPCFulldrawnAnimator != null)
+                    NPCFulldrawnAnimator.Play("Enki_FullDrawn", 0, 0f);
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Eager", 0, 0f);
                 break;
 
             case 5:

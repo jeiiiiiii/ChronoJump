@@ -57,6 +57,8 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
     public Sprite ZulNeutral;
     public Sprite ZulFriendly;
     public SpriteRenderer BlurBG;
+    public Animator chronoAnimator;
+    public Animator playerAnimator;
 
     void Start()
     {
@@ -202,20 +204,26 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerSmile;
-                    ChronocharacterRenderer.sprite = ChronoSmile;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     foreach (Button btn in answerButtons)
                     {
                         btn.interactable = false;
                     }
                     break;
                 case 1:
-                    PlayercharacterRenderer.sprite = PlayerEager;
-                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Smiling", 0, 0f);
                     break;
                 case 2:
-                    PlayercharacterRenderer.sprite = PlayerSmile;
-                    ChronocharacterRenderer.sprite = ZulFriendly;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Zul_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Eager", 0, 0f);
                     break;
                 case 3:
                     foreach (Button btn in answerButtons)
@@ -229,13 +237,22 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
                     }
 
                     BlurBG.gameObject.SetActive(false);
-                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Curious", 0, 0f);
                     break;
                 case 4:
-                    PlayercharacterRenderer.sprite = PlayerCurious;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Thinking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 5:
-                    ChronocharacterRenderer.sprite = ZulNeutral;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Zul_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }
@@ -244,12 +261,22 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoSad;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Sad", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 1:
-
-                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Embarassed", 0, 0f);
+                    break;
+                case 2:
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }
@@ -258,11 +285,22 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoSad;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Sad", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 1:
-                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Embarassed", 0, 0f);
+                    break;
+                case 2:
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }
@@ -271,8 +309,10 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ZulNeutral;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Zul_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }

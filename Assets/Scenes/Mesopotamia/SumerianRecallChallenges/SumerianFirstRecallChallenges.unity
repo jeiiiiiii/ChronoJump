@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 81652814}
   - component: {fileID: 81652817}
   - component: {fileID: 81652815}
+  - component: {fileID: 81652818}
   m_Layer: 5
   m_Name: PlayerIm
   m_TagString: Untagged
@@ -153,7 +154,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 768, y: -357}
+  m_AnchoredPosition: {x: 768, y: -336}
   m_SizeDelta: {x: 335.81, y: 403.34}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &81652815
@@ -219,6 +220,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 81652813}
   m_CullTransparentMesh: 1
+--- !u!95 &81652818
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 81652813}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 414dde33b2287ab4f9e9056005f4b020, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &151261644
 GameObject:
   m_ObjectHideFlags: 0
@@ -705,6 +728,7 @@ GameObject:
   - component: {fileID: 355097130}
   - component: {fileID: 355097133}
   - component: {fileID: 355097131}
+  - component: {fileID: 355097134}
   m_Layer: 5
   m_Name: ChronoIM
   m_TagString: Untagged
@@ -728,7 +752,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -752, y: -361}
+  m_AnchoredPosition: {x: -752, y: -329}
   m_SizeDelta: {x: 326.93, y: 345.09}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &355097131
@@ -794,6 +818,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 355097129}
   m_CullTransparentMesh: 1
+--- !u!95 &355097134
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 355097129}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 43b680a40186a704c866507a182423b1, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &362951446
 GameObject:
   m_ObjectHideFlags: 0
@@ -2350,6 +2396,8 @@ MonoBehaviour:
   EnkiPokerface: {fileID: 1077576088502714225, guid: bab085adb23a3e04eb12e22f8d36cec8, type: 3}
   EnkiTesting: {fileID: -9032671620723716314, guid: 5ea8c885caa4aee46bd8617016edca1e, type: 3}
   BlurBG: {fileID: 1061096143}
+  chronoAnimator: {fileID: 355097134}
+  playerAnimator: {fileID: 81652818}
   answerButtons:
   - {fileID: 1190545336}
   - {fileID: 1418622348}
