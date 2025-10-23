@@ -41,6 +41,8 @@ public class SumerianScene5 : MonoBehaviour
     public Sprite IshmaAmazed;
     public Sprite IshmaExplaining;
     public Sprite IshmaSmirking;
+    public Animator chronoAnimator;
+    public Animator playerAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -249,36 +251,72 @@ public class SumerianScene5 : MonoBehaviour
         {
             case 0:
                 IshmacharacterRenderer.enabled = true;
-                ChronocharacterRenderer.sprite = PatesiFormal;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Patesi_Formal (Idle)", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Curious", 0, 0f);
                 break;
             case 1:
                 IshmacharacterRenderer.enabled = false;
-                ChronocharacterRenderer.sprite = PatesiFormal;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Patesi_Explaining", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Eager", 0, 0f);
                 break;
             case 2:
-                PlayercharacterRenderer.sprite = IshmaExplaining;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Ishma_Explaining", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Smiling", 0, 0f);
+                break;
+            case 3:
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Ishma_Explaining", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Reflective", 0, 0f);
                 break;
             case 4:
-                PlayercharacterRenderer.sprite = PlayerEager;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Ishma_Amazed", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 break;
             case 5:
-                ChronocharacterRenderer.sprite = ChronoThinking;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Reflective", 0, 0f);
                 Gulong.SetActive(true);
                 break;
             case 6:
-                ChronocharacterRenderer.sprite = IshmaSmirking;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Ishma_Explaining", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Curious", 0, 0f);
                 break;
             case 7:
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Eager", 0, 0f);
                 break;
             case 8:
-                PlayercharacterRenderer.sprite = PlayerCurious;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Ishma_Smirking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 break;
             case 9:
-                ChronocharacterRenderer.sprite = IshmaAmazed;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Ishma_Explaining", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Smiling", 0, 0f);
                 break;
             case 10:
-                ChronocharacterRenderer.sprite = PatesiFormal;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Patesi_Explaining", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Reflective", 0, 0f);
                 break;
         }
     }

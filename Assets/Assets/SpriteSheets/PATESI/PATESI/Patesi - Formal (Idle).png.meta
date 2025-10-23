@@ -1,0 +1,812 @@
+fileFormatVersion: 2
+guid: 3fd4fab17ae1f974695d81bf499e5781
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7381608369624191508
+    second: Patesi - Formal (Idle)_0
+  - first:
+      213: -7846691117167775538
+    second: Patesi - Formal (Idle)_1
+  - first:
+      213: 1810526629893618337
+    second: Patesi - Formal (Idle)_2
+  - first:
+      213: -6342913189534403905
+    second: Patesi - Formal (Idle)_3
+  - first:
+      213: 3598229717226897291
+    second: Patesi - Formal (Idle)_4
+  - first:
+      213: 3743909244918227827
+    second: Patesi - Formal (Idle)_5
+  - first:
+      213: 7701606934233426326
+    second: Patesi - Formal (Idle)_6
+  - first:
+      213: 8833827585910484977
+    second: Patesi - Formal (Idle)_7
+  - first:
+      213: -1240196135634414172
+    second: Patesi - Formal (Idle)_8
+  - first:
+      213: -269792303640900003
+    second: Patesi - Formal (Idle)_9
+  - first:
+      213: -8141430117940857020
+    second: Patesi - Formal (Idle)_10
+  - first:
+      213: 8395185537166844476
+    second: Patesi - Formal (Idle)_11
+  - first:
+      213: -3148695323108294098
+    second: Patesi - Formal (Idle)_12
+  - first:
+      213: 1849665468601703455
+    second: Patesi - Formal (Idle)_13
+  - first:
+      213: 1306336648783004955
+    second: Patesi - Formal (Idle)_14
+  - first:
+      213: 5429602006659713831
+    second: Patesi - Formal (Idle)_15
+  - first:
+      213: 2163089514089651725
+    second: Patesi - Formal (Idle)_16
+  - first:
+      213: -5175077160220792680
+    second: Patesi - Formal (Idle)_17
+  - first:
+      213: -8858044533252811662
+    second: Patesi - Formal (Idle)_18
+  - first:
+      213: -3550089024991818322
+    second: Patesi - Formal (Idle)_19
+  - first:
+      213: -9160081603801978351
+    second: Patesi - Formal (Idle)_20
+  - first:
+      213: -381028399923047837
+    second: Patesi - Formal (Idle)_21
+  - first:
+      213: -1220508171747753685
+    second: Patesi - Formal (Idle)_22
+  - first:
+      213: 173663530583800661
+    second: Patesi - Formal (Idle)_23
+  - first:
+      213: 1177162459303528714
+    second: Patesi - Formal (Idle)_24
+  - first:
+      213: 5613206905216776726
+    second: Patesi - Formal (Idle)_25
+  - first:
+      213: -2635399450014911048
+    second: Patesi - Formal (Idle)_26
+  - first:
+      213: -7749488607267844210
+    second: Patesi - Formal (Idle)_27
+  - first:
+      213: 639004692911604650
+    second: Patesi - Formal (Idle)_28
+  - first:
+      213: -7663005661236879139
+    second: Patesi - Formal (Idle)_29
+  - first:
+      213: -7785697802922724120
+    second: Patesi - Formal (Idle)_30
+  - first:
+      213: -8916457149304747301
+    second: Patesi - Formal (Idle)_31
+  - first:
+      213: 5995081359048930323
+    second: Patesi - Formal (Idle)_32
+  - first:
+      213: -7502164347533490828
+    second: Patesi - Formal (Idle)_33
+  - first:
+      213: -1594163107361502359
+    second: Patesi - Formal (Idle)_34
+  - first:
+      213: 6690438273459143289
+    second: Patesi - Formal (Idle)_35
+  - first:
+      213: 7886437177685433085
+    second: Patesi - Formal (Idle)_36
+  - first:
+      213: 4959707745998714427
+    second: Patesi - Formal (Idle)_37
+  - first:
+      213: -3134999968016761326
+    second: Patesi - Formal (Idle)_38
+  - first:
+      213: 4154598710708472
+    second: Patesi - Formal (Idle)_39
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 2
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 4096
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4121086e3bdb07660800000000000000
+      internalID: 7381608369624191508
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_1
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 4096
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec07003a004fa1390800000000000000
+      internalID: -7846691117167775538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_2
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 4096
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1aab1379068402910800000000000000
+      internalID: 1810526629893618337
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_3
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 4096
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb279a07f0279f7a0800000000000000
+      internalID: -6342913189534403905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_4
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 4096
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8f30931dda7fe130800000000000000
+      internalID: 3598229717226897291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_5
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3072
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 373e6a64f9905f330800000000000000
+      internalID: 3743909244918227827
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_6
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 3072
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6992baaa3ba91ea60800000000000000
+      internalID: 7701606934233426326
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_7
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 3072
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ffad31c26f089a70800000000000000
+      internalID: 8833827585910484977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_8
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 3072
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a5d2bb7f20f9cee0800000000000000
+      internalID: -1240196135634414172
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_9
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 3072
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5e895a4451814cf0800000000000000
+      internalID: -269792303640900003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2048
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 447f7706174d30f80800000000000000
+      internalID: -8141430117940857020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_11
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2048
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c32a35634c0b18470800000000000000
+      internalID: 8395185537166844476
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_12
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2048
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e22423049469d44d0800000000000000
+      internalID: -3148695323108294098
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_13
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2048
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f1c9f4991f45ba910800000000000000
+      internalID: 1849665468601703455
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_14
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 2048
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1509c3c24a012210800000000000000
+      internalID: 1306336648783004955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_15
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1024
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72b43bef142d95b40800000000000000
+      internalID: 5429602006659713831
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_16
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1024
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0e9fa8d376d40e10800000000000000
+      internalID: 2163089514089651725
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_17
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1024
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8986dc3ddbe6e28b0800000000000000
+      internalID: -5175077160220792680
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_18
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 1024
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27410eecd67e11580800000000000000
+      internalID: -8858044533252811662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_19
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 1024
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ead895847dc8bbec0800000000000000
+      internalID: -3550089024991818322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_20
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11aeac3405ad0e080800000000000000
+      internalID: -9160081603801978351
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_21
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 0
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 362504560b056baf0800000000000000
+      internalID: -381028399923047837
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_22
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 0
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b218389c842ef0fe0800000000000000
+      internalID: -1220508171747753685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_23
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 0
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55b33ea9f0af86200800000000000000
+      internalID: 173663530583800661
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Patesi - Formal (Idle)_24
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 0
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0946b5150f165010800000000000000
+      internalID: 1177162459303528714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 8cefeab974d22eb4383ed47a3715b37b
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Patesi - Formal (Idle)_0: 7381608369624191508
+      Patesi - Formal (Idle)_1: -7846691117167775538
+      Patesi - Formal (Idle)_10: -8141430117940857020
+      Patesi - Formal (Idle)_11: 8395185537166844476
+      Patesi - Formal (Idle)_12: -3148695323108294098
+      Patesi - Formal (Idle)_13: 1849665468601703455
+      Patesi - Formal (Idle)_14: 1306336648783004955
+      Patesi - Formal (Idle)_15: 5429602006659713831
+      Patesi - Formal (Idle)_16: 2163089514089651725
+      Patesi - Formal (Idle)_17: -5175077160220792680
+      Patesi - Formal (Idle)_18: -8858044533252811662
+      Patesi - Formal (Idle)_19: -3550089024991818322
+      Patesi - Formal (Idle)_2: 1810526629893618337
+      Patesi - Formal (Idle)_20: -9160081603801978351
+      Patesi - Formal (Idle)_21: -381028399923047837
+      Patesi - Formal (Idle)_22: -1220508171747753685
+      Patesi - Formal (Idle)_23: 173663530583800661
+      Patesi - Formal (Idle)_24: 1177162459303528714
+      Patesi - Formal (Idle)_3: -6342913189534403905
+      Patesi - Formal (Idle)_4: 3598229717226897291
+      Patesi - Formal (Idle)_5: 3743909244918227827
+      Patesi - Formal (Idle)_6: 7701606934233426326
+      Patesi - Formal (Idle)_7: 8833827585910484977
+      Patesi - Formal (Idle)_8: -1240196135634414172
+      Patesi - Formal (Idle)_9: -269792303640900003
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
