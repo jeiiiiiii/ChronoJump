@@ -137,50 +137,50 @@ public class StudentClassroomManager : MonoBehaviour
 
 
     private async Task<List<PublishedStory>> GetPublishedStoriesFromFirestore(string classCode)
-{
-    try
     {
-        Debug.Log($"[DIRECT] Fetching stories for class: '{classCode}'");
-        
-        // Quick check - if Firebase isn't ready, just return empty list
-        if (FirebaseManager.Instance?.DB == null)
+        try
         {
-            Debug.Log("ℹ️ Firebase not available, no stories loaded");
+            Debug.Log($"[DIRECT] Fetching stories for class: '{classCode}'");
+
+            // Quick check - if Firebase isn't ready, just return empty list
+            if (FirebaseManager.Instance?.DB == null)
+            {
+                Debug.Log("ℹ️ Firebase not available, no stories loaded");
+                return new List<PublishedStory>();
+            }
+
+            var firestore = FirebaseManager.Instance.DB;
+
+            var storiesQuery = firestore
+                .Collection("createdStories")
+                .WhereArrayContains("assignedClasses", classCode)
+                .WhereEqualTo("isPublished", true);
+
+            var snapshot = await storiesQuery.GetSnapshotAsync();
+            var stories = new List<PublishedStory>();
+
+            foreach (var storyDoc in snapshot.Documents)
+            {
+                var data = storyDoc.ToDictionary();
+                stories.Add(new PublishedStory
+                {
+                    storyId = storyDoc.Id,
+                    storyTitle = data.ContainsKey("title") ? data["title"].ToString() : "Untitled",
+                    classCode = classCode,
+                    className = currentClass?.className ?? "Class",
+                    publishDate = "Recent"
+                });
+            }
+
+            Debug.Log($"[DIRECT] Found {stories.Count} stories");
+            return stories;
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"⚠️ Couldn't fetch stories: {ex.Message}");
             return new List<PublishedStory>();
         }
-
-        var firestore = FirebaseManager.Instance.DB;
-        
-        var storiesQuery = firestore
-            .Collection("createdStories")
-            .WhereArrayContains("assignedClasses", classCode)
-            .WhereEqualTo("isPublished", true);
-
-        var snapshot = await storiesQuery.GetSnapshotAsync();
-        var stories = new List<PublishedStory>();
-
-        foreach (var storyDoc in snapshot.Documents)
-        {
-            var data = storyDoc.ToDictionary();
-            stories.Add(new PublishedStory
-            {
-                storyId = storyDoc.Id,
-                storyTitle = data.ContainsKey("title") ? data["title"].ToString() : "Untitled",
-                classCode = classCode,
-                className = currentClass?.className ?? "Class",
-                publishDate = "Recent"
-            });
-        }
-
-        Debug.Log($"[DIRECT] Found {stories.Count} stories");
-        return stories;
     }
-    catch (System.Exception ex)
-    {
-        Debug.LogWarning($"⚠️ Couldn't fetch stories: {ex.Message}");
-        return new List<PublishedStory>();
-    }
-}
     private void DisplayStories()
     {
         foreach (PublishedStory story in availableStories)
@@ -248,9 +248,12 @@ public class StudentClassroomManager : MonoBehaviour
 
     private async Task<StoryData> LoadStoryFromFirestore(string storyId)
     {
-        // ✅ FIRST: Check local cache
+        // ✅ FIRST: Check local cache WITH VERSION VALIDATION
         string localStoryKey = $"CachedStory_{storyId}";
         string cachedStoryJson = StudentPrefs.GetString(localStoryKey, "");
+
+        // ✅ NEW: Get current version from Firestore to check if cache is stale
+        int currentVersion = await GetStoryVersionFromFirestore(storyId);
 
         StoryData story = null;
 
@@ -259,14 +262,21 @@ public class StudentClassroomManager : MonoBehaviour
             try
             {
                 story = JsonUtility.FromJson<StoryData>(cachedStoryJson);
-                if (story != null && story.dialogues != null && story.dialogues.Count > 0)
+
+                // ✅ CRITICAL FIX: Only use cache if version matches
+                if (story != null && story.dialogues != null && story.dialogues.Count > 0 &&
+                    story.storyVersion == currentVersion)
                 {
-                    Debug.Log($"✅ Loaded story from local cache: {story.storyTitle}");
+                    Debug.Log($"✅ Loaded story from local cache (v{story.storyVersion}): {story.storyTitle}");
 
-                    // ✅ CRITICAL FIX: Load voice assignments for cached story
+                    // ✅ Load voice assignments for cached story
                     await LoadVoiceAssignmentsForStory(storyId, story.dialogues);
-
                     return story;
+                }
+                else
+                {
+                    Debug.Log($"🔄 Cache outdated or invalid. Cached v{story?.storyVersion ?? 0}, Firestore v{currentVersion}. Fetching fresh...");
+                    story = null; // Force fresh fetch
                 }
             }
             catch (System.Exception ex)
@@ -275,7 +285,7 @@ public class StudentClassroomManager : MonoBehaviour
             }
         }
 
-        // ✅ SECOND: Fetch from Firebase if no local cache
+        // ✅ SECOND: Fetch from Firebase if no valid local cache
         try
         {
             if (FirebaseManager.Instance?.DB == null)
@@ -315,7 +325,8 @@ public class StudentClassroomManager : MonoBehaviour
                 quizQuestions = questions,
                 assignedClasses = storyData.ContainsKey("assignedClasses") ?
                     ((List<object>)storyData["assignedClasses"]).ConvertAll(x => x.ToString()) :
-                    new List<string>()
+                    new List<string>(),
+                storyVersion = currentVersion // Set the current version
             };
 
             // ✅ Save to local cache for future use
@@ -323,7 +334,7 @@ public class StudentClassroomManager : MonoBehaviour
             StudentPrefs.SetString(localStoryKey, storyJson);
             StudentPrefs.Save();
 
-            Debug.Log($"✅ Loaded story from Firestore and cached locally: {story.storyTitle}");
+            Debug.Log($"✅ Loaded story from Firestore and cached locally (v{story.storyVersion}): {story.storyTitle}");
             return story;
         }
         catch (System.Exception ex)
@@ -331,7 +342,41 @@ public class StudentClassroomManager : MonoBehaviour
             Debug.LogError($"❌ Failed to load story from Firestore: {ex.Message}");
             return null;
         }
+
     }
+
+    // ✅ NEW: Method to get current story version from Firestore
+    private async Task<int> GetStoryVersionFromFirestore(string storyId)
+    {
+        try
+        {
+            if (FirebaseManager.Instance?.DB == null)
+            {
+                Debug.LogWarning("Firebase not ready, using default version");
+                return 1;
+            }
+
+            var firestore = FirebaseManager.Instance.DB;
+            var storyDoc = await firestore.Collection("createdStories").Document(storyId).GetSnapshotAsync();
+
+            if (storyDoc.Exists)
+            {
+                var storyData = storyDoc.ToDictionary();
+                if (storyData.ContainsKey("storyVersion"))
+                {
+                    return Convert.ToInt32(storyData["storyVersion"]);
+                }
+            }
+
+            return 1; // Default version if not found
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"⚠️ Failed to get story version: {ex.Message}");
+            return 1;
+        }
+    }
+
 
 
     // ✅ NEW: Load voice assignments for all dialogues in a story
@@ -410,86 +455,86 @@ public class StudentClassroomManager : MonoBehaviour
 
 
 
-// ✅ CORRECTED DIALOGUE LOADING METHOD
-private async Task<List<DialogueLine>> LoadDialoguesFromFirestore(string storyId)
-{
-    var dialogues = new List<DialogueLine>();
-    
-    try
+    // ✅ CORRECTED DIALOGUE LOADING METHOD
+    private async Task<List<DialogueLine>> LoadDialoguesFromFirestore(string storyId)
     {
-        if (FirebaseManager.Instance?.DB == null)
+        var dialogues = new List<DialogueLine>();
+
+        try
         {
-            Debug.LogError("Firebase not available for loading dialogues");
-            return dialogues;
-        }
-
-        var firestore = FirebaseManager.Instance.DB;
-        Debug.Log($"🔍 Loading dialogues for story: {storyId}");
-        
-        var dialoguesSnapshot = await firestore
-            .Collection("createdStories")
-            .Document(storyId)
-            .Collection("dialogues")
-            .OrderBy("orderIndex")
-            .GetSnapshotAsync();
-
-        Debug.Log($"📄 Found {dialoguesSnapshot.Documents.Count()} dialogue documents");
-
-        foreach (var dialogueDoc in dialoguesSnapshot.Documents)
-        {
-            try
+            if (FirebaseManager.Instance?.DB == null)
             {
-                // Use the Firestore data model
-                var dialogueData = dialogueDoc.ConvertTo<DialogueLineFirestore>();
-                
-                Debug.Log($"💬 Processing dialogue: {dialogueData.characterName} - {dialogueData.dialogueText}");
-
-                // Convert to game model - NOTE: using 'text' field instead of 'dialogueText'
-                if (!string.IsNullOrEmpty(dialogueData.dialogueText))
-                {
-                    dialogues.Add(new DialogueLine(
-                        dialogueData.characterName ?? "Unknown",
-                        dialogueData.dialogueText
-                    ));
-                }
-                else
-                {
-                    Debug.LogWarning($"⚠️ Skipping empty dialogue for character: {dialogueData.characterName}");
-                }
+                Debug.LogError("Firebase not available for loading dialogues");
+                return dialogues;
             }
-            catch (System.Exception docEx)
+
+            var firestore = FirebaseManager.Instance.DB;
+            Debug.Log($"🔍 Loading dialogues for story: {storyId}");
+
+            var dialoguesSnapshot = await firestore
+                .Collection("createdStories")
+                .Document(storyId)
+                .Collection("dialogues")
+                .OrderBy("orderIndex")
+                .GetSnapshotAsync();
+
+            Debug.Log($"📄 Found {dialoguesSnapshot.Documents.Count()} dialogue documents");
+
+            foreach (var dialogueDoc in dialoguesSnapshot.Documents)
             {
-                Debug.LogError($"❌ Error processing dialogue document {dialogueDoc.Id}: {docEx.Message}");
-                
-                // Fallback: try dictionary approach
                 try
                 {
-                    var data = dialogueDoc.ToDictionary();
-                    string characterName = data.ContainsKey("characterName") ? data["characterName"].ToString() : "Unknown";
-                    string dialogueText = data.ContainsKey("dialogueText") ? data["dialogueText"].ToString() : "";
-                    
-                    if (!string.IsNullOrEmpty(dialogueText))
+                    // Use the Firestore data model
+                    var dialogueData = dialogueDoc.ConvertTo<DialogueLineFirestore>();
+
+                    Debug.Log($"💬 Processing dialogue: {dialogueData.characterName} - {dialogueData.dialogueText}");
+
+                    // Convert to game model - NOTE: using 'text' field instead of 'dialogueText'
+                    if (!string.IsNullOrEmpty(dialogueData.dialogueText))
                     {
-                        dialogues.Add(new DialogueLine(characterName, dialogueText));
+                        dialogues.Add(new DialogueLine(
+                            dialogueData.characterName ?? "Unknown",
+                            dialogueData.dialogueText
+                        ));
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"⚠️ Skipping empty dialogue for character: {dialogueData.characterName}");
                     }
                 }
-                catch (System.Exception fallbackEx)
+                catch (System.Exception docEx)
                 {
-                    Debug.LogError($"❌ Fallback also failed: {fallbackEx.Message}");
+                    Debug.LogError($"❌ Error processing dialogue document {dialogueDoc.Id}: {docEx.Message}");
+
+                    // Fallback: try dictionary approach
+                    try
+                    {
+                        var data = dialogueDoc.ToDictionary();
+                        string characterName = data.ContainsKey("characterName") ? data["characterName"].ToString() : "Unknown";
+                        string dialogueText = data.ContainsKey("dialogueText") ? data["dialogueText"].ToString() : "";
+
+                        if (!string.IsNullOrEmpty(dialogueText))
+                        {
+                            dialogues.Add(new DialogueLine(characterName, dialogueText));
+                        }
+                    }
+                    catch (System.Exception fallbackEx)
+                    {
+                        Debug.LogError($"❌ Fallback also failed: {fallbackEx.Message}");
+                    }
                 }
             }
+
+            Debug.Log($"✅ Successfully loaded {dialogues.Count} dialogues");
         }
-        
-        Debug.Log($"✅ Successfully loaded {dialogues.Count} dialogues");
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Failed to load dialogues: {ex.Message}");
+            Debug.LogError($"Stack trace: {ex.StackTrace}");
+        }
+
+        return dialogues;
     }
-    catch (System.Exception ex)
-    {
-        Debug.LogError($"❌ Failed to load dialogues: {ex.Message}");
-        Debug.LogError($"Stack trace: {ex.StackTrace}");
-    }
-    
-    return dialogues;
-}
 
     // ✅ CORRECTED QUESTION LOADING METHOD
     private async Task<List<Question>> LoadQuestionsFromFirestore(string storyId)
@@ -651,4 +696,34 @@ private async Task<List<DialogueLine>> LoadDialoguesFromFirestore(string storyId
             HideNoStoriesMessage();
         }
     }
+
+    // Add this method to StudentClassroomManager.cs
+    public void ClearStoryCache()
+    {
+        if (currentClass == null || string.IsNullOrEmpty(currentClass.classCode))
+            return;
+
+        // Clear all cached stories for this class
+        var storiesToClear = availableStories.Where(s => s.classCode == currentClass.classCode).ToList();
+
+        foreach (var story in storiesToClear)
+        {
+            string cacheKey = $"CachedStory_{story.storyId}";
+            if (StudentPrefs.HasKey(cacheKey))
+            {
+                StudentPrefs.DeleteKey(cacheKey);
+                Debug.Log($"🗑️ Cleared cache for: {story.storyTitle}");
+            }
+        }
+
+        StudentPrefs.Save();
+
+        // Reload stories
+        LoadPublishedStories();
+
+        Debug.Log("✅ Story cache cleared and refreshed");
+    }
+
+    // You can call this from a refresh button or automatically
+
 }

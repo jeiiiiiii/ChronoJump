@@ -16,9 +16,9 @@ public class StoryData
     public List<string> assignedClasses;
     public string createdAt;
     public string updatedAt;
-    
-    // ✅ NEW: Add index for both Unity and Firestore
     public int storyIndex;
+    public int storyVersion = 1;
+
 
     public StoryData()
     {
@@ -33,6 +33,7 @@ public class StoryData
         assignedClasses = new List<string>();
         createdAt = System.DateTime.Now.ToString();
         updatedAt = System.DateTime.Now.ToString();
-        storyIndex = -1; // Default to -1 (will be set when added to list)
+        storyIndex = -1;
+        storyVersion = 1;
     }
 }

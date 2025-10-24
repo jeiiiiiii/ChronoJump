@@ -5,7 +5,7 @@ using System.Collections.Generic;
 [FirestoreData]
 public class StoryDataFirestore
 {
-    [FirestoreDocumentId] public string storyId { get; set; }  
+    [FirestoreDocumentId] public string storyId { get; set; }
     [FirestoreProperty] public string title { get; set; }
     [FirestoreProperty] public string description { get; set; }
     [FirestoreProperty] public string backgroundUrl { get; set; }
@@ -17,7 +17,11 @@ public class StoryDataFirestore
     [FirestoreProperty] public bool isPublished { get; set; }
     [FirestoreProperty] public List<string> assignedClasses { get; set; }
     [FirestoreProperty] public int storyIndex { get; set; }
+
+    // ✅ ADD THIS: Version tracking for cache invalidation
+    [FirestoreProperty] public int storyVersion { get; set; } = 1;
 }
+
 
 [FirestoreData]
 public class QuestionFirestore

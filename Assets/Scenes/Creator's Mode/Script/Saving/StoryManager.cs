@@ -41,7 +41,7 @@ public class StoryManager : MonoBehaviour
     public bool UseFirestore { get; private set; } = false;
 
     // Add this property to StoryManager.cs for easier access
-    public bool IsFirebaseReady => FirebaseManager.Instance != null && 
+    public bool IsFirebaseReady => FirebaseManager.Instance != null &&
                               FirebaseManager.Instance.CurrentUser != null &&
                               _firestore != null;
 
@@ -78,7 +78,7 @@ public class StoryManager : MonoBehaviour
     }
 
     private static StoryManager _instance;
-   public static StoryManager Instance
+    public static StoryManager Instance
     {
         get
         {
@@ -446,7 +446,6 @@ public class StoryManager : MonoBehaviour
 
     // === INTEGRATED FIRESTORE METHODS ===
 
-    // UPDATED: Save story to Firestore
     public async Task<bool> SaveStoryToFirestore(StoryData story)
     {
         try
@@ -455,6 +454,24 @@ public class StoryManager : MonoBehaviour
             {
                 Debug.LogError("❌ No user logged in, cannot save to Firestore");
                 return false;
+            }
+
+            // ✅ ACCURATE VERSION DETECTION: Check Firestore directly
+            bool storyExists = await CheckIfStoryExistsInFirestore(story.storyId);
+
+            if (storyExists)
+            {
+                // Story exists = this is an UPDATE → increment version
+                IncrementStoryVersion(story);
+                Debug.Log($"💾 Saving UPDATED story (v{story.storyVersion}): {story.storyTitle}");
+
+                // Clear student cache since story was updated
+                ClearStoryCache(story.storyId);
+            }
+            else
+            {
+                // Story doesn't exist = this is a NEW story → keep version 1
+                Debug.Log($"💾 Saving NEW story (v{story.storyVersion}): {story.storyTitle}");
             }
 
             // Get teacher ID
@@ -491,13 +508,57 @@ public class StoryManager : MonoBehaviour
             await SaveDialoguesToFirestore(story.storyId, story.dialogues);
             await SaveQuestionsToFirestore(story.storyId, story.quizQuestions);
 
-            Debug.Log($"✅ Story '{story.storyTitle}' saved to Firestore successfully with index: {storyIndex}");
+            Debug.Log($"✅ Story '{story.storyTitle}' saved to Firestore successfully (v{story.storyVersion})");
             return true;
         }
         catch (System.Exception ex)
         {
             Debug.LogError($"❌ Failed to save story to Firestore: {ex.Message}");
             return false;
+        }
+    }
+
+
+    // ✅ REQUIRED HELPER METHOD: Check if story exists in Firestore
+    private async Task<bool> CheckIfStoryExistsInFirestore(string storyId)
+    {
+        try
+        {
+            if (!IsFirebaseReady) return false;
+
+            var storyRef = _firestore.Collection("createdStories").Document(storyId);
+            var snapshot = await storyRef.GetSnapshotAsync();
+            return snapshot.Exists;
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"⚠️ Failed to check if story exists: {ex.Message}");
+            return false;
+        }
+    }
+
+
+    // ✅ REQUIRED HELPER METHOD: Increment story version
+    public void IncrementStoryVersion(StoryData story)
+    {
+        if (story != null)
+        {
+            story.storyVersion++;
+            story.updatedAt = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            Debug.Log($"🔄 Incremented story version to: {story.storyVersion} for '{story.storyTitle}'");
+        }
+    }
+
+
+    // ✅ REQUIRED HELPER METHOD: Clear student cache
+    public static void ClearStoryCache(string storyId)
+    {
+        string cacheKey = $"CachedStory_{storyId}";
+        if (StudentPrefs.HasKey(cacheKey))
+        {
+            StudentPrefs.DeleteKey(cacheKey);
+            StudentPrefs.Save();
+            Debug.Log($"🗑️ Cleared student cache for story: {storyId}");
         }
     }
 
@@ -696,69 +757,70 @@ public class StoryManager : MonoBehaviour
             updatedAt = Timestamp.GetCurrentTimestamp(),
             isPublished = unityStory.assignedClasses?.Count > 0,
             assignedClasses = unityStory.assignedClasses ?? new List<string>(),
-            storyIndex = storyIndex
+            storyIndex = storyIndex,
+            storyVersion = unityStory.storyVersion
         };
     }
 
     private StoryData MapToUnityStory(StoryDataFirestore firestoreStory,
                               List<DialogueLine> dialogues,
                               List<Question> questions)
-{
-    // Helper function to convert Timestamp to display string
-    string ConvertTimestampToString(Timestamp timestamp)
     {
-        if (timestamp != null)
+        // Helper function to convert Timestamp to display string
+        string ConvertTimestampToString(Timestamp timestamp)
         {
-            try
+            if (timestamp != null)
             {
-                DateTime date = timestamp.ToDateTime();
-                // Store in a format that DateTime.TryParse can handle
-                return date.ToString("yyyy-MM-dd HH:mm:ss");
+                try
+                {
+                    DateTime date = timestamp.ToDateTime();
+                    // Store in a format that DateTime.TryParse can handle
+                    return date.ToString("yyyy-MM-dd HH:mm:ss");
+                }
+                catch (System.Exception ex)
+                {
+                    Debug.LogWarning($"Failed to convert timestamp: {ex.Message}");
+                }
             }
-            catch (System.Exception ex)
-            {
-                Debug.LogWarning($"Failed to convert timestamp: {ex.Message}");
-            }
+            return "";
         }
-        return "";
+
+        return new StoryData
+        {
+            storyId = firestoreStory.storyId,
+            storyTitle = firestoreStory.title,
+            storyDescription = firestoreStory.description,
+            backgroundPath = firestoreStory.backgroundUrl,
+            character1Path = firestoreStory.character1Url,
+            character2Path = firestoreStory.character2Url,
+            assignedClasses = firestoreStory.assignedClasses ?? new List<string>(),
+            dialogues = dialogues,
+            quizQuestions = questions,
+            storyIndex = firestoreStory.storyIndex,
+            storyVersion = firestoreStory.storyVersion,
+
+            // ✅ FIXED: Proper timestamp conversion
+            createdAt = ConvertTimestampToString(firestoreStory.createdAt),
+            updatedAt = ConvertTimestampToString(firestoreStory.updatedAt)
+        };
     }
-
-    return new StoryData
-    {
-        storyId = firestoreStory.storyId,
-        storyTitle = firestoreStory.title,
-        storyDescription = firestoreStory.description,
-        backgroundPath = firestoreStory.backgroundUrl,
-        character1Path = firestoreStory.character1Url,
-        character2Path = firestoreStory.character2Url,
-        assignedClasses = firestoreStory.assignedClasses ?? new List<string>(),
-        dialogues = dialogues,
-        quizQuestions = questions,
-        storyIndex = firestoreStory.storyIndex,
-
-        // ✅ FIXED: Proper timestamp conversion
-        createdAt = ConvertTimestampToString(firestoreStory.createdAt),
-        updatedAt = ConvertTimestampToString(firestoreStory.updatedAt)
-    };
-}
-
-
 
 
     private DialogueLineFirestore MapToFirestoreDialogue(DialogueLine unityDialogue, int orderIndex)
-{
-    return new DialogueLineFirestore
     {
-        characterName = unityDialogue.characterName,
-        dialogueText = unityDialogue.dialogueText,
-        selectedVoiceId = unityDialogue.selectedVoiceId,
-        audioFilePath = unityDialogue.audioFilePath,
-        hasAudio = unityDialogue.hasAudio,
-        audioFileName = unityDialogue.audioFileName,
-        audioStoragePath = unityDialogue.audioStoragePath,
-        orderIndex = orderIndex
-    };
-}
+        return new DialogueLineFirestore
+        {
+            characterName = unityDialogue.characterName,
+            dialogueText = unityDialogue.dialogueText,
+            selectedVoiceId = unityDialogue.selectedVoiceId,
+            audioFilePath = unityDialogue.audioFilePath,
+            hasAudio = unityDialogue.hasAudio,
+            audioFileName = unityDialogue.audioFileName,
+            audioStoragePath = unityDialogue.audioStoragePath,
+            orderIndex = orderIndex
+        };
+    }
+
 
     private DialogueLine MapToUnityDialogue(DialogueLineFirestore firestoreDialogue)
     {
@@ -1471,99 +1533,99 @@ public class StoryManager : MonoBehaviour
     // === FIRESTORE PUBLISHED STORIES FETCHING (FOR STUDENTS) ===
 
     /// <summary>
-/// Fetch published stories for a specific class from Firestore (for students)
-/// </summary>
-public async Task<List<PublishedStory>> GetPublishedStoriesFromFirestore(string classCode)
-{
-    try
+    /// Fetch published stories for a specific class from Firestore (for students)
+    /// </summary>
+    public async Task<List<PublishedStory>> GetPublishedStoriesFromFirestore(string classCode)
     {
-        if (!IsFirebaseReady || _firestore == null)
+        try
         {
-            Debug.LogError("Firebase not ready, cannot fetch published stories");
-            return new List<PublishedStory>();
-        }
-
-        Debug.Log($"📥 Fetching published stories for class: {classCode}");
-
-        // Query stories that have this class in their assignedClasses array
-        var storiesQuery = _firestore
-            .Collection("createdStories")
-            .WhereArrayContains("assignedClasses", classCode)
-            .WhereEqualTo("isPublished", true);
-
-        var snapshot = await storiesQuery.GetSnapshotAsync();
-        var publishedStories = new List<PublishedStory>();
-
-        // Get class details including teacher name
-        var classDetails = await GetClassDetailsFromFirestore(classCode);
-        
-        foreach (var storyDoc in snapshot.Documents)
-        {
-            var firestoreStory = storyDoc.ConvertTo<StoryDataFirestore>();
-            
-            // Create PublishedStory from Firestore data with actual class details
-            var publishedStory = new PublishedStory
+            if (!IsFirebaseReady || _firestore == null)
             {
-                storyId = firestoreStory.storyId,
-                storyTitle = firestoreStory.title,
-                classCode = classCode,
-                className = classDetails.className ?? "Class",
-                publishDate = firestoreStory.updatedAt != null ? firestoreStory.updatedAt.ToDateTime().ToString("MMM dd, yyyy") : "Unknown"
-            };
-            
-            publishedStories.Add(publishedStory);
-        }
-
-        Debug.Log($"✅ Found {publishedStories.Count} published stories for class {classCode}");
-        return publishedStories;
-    }
-    catch (System.Exception ex)
-    {
-        Debug.LogError($"❌ Failed to fetch published stories from Firestore: {ex.Message}");
-        return new List<PublishedStory>();
-    }
-}
-
-private async Task<ClassDetailsModel> GetClassDetailsFromFirestore(string classCode)
-{
-    try
-    {
-        var classQuery = _firestore
-            .Collection("classes")
-            .WhereEqualTo("classCode", classCode)
-            .Limit(1);
-
-        var snapshot = await classQuery.GetSnapshotAsync();
-        var classDocs = snapshot.Documents.ToList();
-        if (classDocs.Count > 0)
-        {
-            var classData = classDocs[0].ToDictionary();
-            var classDetails = new ClassDetailsModel
-            {
-                classCode = classCode,
-                className = classData.ContainsKey("className") ? classData["className"].ToString() : "Unknown Class",
-                classLevel = classData.ContainsKey("classLevel") ? classData["classLevel"].ToString() : "",
-                teacherName = "Unknown Teacher", // We'll get this next
-                isActive = classData.ContainsKey("isActive") ? (bool)classData["isActive"] : true
-            };
-
-            // Get teacher name if teachId exists
-            if (classData.ContainsKey("teachId"))
-            {
-                string teacherId = classData["teachId"].ToString();
-                classDetails.teacherName = await GetTeacherNameFromFirestore(teacherId);
+                Debug.LogError("Firebase not ready, cannot fetch published stories");
+                return new List<PublishedStory>();
             }
 
-            return classDetails;
+            Debug.Log($"📥 Fetching published stories for class: {classCode}");
+
+            // Query stories that have this class in their assignedClasses array
+            var storiesQuery = _firestore
+                .Collection("createdStories")
+                .WhereArrayContains("assignedClasses", classCode)
+                .WhereEqualTo("isPublished", true);
+
+            var snapshot = await storiesQuery.GetSnapshotAsync();
+            var publishedStories = new List<PublishedStory>();
+
+            // Get class details including teacher name
+            var classDetails = await GetClassDetailsFromFirestore(classCode);
+
+            foreach (var storyDoc in snapshot.Documents)
+            {
+                var firestoreStory = storyDoc.ConvertTo<StoryDataFirestore>();
+
+                // Create PublishedStory from Firestore data with actual class details
+                var publishedStory = new PublishedStory
+                {
+                    storyId = firestoreStory.storyId,
+                    storyTitle = firestoreStory.title,
+                    classCode = classCode,
+                    className = classDetails.className ?? "Class",
+                    publishDate = firestoreStory.updatedAt != null ? firestoreStory.updatedAt.ToDateTime().ToString("MMM dd, yyyy") : "Unknown"
+                };
+
+                publishedStories.Add(publishedStory);
+            }
+
+            Debug.Log($"✅ Found {publishedStories.Count} published stories for class {classCode}");
+            return publishedStories;
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Failed to fetch published stories from Firestore: {ex.Message}");
+            return new List<PublishedStory>();
         }
     }
-    catch (System.Exception ex)
+
+    private async Task<ClassDetailsModel> GetClassDetailsFromFirestore(string classCode)
     {
-        Debug.LogWarning($"Failed to fetch class details: {ex.Message}");
+        try
+        {
+            var classQuery = _firestore
+                .Collection("classes")
+                .WhereEqualTo("classCode", classCode)
+                .Limit(1);
+
+            var snapshot = await classQuery.GetSnapshotAsync();
+            var classDocs = snapshot.Documents.ToList();
+            if (classDocs.Count > 0)
+            {
+                var classData = classDocs[0].ToDictionary();
+                var classDetails = new ClassDetailsModel
+                {
+                    classCode = classCode,
+                    className = classData.ContainsKey("className") ? classData["className"].ToString() : "Unknown Class",
+                    classLevel = classData.ContainsKey("classLevel") ? classData["classLevel"].ToString() : "",
+                    teacherName = "Unknown Teacher", // We'll get this next
+                    isActive = classData.ContainsKey("isActive") ? (bool)classData["isActive"] : true
+                };
+
+                // Get teacher name if teachId exists
+                if (classData.ContainsKey("teachId"))
+                {
+                    string teacherId = classData["teachId"].ToString();
+                    classDetails.teacherName = await GetTeacherNameFromFirestore(teacherId);
+                }
+
+                return classDetails;
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"Failed to fetch class details: {ex.Message}");
+        }
+
+        return new ClassDetailsModel(classCode, "Unknown Class", "", "Unknown Teacher");
     }
-    
-    return new ClassDetailsModel(classCode, "Unknown Class", "", "Unknown Teacher");
-}
 
     private async Task<string> GetTeacherNameFromFirestore(string teacherId)
     {
@@ -1593,5 +1655,4 @@ private async Task<ClassDetailsModel> GetClassDetailsFromFirestore(string classC
 
         return "Unknown Teacher";
     }
-
 }
