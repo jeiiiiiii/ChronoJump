@@ -599,7 +599,11 @@ public class StoryManager : MonoBehaviour
                 return false;
             }
 
-            // ✅ DELETE DIALOGUES SUBCOLLECTION
+            // ✅ STEP 1: Get all classes this story was published to BEFORE deleting
+            var assignedClasses = firestoreStory.assignedClasses ?? new List<string>();
+            Debug.Log($"📋 Story was published to {assignedClasses.Count} classes: {string.Join(", ", assignedClasses)}");
+
+            // ✅ STEP 2: Delete dialogues subcollection
             var dialoguesRef = storyDocRef.Collection("dialogues");
             var dialoguesSnapshot = await dialoguesRef.GetSnapshotAsync();
             foreach (var dialogueDoc in dialoguesSnapshot.Documents)
@@ -608,7 +612,7 @@ public class StoryManager : MonoBehaviour
             }
             Debug.Log($"🗑️ Deleted {dialoguesSnapshot.Count} dialogues for story {storyId}");
 
-            // ✅ DELETE QUESTIONS SUBCOLLECTION
+            // ✅ STEP 3: Delete questions subcollection
             var questionsRef = storyDocRef.Collection("questions");
             var questionsSnapshot = await questionsRef.GetSnapshotAsync();
             foreach (var questionDoc in questionsSnapshot.Documents)
@@ -617,15 +621,123 @@ public class StoryManager : MonoBehaviour
             }
             Debug.Log($"🗑️ Deleted {questionsSnapshot.Count} questions for story {storyId}");
 
-            // Now delete the main document
+            // ✅ STEP 4: Now delete the main document
             await storyDocRef.DeleteAsync();
             Debug.Log($"✅ Story {storyId} and all subcollections deleted from Firestore");
+
+            // ✅ STEP 5: CRITICAL - Remove from LOCAL published stories for all classes
+            RemoveFromPublishedStories(storyId, assignedClasses);
+
+            // ✅ STEP 6: Remove from LOCAL created stories
+            RemoveFromLocalStories(storyId);
+
             return true;
         }
         catch (System.Exception ex)
         {
             Debug.LogError($"❌ Failed to delete story from Firestore: {ex.Message}");
             return false;
+        }
+    }
+
+
+    // ✅ NEW: Remove story from local published stories
+    private void RemoveFromPublishedStories(string storyId, List<string> classCodes)
+    {
+        int removedCount = 0;
+
+        foreach (string classCode in classCodes)
+        {
+            // Remove from published stories list
+            removedCount += publishedStories.RemoveAll(p => p.storyId == storyId && p.classCode == classCode);
+        }
+
+        // Save the updated published stories locally
+        SavePublishedStories();
+
+        Debug.Log($"🗑️ Removed story {storyId} from {removedCount} published class lists locally");
+    }
+
+
+    // ✅ NEW: Remove story from local created stories
+    private void RemoveFromLocalStories(string storyId)
+    {
+        // Find and remove from allStories list
+        var storyToRemove = allStories.FirstOrDefault(s => s?.storyId == storyId);
+        if (storyToRemove != null)
+        {
+            allStories.Remove(storyToRemove);
+
+            // Update current story index if needed
+            if (currentStory != null && currentStory.storyId == storyId)
+            {
+                currentStoryIndex = -1;
+            }
+
+            Debug.Log($"🗑️ Removed story {storyId} from local created stories");
+
+            // Save the updated stories locally
+            SaveStoriesLocal();
+        }
+    }
+
+    // ✅ NEW: Validate published stories against Firestore
+    public async Task ValidatePublishedStories()
+    {
+        try
+        {
+            if (!IsFirebaseReady) return;
+
+            Debug.Log("🔍 Validating published stories against Firestore...");
+
+            string currentTeachId = GetCurrentTeacherId();
+            var validStories = new List<PublishedStory>();
+            int removedCount = 0;
+
+            foreach (var publishedStory in publishedStories)
+            {
+                // Check if story still exists in Firestore
+                var storyRef = _firestore.Collection("createdStories").Document(publishedStory.storyId);
+                var snapshot = await storyRef.GetSnapshotAsync();
+
+                if (snapshot.Exists)
+                {
+                    var firestoreStory = snapshot.ConvertTo<StoryDataFirestore>();
+
+                    // Check if story still belongs to current teacher and is assigned to the class
+                    if (firestoreStory.teachId == currentTeachId &&
+                        firestoreStory.assignedClasses?.Contains(publishedStory.classCode) == true)
+                    {
+                        validStories.Add(publishedStory);
+                    }
+                    else
+                    {
+                        Debug.Log($"🗑️ Removing invalid published story: {publishedStory.storyTitle} (no longer assigned to class)");
+                        removedCount++;
+                    }
+                }
+                else
+                {
+                    Debug.Log($"🗑️ Removing deleted published story: {publishedStory.storyTitle}");
+                    removedCount++;
+                }
+            }
+
+            // Update published stories list
+            if (removedCount > 0)
+            {
+                publishedStories = validStories;
+                SavePublishedStories();
+                Debug.Log($"✅ Published stories validation complete. Removed {removedCount} invalid entries.");
+            }
+            else
+            {
+                Debug.Log("✅ All published stories are valid.");
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Failed to validate published stories: {ex.Message}");
         }
     }
 
@@ -1284,10 +1396,12 @@ public class StoryManager : MonoBehaviour
 
     public void DeletePublishedStory(string storyId, string classCode)
     {
-        publishedStories.RemoveAll(p => p.storyId == storyId && p.classCode == classCode);
+        int removedCount = publishedStories.RemoveAll(p => p.storyId == storyId && p.classCode == classCode);
         SavePublishedStories();
-        Debug.Log($"Deleted published story with ID: {storyId}");
+
+        Debug.Log($"🗑️ Deleted {removedCount} published story entries with ID: {storyId} from class: {classCode}");
     }
+
 
     public List<PublishedStory> GetPublishedStoriesForClass(string classCode)
     {
@@ -1655,4 +1769,61 @@ public class StoryManager : MonoBehaviour
 
         return "Unknown Teacher";
     }
+
+    // ✅ NEW: Manual cleanup method for orphaned published stories
+    [ContextMenu("Cleanup Orphaned Published Stories")]
+    public async void CleanupOrphanedPublishedStories()
+    {
+        try
+        {
+            if (!IsFirebaseReady) return;
+
+            Debug.Log("🧹 Starting cleanup of orphaned published stories...");
+
+            string currentTeachId = GetCurrentTeacherId();
+            var orphanedStories = new List<PublishedStory>();
+            var validStories = new List<PublishedStory>();
+
+            // Get all stories from Firestore for this teacher
+            var storiesQuery = _firestore
+                .Collection("createdStories")
+                .WhereEqualTo("teachId", currentTeachId);
+
+            var snapshot = await storiesQuery.GetSnapshotAsync();
+            var existingStoryIds = snapshot.Documents.Select(doc => doc.Id).ToHashSet();
+
+            Debug.Log($"📋 Teacher has {existingStoryIds.Count} stories in Firestore");
+
+            // Check each published story
+            foreach (var publishedStory in publishedStories)
+            {
+                if (existingStoryIds.Contains(publishedStory.storyId))
+                {
+                    validStories.Add(publishedStory);
+                }
+                else
+                {
+                    orphanedStories.Add(publishedStory);
+                    Debug.Log($"🗑️ Orphaned story: {publishedStory.storyTitle} (ID: {publishedStory.storyId})");
+                }
+            }
+
+            // Update the list
+            if (orphanedStories.Count > 0)
+            {
+                publishedStories = validStories;
+                SavePublishedStories();
+                Debug.Log($"✅ Cleanup complete. Removed {orphanedStories.Count} orphaned published stories.");
+            }
+            else
+            {
+                Debug.Log("✅ No orphaned published stories found.");
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Cleanup failed: {ex.Message}");
+        }
+    }
+
 }

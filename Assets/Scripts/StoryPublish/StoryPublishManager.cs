@@ -428,6 +428,12 @@ public class StoryPublishManager : MonoBehaviour
             return;
         }
 
+        // ✅ STEP 1: Validate published stories against Firestore FIRST
+        if (StoryManager.Instance.UseFirestore)
+        {
+            await StoryManager.Instance.ValidatePublishedStories();
+        }
+
         // ✅ Clear UI with null checks
         if (createdListParent != null)
         {
@@ -439,17 +445,17 @@ public class StoryPublishManager : MonoBehaviour
                 }
             }
 
-            // ✅ Check if still valid before rebuilding layout
             if (createdListParent != null && createdListParent.gameObject != null)
             {
                 LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)createdListParent);
             }
         }
 
-        // Get stories from LOCAL storage first (fast)
+        // Get stories from LOCAL storage (now validated)
         var publishedStories = StoryManager.Instance.GetPublishedStoriesForClass(_selectedClassCode);
 
-        Debug.Log($"📊 Initial local stories found: {(publishedStories == null ? "NULL" : publishedStories.Count.ToString())}");
+        Debug.Log($"📊 Validated local stories found: {(publishedStories == null ? "NULL" : publishedStories.Count.ToString())}");
+    
 
         // If no local stories found AND we're using Firestore, try to sync from Firestore
         if ((publishedStories == null || publishedStories.Count == 0) && StoryManager.Instance.UseFirestore)
