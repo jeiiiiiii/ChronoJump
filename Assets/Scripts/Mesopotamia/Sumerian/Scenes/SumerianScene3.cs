@@ -47,6 +47,9 @@ public class SumerianScene3 : MonoBehaviour
     public Sprite EnkiPokerface;
     public Sprite EnkiStern;
     public Sprite EnkiTesting;
+    public Animator chronoAnimator;
+    public Animator playerAnimator;
+    public Animator NPCFulldrawnAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -267,40 +270,79 @@ public class SumerianScene3 : MonoBehaviour
         switch (currentDialogueIndex)
         {
             case 0:
-                ChronocharacterRenderer.sprite = EnkiStern;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Enki_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Curious", 0, 0f);
                 break;
             case 1:
                 ZulcharacterRenderer.enabled = true;
+                if (NPCFulldrawnAnimator != null)
+                    NPCFulldrawnAnimator.Play("Zul_FullDrawn", 0, 0f);
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Enki_Kind", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Smiling", 0, 0f);
                 break;
             case 2:
-                ChronocharacterRenderer.sprite = EnkiKind;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Enki_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Eager", 0, 0f);
                 break;
             case 3:
-                PlayercharacterRenderer.sprite = ZulFriendly;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Zul_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Smiling", 0, 0f);
                 break;
             case 4:
-                PlayercharacterRenderer.sprite = PlayerEager;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Zul_Neutral", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 break;
             case 5:
-                ChronocharacterRenderer.sprite = ZulTired;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Zul_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Reflective", 0, 0f);
                 break;
             case 6:
-                ChronocharacterRenderer.sprite = ChronoThinking;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Reflective", 0, 0f);
                 break;
             case 7:
-                ChronocharacterRenderer.sprite = ZulFrustrated;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Zul_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Curious", 0, 0f);
                 break;
             case 8:
-                PlayercharacterRenderer.sprite = PlayerReflective;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Thinking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
+                break;
+            case 9:
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Zul_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Reflective", 0, 0f);
                 break;
             case 10:
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Curious", 0, 0f);
                 break;
             case 11:
-                ChronocharacterRenderer.sprite = ZulFriendly;
-                break;
-            case 12:
-                ChronocharacterRenderer.sprite = ZulNeutral;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Zul_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Eager", 0, 0f);
                 break;
         }
     }

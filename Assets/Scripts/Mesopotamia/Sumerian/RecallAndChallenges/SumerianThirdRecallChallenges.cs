@@ -56,6 +56,8 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
     public Sprite PatesiWise;
     public Sprite PatesiDisappointed;
     public SpriteRenderer BlurBG;
+    public Animator chronoAnimator;
+    public Animator playerAnimator;
 
 
     void Start()
@@ -115,7 +117,7 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
         },
         new DialogueLine
         {
-            characterName = "PATESI NINURTA",
+            characterName = "CHRONO",
             line = " Pumiling muli!"
         }
     };
@@ -137,7 +139,7 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
         },
         new DialogueLine
         {
-            characterName = "PATESI NINURTA",
+            characterName = "CHRONO",
             line = " Pumiling muli!"
         },
     };
@@ -198,9 +200,11 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerSmile;
-                    ChronocharacterRenderer.sprite = PatesiFormal;
-                    
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
+
                     if (!challengeCompleted)
                     {
                         challengeCompleted = true;
@@ -217,8 +221,10 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
                     }
                     break;
                 case 1:
-                    PlayercharacterRenderer.sprite = PlayerEager;
-                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Smiling", 0, 0f);
                     break;
                 case 2:
                     foreach (Button btn in answerButtons)
@@ -231,11 +237,16 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
                         heart.gameObject.SetActive(false);
                     }
                     BlurBG.gameObject.SetActive(false);
-                    PlayercharacterRenderer.sprite = PlayerSmile;
-                    ChronocharacterRenderer.sprite = PatesiWise;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Patesi_Explaining", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Curious", 0, 0f);
                     break;
                 case 3:
-                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Eager", 0, 0f);
                     break;
             }
         }
@@ -244,17 +255,28 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoSad;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Sad", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 1:
-                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Embarassed", 0, 0f);
                     break;
                 case 2:
-                    ChronocharacterRenderer.sprite = PatesiDisappointed;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Patesi_Explaining", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Curious", 0, 0f);
                     break;
                 case 3:
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }
@@ -263,17 +285,28 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoSad;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Sad", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 1:
-                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Embarassed", 0, 0f);
                     break;
                 case 2:
-                    ChronocharacterRenderer.sprite = PatesiDisappointed;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Patesi_Explaining", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Curious", 0, 0f);
                     break;
                 case 3:
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }
@@ -282,8 +315,10 @@ public class SumerianThirdRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerSmile;
-                    ChronocharacterRenderer.sprite = PatesiFormal;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Patesi_Explaining", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }

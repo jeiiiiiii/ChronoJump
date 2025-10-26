@@ -27,6 +27,8 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
     public Sprite EnkiPokerface;
     public Sprite EnkiTesting;
     public SpriteRenderer BlurBG;
+    public Animator chronoAnimator;
+    public Animator playerAnimator;
 
     [System.Serializable]
     public struct Answer
@@ -217,8 +219,10 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
             {
                 case 0:
                     PlayerAchievementManager.UnlockAchievement("Scribe");
-                    PlayercharacterRenderer.sprite = PlayerSmile;
-                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Eager", 0, 0f);
                     AchievementUnlockedRenderer.SetActive(true);
 
                     // NEW: Mark challenge as completed and overwrite saves
@@ -238,8 +242,10 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
                     }
                     break;
                 case 1:
-                    PlayercharacterRenderer.sprite = PlayerEager;
-                    ChronocharacterRenderer.sprite = EnkiKind;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Enki_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Smiling", 0, 0f);
                     AchievementUnlockedRenderer.SetActive(false);
                     break;
                 case 2:
@@ -254,16 +260,28 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
                     }
                     BlurBG.gameObject.SetActive(false);
 
-                    ChronocharacterRenderer.sprite = EnkiKind;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Enki_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Curious", 0, 0f);
                     break;
                 case 3:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Enki_Kind", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 4:
-                    ChronocharacterRenderer.sprite = ChronoSmile;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
                 case 5:
-                    ChronocharacterRenderer.sprite = EnkiKind;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Eager", 0, 0f);
                     break;
             }
         }
@@ -272,18 +290,28 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Sad", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 1:
-                    ChronocharacterRenderer.sprite = ChronoSad;
-                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Embarassed", 0, 0f);
                     break;
                 case 2:
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Curious", 0, 0f);
                     break;
                 case 3:
-                    ChronocharacterRenderer.sprite = ChronoSad;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }
@@ -292,18 +320,28 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Sad", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 1:
-                    ChronocharacterRenderer.sprite = ChronoSad;
-                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Embarassed", 0, 0f);
                     break;
                 case 2:
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Curious", 0, 0f);
                     break;
                 case 3:
-                    ChronocharacterRenderer.sprite = ChronoSad;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }
@@ -312,8 +350,10 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = EnkiTesting;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Enki_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }
