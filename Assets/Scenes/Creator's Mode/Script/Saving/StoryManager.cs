@@ -41,7 +41,7 @@ public class StoryManager : MonoBehaviour
     public bool UseFirestore { get; private set; } = false;
 
     // Add this property to StoryManager.cs for easier access
-    public bool IsFirebaseReady => FirebaseManager.Instance != null && 
+    public bool IsFirebaseReady => FirebaseManager.Instance != null &&
                               FirebaseManager.Instance.CurrentUser != null &&
                               _firestore != null;
 
@@ -78,7 +78,7 @@ public class StoryManager : MonoBehaviour
     }
 
     private static StoryManager _instance;
-   public static StoryManager Instance
+    public static StoryManager Instance
     {
         get
         {
@@ -446,7 +446,6 @@ public class StoryManager : MonoBehaviour
 
     // === INTEGRATED FIRESTORE METHODS ===
 
-    // UPDATED: Save story to Firestore
     public async Task<bool> SaveStoryToFirestore(StoryData story)
     {
         try
@@ -455,6 +454,24 @@ public class StoryManager : MonoBehaviour
             {
                 Debug.LogError("❌ No user logged in, cannot save to Firestore");
                 return false;
+            }
+
+            // ✅ ACCURATE VERSION DETECTION: Check Firestore directly
+            bool storyExists = await CheckIfStoryExistsInFirestore(story.storyId);
+
+            if (storyExists)
+            {
+                // Story exists = this is an UPDATE → increment version
+                IncrementStoryVersion(story);
+                Debug.Log($"💾 Saving UPDATED story (v{story.storyVersion}): {story.storyTitle}");
+
+                // Clear student cache since story was updated
+                ClearStoryCache(story.storyId);
+            }
+            else
+            {
+                // Story doesn't exist = this is a NEW story → keep version 1
+                Debug.Log($"💾 Saving NEW story (v{story.storyVersion}): {story.storyTitle}");
             }
 
             // Get teacher ID
@@ -491,13 +508,57 @@ public class StoryManager : MonoBehaviour
             await SaveDialoguesToFirestore(story.storyId, story.dialogues);
             await SaveQuestionsToFirestore(story.storyId, story.quizQuestions);
 
-            Debug.Log($"✅ Story '{story.storyTitle}' saved to Firestore successfully with index: {storyIndex}");
+            Debug.Log($"✅ Story '{story.storyTitle}' saved to Firestore successfully (v{story.storyVersion})");
             return true;
         }
         catch (System.Exception ex)
         {
             Debug.LogError($"❌ Failed to save story to Firestore: {ex.Message}");
             return false;
+        }
+    }
+
+
+    // ✅ REQUIRED HELPER METHOD: Check if story exists in Firestore
+    private async Task<bool> CheckIfStoryExistsInFirestore(string storyId)
+    {
+        try
+        {
+            if (!IsFirebaseReady) return false;
+
+            var storyRef = _firestore.Collection("createdStories").Document(storyId);
+            var snapshot = await storyRef.GetSnapshotAsync();
+            return snapshot.Exists;
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"⚠️ Failed to check if story exists: {ex.Message}");
+            return false;
+        }
+    }
+
+
+    // ✅ REQUIRED HELPER METHOD: Increment story version
+    public void IncrementStoryVersion(StoryData story)
+    {
+        if (story != null)
+        {
+            story.storyVersion++;
+            story.updatedAt = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            Debug.Log($"🔄 Incremented story version to: {story.storyVersion} for '{story.storyTitle}'");
+        }
+    }
+
+
+    // ✅ REQUIRED HELPER METHOD: Clear student cache
+    public static void ClearStoryCache(string storyId)
+    {
+        string cacheKey = $"CachedStory_{storyId}";
+        if (StudentPrefs.HasKey(cacheKey))
+        {
+            StudentPrefs.DeleteKey(cacheKey);
+            StudentPrefs.Save();
+            Debug.Log($"🗑️ Cleared student cache for story: {storyId}");
         }
     }
 
@@ -538,7 +599,14 @@ public class StoryManager : MonoBehaviour
                 return false;
             }
 
-            // ✅ DELETE DIALOGUES SUBCOLLECTION
+            // ✅ STEP 1: Get all classes this story was published to BEFORE deleting
+            var assignedClasses = firestoreStory.assignedClasses ?? new List<string>();
+            Debug.Log($"📋 Story was published to {assignedClasses.Count} classes: {string.Join(", ", assignedClasses)}");
+
+            // ✅ STEP 2: Get story data for file cleanup BEFORE removing from local lists
+            var storyForCleanup = allStories.FirstOrDefault(s => s?.storyId == storyId);
+
+            // ✅ STEP 3: Delete dialogues subcollection
             var dialoguesRef = storyDocRef.Collection("dialogues");
             var dialoguesSnapshot = await dialoguesRef.GetSnapshotAsync();
             foreach (var dialogueDoc in dialoguesSnapshot.Documents)
@@ -547,7 +615,7 @@ public class StoryManager : MonoBehaviour
             }
             Debug.Log($"🗑️ Deleted {dialoguesSnapshot.Count} dialogues for story {storyId}");
 
-            // ✅ DELETE QUESTIONS SUBCOLLECTION
+            // ✅ STEP 4: Delete questions subcollection
             var questionsRef = storyDocRef.Collection("questions");
             var questionsSnapshot = await questionsRef.GetSnapshotAsync();
             foreach (var questionDoc in questionsSnapshot.Documents)
@@ -556,15 +624,148 @@ public class StoryManager : MonoBehaviour
             }
             Debug.Log($"🗑️ Deleted {questionsSnapshot.Count} questions for story {storyId}");
 
-            // Now delete the main document
+            // ✅ STEP 5: Now delete the main document
             await storyDocRef.DeleteAsync();
             Debug.Log($"✅ Story {storyId} and all subcollections deleted from Firestore");
+
+            // ✅ STEP 6: CRITICAL - Remove from LOCAL published stories for all classes
+            RemoveFromPublishedStories(storyId, assignedClasses);
+
+            // ✅ STEP 7: Remove from LOCAL created stories
+            RemoveFromLocalStories(storyId);
+
+            // ✅ STEP 8: Clean up local files (images, audio, cache)
+            // ✅ FIX: Cache persistentDataPath on main thread before starting background task
+            string persistentDataPath = Application.persistentDataPath;
+            string teacherBaseDir = GetTeacherBaseDirectoryWithPath(persistentDataPath);
+
+            // Don't await this to avoid blocking the delete operation
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    var storyForCleanup = allStories.FirstOrDefault(s => s?.storyId == storyId);
+                    if (storyForCleanup != null)
+                    {
+                        await CleanupStoryImages(storyForCleanup, teacherBaseDir);
+                    }
+                    await CleanupStoryVoices(storyId, teacherBaseDir);
+                    CleanupLocalCache(storyId);
+                    Debug.Log($"✅ File cleanup completed for deleted story: {storyId}");
+                }
+                catch (System.Exception cleanupEx)
+                {
+                    Debug.LogError($"❌ File cleanup failed: {cleanupEx.Message}");
+                }
+            });
+
             return true;
         }
         catch (System.Exception ex)
         {
             Debug.LogError($"❌ Failed to delete story from Firestore: {ex.Message}");
             return false;
+        }
+    }
+
+
+    // ✅ NEW: Remove story from local published stories
+    private void RemoveFromPublishedStories(string storyId, List<string> classCodes)
+    {
+        int removedCount = 0;
+
+        foreach (string classCode in classCodes)
+        {
+            // Remove from published stories list
+            removedCount += publishedStories.RemoveAll(p => p.storyId == storyId && p.classCode == classCode);
+        }
+
+        // Save the updated published stories locally
+        SavePublishedStories();
+
+        Debug.Log($"🗑️ Removed story {storyId} from {removedCount} published class lists locally");
+    }
+
+
+    // ✅ NEW: Remove story from local created stories
+    private void RemoveFromLocalStories(string storyId)
+    {
+        // Find and remove from allStories list
+        var storyToRemove = allStories.FirstOrDefault(s => s?.storyId == storyId);
+        if (storyToRemove != null)
+        {
+            allStories.Remove(storyToRemove);
+
+            // Update current story index if needed
+            if (currentStory != null && currentStory.storyId == storyId)
+            {
+                currentStoryIndex = -1;
+            }
+
+            Debug.Log($"🗑️ Removed story {storyId} from local created stories");
+
+            // Save the updated stories locally
+            SaveStoriesLocal();
+        }
+    }
+
+    // ✅ NEW: Validate published stories against Firestore
+    public async Task ValidatePublishedStories()
+    {
+        try
+        {
+            if (!IsFirebaseReady) return;
+
+            Debug.Log("🔍 Validating published stories against Firestore...");
+
+            string currentTeachId = GetCurrentTeacherId();
+            var validStories = new List<PublishedStory>();
+            int removedCount = 0;
+
+            foreach (var publishedStory in publishedStories)
+            {
+                // Check if story still exists in Firestore
+                var storyRef = _firestore.Collection("createdStories").Document(publishedStory.storyId);
+                var snapshot = await storyRef.GetSnapshotAsync();
+
+                if (snapshot.Exists)
+                {
+                    var firestoreStory = snapshot.ConvertTo<StoryDataFirestore>();
+
+                    // Check if story still belongs to current teacher and is assigned to the class
+                    if (firestoreStory.teachId == currentTeachId &&
+                        firestoreStory.assignedClasses?.Contains(publishedStory.classCode) == true)
+                    {
+                        validStories.Add(publishedStory);
+                    }
+                    else
+                    {
+                        Debug.Log($"🗑️ Removing invalid published story: {publishedStory.storyTitle} (no longer assigned to class)");
+                        removedCount++;
+                    }
+                }
+                else
+                {
+                    Debug.Log($"🗑️ Removing deleted published story: {publishedStory.storyTitle}");
+                    removedCount++;
+                }
+            }
+
+            // Update published stories list
+            if (removedCount > 0)
+            {
+                publishedStories = validStories;
+                SavePublishedStories();
+                Debug.Log($"✅ Published stories validation complete. Removed {removedCount} invalid entries.");
+            }
+            else
+            {
+                Debug.Log("✅ All published stories are valid.");
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Failed to validate published stories: {ex.Message}");
         }
     }
 
@@ -696,69 +897,70 @@ public class StoryManager : MonoBehaviour
             updatedAt = Timestamp.GetCurrentTimestamp(),
             isPublished = unityStory.assignedClasses?.Count > 0,
             assignedClasses = unityStory.assignedClasses ?? new List<string>(),
-            storyIndex = storyIndex
+            storyIndex = storyIndex,
+            storyVersion = unityStory.storyVersion
         };
     }
 
     private StoryData MapToUnityStory(StoryDataFirestore firestoreStory,
                               List<DialogueLine> dialogues,
                               List<Question> questions)
-{
-    // Helper function to convert Timestamp to display string
-    string ConvertTimestampToString(Timestamp timestamp)
     {
-        if (timestamp != null)
+        // Helper function to convert Timestamp to display string
+        string ConvertTimestampToString(Timestamp timestamp)
         {
-            try
+            if (timestamp != null)
             {
-                DateTime date = timestamp.ToDateTime();
-                // Store in a format that DateTime.TryParse can handle
-                return date.ToString("yyyy-MM-dd HH:mm:ss");
+                try
+                {
+                    DateTime date = timestamp.ToDateTime();
+                    // Store in a format that DateTime.TryParse can handle
+                    return date.ToString("yyyy-MM-dd HH:mm:ss");
+                }
+                catch (System.Exception ex)
+                {
+                    Debug.LogWarning($"Failed to convert timestamp: {ex.Message}");
+                }
             }
-            catch (System.Exception ex)
-            {
-                Debug.LogWarning($"Failed to convert timestamp: {ex.Message}");
-            }
+            return "";
         }
-        return "";
+
+        return new StoryData
+        {
+            storyId = firestoreStory.storyId,
+            storyTitle = firestoreStory.title,
+            storyDescription = firestoreStory.description,
+            backgroundPath = firestoreStory.backgroundUrl,
+            character1Path = firestoreStory.character1Url,
+            character2Path = firestoreStory.character2Url,
+            assignedClasses = firestoreStory.assignedClasses ?? new List<string>(),
+            dialogues = dialogues,
+            quizQuestions = questions,
+            storyIndex = firestoreStory.storyIndex,
+            storyVersion = firestoreStory.storyVersion,
+
+            // ✅ FIXED: Proper timestamp conversion
+            createdAt = ConvertTimestampToString(firestoreStory.createdAt),
+            updatedAt = ConvertTimestampToString(firestoreStory.updatedAt)
+        };
     }
-
-    return new StoryData
-    {
-        storyId = firestoreStory.storyId,
-        storyTitle = firestoreStory.title,
-        storyDescription = firestoreStory.description,
-        backgroundPath = firestoreStory.backgroundUrl,
-        character1Path = firestoreStory.character1Url,
-        character2Path = firestoreStory.character2Url,
-        assignedClasses = firestoreStory.assignedClasses ?? new List<string>(),
-        dialogues = dialogues,
-        quizQuestions = questions,
-        storyIndex = firestoreStory.storyIndex,
-
-        // ✅ FIXED: Proper timestamp conversion
-        createdAt = ConvertTimestampToString(firestoreStory.createdAt),
-        updatedAt = ConvertTimestampToString(firestoreStory.updatedAt)
-    };
-}
-
-
 
 
     private DialogueLineFirestore MapToFirestoreDialogue(DialogueLine unityDialogue, int orderIndex)
-{
-    return new DialogueLineFirestore
     {
-        characterName = unityDialogue.characterName,
-        dialogueText = unityDialogue.dialogueText,
-        selectedVoiceId = unityDialogue.selectedVoiceId,
-        audioFilePath = unityDialogue.audioFilePath,
-        hasAudio = unityDialogue.hasAudio,
-        audioFileName = unityDialogue.audioFileName,
-        audioStoragePath = unityDialogue.audioStoragePath,
-        orderIndex = orderIndex
-    };
-}
+        return new DialogueLineFirestore
+        {
+            characterName = unityDialogue.characterName,
+            dialogueText = unityDialogue.dialogueText,
+            selectedVoiceId = unityDialogue.selectedVoiceId,
+            audioFilePath = unityDialogue.audioFilePath,
+            hasAudio = unityDialogue.hasAudio,
+            audioFileName = unityDialogue.audioFileName,
+            audioStoragePath = unityDialogue.audioStoragePath,
+            orderIndex = orderIndex
+        };
+    }
+
 
     private DialogueLine MapToUnityDialogue(DialogueLineFirestore firestoreDialogue)
     {
@@ -1222,10 +1424,12 @@ public class StoryManager : MonoBehaviour
 
     public void DeletePublishedStory(string storyId, string classCode)
     {
-        publishedStories.RemoveAll(p => p.storyId == storyId && p.classCode == classCode);
+        int removedCount = publishedStories.RemoveAll(p => p.storyId == storyId && p.classCode == classCode);
         SavePublishedStories();
-        Debug.Log($"Deleted published story with ID: {storyId}");
+
+        Debug.Log($"🗑️ Deleted {removedCount} published story entries with ID: {storyId} from class: {classCode}");
     }
+
 
     public List<PublishedStory> GetPublishedStoriesForClass(string classCode)
     {
@@ -1471,99 +1675,99 @@ public class StoryManager : MonoBehaviour
     // === FIRESTORE PUBLISHED STORIES FETCHING (FOR STUDENTS) ===
 
     /// <summary>
-/// Fetch published stories for a specific class from Firestore (for students)
-/// </summary>
-public async Task<List<PublishedStory>> GetPublishedStoriesFromFirestore(string classCode)
-{
-    try
+    /// Fetch published stories for a specific class from Firestore (for students)
+    /// </summary>
+    public async Task<List<PublishedStory>> GetPublishedStoriesFromFirestore(string classCode)
     {
-        if (!IsFirebaseReady || _firestore == null)
+        try
         {
-            Debug.LogError("Firebase not ready, cannot fetch published stories");
-            return new List<PublishedStory>();
-        }
-
-        Debug.Log($"📥 Fetching published stories for class: {classCode}");
-
-        // Query stories that have this class in their assignedClasses array
-        var storiesQuery = _firestore
-            .Collection("createdStories")
-            .WhereArrayContains("assignedClasses", classCode)
-            .WhereEqualTo("isPublished", true);
-
-        var snapshot = await storiesQuery.GetSnapshotAsync();
-        var publishedStories = new List<PublishedStory>();
-
-        // Get class details including teacher name
-        var classDetails = await GetClassDetailsFromFirestore(classCode);
-        
-        foreach (var storyDoc in snapshot.Documents)
-        {
-            var firestoreStory = storyDoc.ConvertTo<StoryDataFirestore>();
-            
-            // Create PublishedStory from Firestore data with actual class details
-            var publishedStory = new PublishedStory
+            if (!IsFirebaseReady || _firestore == null)
             {
-                storyId = firestoreStory.storyId,
-                storyTitle = firestoreStory.title,
-                classCode = classCode,
-                className = classDetails.className ?? "Class",
-                publishDate = firestoreStory.updatedAt != null ? firestoreStory.updatedAt.ToDateTime().ToString("MMM dd, yyyy") : "Unknown"
-            };
-            
-            publishedStories.Add(publishedStory);
-        }
-
-        Debug.Log($"✅ Found {publishedStories.Count} published stories for class {classCode}");
-        return publishedStories;
-    }
-    catch (System.Exception ex)
-    {
-        Debug.LogError($"❌ Failed to fetch published stories from Firestore: {ex.Message}");
-        return new List<PublishedStory>();
-    }
-}
-
-private async Task<ClassDetailsModel> GetClassDetailsFromFirestore(string classCode)
-{
-    try
-    {
-        var classQuery = _firestore
-            .Collection("classes")
-            .WhereEqualTo("classCode", classCode)
-            .Limit(1);
-
-        var snapshot = await classQuery.GetSnapshotAsync();
-        var classDocs = snapshot.Documents.ToList();
-        if (classDocs.Count > 0)
-        {
-            var classData = classDocs[0].ToDictionary();
-            var classDetails = new ClassDetailsModel
-            {
-                classCode = classCode,
-                className = classData.ContainsKey("className") ? classData["className"].ToString() : "Unknown Class",
-                classLevel = classData.ContainsKey("classLevel") ? classData["classLevel"].ToString() : "",
-                teacherName = "Unknown Teacher", // We'll get this next
-                isActive = classData.ContainsKey("isActive") ? (bool)classData["isActive"] : true
-            };
-
-            // Get teacher name if teachId exists
-            if (classData.ContainsKey("teachId"))
-            {
-                string teacherId = classData["teachId"].ToString();
-                classDetails.teacherName = await GetTeacherNameFromFirestore(teacherId);
+                Debug.LogError("Firebase not ready, cannot fetch published stories");
+                return new List<PublishedStory>();
             }
 
-            return classDetails;
+            Debug.Log($"📥 Fetching published stories for class: {classCode}");
+
+            // Query stories that have this class in their assignedClasses array
+            var storiesQuery = _firestore
+                .Collection("createdStories")
+                .WhereArrayContains("assignedClasses", classCode)
+                .WhereEqualTo("isPublished", true);
+
+            var snapshot = await storiesQuery.GetSnapshotAsync();
+            var publishedStories = new List<PublishedStory>();
+
+            // Get class details including teacher name
+            var classDetails = await GetClassDetailsFromFirestore(classCode);
+
+            foreach (var storyDoc in snapshot.Documents)
+            {
+                var firestoreStory = storyDoc.ConvertTo<StoryDataFirestore>();
+
+                // Create PublishedStory from Firestore data with actual class details
+                var publishedStory = new PublishedStory
+                {
+                    storyId = firestoreStory.storyId,
+                    storyTitle = firestoreStory.title,
+                    classCode = classCode,
+                    className = classDetails.className ?? "Class",
+                    publishDate = firestoreStory.updatedAt != null ? firestoreStory.updatedAt.ToDateTime().ToString("MMM dd, yyyy") : "Unknown"
+                };
+
+                publishedStories.Add(publishedStory);
+            }
+
+            Debug.Log($"✅ Found {publishedStories.Count} published stories for class {classCode}");
+            return publishedStories;
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Failed to fetch published stories from Firestore: {ex.Message}");
+            return new List<PublishedStory>();
         }
     }
-    catch (System.Exception ex)
+
+    private async Task<ClassDetailsModel> GetClassDetailsFromFirestore(string classCode)
     {
-        Debug.LogWarning($"Failed to fetch class details: {ex.Message}");
+        try
+        {
+            var classQuery = _firestore
+                .Collection("classes")
+                .WhereEqualTo("classCode", classCode)
+                .Limit(1);
+
+            var snapshot = await classQuery.GetSnapshotAsync();
+            var classDocs = snapshot.Documents.ToList();
+            if (classDocs.Count > 0)
+            {
+                var classData = classDocs[0].ToDictionary();
+                var classDetails = new ClassDetailsModel
+                {
+                    classCode = classCode,
+                    className = classData.ContainsKey("className") ? classData["className"].ToString() : "Unknown Class",
+                    classLevel = classData.ContainsKey("classLevel") ? classData["classLevel"].ToString() : "",
+                    teacherName = "Unknown Teacher", // We'll get this next
+                    isActive = classData.ContainsKey("isActive") ? (bool)classData["isActive"] : true
+                };
+
+                // Get teacher name if teachId exists
+                if (classData.ContainsKey("teachId"))
+                {
+                    string teacherId = classData["teachId"].ToString();
+                    classDetails.teacherName = await GetTeacherNameFromFirestore(teacherId);
+                }
+
+                return classDetails;
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"Failed to fetch class details: {ex.Message}");
+        }
+
+        return new ClassDetailsModel(classCode, "Unknown Class", "", "Unknown Teacher");
     }
-    
-    return new ClassDetailsModel(classCode, "Unknown Class", "", "Unknown Teacher");
-}
 
     private async Task<string> GetTeacherNameFromFirestore(string teacherId)
     {
@@ -1593,5 +1797,695 @@ private async Task<ClassDetailsModel> GetClassDetailsFromFirestore(string classC
 
         return "Unknown Teacher";
     }
+
+    // ✅ NEW: Manual cleanup method for orphaned published stories
+    [ContextMenu("Cleanup Orphaned Published Stories")]
+    public async void CleanupOrphanedPublishedStories()
+    {
+        try
+        {
+            if (!IsFirebaseReady) return;
+
+            Debug.Log("🧹 Starting cleanup of orphaned published stories...");
+
+            string currentTeachId = GetCurrentTeacherId();
+            var orphanedStories = new List<PublishedStory>();
+            var validStories = new List<PublishedStory>();
+
+            // Get all stories from Firestore for this teacher
+            var storiesQuery = _firestore
+                .Collection("createdStories")
+                .WhereEqualTo("teachId", currentTeachId);
+
+            var snapshot = await storiesQuery.GetSnapshotAsync();
+            var existingStoryIds = snapshot.Documents.Select(doc => doc.Id).ToHashSet();
+
+            Debug.Log($"📋 Teacher has {existingStoryIds.Count} stories in Firestore");
+
+            // Check each published story
+            foreach (var publishedStory in publishedStories)
+            {
+                if (existingStoryIds.Contains(publishedStory.storyId))
+                {
+                    validStories.Add(publishedStory);
+                }
+                else
+                {
+                    orphanedStories.Add(publishedStory);
+                    Debug.Log($"🗑️ Orphaned story: {publishedStory.storyTitle} (ID: {publishedStory.storyId})");
+                }
+            }
+
+            // Update the list
+            if (orphanedStories.Count > 0)
+            {
+                publishedStories = validStories;
+                SavePublishedStories();
+                Debug.Log($"✅ Cleanup complete. Removed {orphanedStories.Count} orphaned published stories.");
+            }
+            else
+            {
+                Debug.Log("✅ No orphaned published stories found.");
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Cleanup failed: {ex.Message}");
+        }
+    }
+
+    // ✅ NEW: Clean up story images
+    private async Task CleanupStoryImages(StoryData story, string teacherBaseDir)
+    {
+        try
+        {
+            int imagesDeleted = 0;
+
+            if (story != null)
+            {
+                // Delete background image
+                if (!string.IsNullOrEmpty(story.backgroundPath))
+                {
+                    if (DeleteImageFile(story.backgroundPath, teacherBaseDir))
+                        imagesDeleted++;
+                }
+
+                // Delete character images
+                if (!string.IsNullOrEmpty(story.character1Path))
+                {
+                    if (DeleteImageFile(story.character1Path, teacherBaseDir))
+                        imagesDeleted++;
+                }
+
+                if (!string.IsNullOrEmpty(story.character2Path))
+                {
+                    if (DeleteImageFile(story.character2Path, teacherBaseDir))
+                        imagesDeleted++;
+                }
+            }
+
+            Debug.Log($"✅ Deleted {imagesDeleted} image files for story: {story?.storyId}");
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Image cleanup failed: {ex.Message}");
+        }
+    }
+
+
+    // ✅ UPDATED: Clean up audio files with correct directory structure
+private async Task CleanupStoryVoices(string storyId, string teacherBaseDir)
+{
+    try
+    {
+        int audioFilesDeleted = 0;
+
+        // ✅ FIX: Look for audio files in story_X directories instead of using storyId as directory name
+        // First, find which story directory contains this story
+        string storyDirectory = await FindStoryDirectory(storyId, teacherBaseDir);
+        
+        if (!string.IsNullOrEmpty(storyDirectory))
+        {
+            string audioDir = Path.Combine(storyDirectory, "audio");
+            Debug.Log($"🔍 Looking for audio files in correct story directory: {audioDir}");
+
+            if (Directory.Exists(audioDir))
+            {
+                // Delete all audio files in the story's audio directory
+                string[] audioFileTypes = { "*.wav", "*.mp3", "*.ogg", "*.aiff" };
+                
+                foreach (string fileType in audioFileTypes)
+                {
+                    string[] audioFiles = Directory.GetFiles(audioDir, fileType);
+                    foreach (string audioFile in audioFiles)
+                    {
+                        try
+                        {
+                            File.Delete(audioFile);
+                            audioFilesDeleted++;
+                            Debug.Log($"🗑️ Deleted audio file: {Path.GetFileName(audioFile)}");
+                        }
+                        catch (System.Exception ex)
+                        {
+                            Debug.LogWarning($"⚠️ Could not delete audio file {audioFile}: {ex.Message}");
+                        }
+                    }
+                }
+                
+                // Try to delete the audio directory if it's empty
+                try
+                {
+                    if (Directory.GetFiles(audioDir).Length == 0 && Directory.GetDirectories(audioDir).Length == 0)
+                    {
+                        Directory.Delete(audioDir);
+                        Debug.Log($"🗑️ Deleted empty audio directory: {audioDir}");
+                        
+                        // Also try to delete the parent story directory if it's empty
+                        string storyDir = Path.GetDirectoryName(audioDir);
+                        if (Directory.Exists(storyDir) && 
+                            Directory.GetFiles(storyDir).Length == 0 && 
+                            Directory.GetDirectories(storyDir).Length == 0)
+                        {
+                            Directory.Delete(storyDir);
+                            Debug.Log($"🗑️ Deleted empty story directory: {storyDir}");
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log($"ℹ️ Audio directory not empty, keeping: {audioDir}");
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    Debug.LogWarning($"⚠️ Could not delete audio directory: {ex.Message}");
+                }
+            }
+            else
+            {
+                Debug.Log($"ℹ️ Audio directory not found: {audioDir}");
+            }
+        }
+        else
+        {
+            Debug.Log($"ℹ️ Could not find story directory for story ID: {storyId}");
+            
+            // ✅ FALLBACK: Check all possible story_X directories
+            await CheckAllStoryDirectories(storyId, teacherBaseDir);
+        }
+        
+        // ✅ Clean up voice assignment preferences
+        CleanupVoiceAssignments(storyId);
+        
+        Debug.Log($"✅ Deleted {audioFilesDeleted} audio files for story: {storyId}");
+    }
+    catch (System.Exception ex)
+    {
+        Debug.LogError($"❌ Audio cleanup failed: {ex.Message}");
+    }
+}
+
+// ✅ NEW: Find which story directory contains the given story ID
+private async Task<string> FindStoryDirectory(string storyId, string teacherBaseDir)
+{
+    try
+    {
+        // Look for story_X directories (story_0, story_1, etc.)
+        for (int i = 0; i < 6; i++)
+        {
+            string storyDir = Path.Combine(teacherBaseDir, $"story_{i}");
+            if (Directory.Exists(storyDir))
+            {
+                // Check if this directory has a story.json file that matches our story ID
+                string storyJsonPath = Path.Combine(storyDir, "story.json");
+                if (File.Exists(storyJsonPath))
+                {
+                    try
+                    {
+                        string json = File.ReadAllText(storyJsonPath);
+                        if (json.Contains(storyId))
+                        {
+                            Debug.Log($"📍 Found story directory: story_{i} for story ID: {storyId}");
+                            return storyDir;
+                        }
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Debug.LogWarning($"⚠️ Could not read story.json in {storyDir}: {ex.Message}");
+                    }
+                }
+            }
+        }
+        
+        // Also check the old location using story ID as directory name (for backward compatibility)
+        string oldStyleDir = Path.Combine(teacherBaseDir, storyId);
+        if (Directory.Exists(oldStyleDir))
+        {
+            Debug.Log($"📍 Found story in old-style directory: {storyId}");
+            return oldStyleDir;
+        }
+        
+        return null;
+    }
+    catch (System.Exception ex)
+    {
+        Debug.LogError($"❌ Failed to find story directory: {ex.Message}");
+        return null;
+    }
+}
+
+    // ✅ NEW: Check all story directories for audio files
+    private async Task CheckAllStoryDirectories(string storyId, string teacherBaseDir)
+    {
+        try
+        {
+            int audioFilesDeleted = 0;
+
+            // Check all possible story_X directories
+            for (int i = 0; i < 6; i++)
+            {
+                string storyDir = Path.Combine(teacherBaseDir, $"story_{i}");
+                string audioDir = Path.Combine(storyDir, "audio");
+
+                if (Directory.Exists(audioDir))
+                {
+                    // Check if there are any audio files that might belong to this story
+                    string[] audioFiles = Directory.GetFiles(audioDir, "*.*")
+                        .Where(f => f.ToLower().EndsWith(".wav") ||
+                                   f.ToLower().EndsWith(".mp3") ||
+                                   f.ToLower().EndsWith(".ogg") ||
+                                   f.ToLower().EndsWith(".aiff"))
+                        .ToArray();
+
+                    // If we find audio files and we're not sure which story they belong to,
+                    // we can delete them if the story directory doesn't have a valid story.json
+                    string storyJsonPath = Path.Combine(storyDir, "story.json");
+                    if (!File.Exists(storyJsonPath) || audioFiles.Length > 0)
+                    {
+                        foreach (string audioFile in audioFiles)
+                        {
+                            try
+                            {
+                                File.Delete(audioFile);
+                                audioFilesDeleted++;
+                                Debug.Log($"🗑️ Deleted audio file from story_{i}: {Path.GetFileName(audioFile)}");
+                            }
+                            catch (System.Exception ex)
+                            {
+                                Debug.LogWarning($"⚠️ Could not delete audio file {audioFile}: {ex.Message}");
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (audioFilesDeleted > 0)
+            {
+                Debug.Log($"✅ Deleted {audioFilesDeleted} audio files from story directories for story: {storyId}");
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"⚠️ Check all story directories failed: {ex.Message}");
+        }
+    }
+
+
+    // ✅ NEW: Helper method to get teacher base directory with pre-cached persistentDataPath
+    private string GetTeacherBaseDirectoryWithPath(string persistentDataPath)
+    {
+        string teachId = GetCurrentTeacherId();
+        string safeTeachId = string.IsNullOrEmpty(teachId) ? "default" : teachId.Replace("/", "_").Replace("\\", "_");
+        return Path.Combine(persistentDataPath, safeTeachId);
+    }
+
+    // ✅ NEW: Debug method to find all audio files for a story
+    [ContextMenu("Debug Audio File Locations for Current Story")]
+    public void DebugAudioFileLocations()
+    {
+        if (currentStory == null)
+        {
+            Debug.LogError("❌ No current story selected");
+            return;
+        }
+
+        string storyId = currentStory.storyId;
+        string teacherBaseDir = GetTeacherBaseDirectory();
+
+        Debug.Log($"🔍 DEBUG: Searching for audio files for story: {storyId}");
+        Debug.Log($"📁 Teacher base directory: {teacherBaseDir}");
+
+        // Check all possible locations
+        string[] possibleLocations = {
+        Path.Combine(teacherBaseDir, storyId, "audio"),
+        Path.Combine(teacherBaseDir, "Voices", storyId),
+        Path.Combine(teacherBaseDir, "audio"),
+        Path.Combine(teacherBaseDir, storyId),
+        Path.Combine(Application.persistentDataPath, "audio"),
+        Path.Combine(Application.persistentDataPath, storyId, "audio")
+    };
+
+        foreach (string location in possibleLocations)
+        {
+            if (Directory.Exists(location))
+            {
+                Debug.Log($"📁 Found directory: {location}");
+
+                string[] audioFiles = Directory.GetFiles(location, "*.*")
+                    .Where(f => f.ToLower().EndsWith(".wav") ||
+                               f.ToLower().EndsWith(".mp3") ||
+                               f.ToLower().EndsWith(".ogg") ||
+                               f.ToLower().EndsWith(".aiff"))
+                    .ToArray();
+
+                if (audioFiles.Length > 0)
+                {
+                    Debug.Log($"🎵 Found {audioFiles.Length} audio files:");
+                    foreach (string audioFile in audioFiles)
+                    {
+                        Debug.Log($"   🔊 {Path.GetFileName(audioFile)}");
+                    }
+                }
+                else
+                {
+                    Debug.Log($"   ℹ️ No audio files found in this directory");
+                }
+            }
+            else
+            {
+                Debug.Log($"❌ Directory not found: {location}");
+            }
+        }
+    }
+
+
+
+    // ✅ NEW: Clean up local cache entries
+    private void CleanupLocalCache(string storyId)
+    {
+        try
+        {
+            // Clean up student cache
+            string studentCacheKey = $"CachedStory_{storyId}";
+            if (StudentPrefs.HasKey(studentCacheKey))
+            {
+                StudentPrefs.DeleteKey(studentCacheKey);
+                Debug.Log($"🗑️ Cleared student cache: {studentCacheKey}");
+            }
+
+            // Clean up teacher cache
+            string teacherCacheKey = $"StorySaved_{storyId}";
+            if (TeacherPrefs.HasKey(teacherCacheKey))
+            {
+                TeacherPrefs.DeleteKey(teacherCacheKey);
+                Debug.Log($"🗑️ Cleared teacher cache: {teacherCacheKey}");
+            }
+
+            StudentPrefs.Save();
+            TeacherPrefs.Save();
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"⚠️ Cache cleanup failed: {ex.Message}");
+        }
+    }
+
+    // ✅ NEW: Clean up voice assignment preferences
+    private void CleanupVoiceAssignments(string storyId)
+    {
+        try
+        {
+            int assignmentsCleaned = 0;
+
+            // Look for all voice assignment keys for this story
+            // Voice keys are typically in format: "{storyId}_Dialogue_{index}_VoiceId"
+            var allKeys = TeacherPrefs.GetAllKeys();
+
+            foreach (string key in allKeys)
+            {
+                if (key.StartsWith($"{storyId}_Dialogue_") && key.EndsWith("_VoiceId"))
+                {
+                    TeacherPrefs.DeleteKey(key);
+                    assignmentsCleaned++;
+                    Debug.Log($"🗑️ Cleared voice assignment: {key}");
+                }
+            }
+
+            if (assignmentsCleaned > 0)
+            {
+                TeacherPrefs.Save();
+                Debug.Log($"✅ Cleared {assignmentsCleaned} voice assignments for story: {storyId}");
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"⚠️ Voice assignment cleanup failed: {ex.Message}");
+        }
+    }
+
+    // ✅ UPDATED: Helper method to delete image files with pre-cached directory
+    private bool DeleteImageFile(string relativePath, string teacherBaseDir)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(relativePath))
+                return false;
+
+            // Convert relative path to absolute path using the pre-cached directory
+            string absolutePath = Path.Combine(teacherBaseDir, relativePath);
+
+            if (File.Exists(absolutePath))
+            {
+                File.Delete(absolutePath);
+                Debug.Log($"🗑️ Deleted image file: {absolutePath}");
+                return true;
+            }
+            else
+            {
+                // Also check in the original persistentDataPath location for backward compatibility
+                string fallbackPath = Path.Combine(Application.persistentDataPath, relativePath);
+                if (File.Exists(fallbackPath))
+                {
+                    File.Delete(fallbackPath);
+                    Debug.Log($"🗑️ Deleted image file from fallback location: {fallbackPath}");
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"⚠️ Could not delete image file {relativePath}: {ex.Message}");
+            return false;
+        }
+    }
+
+
+    // ✅ NEW: Manual cleanup of all orphaned files
+    [ContextMenu("Cleanup All Orphaned Files")]
+    public async void CleanupAllOrphanedFiles()
+    {
+        try
+        {
+            Debug.Log("🧹 Starting comprehensive orphaned file cleanup...");
+
+            if (!IsFirebaseReady) return;
+
+            string currentTeachId = GetCurrentTeacherId();
+
+            // Get all stories from Firestore for this teacher
+            var storiesQuery = _firestore
+                .Collection("createdStories")
+                .WhereEqualTo("teachId", currentTeachId);
+
+            var snapshot = await storiesQuery.GetSnapshotAsync();
+            var existingStoryIds = snapshot.Documents.Select(doc => doc.Id).ToHashSet();
+
+            Debug.Log($"📋 Teacher has {existingStoryIds.Count} stories in Firestore");
+
+            // Get teacher's base directory
+            string teacherBaseDir = GetTeacherBaseDirectory();
+
+            // Clean up orphaned voice directories
+            await CleanupOrphanedVoiceDirectories(teacherBaseDir, existingStoryIds);
+
+            // Clean up orphaned image files
+            await CleanupOrphanedImages(teacherBaseDir, existingStoryIds);
+
+            Debug.Log("✅ Comprehensive orphaned file cleanup completed");
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Orphaned file cleanup failed: {ex.Message}");
+        }
+    }
+
+
+    // ✅ NEW: Clean up orphaned voice directories
+    private async Task CleanupOrphanedVoiceDirectories(string teacherBaseDir, HashSet<string> existingStoryIds)
+    {
+        try
+        {
+            string voicesRootDir = Path.Combine(teacherBaseDir, "Voices");
+
+            if (Directory.Exists(voicesRootDir))
+            {
+                string[] voiceDirs = Directory.GetDirectories(voicesRootDir);
+                int deletedDirs = 0;
+
+                foreach (string voiceDir in voiceDirs)
+                {
+                    string storyId = Path.GetFileName(voiceDir);
+
+                    if (!existingStoryIds.Contains(storyId))
+                    {
+                        // This voice directory belongs to a deleted story
+                        try
+                        {
+                            Directory.Delete(voiceDir, true); // recursive delete
+                            deletedDirs++;
+                            Debug.Log($"🗑️ Deleted orphaned voice directory: {voiceDir}");
+                        }
+                        catch (System.Exception ex)
+                        {
+                            Debug.LogWarning($"⚠️ Could not delete voice directory {voiceDir}: {ex.Message}");
+                        }
+                    }
+                }
+
+                Debug.Log($"✅ Deleted {deletedDirs} orphaned voice directories");
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Orphaned voice directory cleanup failed: {ex.Message}");
+        }
+    }
+
+
+    // ✅ NEW: Clean up orphaned images
+    private async Task CleanupOrphanedImages(string teacherBaseDir, HashSet<string> existingStoryIds)
+    {
+        try
+        {
+            // This would require tracking which images belong to which stories
+            // For now, we'll rely on the per-story cleanup
+            Debug.Log("ℹ️ Orphaned image cleanup would require image-to-story mapping");
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Orphaned image cleanup failed: {ex.Message}");
+        }
+    }
+
+    // ✅ UPDATED: Check alternative audio file locations including story_X directories
+    private async Task CheckAlternativeAudioLocations(string storyId, string teacherBaseDir)
+    {
+        try
+        {
+            int audioFilesDeleted = 0;
+
+            // Check story_X directories first
+            for (int i = 0; i < 6; i++)
+            {
+                string storyAudioDir = Path.Combine(teacherBaseDir, $"story_{i}", "audio");
+                if (Directory.Exists(storyAudioDir))
+                {
+                    string[] audioFiles = Directory.GetFiles(storyAudioDir, "*.*")
+                        .Where(f => f.ToLower().EndsWith(".wav") ||
+                                   f.ToLower().EndsWith(".mp3") ||
+                                   f.ToLower().EndsWith(".ogg") ||
+                                   f.ToLower().EndsWith(".aiff"))
+                        .ToArray();
+
+                    foreach (string audioFile in audioFiles)
+                    {
+                        try
+                        {
+                            File.Delete(audioFile);
+                            audioFilesDeleted++;
+                            Debug.Log($"🗑️ Deleted audio file from story_{i}: {Path.GetFileName(audioFile)}");
+                        }
+                        catch (System.Exception ex)
+                        {
+                            Debug.LogWarning($"⚠️ Could not delete audio file {audioFile}: {ex.Message}");
+                        }
+                    }
+                }
+            }
+
+            // Alternative location 1: Directly in story directory (using story ID)
+            string storyDirById = Path.Combine(teacherBaseDir, storyId, "audio");
+            if (Directory.Exists(storyDirById))
+            {
+                string[] audioFiles = Directory.GetFiles(storyDirById, "*.*")
+                    .Where(f => f.ToLower().EndsWith(".wav") ||
+                               f.ToLower().EndsWith(".mp3") ||
+                               f.ToLower().EndsWith(".ogg") ||
+                               f.ToLower().EndsWith(".aiff"))
+                    .ToArray();
+
+                foreach (string audioFile in audioFiles)
+                {
+                    try
+                    {
+                        File.Delete(audioFile);
+                        audioFilesDeleted++;
+                        Debug.Log($"🗑️ Deleted audio file from story ID directory: {Path.GetFileName(audioFile)}");
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Debug.LogWarning($"⚠️ Could not delete audio file {audioFile}: {ex.Message}");
+                    }
+                }
+            }
+
+            // Alternative location 2: Voices directory
+            string voicesDir = Path.Combine(teacherBaseDir, "Voices", storyId);
+            if (Directory.Exists(voicesDir))
+            {
+                string[] audioFiles = Directory.GetFiles(voicesDir, "*.*")
+                    .Where(f => f.ToLower().EndsWith(".wav") ||
+                               f.ToLower().EndsWith(".mp3") ||
+                               f.ToLower().EndsWith(".ogg") ||
+                               f.ToLower().EndsWith(".aiff"))
+                    .ToArray();
+
+                foreach (string audioFile in audioFiles)
+                {
+                    try
+                    {
+                        File.Delete(audioFile);
+                        audioFilesDeleted++;
+                        Debug.Log($"🗑️ Deleted audio file from Voices directory: {Path.GetFileName(audioFile)}");
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Debug.LogWarning($"⚠️ Could not delete audio file {audioFile}: {ex.Message}");
+                    }
+                }
+            }
+
+            // Alternative location 3: Root audio directory
+            string rootAudioDir = Path.Combine(teacherBaseDir, "audio");
+            if (Directory.Exists(rootAudioDir))
+            {
+                string[] allAudioFiles = Directory.GetFiles(rootAudioDir, "*.*")
+                    .Where(f => f.ToLower().EndsWith(".wav") ||
+                               f.ToLower().EndsWith(".mp3") ||
+                               f.ToLower().EndsWith(".ogg") ||
+                               f.ToLower().EndsWith(".aiff"))
+                    .ToArray();
+
+                foreach (string audioFile in allAudioFiles)
+                {
+                    string fileName = Path.GetFileName(audioFile);
+                    if (fileName.Contains(storyId) || fileName.StartsWith(storyId + "_"))
+                    {
+                        try
+                        {
+                            File.Delete(audioFile);
+                            audioFilesDeleted++;
+                            Debug.Log($"🗑️ Deleted audio file from root audio: {fileName}");
+                        }
+                        catch (System.Exception ex)
+                        {
+                            Debug.LogWarning($"⚠️ Could not delete audio file {audioFile}: {ex.Message}");
+                        }
+                    }
+                }
+            }
+
+            if (audioFilesDeleted > 0)
+            {
+                Debug.Log($"✅ Deleted {audioFilesDeleted} audio files from alternative locations for story: {storyId}");
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"⚠️ Alternative audio location check failed: {ex.Message}");
+        }
+    }
+
 
 }

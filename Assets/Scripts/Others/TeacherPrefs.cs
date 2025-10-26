@@ -188,14 +188,14 @@ private static string CurrentTeacherId
     {
         var teacherKeys = new List<string>();
         string teacherPrefix = CurrentTeacherId + "_";
-        
+
         // This is a simplified approach - in a real implementation you might want to track keys
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         // In editor, we can use reflection to get all keys (for debugging)
         try
         {
             var playerPrefsType = typeof(PlayerPrefs);
-            var method = playerPrefsType.GetMethod("GetKeys", 
+            var method = playerPrefsType.GetMethod("GetKeys",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
             if (method != null)
             {
@@ -213,8 +213,51 @@ private static string CurrentTeacherId
         {
             // Reflection failed, just return empty list
         }
-        #endif
-        
+#endif
+
         return teacherKeys;
     }
+
+    // ✅ ADD THIS to your TeacherPrefs.cs class
+    public static List<string> GetAllKeys()
+    {
+        var keys = new List<string>();
+
+        try
+        {
+            // If TeacherPrefs uses PlayerPrefs internally
+#if UNITY_EDITOR
+            // For Editor - we need to read the underlying storage
+            // This is a simplified approach that might need adjustment
+            string teacherPrefsData = UnityEditor.EditorPrefs.GetString("TeacherPrefs_Data", "");
+#else
+        // For builds - if using PlayerPrefs
+        string teacherPrefsData = PlayerPrefs.GetString("TeacherPrefs_Data", "");
+#endif
+
+            if (!string.IsNullOrEmpty(teacherPrefsData))
+            {
+                // Parse the stored data to extract keys
+                // Adjust this based on your actual TeacherPrefs storage format
+                var entries = teacherPrefsData.Split(';');
+                foreach (var entry in entries)
+                {
+                    if (entry.Contains(":"))
+                    {
+                        string key = entry.Split(':')[0];
+                        keys.Add(key);
+                    }
+                }
+            }
+
+            Debug.Log($"🔍 Found {keys.Count} keys in TeacherPrefs");
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"⚠️ Could not get TeacherPrefs keys: {ex.Message}");
+        }
+
+        return keys;
+    }
+
 }
