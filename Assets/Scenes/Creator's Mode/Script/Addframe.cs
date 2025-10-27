@@ -13,6 +13,10 @@ public class AddFrame : MonoBehaviour
     {
         SceneManager.LoadScene("CreateNewAddCharacterScene");
     }
+    public void GameScene()
+    {
+        SceneManager.LoadScene("PreviewScene");
+    }
     
     public void Next()
     {

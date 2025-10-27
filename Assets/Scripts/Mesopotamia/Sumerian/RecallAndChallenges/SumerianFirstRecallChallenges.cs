@@ -279,7 +279,7 @@ public class SumerianFirstRecallChallenges : MonoBehaviour
                     break;
                 case 5:
                     if (chronoAnimator != null)
-                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                        chronoAnimator.Play("Enki_Talking", 0, 0f);
                     if (playerAnimator != null)
                         playerAnimator.Play("Player_Eager", 0, 0f);
                     break;

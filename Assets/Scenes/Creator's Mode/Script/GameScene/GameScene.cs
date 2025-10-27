@@ -26,6 +26,11 @@ public class GameScene : MonoBehaviour
         }
     }
 
+    public void GoBack()
+    {
+        SceneManager.LoadScene("CreateNewAddFrameScene");
+    }
+
     public void MainMenu()
     {
         string userRole = PlayerPrefs.GetString("UserRole", "student");
