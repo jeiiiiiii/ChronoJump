@@ -925,6 +925,7 @@ GameObject:
   - component: {fileID: 363254928}
   - component: {fileID: 363254929}
   - component: {fileID: 363254930}
+  - component: {fileID: 363254931}
   m_Layer: 5
   m_Name: PlayerIm
   m_TagString: Untagged
@@ -1044,6 +1045,28 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!95 &363254931
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 363254925}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6a3137a679ecfdc4aa7efdf0041d7ac9, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &583043873
 GameObject:
   m_ObjectHideFlags: 0
@@ -2334,6 +2357,7 @@ GameObject:
   - component: {fileID: 1052601366}
   - component: {fileID: 1052601365}
   - component: {fileID: 1052601367}
+  - component: {fileID: 1052601368}
   m_Layer: 5
   m_Name: ChronoIM
   m_TagString: Untagged
@@ -2357,7 +2381,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -752, y: -378}
+  m_AnchoredPosition: {x: -767, y: -378}
   m_SizeDelta: {x: 326.93, y: 345.09}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1052601365
@@ -2453,6 +2477,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &1052601368
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1052601363}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 710e416623b4a4148955a4493fd2592e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1054068073
 GameObject:
   m_ObjectHideFlags: 0
@@ -3398,6 +3444,8 @@ MonoBehaviour:
   ChronocharacterRenderer: {fileID: 1052601367}
   ChronoCheerful: {fileID: -4788844467492341420, guid: 2d820e03f038071438b5607182311759, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
+  chronoAnimator: {fileID: 1052601368}
+  playerAnimator: {fileID: 363254931}
   audioSource: {fileID: 750783987}
   dialogueClips:
   - {fileID: 8300000, guid: 8e34c5d7761696f489d33405b64abb93, type: 3}
@@ -4396,15 +4444,15 @@ SpriteRenderer:
   m_SortingLayerID: -2022608575
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -4788844467492341420, guid: f621bca81e2ccec47b68d3401c74e3ee, type: 3}
+  m_Sprite: {fileID: -4788844467492341420, guid: 1ec150329a8a7ea4588acbd57c488fa9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 8.77, y: 10.58}
+  m_Size: {x: 328, y: 468.5714}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &2072491100

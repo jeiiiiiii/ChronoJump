@@ -269,6 +269,7 @@ GameObject:
   - component: {fileID: 305678652}
   - component: {fileID: 305678651}
   - component: {fileID: 305678650}
+  - component: {fileID: 305678653}
   m_Layer: 5
   m_Name: PlayerIm
   m_TagString: Untagged
@@ -388,6 +389,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 305678648}
   m_CullTransparentMesh: 1
+--- !u!95 &305678653
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 305678648}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1df93b9488c089b4c8bf9f849434b637, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &321097497
 GameObject:
   m_ObjectHideFlags: 0
@@ -1964,6 +1987,7 @@ GameObject:
   - component: {fileID: 808504573}
   - component: {fileID: 808504572}
   - component: {fileID: 808504571}
+  - component: {fileID: 808504574}
   m_Layer: 5
   m_Name: ChronoIM
   m_TagString: Untagged
@@ -1987,7 +2011,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -748, y: -377}
+  m_AnchoredPosition: {x: -756, y: -377}
   m_SizeDelta: {x: 326.93, y: 345.09}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &808504571
@@ -2083,6 +2107,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 808504569}
   m_CullTransparentMesh: 1
+--- !u!95 &808504574
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808504569}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 79358169a0d34a24ba08c11e1be94f9a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &875935520
 GameObject:
   m_ObjectHideFlags: 0
@@ -3604,6 +3650,8 @@ MonoBehaviour:
   SargonExplaining: {fileID: 7251230261209195191, guid: 16b27d53a637b30448df40c6c01223aa, type: 3}
   ChronocharacterRenderer: {fileID: 808504571}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
+  chronoAnimator: {fileID: 808504574}
+  playerAnimator: {fileID: 305678653}
   audioSource: {fileID: 876802037}
   dialogueClips:
   - {fileID: 8300000, guid: c09021352faf84d40843aa957980fcff, type: 3}

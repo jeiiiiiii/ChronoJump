@@ -29,7 +29,8 @@ public class AkkadianScene6 : MonoBehaviour
     public Sprite PlayerReflective;
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoCheerful;
-
+    public Animator chronoAnimator;
+    public Animator playerAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -51,7 +52,7 @@ public class AkkadianScene6 : MonoBehaviour
             },
             new DialogueLine
             {
-                characterName = "PLAYER",
+                characterName = "CHRONO",
                 line = " Handa ka na sa susunod na yugto. Bawat kasaysayan ay may susunod na kabanata."
             },
         };
@@ -158,8 +159,16 @@ public class AkkadianScene6 : MonoBehaviour
         switch (currentDialogueIndex)
         {
             case 0:
-                ChronocharacterRenderer.sprite = ChronoCheerful;
-                PlayercharacterRenderer.sprite = PlayerReflective;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Cheerful", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
+                break;
+            case 1:
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Eager", 0, 0f);
                 break;
         }
     }

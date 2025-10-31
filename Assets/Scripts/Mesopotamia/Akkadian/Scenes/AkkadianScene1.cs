@@ -42,6 +42,8 @@ public class AkkadianScene1 : MonoBehaviour
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoCheerful;
     public Sprite ChronoSmile;
+    public Animator chronoAnimator;
+    public Animator playerAnimator;
 
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
@@ -230,30 +232,49 @@ public class AkkadianScene1 : MonoBehaviour
             case 1:
                 ChronoFulldrawnSprite.enabled = true;
                 PlayercharacterRenderer.enabled = true;
-                PlayercharacterRenderer.sprite = PlayerSmile;
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Smiling", 0, 0f);
                 break;
             case 2:
-                PlayercharacterRenderer.sprite = PlayerCurious;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 ChronocharacterRenderer.enabled = true;
                 break;
             case 3:
-                ChronocharacterRenderer.sprite = ChronoCheerful;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Curious", 0, 0f);
                 break;
             case 4:
                 PlayerAchievementManager.UnlockAchievement("Rise");
                 SargoncharacterRenderer.enabled = true;
                 AchievementUnlockedRenderer.SetActive(true);
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Eager", 0, 0f);
                 break;
             case 5:
-                ChronocharacterRenderer.sprite = ChronoCheerful;
-                PlayercharacterRenderer.sprite = PlayerEager;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Sargon_Firm", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 AchievementUnlockedRenderer.SetActive(false);
                 break;
             case 6:
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Smiling", 0, 0f);
                 break;
             case 7:
-                ChronocharacterRenderer.sprite = SargonCommand;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Sargon_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Eager", 0, 0f);
                 break;
         }
 

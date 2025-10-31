@@ -53,7 +53,8 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
     public Button ArtifactImageButton;
     public Button ArtifactUseButton;
     public Button ArtifactButton;
-
+    public Animator chronoAnimator;
+    public Animator playerAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
     public AudioClip[] SargonClips;
@@ -190,7 +191,7 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
         },
         new DialogueLine
         {
-            characterName = "PLAYER",
+            characterName = "CHRONO",
             line = " Si Ur-Nammu ay naging pinuno sa Ur pero mas huli siya. Isipin mo kung sino ang unang nagbuklod sa mga lungsod." },
         new DialogueLine
         {
@@ -207,7 +208,7 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
         },
         new DialogueLine
         {
-            characterName = "PLAYER",
+            characterName = "CHRONO",
             line = " Si Hammurabi ay sikat sa kanyang mga batas pero ibang panahon at imperyo na iyon. Baka masyado tayong umabante." },
         new DialogueLine
         {
@@ -272,9 +273,11 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerSmile;
-                    ChronocharacterRenderer.sprite = ChronoCheerful;
-                    
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Cheerful", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
+
                     if (!challengeCompleted)
                     {
                         challengeCompleted = true;
@@ -291,8 +294,10 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
                     }
                     break;
                 case 1:
-                    PlayercharacterRenderer.sprite = PlayerEager;
-                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Eager", 0, 0f);
                     break;
                 case 2:
                     foreach (Button btn in answerButtons)
@@ -305,14 +310,22 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
                         heart.gameObject.SetActive(false);
                     }
                     BlurBG.gameObject.SetActive(false);
-                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 3:
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
                 case 4:
-                    PlayercharacterRenderer.sprite = PlayerSmile;
-                    ChronocharacterRenderer.sprite = ChronoSmile;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Eager", 0, 0f);
                     break;
             }
         }
@@ -321,12 +334,22 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
-                    ChronocharacterRenderer.sprite = ChronoSad;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Sad", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 1:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Embarassed", 0, 0f);
+                    break;
+                case 2:
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }
@@ -335,12 +358,22 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
-                    ChronocharacterRenderer.sprite = ChronoSad;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Sad", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 1:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Embarassed", 0, 0f);
+                    break;
+                case 2:
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }
@@ -349,8 +382,10 @@ public class AkkadianFirstRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = SargonThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Sargon_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }
