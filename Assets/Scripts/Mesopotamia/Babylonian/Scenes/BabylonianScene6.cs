@@ -33,7 +33,8 @@ public class BabylonianScene6 : MonoBehaviour
     public Sprite ChronoSad;
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
-
+    public Animator chronoAnimator;
+    public Animator playerAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -217,33 +218,58 @@ public class BabylonianScene6 : MonoBehaviour
         switch (currentDialogueIndex)
         {
             case 0:
-                ChronocharacterRenderer.sprite = ChronoSmile;
-                PlayercharacterRenderer.sprite = PlayerReflective;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Thinking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 break;
             case 1:
-                ChronocharacterRenderer.sprite = ChronoSad;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Curious", 0, 0f);
                 break;
             case 2:
-                PlayercharacterRenderer.sprite = PlayerReflective;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 break;
             case 3:
-                ChronocharacterRenderer.sprite = ChronoThinking;
-                PlayercharacterRenderer.sprite = PlayerEager;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Smiling", 0, 0f);
                 break;
             case 4:
-                ChronocharacterRenderer.sprite = ChronoSad;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Smiling", 0, 0f);
                 break;
             case 5:
-                PlayercharacterRenderer.sprite = PlayerReflective;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 break;
             case 6:
-                ChronocharacterRenderer.sprite = ChronoThinking;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Reflective", 0, 0f);
                 break;
             case 7:
-                PlayercharacterRenderer.sprite = PlayerEager;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Cheerful", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 break;
             case 8:
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Eager", 0, 0f);
                 break;
         }
     }

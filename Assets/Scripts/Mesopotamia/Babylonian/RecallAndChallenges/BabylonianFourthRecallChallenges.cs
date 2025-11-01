@@ -54,7 +54,8 @@ public class BabylonianFourthRecallChallenges : MonoBehaviour
     public Button ArtifactImageButton;
     public Button ArtifactUseButton;
     public Button ArtifactButton;
-
+    public Animator chronoAnimator;
+    public Animator playerAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
     public AudioClip[] MardukClips;
@@ -146,7 +147,7 @@ public class BabylonianFourthRecallChallenges : MonoBehaviour
         },
         new DialogueLine
         {
-            characterName = "PLAYER",
+            characterName = "CHRONO",
             line = " Hindi siya ang naging sentro ng pananampalataya noong panahong iyon."
         },
         new DialogueLine
@@ -231,9 +232,11 @@ public class BabylonianFourthRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerEager;
-                    ChronocharacterRenderer.sprite = ChronoSmile;
-                    
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Cheerful", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
+
                     if (!challengeCompleted)
                     {
                         challengeCompleted = true;
@@ -250,7 +253,10 @@ public class BabylonianFourthRecallChallenges : MonoBehaviour
                     }
                     break;
                 case 1:
-                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Eager", 0, 0f);
                     break;
                 case 2:
                     AchievementUnlockedRenderer.SetActive(false);
@@ -264,16 +270,22 @@ public class BabylonianFourthRecallChallenges : MonoBehaviour
                         heart.gameObject.SetActive(false);
                     }
                     BlurBG.gameObject.SetActive(false);
-                    ChronocharacterRenderer.sprite = ChronoThinking;
-                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 3:
-                    ChronocharacterRenderer.sprite = ChronoSmile;
-                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Smiling", 0, 0f);
                     break;
                 case 4:
-                    ChronocharacterRenderer.sprite = ChronoSmile;
-                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
             }
         }
@@ -282,16 +294,22 @@ public class BabylonianFourthRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Sad", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 1:
-                    ChronocharacterRenderer.sprite = ChronoSad;
-                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Embarassed", 0, 0f);
                     break;
                 case 2:
-                    ChronocharacterRenderer.sprite = ChronoThinking;
-                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }
@@ -300,16 +318,22 @@ public class BabylonianFourthRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Sad", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 1:
-                    ChronocharacterRenderer.sprite = ChronoSad;
-                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Embarassed", 0, 0f);
                     break;
                 case 2:
-                    ChronocharacterRenderer.sprite = ChronoThinking;
-                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }
@@ -318,8 +342,10 @@ public class BabylonianFourthRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }

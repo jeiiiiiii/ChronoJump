@@ -37,7 +37,8 @@ public class BabylonianScene1 : MonoBehaviour
 
     public Sprite ChronoCheerful;
     public Sprite ChronoSmile;
-
+    public Animator chronoAnimator;
+    public Animator playerAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -200,29 +201,48 @@ public class BabylonianScene1 : MonoBehaviour
         switch (currentDialogueIndex)
         {
             case 0:
-                PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 break;
             case 1:
-                ChronocharacterRenderer.sprite = ChronoCheerful;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Eager", 0, 0f);
                 break;
             case 2:
-                PlayercharacterRenderer.sprite = PlayerEager;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Thinking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 break;
             case 3:
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Reflective", 0, 0f);
                 break;
             case 4:
-                PlayercharacterRenderer.sprite = PlayerCurious;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Smiling", 0, 0f);
                 HammurabiFulldrawnSprite.enabled = true;
                 break;
             case 5:
                 HammurabiFulldrawnSprite.enabled = true;
-                ChronocharacterRenderer.sprite = ChronoCheerful;
-                PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Thinking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 break;
             case 6:
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Curious", 0, 0f);
                 break;
         }
     }
