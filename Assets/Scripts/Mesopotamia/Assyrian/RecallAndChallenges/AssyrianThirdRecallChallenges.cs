@@ -52,7 +52,8 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
     public Button ArtifactImageButton;
     public Button ArtifactUseButton;
     public Button ArtifactButton;
-
+    public Animator chronoAnimator;
+    public Animator playerAnimator;
     public AudioSource audioSource;
 
     public AudioClip[] dialogueClips;
@@ -152,7 +153,7 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
         },
         new DialogueLine
         {
-            characterName = "PLAYER",
+            characterName = "CHRONO",
             line = " Hindi!. May mga mas aktibong nagtulungan noon."
         },
         new DialogueLine
@@ -238,9 +239,11 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerEager;
-                    ChronocharacterRenderer.sprite = ChronoSmile;
-                    
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Cheerful", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
+
                     if (!challengeCompleted)
                     {
                         challengeCompleted = true;
@@ -257,7 +260,10 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
                     }
                     break;
                 case 1:
-                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Eager", 0, 0f);
                     break;
                 case 2:
                     foreach (Button btn in answerButtons)
@@ -270,14 +276,28 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
                         heart.gameObject.SetActive(false);
                     }
                     BlurBG.gameObject.SetActive(false);
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Smiling", 0, 0f);
                     break;
                 case 3:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 4:
-                    ChronocharacterRenderer.sprite = ChronoSmile;
-                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Cheerful", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
+                    break;
+                case 5:
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Eager", 0, 0f);
                     break;
             }
         }
@@ -286,16 +306,22 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Sad", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 1:
-                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
-                    ChronocharacterRenderer.sprite = ChronoSad;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Embarassed", 0, 0f);
                     break;
                 case 2:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }
@@ -304,16 +330,22 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Sad", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 1:
-                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
-                    ChronocharacterRenderer.sprite = ChronoSad;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Embarassed", 0, 0f);
                     break;
                 case 2:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }
@@ -322,8 +354,10 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }

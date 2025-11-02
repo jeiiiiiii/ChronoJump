@@ -35,7 +35,8 @@ public class AssyrianScene4 : MonoBehaviour
     public Sprite ChronoThinking;
     public Sprite ChronoSad;
     public Sprite AshurbanipalSomber;
-
+    public Animator chronoAnimator;
+    public Animator playerAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -200,17 +201,34 @@ public class AssyrianScene4 : MonoBehaviour
         switch (currentDialogueIndex)
         {
             case 0:
-                PlayercharacterRenderer.sprite = PlayerSmile;
-                ChronocharacterRenderer.sprite = ChronoThinking;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Embarassed", 0, 0f);
+                break;
+            case 1:
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Reflective", 0, 0f);
                 break;
             case 2:
-                PlayercharacterRenderer.sprite = PlayerEmbarrassed;
-                break;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Thinking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
+                break;        
             case 3:
-                ChronocharacterRenderer.sprite = AshurbanipalSomber;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Ashurbanipal_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Smiling", 0, 0f);
                 break;
             case 4:
-                ChronocharacterRenderer.sprite = ChronoSad;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Curious", 0, 0f);
                 break;
         }
     }

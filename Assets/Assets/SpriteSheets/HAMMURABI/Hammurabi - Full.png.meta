@@ -168,7 +168,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 1
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -189,7 +189,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 16384
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -220,10 +220,10 @@ TextureImporter:
       name: Hammurabi - Full_0
       rect:
         serializedVersion: 2
-        x: 315
-        y: 5144
-        width: 394
-        height: 968
+        x: 0
+        y: 5120
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -242,10 +242,10 @@ TextureImporter:
       name: Hammurabi - Full_1
       rect:
         serializedVersion: 2
-        x: 1339
-        y: 5144
-        width: 394
-        height: 968
+        x: 1024
+        y: 5120
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -264,10 +264,10 @@ TextureImporter:
       name: Hammurabi - Full_2
       rect:
         serializedVersion: 2
-        x: 2363
-        y: 5144
-        width: 394
-        height: 968
+        x: 2048
+        y: 5120
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -286,10 +286,10 @@ TextureImporter:
       name: Hammurabi - Full_3
       rect:
         serializedVersion: 2
-        x: 3387
-        y: 5144
-        width: 394
-        height: 968
+        x: 3072
+        y: 5120
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -308,10 +308,10 @@ TextureImporter:
       name: Hammurabi - Full_4
       rect:
         serializedVersion: 2
-        x: 4411
-        y: 5144
-        width: 394
-        height: 968
+        x: 4096
+        y: 5120
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -330,10 +330,10 @@ TextureImporter:
       name: Hammurabi - Full_5
       rect:
         serializedVersion: 2
-        x: 5440
-        y: 5144
-        width: 383
-        height: 968
+        x: 5120
+        y: 5120
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -352,10 +352,10 @@ TextureImporter:
       name: Hammurabi - Full_6
       rect:
         serializedVersion: 2
-        x: 6477
-        y: 5144
-        width: 373
-        height: 968
+        x: 6144
+        y: 5120
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -374,10 +374,10 @@ TextureImporter:
       name: Hammurabi - Full_7
       rect:
         serializedVersion: 2
-        x: 334
-        y: 4120
-        width: 396
-        height: 968
+        x: 0
+        y: 4096
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -396,10 +396,10 @@ TextureImporter:
       name: Hammurabi - Full_8
       rect:
         serializedVersion: 2
-        x: 1357
-        y: 4120
-        width: 449
-        height: 968
+        x: 1024
+        y: 4096
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -418,10 +418,10 @@ TextureImporter:
       name: Hammurabi - Full_9
       rect:
         serializedVersion: 2
-        x: 2382
-        y: 4120
-        width: 495
-        height: 968
+        x: 2048
+        y: 4096
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -440,10 +440,10 @@ TextureImporter:
       name: Hammurabi - Full_10
       rect:
         serializedVersion: 2
-        x: 3397
-        y: 4120
-        width: 529
-        height: 968
+        x: 3072
+        y: 4096
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -462,10 +462,10 @@ TextureImporter:
       name: Hammurabi - Full_11
       rect:
         serializedVersion: 2
-        x: 4399
-        y: 4120
-        width: 546
-        height: 968
+        x: 4096
+        y: 4096
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -484,10 +484,10 @@ TextureImporter:
       name: Hammurabi - Full_12
       rect:
         serializedVersion: 2
-        x: 5401
-        y: 4120
-        width: 519
-        height: 968
+        x: 5120
+        y: 4096
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -506,10 +506,10 @@ TextureImporter:
       name: Hammurabi - Full_13
       rect:
         serializedVersion: 2
-        x: 6367
-        y: 4120
-        width: 504
-        height: 968
+        x: 6144
+        y: 4096
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -528,10 +528,10 @@ TextureImporter:
       name: Hammurabi - Full_14
       rect:
         serializedVersion: 2
-        x: 205
-        y: 3096
-        width: 501
-        height: 968
+        x: 0
+        y: 3072
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -550,10 +550,10 @@ TextureImporter:
       name: Hammurabi - Full_15
       rect:
         serializedVersion: 2
-        x: 1229
-        y: 3096
-        width: 533
-        height: 968
+        x: 1024
+        y: 3072
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -572,10 +572,10 @@ TextureImporter:
       name: Hammurabi - Full_16
       rect:
         serializedVersion: 2
-        x: 2309
-        y: 3096
-        width: 513
-        height: 968
+        x: 2048
+        y: 3072
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -594,10 +594,10 @@ TextureImporter:
       name: Hammurabi - Full_17
       rect:
         serializedVersion: 2
-        x: 3403
-        y: 3096
-        width: 500
-        height: 968
+        x: 3072
+        y: 3072
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -616,10 +616,10 @@ TextureImporter:
       name: Hammurabi - Full_18
       rect:
         serializedVersion: 2
-        x: 4409
-        y: 3096
-        width: 539
-        height: 968
+        x: 4096
+        y: 3072
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -638,10 +638,10 @@ TextureImporter:
       name: Hammurabi - Full_19
       rect:
         serializedVersion: 2
-        x: 5408
-        y: 3096
-        width: 561
-        height: 968
+        x: 5120
+        y: 3072
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -660,10 +660,10 @@ TextureImporter:
       name: Hammurabi - Full_20
       rect:
         serializedVersion: 2
-        x: 6394
-        y: 3096
-        width: 561
-        height: 968
+        x: 6144
+        y: 3072
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -682,10 +682,10 @@ TextureImporter:
       name: Hammurabi - Full_21
       rect:
         serializedVersion: 2
-        x: 196
-        y: 2072
-        width: 559
-        height: 968
+        x: 0
+        y: 2048
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -704,10 +704,10 @@ TextureImporter:
       name: Hammurabi - Full_22
       rect:
         serializedVersion: 2
-        x: 1200
-        y: 2072
-        width: 530
-        height: 968
+        x: 1024
+        y: 2048
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -726,10 +726,10 @@ TextureImporter:
       name: Hammurabi - Full_23
       rect:
         serializedVersion: 2
-        x: 2254
-        y: 2072
-        width: 529
-        height: 968
+        x: 2048
+        y: 2048
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -748,10 +748,10 @@ TextureImporter:
       name: Hammurabi - Full_24
       rect:
         serializedVersion: 2
-        x: 3321
-        y: 2072
-        width: 499
-        height: 968
+        x: 3072
+        y: 2048
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -770,10 +770,10 @@ TextureImporter:
       name: Hammurabi - Full_25
       rect:
         serializedVersion: 2
-        x: 4409
-        y: 2072
-        width: 494
-        height: 968
+        x: 4096
+        y: 2048
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -792,10 +792,10 @@ TextureImporter:
       name: Hammurabi - Full_26
       rect:
         serializedVersion: 2
-        x: 5441
-        y: 2072
-        width: 523
-        height: 967
+        x: 5120
+        y: 2048
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -814,10 +814,10 @@ TextureImporter:
       name: Hammurabi - Full_27
       rect:
         serializedVersion: 2
-        x: 6432
-        y: 2072
-        width: 550
-        height: 968
+        x: 6144
+        y: 2048
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -836,10 +836,10 @@ TextureImporter:
       name: Hammurabi - Full_28
       rect:
         serializedVersion: 2
-        x: 254
-        y: 1048
-        width: 540
-        height: 968
+        x: 0
+        y: 1024
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -858,10 +858,10 @@ TextureImporter:
       name: Hammurabi - Full_29
       rect:
         serializedVersion: 2
-        x: 1230
-        y: 1048
-        width: 538
-        height: 968
+        x: 1024
+        y: 1024
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -880,10 +880,10 @@ TextureImporter:
       name: Hammurabi - Full_30
       rect:
         serializedVersion: 2
-        x: 2221
-        y: 1048
-        width: 520
-        height: 967
+        x: 2048
+        y: 1024
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -902,10 +902,10 @@ TextureImporter:
       name: Hammurabi - Full_31
       rect:
         serializedVersion: 2
-        x: 3259
-        y: 1048
-        width: 530
-        height: 967
+        x: 3072
+        y: 1024
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -924,10 +924,10 @@ TextureImporter:
       name: Hammurabi - Full_32
       rect:
         serializedVersion: 2
-        x: 4339
-        y: 1048
-        width: 491
-        height: 968
+        x: 4096
+        y: 1024
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -946,10 +946,10 @@ TextureImporter:
       name: Hammurabi - Full_33
       rect:
         serializedVersion: 2
-        x: 5428
-        y: 1048
-        width: 480
-        height: 968
+        x: 5120
+        y: 1024
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -968,10 +968,10 @@ TextureImporter:
       name: Hammurabi - Full_34
       rect:
         serializedVersion: 2
-        x: 6472
-        y: 1048
-        width: 497
-        height: 968
+        x: 6144
+        y: 1024
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -990,10 +990,10 @@ TextureImporter:
       name: Hammurabi - Full_35
       rect:
         serializedVersion: 2
-        x: 303
-        y: 24
-        width: 529
-        height: 968
+        x: 0
+        y: 0
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1012,10 +1012,10 @@ TextureImporter:
       name: Hammurabi - Full_36
       rect:
         serializedVersion: 2
-        x: 1302
-        y: 24
-        width: 529
-        height: 968
+        x: 1024
+        y: 0
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1034,10 +1034,10 @@ TextureImporter:
       name: Hammurabi - Full_37
       rect:
         serializedVersion: 2
-        x: 2271
-        y: 24
-        width: 530
-        height: 968
+        x: 2048
+        y: 0
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1056,10 +1056,10 @@ TextureImporter:
       name: Hammurabi - Full_38
       rect:
         serializedVersion: 2
-        x: 3269
-        y: 24
-        width: 499
-        height: 968
+        x: 3072
+        y: 0
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1078,10 +1078,10 @@ TextureImporter:
       name: Hammurabi - Full_39
       rect:
         serializedVersion: 2
-        x: 4291
-        y: 24
-        width: 521
-        height: 968
+        x: 4096
+        y: 0
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1100,7 +1100,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 62382c54a44dd4a4b805f3d0a3da6221
     internalID: 0
     vertices: []
     indices: 
@@ -1109,7 +1109,47 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Hammurabi - Full_0: -6174106011464867425
+      Hammurabi - Full_1: -3395956063492744172
+      Hammurabi - Full_10: 3462161413383671682
+      Hammurabi - Full_11: -7895116506700175682
+      Hammurabi - Full_12: -2927091675976653947
+      Hammurabi - Full_13: -2378064653162482448
+      Hammurabi - Full_14: -123925327535623575
+      Hammurabi - Full_15: -1336250004029106716
+      Hammurabi - Full_16: -5993924942803420959
+      Hammurabi - Full_17: -3635581182797609717
+      Hammurabi - Full_18: 4277569314535010956
+      Hammurabi - Full_19: 6718109811546126610
+      Hammurabi - Full_2: 451933604351477703
+      Hammurabi - Full_20: 562603693906670091
+      Hammurabi - Full_21: -912223420100335958
+      Hammurabi - Full_22: -2439501899789464541
+      Hammurabi - Full_23: -4768384395764513436
+      Hammurabi - Full_24: 9015549239889816032
+      Hammurabi - Full_25: 2726731151115191635
+      Hammurabi - Full_26: -2057655906673060860
+      Hammurabi - Full_27: 8703598213393651930
+      Hammurabi - Full_28: 6889683011396992906
+      Hammurabi - Full_29: 6156709081781496032
+      Hammurabi - Full_3: 5625157714345208365
+      Hammurabi - Full_30: 4361559219354429227
+      Hammurabi - Full_31: -5732773786355123355
+      Hammurabi - Full_32: -5339036695213042028
+      Hammurabi - Full_33: 7371546714261166329
+      Hammurabi - Full_34: -5713078877053502301
+      Hammurabi - Full_35: -543042417392330493
+      Hammurabi - Full_36: -6059381611088555340
+      Hammurabi - Full_37: 1956225274092056046
+      Hammurabi - Full_38: 2370965290186155268
+      Hammurabi - Full_39: -4468805747892125846
+      Hammurabi - Full_4: -5554659261894650687
+      Hammurabi - Full_5: -7702463104409767525
+      Hammurabi - Full_6: 4004662575437215649
+      Hammurabi - Full_7: 4480137759698617194
+      Hammurabi - Full_8: 1797692950439782985
+      Hammurabi - Full_9: 1283243191172177646
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

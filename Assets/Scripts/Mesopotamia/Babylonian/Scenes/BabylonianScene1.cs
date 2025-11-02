@@ -39,6 +39,7 @@ public class BabylonianScene1 : MonoBehaviour
     public Sprite ChronoSmile;
     public Animator chronoAnimator;
     public Animator playerAnimator;
+    public Animator NPCFulldrawnAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -230,9 +231,13 @@ public class BabylonianScene1 : MonoBehaviour
                 if (playerAnimator != null)
                     playerAnimator.Play("Player_Smiling", 0, 0f);
                 HammurabiFulldrawnSprite.enabled = true;
+                if (NPCFulldrawnAnimator != null)
+                    NPCFulldrawnAnimator.Play("Hammurabi_FullDrawn (Talking)", 0, 0f);
                 break;
             case 5:
                 HammurabiFulldrawnSprite.enabled = true;
+                if (NPCFulldrawnAnimator != null)
+                    NPCFulldrawnAnimator.Play("Hammurabi_FullDrawn", 0, 0f);
                 if (chronoAnimator != null)
                     chronoAnimator.Play("Chrono_Thinking", 0, 0f);
                 if (playerAnimator != null)

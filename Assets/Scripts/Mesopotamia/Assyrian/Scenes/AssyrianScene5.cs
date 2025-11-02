@@ -33,7 +33,8 @@ public class AssyrianScene5 : MonoBehaviour
     [Header("Sprites - Chrono")]
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoSmile;
-
+    public Animator chronoAnimator;
+    public Animator playerAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -188,11 +189,22 @@ public class AssyrianScene5 : MonoBehaviour
         switch (currentDialogueIndex)
         {
             case 0:
-                ChronocharacterRenderer.sprite = ChronoSmile;
-                PlayercharacterRenderer.sprite = PlayerReflective;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
+                break;
+            case 1:
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Smiling", 0, 0f);
                 break;
             case 2:
-                PlayercharacterRenderer.sprite = PlayerSmile;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Cheerful", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 break;
         }
     }

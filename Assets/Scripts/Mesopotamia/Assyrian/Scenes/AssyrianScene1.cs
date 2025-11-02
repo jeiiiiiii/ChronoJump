@@ -43,7 +43,9 @@ public class AssyrianScene1 : MonoBehaviour
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
-
+    public Animator chronoAnimator;
+    public Animator playerAnimator;
+    public Animator NPCFulldrawnAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -244,42 +246,79 @@ public class AssyrianScene1 : MonoBehaviour
         switch (currentDialogueIndex)
         {
             case 0:
-                PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Thinking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 break;
             case 1:
-                ChronocharacterRenderer.sprite = ChronoThinking;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Eager", 0, 0f);
                 break;
             case 2:
-                PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 break;
             case 3:
-                ChronocharacterRenderer.sprite = ChronoThinking;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Smiling", 0, 0f);
+                break;
+            case 4:
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Curious", 0, 0f);
                 break;
             case 5:
-                PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Smiling", 0, 0f);
                 TiglathFulldrawnSprite.enabled = true;
+                if (NPCFulldrawnAnimator != null)
+                    NPCFulldrawnAnimator.Play("Tiglath_FullDrawn", 0, 0f);
                 break;
             case 6:
-                ChronocharacterRenderer.sprite = ChronoSmile;
-                PlayercharacterRenderer.sprite = PlayerCurious;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Smiling", 0, 0f);
                 break;
             case 7:
-                ChronocharacterRenderer.sprite = TiglathPrideful;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Tiglath_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Eager", 0, 0f);
                 break;
             case 8:
-                PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = TiglathCold;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Tiglath_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Curious", 0, 0f);
                 break;
             case 9:
-                ChronocharacterRenderer.sprite = TiglathPrideful;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Tiglath_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Reflective", 0, 0f);
                 break;
             case 10:
-                PlayercharacterRenderer.sprite = PlayerReflective;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Tiglath_Assertive", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 break;
             case 11:
-                ChronocharacterRenderer.sprite = TiglathCold;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Tiglath_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Reflective", 0, 0f);
                 break;
         }
     }

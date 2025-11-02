@@ -53,7 +53,8 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
     public Button ArtifactImageButton;
     public Button ArtifactUseButton;
     public Button ArtifactButton;
-
+    public Animator chronoAnimator;
+    public Animator playerAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
     public AudioClip[] pananakopClips;
@@ -228,9 +229,11 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerEager;
-                    ChronocharacterRenderer.sprite = ChronoSmile;
-                    
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Cheerful", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
+
                     if (!challengeCompleted)
                     {
                         challengeCompleted = true;
@@ -247,7 +250,10 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
                     }
                     break;
                 case 1:
-                    ChronocharacterRenderer.sprite = ChronoCheerful;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Eager", 0, 0f);
                     break;
                 case 2:
                     foreach (Button btn in answerButtons)
@@ -265,11 +271,16 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
                         AchievementUnlockedRenderer.SetActive(true);
                     }
                     BlurBG.gameObject.SetActive(false);
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Curious", 0, 0f);
                     break;
                 case 3:
-                    ChronocharacterRenderer.sprite = ChronoSmile;
-                    PlayercharacterRenderer.sprite = PlayerSmile;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
             }
         }
@@ -278,16 +289,22 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Sad", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 1:
-                    ChronocharacterRenderer.sprite = ChronoSad;
-                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Embarassed", 0, 0f);
                     break;
                 case 2:
-                    ChronocharacterRenderer.sprite = ChronoThinking;
-                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }
@@ -296,16 +313,22 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Sad", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Talking", 0, 0f);
                     break;
                 case 1:
-                    ChronocharacterRenderer.sprite = ChronoSad;
-                    PlayercharacterRenderer.sprite = PlayerEmbarassed;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Embarassed", 0, 0f);
                     break;
                 case 2:
-                    ChronocharacterRenderer.sprite = ChronoThinking;
-                    PlayercharacterRenderer.sprite = PlayerReflective;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }
@@ -314,8 +337,10 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
-                    PlayercharacterRenderer.sprite = PlayerReflective;
-                    ChronocharacterRenderer.sprite = ChronoThinking;
+                    if (chronoAnimator != null)
+                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                    if (playerAnimator != null)
+                        playerAnimator.Play("Player_Reflective", 0, 0f);
                     break;
             }
         }

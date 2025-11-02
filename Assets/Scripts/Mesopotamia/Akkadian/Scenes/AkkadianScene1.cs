@@ -44,7 +44,9 @@ public class AkkadianScene1 : MonoBehaviour
     public Sprite ChronoSmile;
     public Animator chronoAnimator;
     public Animator playerAnimator;
-
+    public Animator playerFulldrawnAnimator;
+    public Animator chronoFulldrawnAnimator;
+    public Animator NPCFulldrawnAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -226,11 +228,15 @@ public class AkkadianScene1 : MonoBehaviour
         {
             case 0:
                 PlayerFulldrawnSprite.enabled = true;
+                if (playerFulldrawnAnimator != null)
+                    playerFulldrawnAnimator.Play("Player_FullDrawn", 0, 0f);
                 PlayercharacterRenderer.enabled = false;
                 ChronocharacterRenderer.enabled = false;
                 break;
             case 1:
                 ChronoFulldrawnSprite.enabled = true;
+                if (chronoFulldrawnAnimator != null)
+                    chronoFulldrawnAnimator.Play("Chrono_FullDrawn", 0, 0f);
                 PlayercharacterRenderer.enabled = true;
                 if (playerAnimator != null)
                     playerAnimator.Play("Player_Smiling", 0, 0f);
@@ -251,6 +257,8 @@ public class AkkadianScene1 : MonoBehaviour
             case 4:
                 PlayerAchievementManager.UnlockAchievement("Rise");
                 SargoncharacterRenderer.enabled = true;
+                if (NPCFulldrawnAnimator != null)
+                    NPCFulldrawnAnimator.Play("Sargon_FullDrawn", 0, 0f);
                 AchievementUnlockedRenderer.SetActive(true);
                 if (chronoAnimator != null)
                     chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);

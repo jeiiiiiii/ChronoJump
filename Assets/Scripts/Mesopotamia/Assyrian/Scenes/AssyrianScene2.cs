@@ -45,7 +45,9 @@ public class AssyrianScene2 : MonoBehaviour
 
     [Header("Achievements")]
     public GameObject AchievementUnlockedRenderer;
-
+    public Animator chronoAnimator;
+    public Animator playerAnimator;
+    public Animator NPCFulldrawnAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -218,27 +220,45 @@ public class AssyrianScene2 : MonoBehaviour
         switch (currentDialogueIndex)
         {
             case 0:
-                PlayercharacterRenderer.sprite = PlayerSmile;
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Reflective", 0, 0f);
                 break;
             case 1:
                 AshurbanipalFulldrawnSprite.enabled = true;
-                PlayercharacterRenderer.sprite = PlayerEmbarrassed;
-                ChronocharacterRenderer.sprite = ChronoCheerful;
+                if (NPCFulldrawnAnimator != null)
+                    NPCFulldrawnAnimator.Play("Ashurbanipal_FullDrawn", 0, 0f);
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Cheerful", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Smiling", 0, 0f);
                 break;
             case 2:
-                PlayercharacterRenderer.sprite = PlayerCurious;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Ashurbanipal_Proud", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 break;
             case 3:
-                ChronocharacterRenderer.sprite = AshurbanipalWise;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Ashurbanipal_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Smiling", 0, 0f);
                 break;
             case 4:
                 AchievementUnlockedRenderer.SetActive(true);
                 PlayerAchievementManager.UnlockAchievement("Guardian");
-                ChronocharacterRenderer.sprite = ChronoThinking;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Curious", 0, 0f);
                 break;
             case 5:
-                PlayercharacterRenderer.sprite = PlayerReflective;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 break;
         }
     }
