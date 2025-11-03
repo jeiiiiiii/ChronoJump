@@ -16,6 +16,10 @@ public class StudentClassroomManager : MonoBehaviour
     public Button refreshButton;
     public TextMeshProUGUI noStoriesText;
 
+    [Header("Leaderboard")]
+    public StudentClassroomLeaderboard leaderboardComponent;
+    public Button refreshLeaderboardButton;
+
     [Header("Story Management")]
     public List<PublishedStory> availableStories = new List<PublishedStory>();
 
@@ -49,6 +53,8 @@ public class StudentClassroomManager : MonoBehaviour
         {
             Debug.Log("Waiting for ClassInfo to load data...");
         }
+        if (refreshLeaderboardButton != null)
+        refreshLeaderboardButton.onClick.AddListener(RefreshLeaderboard);
     }
 
     private void OnClassDataLoaded(StudentClassData classData)
@@ -687,6 +693,15 @@ public class StudentClassroomManager : MonoBehaviour
         LoadPublishedStories();
     }
 
+    private void RefreshLeaderboard()
+    {
+        if (leaderboardComponent != null)
+        {
+            leaderboardComponent.RefreshLeaderboard();
+        }
+    }
+
+
     public void OnStoryPublished(PublishedStory newStory)
     {
         if (currentClass != null && newStory != null)
@@ -723,7 +738,4 @@ public class StudentClassroomManager : MonoBehaviour
 
         Debug.Log("✅ Story cache cleared and refreshed");
     }
-
-    // You can call this from a refresh button or automatically
-
 }
