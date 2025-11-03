@@ -47,6 +47,7 @@ public class SumerianScene2 : MonoBehaviour
     public Sprite ChronoThinking;
     public Animator chronoAnimator;
     public Animator playerAnimator;
+    public Animator cuneiformAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
     
@@ -298,6 +299,8 @@ public class SumerianScene2 : MonoBehaviour
                 if (playerAnimator != null)
                     playerAnimator.Play("Player_Reflective", 0, 0f);
                 Cuneiform.SetActive(true);
+                if (cuneiformAnimator != null)
+                    cuneiformAnimator.Play("Cuneiform_Animation", 0, 0f);
                 break;
             case 7:
                 if (chronoAnimator != null)

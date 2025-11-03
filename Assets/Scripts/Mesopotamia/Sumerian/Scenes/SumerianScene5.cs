@@ -44,6 +44,7 @@ public class SumerianScene5 : MonoBehaviour
     public Animator chronoAnimator;
     public Animator playerAnimator;
     public Animator NPCFulldrawnAnimator;
+    public Animator gulongAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -290,6 +291,8 @@ public class SumerianScene5 : MonoBehaviour
                 if (playerAnimator != null)
                     playerAnimator.Play("Player_Reflective", 0, 0f);
                 Gulong.SetActive(true);
+                if (gulongAnimator != null)
+                    gulongAnimator.Play("Gulong_Animation", 0, 0f);
                 break;
             case 6:
                 if (chronoAnimator != null)
