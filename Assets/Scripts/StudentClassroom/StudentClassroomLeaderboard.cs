@@ -11,7 +11,6 @@ public class StudentClassroomLeaderboard : MonoBehaviour
     public Transform leaderboardContainer;
     public GameObject loadingSpinnerPrefab;
     public TextMeshProUGUI emptyMessage;
-    public TextMeshProUGUI leaderboardTitle;
 
     [Header("References")]
     public ClassInfo classInfoComponent;
@@ -77,13 +76,7 @@ public class StudentClassroomLeaderboard : MonoBehaviour
             if (currentClass != null && !string.IsNullOrEmpty(currentClass.classCode))
             {
                 Debug.Log($"📊 Loading leaderboard for class: {currentClass.classCode}");
-                
-                // Update title if needed
-                if (leaderboardTitle != null)
-                {
-                    leaderboardTitle.text = $"{currentClass.className} - Leaderboard";
-                }
-                
+                             
                 isInitialized = true; // Mark as initialized BEFORE loading
                 LoadLeaderboard();
             }

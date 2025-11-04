@@ -23,21 +23,47 @@ public class StudentClassroomManager : MonoBehaviour
     [Header("Story Management")]
     public List<PublishedStory> availableStories = new List<PublishedStory>();
 
+    [Header("Student Info")]
+    public TextMeshProUGUI studentNameText;
+
     private StudentClassData currentClass;
     private bool isInitialized = false;
     private bool isLoadingStories = false;
 
     private void OnEnable()
     {
-        // Subscribe to ClassInfo data loaded event
         ClassInfo.OnClassDataLoaded += OnClassDataLoaded;
+        // NEW: Subscribe to static event
+        OnStudentNameChanged += HandleStudentNameChanged;
     }
 
     private void OnDisable()
     {
-        // Unsubscribe from event
         ClassInfo.OnClassDataLoaded -= OnClassDataLoaded;
+        // NEW: Unsubscribe from static event
+        OnStudentNameChanged -= HandleStudentNameChanged;
     }
+
+    // Change the event
+    public static System.Action<string, StudentClassData> OnStudentDataChanged;
+
+    private void SetStudentName(string name)
+    {
+        if (studentNameText != null)
+        {
+            studentNameText.text = name;
+
+            ClassInfo classInfo = FindAnyObjectByType<ClassInfo>();
+            StudentClassData classData = null;
+            if (classInfo != null && classInfo.IsDataLoaded())
+            {
+                classData = classInfo.GetCurrentClassData();
+            }
+
+            OnStudentDataChanged?.Invoke(name, classData);
+        }
+    }
+
 
     private void Start()
     {
@@ -87,8 +113,12 @@ public class StudentClassroomManager : MonoBehaviour
         }
 
         isInitialized = true;
+
+        LoadStudentName();
+
         LoadPublishedStories();
     }
+
 
     private async void LoadPublishedStories()
     {
@@ -141,6 +171,60 @@ public class StudentClassroomManager : MonoBehaviour
         }
     }
 
+    // NEW: Static event for name changes
+    public static System.Action<string> OnStudentNameChanged;
+
+    // NEW: Handle the name change event
+    private void HandleStudentNameChanged(string newName)
+    {
+        Debug.Log($"🔄 StudentClassroomManager: Name changed via event to {newName}");
+
+        if (studentNameText != null)
+        {
+            studentNameText.text = newName;
+            Debug.Log($"✅ Updated classroom display name to: {newName}");
+        }
+    }
+    
+
+    private void LoadStudentName()
+    {
+        if (studentNameText == null)
+        {
+            Debug.LogWarning("Student name text component not assigned");
+            return;
+        }
+
+        studentNameText.text = "Loading...";
+        Debug.Log("🎯 LoadStudentName() called");
+
+        // Get current student data from Firebase
+        FirebaseManager.Instance.GetUserData(userData =>
+        {
+            if (userData == null)
+            {
+                Debug.LogError("❌ userData is NULL");
+                SetStudentName("Student");
+                return;
+            }
+
+            Debug.Log($"✅ Got user data: {userData.displayName}");
+
+            // Get student data from students collection to access studName
+            FirebaseManager.Instance.GetStudentByUserId(userData.userId, studentData =>
+            {
+                if (studentData == null)
+                {
+                    Debug.LogError("❌ studentData is NULL");
+                    SetStudentName(userData.displayName ?? "Student");
+                    return;
+                }
+
+                SetStudentName(studentData.studName ?? userData.displayName ?? "Student");
+                Debug.Log($"🎉 FINAL: '{studentNameText.text}'");
+            });
+        });
+    }
 
     private async Task<List<PublishedStory>> GetPublishedStoriesFromFirestore(string classCode)
     {
@@ -738,4 +822,32 @@ public class StudentClassroomManager : MonoBehaviour
 
         Debug.Log("✅ Story cache cleared and refreshed");
     }
+
+    private void DebugStudentDataFlow()
+    {
+        Debug.Log("🔍 Starting student data flow debug...");
+
+        FirebaseManager.Instance.GetUserData(userData =>
+        {
+            if (userData == null)
+            {
+                Debug.LogError("❌ STEP 1: GetUserData returned NULL");
+                return;
+            }
+
+            Debug.Log($"✅ STEP 1: Got user data - UserId: {userData.userId}, DisplayName: {userData.displayName}");
+
+            FirebaseManager.Instance.GetStudentByUserId(userData.userId, studentData =>
+            {
+                if (studentData == null)
+                {
+                    Debug.LogError("❌ STEP 2: GetStudentByUserId returned NULL");
+                    return;
+                }
+
+                Debug.Log($"✅ STEP 2: Got student data - StudId: {studentData.studId}, StudName: {studentData.studName}, UserId: {studentData.userId}");
+            });
+        });
+    }
+
 }

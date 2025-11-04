@@ -217,7 +217,7 @@ public class ClassInfo : MonoBehaviour
         if (currentClassData != null)
         {
             if (teacherNameText != null)
-                teacherNameText.text = currentClassData.teacherName;
+                teacherNameText.text = "Teacher " + currentClassData.teacherName;
 
             if (classNameText != null)
             {
@@ -228,6 +228,7 @@ public class ClassInfo : MonoBehaviour
             }
         }
     }
+
 
     private void SetDefaultValues()
     {
