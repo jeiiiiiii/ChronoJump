@@ -13,6 +13,8 @@ public class CivilizationLoader : MonoBehaviour
     [SerializeField] private string babylonianStartScene = "BabylonianSceneOne";
     [SerializeField] private string assyrianStartScene = "AssyrianSceneOne";
     [SerializeField] private string harappaStartScene = "HarappaSceneOne";
+    [SerializeField] private string siningStartScene = "SiningSceneOne";
+    [SerializeField] private string huangheStartScene = "HuangheSceneOne";
 
     public void LoadSumerian()
     {
@@ -37,6 +39,14 @@ public class CivilizationLoader : MonoBehaviour
     public void LoadHarappa()
     {
         LoadCivilizationScene("Harappa", harappaStartScene);
+    }
+    public void LoadSining()
+    {
+        LoadCivilizationScene("Sining", siningStartScene);
+    }
+    public void LoadHuangHe()
+    {
+        LoadCivilizationScene("HuangHe", huangheStartScene);
     }
 
     /// <summary>

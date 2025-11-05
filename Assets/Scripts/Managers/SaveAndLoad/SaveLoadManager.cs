@@ -754,6 +754,26 @@ public class SaveLoadManager : MonoBehaviour
             case "HarappaScene4": return "HarappaSceneFour_DialogueIndex";
             case "HarappaSceneFive":
             case "HarappaScene5": return "HarappaSceneFive_DialogueIndex";
+            case "SiningSceneOne":
+            case "SiningScene1": return "SiningSceneOne_DialogueIndex";
+            case "SiningSceneTwo":
+            case "SiningScene2": return "SiningSceneTwo_DialogueIndex";
+            case "SiningSceneThree":
+            case "SiningScene3": return "SiningSceneThree_DialogueIndex";
+            case "SiningSceneFour":
+            case "SiningScene4": return "SiningSceneFour_DialogueIndex";
+            case "SiningSceneFive":
+            case "SiningScene5": return "SiningSceneFive_DialogueIndex";
+            case "HuangHeSceneOne":
+            case "HuangHeScene1": return "HuangHeSceneOne_DialogueIndex";
+            case "HuangHeSceneTwo":
+            case "HuangHeScene2": return "HuangHeSceneTwo_DialogueIndex";
+            case "HuangHeSceneThree":
+            case "HuangHeScene3": return "HuangHeSceneThree_DialogueIndex";
+            case "HuangHeSceneFour":
+            case "HuangHeScene4": return "HuangHeSceneFour_DialogueIndex";
+            case "HuangHeSceneFive":
+            case "HuangHeScene5": return "HuangHeSceneFive_DialogueIndex";
             default: return sceneName + "_DialogueIndex";
         }
     }

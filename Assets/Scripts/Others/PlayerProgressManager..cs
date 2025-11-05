@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public static class PlayerProgressManager
 {
-    private static readonly string[] allCivilizations = { "Sumerian", "Akkadian", "Babylonian", "Assyrian", "Harappa" };
+    private static readonly string[] allCivilizations = { "Sumerian", "Akkadian", "Babylonian", "Assyrian", "Harappa", "Sining", "HuangHe" };
 
     /// <summary>
     /// Unlocks a civilization through GameProgressManager.

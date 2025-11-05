@@ -48,17 +48,17 @@ public class SiningScene5 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Minsan ang kapayapaan ay mas malakas kaysa sa digmaan. Ngunit ang kalikasan... mas malakas pa sa lahat."
+                line = " Minsan ang pinakasimple ay ang pinakamahirap gawin. Ang tunay na teknolohiya ay hindi sa laki, kundi sa husay."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Ang sibilisasyon ay naglaho, ngunit ang misteryo ay nananatili. Handa ka na sa susunod."
+                line = " Ang sining ay pamana. Ang teknolohiya ay alaala. Handa ka na sa susunod na kabanata."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Paalam, Mohenjo-daro. Salamat sa iyong tahimik na aral."
+                line = " Paalam, Mohenjo-daro. Salamat sa inyong mga kamay na lumilikha."
             },
         };
 

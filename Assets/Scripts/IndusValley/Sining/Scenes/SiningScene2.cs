@@ -27,18 +27,15 @@ public class SiningScene2 : MonoBehaviour
     public DialogueLine[] dialogueLines;
 
     public SpriteRenderer PlayercharacterRenderer;
-    public SpriteRenderer MatrikaFulldrawnSprite;
+    public SpriteRenderer RaviFulldrawnSprite;
 
     // public GameObject AchievementUnlockedRenderer;
     public Sprite PlayerReflective;
     public Sprite PlayerCurious;
     public Sprite PlayerEager;
     public Sprite PlayerEmabarrassed;
-    public Sprite DaroProud;
-    public Sprite DaroCalm;
-    public Sprite Darowise;
-    public Sprite MatrikaMysterious;
-    public Sprite MatrikaSomber;
+    public Sprite RaviEnthusiastic;
+    public Sprite RaviPassionate;
 
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
@@ -70,32 +67,42 @@ public class SiningScene2 : MonoBehaviour
         {
             new DialogueLine
             {   characterName = "CHRONO",
-                line = " Ngunit may isang misteryo sa sibilisasyong ito. Ang kanilang wika—hanggang ngayon, hindi pa rin natin nababasa."
+                line = " Ngunit hindi lang sa arkitektura mahusay ang Indus Valley. Tingnan mo ang kanilang sining, ang beads, pottery, at metallurgy."
             },
             new DialogueLine
             {
-                characterName = "MATRIKA",
-                line = " Ako si Matrika, tagapag-ukit ng mga tatak. Ang bawat simbolo ay may kahulugan—ngunit marahil sa hinaharap, makalilimutan na ng mundo kung paano ito basahin."
+                characterName = "RAVI",
+                line = " Ako si Ravi! Gumawa ako ng mga beads mula sa carnelian at lapis lazuli. Tingnan mo, ang bawat butas ay perpekto, kahit sobrang liit! Ginagamit ko lang ang copper drill at limestone powder."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Kayo ang gumagawa ng mga tatak na ito? Ano ang ibig sabihin ng mga simbolong yan?"
+                line = " Paano mo ginawa 'yan? Walang microscope, walang electric drill!"
+            },
+            new DialogueLine
+            {
+                characterName = "RAVI",
+                line = " Kamay, pasensya, at siyensya! Ang bawat bead ay tumatagal ng ilang oras. Pero kapag tapos na, ito'y perpekto. Ipinagbibili namin ito hanggang Mesopotamia!"
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Ito ay mga pangalan, mga kalakal, mga mensahe. Ginagamit namin ito sa kalakalan. Ngunit ang aming wika... mawawala sa hangin."
+                line = " Ang carnelian beads ng Indus Valley ay kilala sa buong ancient world. May natagpuan pa nga sa Royal Cemetery ng Ur sa Mesopotamia, patunay ng kanilang malawak na trade network."
             },
             new DialogueLine
             {
-                characterName = "DARO",
-                line = " Ang Indus script ay isa sa mga pinakamalaking misteryo ng kasaysayan. Mahigit 400 symbols, ngunit walang nakakaalam kung paano ito basahin. Walang Rosetta Stone, walang key"
+                characterName = "PLAYER",
+                line = " Ibig sabihin... ang sining nila ay umabot hanggang sa ibang kontinente?"
+            },
+            new DialogueLine
+            {
+                characterName = "RAVI",
+                line = " Hindi lang beads! Tingnan mo ang aming pottery, may black-on-red designs, may geometric patterns. Ginagamit namin ang potter's wheel na lubhang mabilis at tumpak."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Ibig sabihin... mawawala ang kanilang boses sa kasaysayan?"
+                line = " Ang Indus Valley ay isa sa mga unang sibilisasyong gumamit ng potter's wheel. Dahil dito, ang kanilang pottery ay uniform at mataas ang kalidad."
             },
         };
     }
@@ -197,7 +204,7 @@ public class SiningScene2 : MonoBehaviour
     void ShowDialogue()
     {
         // AchievementUnlockedRenderer.SetActive(false);
-        MatrikaFulldrawnSprite.enabled = false;
+        RaviFulldrawnSprite.enabled = false;
 
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
@@ -215,7 +222,7 @@ public class SiningScene2 : MonoBehaviour
                 ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
             case 1:
-                MatrikaFulldrawnSprite.enabled = true;
+                RaviFulldrawnSprite.enabled = true;
                 PlayercharacterRenderer.sprite = PlayerEager;
                 ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
@@ -225,31 +232,23 @@ public class SiningScene2 : MonoBehaviour
                 break;
             case 3:
                 PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = ChronoThinking;
+                ChronocharacterRenderer.sprite = RaviEnthusiastic;
                 break;
             case 4:
                 PlayercharacterRenderer.sprite = PlayerEmabarrassed;
                 ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 5:
-                PlayercharacterRenderer.sprite = PlayerCurious;
+                PlayercharacterRenderer.sprite = PlayerReflective;
                 ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
             case 6:
                 PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = DaroProud;
+                ChronocharacterRenderer.sprite = RaviPassionate;
                 break;
             case 7:
                 PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = DaroProud;
-                break;
-            case 8:
-                PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = Darowise;
-                break;
-            case 9:
-                PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = DaroCalm;
+                ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
         }
 

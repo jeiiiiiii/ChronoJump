@@ -43,9 +43,9 @@ public class SiningThirdRecallChallenges : MonoBehaviour
     private bool challengeCompleted = false;
 
     public Image[] heartImages;
-    private bool isShowingAryanDialogue = false;
-    private bool isShowinglungsodDialogue = false;
-    private bool isShowingPagbabagoDialogue = false;
+    private bool isShowingimperyoDialogue = false;
+    private bool isShowingresourcesDialogue = false;
+    private bool isShowingNawalaDialogue = false;
     public AudioSource finishAudioSource;
 
     public Button ArtifactImageButton;
@@ -54,9 +54,9 @@ public class SiningThirdRecallChallenges : MonoBehaviour
 
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
-    public AudioClip[] PagbabagoClips;
-    public AudioClip[] AryanClips;
-    public AudioClip[] lungsodClips;
+    public AudioClip[] NawalaClips;
+    public AudioClip[] imperyoClips;
+    public AudioClip[] resourcesClips;
 
     void Start()
     {
@@ -97,7 +97,7 @@ public class SiningThirdRecallChallenges : MonoBehaviour
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Bakit hindi pa rin nababasa ang Indus script hanggang ngayon?"
+                line = " Bakit tumigil ang produksyon ng sining at teknolohiya sa Indus Valley?"
             },
         };
 
@@ -130,7 +130,7 @@ public class SiningThirdRecallChallenges : MonoBehaviour
                     new DialogueLine
                     {
                         characterName = "CHRONO",
-                        line = " Bakit hindi pa rin nababasa ang Indus script hanggang ngayon?"
+                        line = " Bakit tumigil ang produksyon ng sining at teknolohiya sa Indus Valley?"
                     },
                 };
                 
@@ -149,27 +149,27 @@ public class SiningThirdRecallChallenges : MonoBehaviour
         }
     }
 
-    private DialogueLine[] PagbabagoLines = new DialogueLine[]
+    private DialogueLine[] NawalaLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Pagbabago ng klima at pagkatuyo ng ilog ang dahilan."
+            line = " Nawala ang trade at sistema dahil sa climate change."
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Magaling. Ang kalikasan ay mas malakas pa sa pinakamataas na imperyo."
+            line = " Tumpak. Kapag nawala ang sistema ng sibilisasyon, namatay din ang lahat ng aspeto nito, kasama ang sining."
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Ang sibilisasyon ay naglaho, ngunit ang aral ay nananatili. Ang tunay na lakas ay hindi nasa espada, kundi sa dunong at kalikasan."
+            line = " Ang sining at teknolohiya ay nabubuhay sa komunidad. Kapag naglaho ang komunidad, naglaho din ang lahat."
         },
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Parang nagsara ang isang aklat... ngunit may mga pahina pang naiwan."
+            line = " Parang namatay ang kaluluwa ng sibilisasyon... kahit mayroon pang katawan."
         },
         new DialogueLine
         {
@@ -179,21 +179,21 @@ public class SiningThirdRecallChallenges : MonoBehaviour
         new DialogueLine
         {
             characterName = "CHRONO ",
-            line = " Pero huwag kang mag-alala... marami pa tayong kwento sa hinaharap."
+            line = " Pero tandaan mo, ang gawa ng kamay ay nananatili, kahit nakalimutan na ang gumagawa."
         },
 
     };
-    private DialogueLine[] AryanLines = new DialogueLine[]
+    private DialogueLine[] imperyoLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Ah... pananakop ng mga Aryan?"
+            line = " Ah... sinakop ng ibang imperyo?"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Yan ay isang lumang teorya, ngunit ang mas malinaw na dahilan ay ang pagbabago ng kapaligiran."
+            line = " Walang ebidensya ng pananakop. Ang pagkawala ay dahil sa natural na pagbabago ng kapaligiran."
         },
         new DialogueLine
         {
@@ -201,17 +201,17 @@ public class SiningThirdRecallChallenges : MonoBehaviour
             line = " Pumiling muli."
         }
     };
-    private DialogueLine[] lungsodLines = new DialogueLine[]
+    private DialogueLine[] resourcesLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Digmaan sa pagitan ng mga lungsod ba?"
+            line = " Naubos ang resources ba?"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Hindi. Walang ebidensya ng digmaan. Ang kanilang pagkawala ay tahimik at natural."
+            line = " Mayroon pa ring resources. Ang nawala ay ang sistema, ang trade routes, ang organized society na sumusuporta sa craftsmen."
         },
         new DialogueLine
         {
@@ -224,9 +224,9 @@ public class SiningThirdRecallChallenges : MonoBehaviour
     {
         answers = new Answer[]
         {
-            new Answer { text = "Pananakop ng mga Aryan", isCorrect = false },
-            new Answer { text = "Digmaan sa pagitan ng mga lungsod", isCorrect = false },
-            new Answer { text = "Pagbabago ng klima at pagkatuyo ng ilog", isCorrect = true },
+            new Answer { text = "Sinakop ng ibang imperyo", isCorrect = false },
+            new Answer { text = "Naubos ang resources", isCorrect = false },
+            new Answer { text = "Nawala ang trade at sistema dahil sa climate change", isCorrect = true },
         };
 
         for (int i = 0; i < answerButtons.Length; i++)
@@ -254,12 +254,12 @@ public class SiningThirdRecallChallenges : MonoBehaviour
         {
             AudioClip clipToPlay = null;
 
-            if (dialogueLines == PagbabagoLines && PagbabagoClips != null && currentDialogueIndex < PagbabagoClips.Length)
-                clipToPlay = PagbabagoClips[currentDialogueIndex];
-            else if (dialogueLines == AryanLines && AryanClips != null && currentDialogueIndex < AryanClips.Length)
-                clipToPlay = AryanClips[currentDialogueIndex];
-            else if (dialogueLines == lungsodLines && lungsodClips != null && currentDialogueIndex < lungsodClips.Length)
-                clipToPlay = lungsodClips[currentDialogueIndex];
+            if (dialogueLines == NawalaLines && NawalaClips != null && currentDialogueIndex < NawalaClips.Length)
+                clipToPlay = NawalaClips[currentDialogueIndex];
+            else if (dialogueLines == imperyoLines && imperyoClips != null && currentDialogueIndex < imperyoClips.Length)
+                clipToPlay = imperyoClips[currentDialogueIndex];
+            else if (dialogueLines == resourcesLines && resourcesClips != null && currentDialogueIndex < resourcesClips.Length)
+                clipToPlay = resourcesClips[currentDialogueIndex];
             else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
                 clipToPlay = dialogueClips[currentDialogueIndex];
 
@@ -271,7 +271,7 @@ public class SiningThirdRecallChallenges : MonoBehaviour
             }
         }
 
-        if (dialogueLines == PagbabagoLines)
+        if (dialogueLines == NawalaLines)
         {
             switch (currentDialogueIndex)
             {
@@ -326,7 +326,7 @@ public class SiningThirdRecallChallenges : MonoBehaviour
 
             }
         }
-        else if (dialogueLines == AryanLines)
+        else if (dialogueLines == imperyoLines)
         {
             switch (currentDialogueIndex)
             {
@@ -344,7 +344,7 @@ public class SiningThirdRecallChallenges : MonoBehaviour
                     break;
             }
         }
-        else if (dialogueLines == lungsodLines)
+        else if (dialogueLines == resourcesLines)
         {
             switch (currentDialogueIndex)
             {
@@ -378,14 +378,14 @@ public class SiningThirdRecallChallenges : MonoBehaviour
             SetAnswers();
             foreach (Button btn in answerButtons)
             {
-                btn.interactable = !(dialogueLines == PagbabagoLines && currentDialogueIndex == 0);
+                btn.interactable = !(dialogueLines == NawalaLines && currentDialogueIndex == 0);
                 btn.gameObject.SetActive(true);
             }
 
             // Only hide the Next button for the initial/main dialogue set.
-            // If we're displaying one of the special dialogues (Pagbabago/Aryan/lungsod) that also start at index 0,
+            // If we're displaying one of the special dialogues (Nawala/imperyo/resources) that also start at index 0,
             // leave visibility control to the callers who set up those dialogues.
-            bool isSpecialDialogue = (dialogueLines == PagbabagoLines || dialogueLines == AryanLines || dialogueLines == lungsodLines);
+            bool isSpecialDialogue = (dialogueLines == NawalaLines || dialogueLines == imperyoLines || dialogueLines == resourcesLines);
             if (!isSpecialDialogue)
                 nextButton.gameObject.SetActive(false);
         }
@@ -397,7 +397,7 @@ public class SiningThirdRecallChallenges : MonoBehaviour
                 nextButton.onClick.RemoveAllListeners();
 
 
-                if (isShowingPagbabagoDialogue) // ✅ Correct flag for this script
+                if (isShowingNawalaDialogue) // ✅ Correct flag for this script
                 {
                     nextButton.interactable = false;
                     // Should be change
@@ -474,9 +474,9 @@ public class SiningThirdRecallChallenges : MonoBehaviour
 
         if (selected.isCorrect)
         {
-            isShowingPagbabagoDialogue = true;
+            isShowingNawalaDialogue = true;
             currentDialogueIndex = 0;
-            dialogueLines = PagbabagoLines;
+            dialogueLines = NawalaLines;
             ShowDialogue();
 
             nextButton.gameObject.SetActive(true);
@@ -502,27 +502,27 @@ public class SiningThirdRecallChallenges : MonoBehaviour
                 return;
             }
 
-            if (selected.text == "Pananakop ng mga Aryan")
+            if (selected.text == "Sinakop ng ibang imperyo")
             {
-                isShowingAryanDialogue = true;
+                isShowingimperyoDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = AryanLines;
+                dialogueLines = imperyoLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextAryanDialogue);
+                nextButton.onClick.AddListener(ShowNextimperyoDialogue);
             }
-            else if (selected.text == "Digmaan sa pagitan ng mga lungsod")
+            else if (selected.text == "Naubos ang resources")
             {
-                isShowinglungsodDialogue = true;
+                isShowingresourcesDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = lungsodLines;
+                dialogueLines = resourcesLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextlungsodDialogue);
+                nextButton.onClick.AddListener(ShowNextresourcesDialogue);
             }
             else
             {
@@ -535,7 +535,7 @@ public class SiningThirdRecallChallenges : MonoBehaviour
             }
         }
 
-        void ShowNextAryanDialogue()
+        void ShowNextimperyoDialogue()
         {
             currentDialogueIndex++;
 
@@ -544,11 +544,11 @@ public class SiningThirdRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextAryanDialogue);
+                nextButton.onClick.AddListener(ShowNextimperyoDialogue);
             }
         }
 
-        void ShowNextlungsodDialogue()
+        void ShowNextresourcesDialogue()
         {
             currentDialogueIndex++;
 
@@ -557,7 +557,7 @@ public class SiningThirdRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextlungsodDialogue);
+                nextButton.onClick.AddListener(ShowNextresourcesDialogue);
             }
         }
     }

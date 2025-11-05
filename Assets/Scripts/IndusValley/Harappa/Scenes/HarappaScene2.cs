@@ -235,22 +235,6 @@ public class HarappaScene2 : MonoBehaviour
                 PlayercharacterRenderer.sprite = PlayerCurious;
                 ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
-            case 6:
-                PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = DaroProud;
-                break;
-            case 7:
-                PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = DaroProud;
-                break;
-            case 8:
-                PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = Darowise;
-                break;
-            case 9:
-                PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = DaroCalm;
-                break;
         }
 
         SaveCurrentProgress();

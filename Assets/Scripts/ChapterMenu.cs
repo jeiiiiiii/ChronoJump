@@ -21,6 +21,10 @@ public class ChapterMenu : MonoBehaviour
     {
         SceneManager.LoadScene("IndusCoordinateSelect");
     }
+    public void StartHuangHe()
+    {
+        SceneManager.LoadScene("HuangHeCoordinateSelect");
+    }
 }
 
 

@@ -41,9 +41,9 @@ public class SiningFirstRecallChallenges : MonoBehaviour
     private bool challengeCompleted = false;
 
     public Image[] heartImages;
-    private bool isShowingtemploDialogue = false;
-    private bool isShowinghukboDialogue = false;
-    private bool isShowingGridDialogue = false;
+    private bool isShowingsportsDialogue = false;
+    private bool isShowingtubigDialogue = false;
+    private bool isShowingParaDialogue = false;
     public AudioSource finishAudioSource;
 
     public Button ArtifactImageButton;
@@ -52,9 +52,9 @@ public class SiningFirstRecallChallenges : MonoBehaviour
 
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
-    public AudioClip[] GridClips;
-    public AudioClip[] temploClips;
-    public AudioClip[] hukboClips;
+    public AudioClip[] ParaClips;
+    public AudioClip[] sportsClips;
+    public AudioClip[] tubigClips;
 
     void Start()
     {
@@ -95,8 +95,8 @@ public class SiningFirstRecallChallenges : MonoBehaviour
         {
             new DialogueLine
             {
-                characterName = "DARO",
-                line = " Ano ang pangunahing katangian ng mga lungsod ng Indus Valley tulad ng Mohenjo-daro?"
+                characterName = "SINDHU",
+                line = " Ano ang pangunahing layunin ng Great Bath sa Mohenjo-daro?"
             },
         };
 
@@ -128,8 +128,8 @@ public class SiningFirstRecallChallenges : MonoBehaviour
                 {
                     new DialogueLine
                     {
-                        characterName = "DARO",
-                        line = " Ano ang pangunahing katangian ng mga lungsod ng Indus Valley tulad ng Mohenjo-daro?"
+                        characterName = "SINDHU",
+                        line = " Ano ang pangunahing layunin ng Great Bath sa Mohenjo-daro?"
                     },
                 };
                 
@@ -148,58 +148,58 @@ public class SiningFirstRecallChallenges : MonoBehaviour
         }
     }
 
-    private DialogueLine[] GridLines = new DialogueLine[]
+    private DialogueLine[] ParaLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Grid system at advanced drainage... ang kanilang paraan ng kaayusan."
+            line = " Para sa ritwal ng kalinisan... sagrado ang tubig sa kanila."
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Tumpak. Sa kanilang pamumuno ng sistema, hindi ng takot, nakamit nila ang isang mapayapang sibilisasyon na tumagal ng libu-libong taon."
+            line = " Tumpak. Ang kalinisan ay hindi lang pisikal, ito ay espirituwal. Isa itong tradisyon na patuloy hanggang ngayon sa South Asia."
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Ang kapayapaang itinayo sa dunong ay maaaring hindi ganoon kadakila sa simula—ngunit ito'y tumatagal. Tandaan mo 'yan habang naglalakbay tayo paatras sa panahon"
+            line = " Ang teknolohiya ay hindi lang tungkol sa kung paano mo ito ginawa, kundi bakit mo ito ginawa. Tandaan mo 'yan."
         },
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Parang mas tunay ang kapayapaan na ito... dahil galing sa loob, hindi sa takot."
+            line = " Parang mas malalim ang kahulugan ng bawat gusali... may soul."
         },
 
     };
-    private DialogueLine[] temploLines = new DialogueLine[]
+    private DialogueLine[] sportsLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Hmm... baka malalaking templo at palasyo?"
+            line = " Hmm... baka para sa sports at laro?"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Hindi ito ang naging pokus ng Indus Valley. Ang kanilang lakas ay nasa simpleng kaayusan at dunong, hindi sa mga estrukturang panghari" },
+            line = " Hindi ito ang pangunahing gamit ng Great Bath. Ang mga ritwal ng kalinisan ang mas mahalaga sa kanilang kultura." },
         new DialogueLine
         {
             characterName = "CHRONO",
             line = " Pumiling muli."
         }
     };
-    private DialogueLine[] hukboLines = new DialogueLine[]
+    private DialogueLine[] tubigLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Siguro... matinding hukbo at pader?"
+            line = " Siguro... para sa pag-iimbak ng tubig?"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Hindi. Ang kapayapaan sa Indus Valley ay hindi hiningi gamit ang lakas—ito'y likas na nabuo sa pag-iisip at organisasyon." },
+            line = " May drainage system ito, ibig sabihin, dumadaloy ang tubig. Hindi ito reservoir, kundi paliguan." },
         new DialogueLine
         {
             characterName = "CHRONO",
@@ -211,9 +211,9 @@ public class SiningFirstRecallChallenges : MonoBehaviour
     {
         answers = new Answer[]
         {
-            new Answer { text = "Malalaking templo at palasyo", isCorrect = false },
-            new Answer { text = "Grid system at advanced drainage", isCorrect = true },
-            new Answer { text = "Matinding hukbo at pader", isCorrect = false },
+            new Answer { text = "Para sa sports at laro", isCorrect = false },
+            new Answer { text = "Para sa ritwal ng kalinisan", isCorrect = true },
+            new Answer { text = "Para sa pag-iimbak ng tubig", isCorrect = false },
         };
 
         for (int i = 0; i < answerButtons.Length; i++)
@@ -241,12 +241,12 @@ public class SiningFirstRecallChallenges : MonoBehaviour
         {
             AudioClip clipToPlay = null;
 
-            if (dialogueLines == GridLines && GridClips != null && currentDialogueIndex < GridClips.Length)
-                clipToPlay = GridClips[currentDialogueIndex];
-            else if (dialogueLines == temploLines && temploClips != null && currentDialogueIndex < temploClips.Length)
-                clipToPlay = temploClips[currentDialogueIndex];
-            else if (dialogueLines == hukboLines && hukboClips != null && currentDialogueIndex < hukboClips.Length)
-                clipToPlay = hukboClips[currentDialogueIndex];
+            if (dialogueLines == ParaLines && ParaClips != null && currentDialogueIndex < ParaClips.Length)
+                clipToPlay = ParaClips[currentDialogueIndex];
+            else if (dialogueLines == sportsLines && sportsClips != null && currentDialogueIndex < sportsClips.Length)
+                clipToPlay = sportsClips[currentDialogueIndex];
+            else if (dialogueLines == tubigLines && tubigClips != null && currentDialogueIndex < tubigClips.Length)
+                clipToPlay = tubigClips[currentDialogueIndex];
             else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
                 clipToPlay = dialogueClips[currentDialogueIndex];
 
@@ -258,7 +258,7 @@ public class SiningFirstRecallChallenges : MonoBehaviour
             }
         }
 
-        if (dialogueLines == GridLines)
+        if (dialogueLines == ParaLines)
         {
             switch (currentDialogueIndex)
             {
@@ -303,7 +303,7 @@ public class SiningFirstRecallChallenges : MonoBehaviour
 
             }
         }
-        else if (dialogueLines == temploLines)
+        else if (dialogueLines == sportsLines)
         {
             switch (currentDialogueIndex)
             {
@@ -321,7 +321,7 @@ public class SiningFirstRecallChallenges : MonoBehaviour
                     break;
             }
         }
-        else if (dialogueLines == hukboLines)
+        else if (dialogueLines == tubigLines)
         {
             switch (currentDialogueIndex)
             {
@@ -355,14 +355,14 @@ public class SiningFirstRecallChallenges : MonoBehaviour
             SetAnswers();
             foreach (Button btn in answerButtons)
             {
-                btn.interactable = !(dialogueLines == GridLines && currentDialogueIndex == 0);
+                btn.interactable = !(dialogueLines == ParaLines && currentDialogueIndex == 0);
                 btn.gameObject.SetActive(true);
             }
 
             // Only hide the Next button for the initial/main dialogue set.
-            // If we're displaying one of the special dialogues (Grid/templo/hukbo) that also start at index 0,
+            // If we're displaying one of the special dialogues (Para/sports/tubig) that also start at index 0,
             // leave visibility control to the callers who set up those dialogues.
-            bool isSpecialDialogue = (dialogueLines == GridLines || dialogueLines == temploLines || dialogueLines == hukboLines);
+            bool isSpecialDialogue = (dialogueLines == ParaLines || dialogueLines == sportsLines || dialogueLines == tubigLines);
             if (!isSpecialDialogue)
                 nextButton.gameObject.SetActive(false);
         }
@@ -374,7 +374,7 @@ public class SiningFirstRecallChallenges : MonoBehaviour
                 nextButton.onClick.RemoveAllListeners();
 
 
-                if (isShowingGridDialogue) // ✅ Correct flag for this script
+                if (isShowingParaDialogue) // ✅ Correct flag for this script
                 {
                     nextButton.interactable = false;
                     // Should be change
@@ -451,9 +451,9 @@ public class SiningFirstRecallChallenges : MonoBehaviour
 
         if (selected.isCorrect)
         {
-            isShowingGridDialogue = true;
+            isShowingParaDialogue = true;
             currentDialogueIndex = 0;
-            dialogueLines = GridLines;
+            dialogueLines = ParaLines;
             ShowDialogue();
 
             nextButton.gameObject.SetActive(true);
@@ -479,27 +479,27 @@ public class SiningFirstRecallChallenges : MonoBehaviour
                 return;
             }
 
-            if (selected.text == "Malalaking templo at palasyo")
+            if (selected.text == "Para sa sports at laro")
             {
-                isShowingtemploDialogue = true;
+                isShowingsportsDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = temploLines;
+                dialogueLines = sportsLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNexttemploDialogue);
+                nextButton.onClick.AddListener(ShowNextsportsDialogue);
             }
-            else if (selected.text == "Matinding hukbo at pader")
+            else if (selected.text == "Para sa pag-iimbak ng tubig")
             {
-                isShowinghukboDialogue = true;
+                isShowingtubigDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = hukboLines;
+                dialogueLines = tubigLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNexthukboDialogue);
+                nextButton.onClick.AddListener(ShowNexttubigDialogue);
             }
             else
             {
@@ -512,7 +512,7 @@ public class SiningFirstRecallChallenges : MonoBehaviour
             }
         }
 
-        void ShowNexttemploDialogue()
+        void ShowNextsportsDialogue()
         {
             currentDialogueIndex++;
 
@@ -521,11 +521,11 @@ public class SiningFirstRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNexttemploDialogue);
+                nextButton.onClick.AddListener(ShowNextsportsDialogue);
             }
         }
 
-        void ShowNexthukboDialogue()
+        void ShowNexttubigDialogue()
         {
             currentDialogueIndex++;
 
@@ -534,7 +534,7 @@ public class SiningFirstRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNexthukboDialogue);
+                nextButton.onClick.AddListener(ShowNexttubigDialogue);
             }
         }
     }

@@ -34,7 +34,8 @@ public class SiningScene4 : MonoBehaviour
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
     public Sprite ChronoSad;
-    public Sprite MatrikaSomber;
+    public Sprite RaviSomber;
+    public Sprite SindhuSomber;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -59,27 +60,27 @@ public class SiningScene4 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "CHRONO ",
-                line = " Noong 1900 BCE, nagsimulang mag-iba ang daloy ng Indus River. Tumigang ang lupa, naubusan ng tubig ang mga pananim. Walang digmaan, walang pananakop, simpleng pagbabago ng klima."
+                line = " Noong nagsimulang mag-iba ang klima, unti-unting tumigil ang produksyon. Walang bagong beads, walang bagong pottery. Ang mga workshop ay naulila."
             },
             new DialogueLine
             {
-                characterName = "CHRONO",
-                line = " Unti-unting umalis ang mga tao. Nag-migrate sila sa iba't ibang direksyon. Ang mga lungsod ay naiwan, tahimik, nakalimutan."
+                characterName = "RAVI",
+                line = " Kakaiba. Gumawa ako ng libu-libong beads... ngunit wala nang bibili. Ang mga kalsada ay naulila, ang mga tao ay umalis na."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Naglaho lang sila... nang walang ingay?"
+                line = " Tumigil lang... dahil nawala ang customers?"
             },
             new DialogueLine
             {
-                characterName = "MATRIKA",
-                line = " Kakaibang ironya. Sa paghahangad naming mamuhay nang mapayapa, hindi namin naiwasan ang pagkawala."
+                characterName = "SINDHU",
+                line = " Hindi lang customers, nawala ang sistema. Walang trade, walang order, walang dahilan upang gumawa pa. Ang teknolohiya ay nabuhay dahil sa pangangailangan. Kapag nawala ito, namatay din ang sining."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Naglaho ang sibilisasyon. Walang dugo, walang apoy, tanging katahimikan at kalimutan. Ang dunong na hindi nakasulat sa wikang naiintindihan ay naging alaala na lang."
+                line = " Naglaho ang workshops. Nakalimutan ang mga technique. Ang drainage system ay natabunan ng lupa. Ang Great Bath ay naging ruins."
             },
         };
     }
@@ -196,15 +197,14 @@ public class SiningScene4 : MonoBehaviour
                 break;
             case 1:
                 PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = ChronoThinking;
+                ChronocharacterRenderer.sprite = RaviSomber;
                 break;
             case 2:
                 PlayercharacterRenderer.sprite = PlayerEmbarrassed;
-                ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
             case 3:
                 PlayercharacterRenderer.sprite = PlayerSmile;
-                ChronocharacterRenderer.sprite = MatrikaSomber;
+                ChronocharacterRenderer.sprite = SindhuSomber;
                 break;
             case 4:
                 PlayercharacterRenderer.sprite = PlayerEager;

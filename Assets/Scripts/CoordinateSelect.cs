@@ -87,6 +87,22 @@ public class CoordinateSelect : MonoBehaviour
             civilizationLoader.LoadHarappa();
         }
     }
+    public void LoadSining()
+    {
+        if (CanLoadWithFeedback("Sining"))
+        {
+            ClearProgressForNewGame();
+            civilizationLoader.LoadSining();
+        }
+    }
+    public void LoadHuangHe()
+    {
+        if (CanLoadWithFeedback("HuangHe"))
+        {
+            ClearProgressForNewGame();
+            civilizationLoader.LoadHuangHe();
+        }
+    }
     #endregion
 
     #region Helper Methods
@@ -186,7 +202,12 @@ public class CoordinateSelect : MonoBehaviour
             "AssyrianSceneFive_DialogueIndex",
             "HarappaSceneOne_DialogueIndex", "HarappaSceneTwo_DialogueIndex",
             "HarappaSceneThree_DialogueIndex", "HarappaSceneFour_DialogueIndex",
-            "HarappaSceneFive_DialogueIndex"
+            "HarappaSceneFive_DialogueIndex","SiningSceneOne_DialogueIndex",
+            "SiningSceneTwo_DialogueIndex", "SiningSceneThree_DialogueIndex",
+            "SiningSceneFour_DialogueIndex", "SiningSceneFive_DialogueIndex",
+            "HuangheSceneOne_DialogueIndex", "HuangheSceneTwo_DialogueIndex",
+            "HuangheSceneThree_DialogueIndex", "HuangheSceneFour_DialogueIndex",
+            "HuangheSceneFive_DialogueIndex"
         };
 
         foreach (string key in sceneKeys)

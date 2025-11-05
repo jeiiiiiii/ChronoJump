@@ -27,23 +27,21 @@ public class SiningScene1 : MonoBehaviour
     public DialogueLine[] dialogueLines;
 
     public SpriteRenderer PlayercharacterRenderer;
-    public SpriteRenderer DaroFulldrawnSprite;
-    public SpriteRenderer MatrikaFulldrawnSprite;
+    public SpriteRenderer SindhuFulldrawnSprite;
 
     // public GameObject AchievementUnlockedRenderer;
     public Sprite PlayerReflective;
     public Sprite PlayerCurious;
     public Sprite PlayerEager;
     public Sprite PlayerEmabarrassed;
-    public Sprite DaroProud;
-    public Sprite DaroCalm;
-    public Sprite Darowise;
-    public Sprite MatrikaMysterious;
-    public Sprite MatrikaSomber;
+    public Sprite SindhuProud;
+    public Sprite SindhuWise;
+    public Sprite SindhuCalm;
 
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
+    public Sprite ChronoCheerful;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -71,52 +69,52 @@ public class SiningScene1 : MonoBehaviour
         {
             new DialogueLine
             {   characterName = "PLAYER",
-                line = " Saan na naman ako? Ang ayos ng mga gusali... parang gawa ng mga engineer. Pero... wala akong nakikitang palasyo o hari."
+                line = " Ano 'to? Parang swimming pool... pero ang luma ng hitsura. Ang ganda ng pagkakagawa!"
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Maligayang pagdating sa Mohenjo-daro, isa sa pinakamaunlad na lungsod ng Indus Valley Civilization. Panahon ito ng 2500 BCE—isang lungsod na pinamumunuan hindi ng hari, kundi ng sistema at dunong."
+                line = " Maligayang pagdating sa Great Bath ng Mohenjo-daro. Isa ito sa pinakamahalagang estruktura ng Indus Valley Civilization, hindi lang para sa pagligo, kundi para sa ritwal ng kalinisan."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Mohenjo-daro? Hindi ba ito ang lungsod na natuklasan lang noong 1920s"
+                line = "Great Bath? Paano nila ito ginawa? Walang modernong tools noon, diba?"
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Tumpak. Ang sibilisasyong ito ay nakabaon sa lupa ng mahigit 4,000 taon. Nagsimula ito sa lambak ng Indus River, mula sa kasalukuyang Pakistan hanggang hilagang India. Ang mga tao rito ay namuhay nang mapayapa—walang hukbo, walang digmaan."
+                line = " Tumpak. Ang Great Bath ay may dimensions na 12 meters haba at 7 meters laki. Gawa ito sa standardized bricks na sobrang tibay. Ang bawat brick ay may exact na sukat, lahat ay perpekto."
             },
             new DialogueLine
             {
-                characterName = "DARO",
-                line = " Sino kayo? Mga bisita mula sa malayong lupain? Ang Mohenjo-daro ay bukas sa lahat ng mangangalakal. Kami ay hindi gumagamit ng espada—gumagamit kami ng timbangan."
+                characterName = "SINDHU",
+                line = " Sino kayo? Mga tagapag-aral ng aming sining? Ang Great Bath na ito ay bunga ng libu-libong oras ng pagpaplano at pag-iisip. Bawat brick, bawat hagdan, bawat drainage, lahat ay may layunin."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Mangangalakal na Daro, kami'y mga tagapagmasid ng kasaysayan. Ipinapakita ko sa aking kasama ang inyong dakilang pamana—ang lungsod na walang hari, ang sistema na walang digmaan."
+                line = " Master Sindhu, kami'y mga tagapagmasid ng kasaysayan. Ipinapakita ko sa aking kasama ang iyong dakilang gawa, ang teknolohiya na lampas sa inyong panahon."
             },
             new DialogueLine
             {
-                characterName = "DARO",
-                line = " Kung gayon, saksihan ninyo kung paano kami namuhay. Tingnan mo ang aming mga kalsada—lahat ay tuwid, nakaayos na parang grid. Walang gulo, walang kalat. Bawat bahay ay konektado sa aming drainage system."
+                characterName = "SINDHU",
+                line = " Kung gayon, tingnan ninyo kung paano namin ito ginawa. Ang bawat brick ay sinukat nang eksakto, 9 pulgada haba, 4.5 pulgada lapad, 2.25 pulgada taas. Walang brick na mali ang sukat"
             },
             new DialogueLine
             {
-                characterName = "DARO",
-                line = " Kami ay nangangalakal hanggang Mesopotamia—lapis lazuli, beads, cotton textiles. Gumagamit kami ng standardized weights upang maging patas ang palitan. Walang nandadaya, walang nag-aaway."
+                characterName = "SINDHU",
+                line = " Ang drainage system ay dumadaloy pababa, patungo sa main canal. Kahit maulan o tuyo, walang baha. Ang tubig ay umaagos nang natural, walang bomba, walang makina."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Pero sino ang namumuno? Walang palasyo, walang hari?."
+                line = " Pero bakit kailangan ng ganito kalaking paliguan? Para lang ba sa pagligo?"
             },
             new DialogueLine
             {
-                characterName = "DARO",
-                line = " Ang lungsod mismo ang namumuno. Ang sistema, ang kaayusan, ang paggalang sa isa't isa. Hindi namin kailangan ng takot upang magkaisa—kailangan lang namin ng dunong."
+                characterName = "SINDHU",
+                line = " Ang kalinisan ay sagrado. Ang tubig ay nag-lilinis hindi lang ng katawan, kundi ng kaluluwa. Ito ay ritwal, hindi simpleng pagligo."
             },
         };
     }
@@ -218,8 +216,7 @@ public class SiningScene1 : MonoBehaviour
     void ShowDialogue()
     {
         // AchievementUnlockedRenderer.SetActive(false);
-        DaroFulldrawnSprite.enabled = false;
-        MatrikaFulldrawnSprite.enabled = false;
+        SindhuFulldrawnSprite.enabled = false;
 
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
@@ -249,7 +246,7 @@ public class SiningScene1 : MonoBehaviour
                 ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 4:
-                DaroFulldrawnSprite.enabled = true;
+                SindhuFulldrawnSprite.enabled = true;
                 PlayercharacterRenderer.sprite = PlayerEmabarrassed;
                 ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
@@ -259,19 +256,19 @@ public class SiningScene1 : MonoBehaviour
                 break;
             case 6:
                 PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = DaroProud;
+                ChronocharacterRenderer.sprite = SindhuProud;
                 break;
             case 7:
                 PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = DaroProud;
+                ChronocharacterRenderer.sprite = SindhuProud;
                 break;
             case 8:
                 PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = Darowise;
+                ChronocharacterRenderer.sprite = SindhuWise;
                 break;
             case 9:
                 PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = DaroCalm;
+                ChronocharacterRenderer.sprite = SindhuCalm;
                 break;
         }
 

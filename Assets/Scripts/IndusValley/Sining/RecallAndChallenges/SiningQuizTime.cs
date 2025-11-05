@@ -54,121 +54,121 @@ public class QuizTimeManagerSining : MonoBehaviour
             new Question {
                 questionLine = new DialogueLine {
                     //Q1
-                    question = "Sino ang kinikilalang tagapagtatag ng kauna-unahang imperyo sa kasaysayan?"
+                    question = "Ano ang pangunahing layunin ng Great Bath sa Mohenjo-daro?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Ur-Nammu", isCorrect = false },
-                    new Answer { text = "Sargon I ", isCorrect = true },
-                    new Answer { text = "Hammurabi", isCorrect = false },
-                    new Answer { text = "Naram-Sin", isCorrect = false }
+                    new Answer { text = "Para sa pag-iimbak ng tubig", isCorrect = false },
+                    new Answer { text = "Para sa ritwal ng kalinisan ", isCorrect = true },
+                    new Answer { text = "Para sa sports at laro", isCorrect = false },
+                    new Answer { text = "Para sa pakikipag-ugnayan sa mga diyos", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q2
-                    question = "Ano ang tawag sa sistema ng pamahalaang pinamumunuan ng pinunong-pari sa Sumer?"
+                    question = "Ano ang sinisimbolo ng Great Bath ayon kay Sindhu?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Akkad", isCorrect = true },
-                    new Answer { text = "Uruk", isCorrect = false },
-                    new Answer { text = "Babylon", isCorrect = false },
-                    new Answer { text = "Larsa", isCorrect = false }
+                    new Answer { text = "Bunga ng libu-libong oras ng pagpaplano bawat detalye ay may layunin", isCorrect = true },
+                    new Answer { text = "Kapangyarihan ng hari", isCorrect = false },
+                    new Answer { text = "Tahanan ng mga diyos", isCorrect = false },
+                    new Answer { text = "Display ng yaman", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q3
-                    question = "Ano ang naging pangunahing paraan ni Sargon upang pag-isahin ang mga lungsod-estado?"
+                    question = "Ano ang pananaw ni Sindhu tungkol sa \"teknolohiya\"?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Diplomasiya", isCorrect = false },
-                    new Answer { text = "Pagtatayo ng templo ", isCorrect = false },
-                    new Answer { text = "Pananampalataya", isCorrect = false },
-                    new Answer { text = "Lakas ng militar at mahusay na pamahalaan", isCorrect = true }
+                    new Answer { text = "Teknolohiya ay tungkol sa kung gaano kalaki ang gusali", isCorrect = false },
+                    new Answer { text = "Teknolohiya ay para sa digmaan ", isCorrect = false },
+                    new Answer { text = "Teknolohiya ay regalo ng mga diyos", isCorrect = false },
+                    new Answer { text = " Teknolohiya ay hindi lang tungkol sa kung paano, kundi bakit mo ito ginawa", isCorrect = true }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q4
-                    question = "Ano ang sinabi ni Sargon tungkol sa pagpapanatili ng isang malawak na imperyo?"
+                    question = "Sino ang kinikilalang batang craftsman na gumagawa ng carnelian at lapis lazuli beads?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Kailangan umasa sa mga diyos", isCorrect = false },
-                    new Answer { text = "Kailangan ng sistemang gumagana kahit wala ang pinuno", isCorrect = true },
-                    new Answer { text = "Magtiwala sa kapalaran", isCorrect = false },
-                    new Answer { text = "Dapat matakot sa hari ang lahat", isCorrect = false }
+                    new Answer { text = "Matrika", isCorrect = false },
+                    new Answer { text = "Ravi", isCorrect = true },
+                    new Answer { text = "Daro", isCorrect = false },
+                    new Answer { text = "Sindhu", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q5
-                    question = "Ano ang ginawa ni Sargon upang mapanatili ang kaayusan sa imperyo?"
+                    question = "Ano ang layunin ng paggamit ng carnelian beads ng mga taga-Indus Valley?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Ipinagbawal ang digmaan", isCorrect = false },
-                    new Answer { text = "Nagtayo ng mga templo", isCorrect = false },
-                    new Answer { text = "Nagtalaga ng mga gobernador sa bawat bahagi ", isCorrect = true },
-                    new Answer { text = "Nagpatupad ng bagong relihiyon", isCorrect = false }
+                    new Answer { text = "Para sa religious ceremonies", isCorrect = false },
+                    new Answer { text = "Para sa digmaan", isCorrect = false },
+                    new Answer { text = "Para sa kalakalan hanggang Mesopotamia at ibang rehiyon", isCorrect = true },
+                    new Answer { text = "Para sa decoration ng mga palasyo", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q6
-                    question = "Ano ang pangunahing dahilan ng pagbagsak ng Akkadian Empire?"
+                    question = "Ano ang naging innovation ng Indus Valley sa pottery?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Matinding tagtuyot", isCorrect = false },
-                    new Answer { text = "Rebolusyon mula sa loob", isCorrect = false },
-                    new Answer { text = "Pagsalakay ng Amorite at Hurrian", isCorrect = true },
-                    new Answer { text = "Kakulangan sa pagkain", isCorrect = false }
+                    new Answer { text = "Gumamit ng malalaking kiln", isCorrect = false },
+                    new Answer { text = "Gumamit ng imported clay", isCorrect = false },
+                    new Answer { text = "Gumamit ng potter's wheel na mabilis at tumpak", isCorrect = true },
+                    new Answer { text = "Gumamit ng gold decoration", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q7
-                    question = "Sino ang sumunod na pinuno matapos si Sargon at sa ilalim ng pamumuno niya humina ang imperyo?"
+                    question = "Ano ang simbolismo ng bronze metallurgy ayon kay Sindhu?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Naram-Sin", isCorrect = true },
-                    new Answer { text = "Ur-Nammu", isCorrect = false },
-                    new Answer { text = "Hammurabi", isCorrect = false },
-                    new Answer { text = "Ishtar", isCorrect = false }
+                    new Answer { text = "Metal ay tool, hindi sandata ang tunay na lakas ay nasa kung paano mo ito ginagamit", isCorrect = true },
+                    new Answer { text = "Yaman at status symbol", isCorrect = false },
+                    new Answer { text = "Sandata para sa digmaan", isCorrect = false },
+                    new Answer { text = "Offerings para sa mga diyos", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q8
-                    question = "Ano ang nangyari matapos bumagsak ang Akkadian Empire?"
+                    question = "Ano ang sinabi ni Chrono tungkol sa sining ng Indus Valley?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Naibalik ang kapangyarihan ng Akkad", isCorrect = false },
-                    new Answer { text = "Nagsimula ang pamumuno ng mga Greek", isCorrect = false },
-                    new Answer { text = "Panandaliang pagbawi ng Ur at tunggalian ng Isin at Larsa", isCorrect = true },
-                    new Answer { text = "Umusbong agad ang imperyong Babylonia", isCorrect = false }
+                    new Answer { text = "Ang sining ay dapat malaki upang maging mahalaga", isCorrect = false },
+                    new Answer { text = "Ang sining ay para sa mga mayaman lang", isCorrect = false },
+                    new Answer { text = "Ang sining ay hindi kailangang maging malaki minsan ang pinakamaganda ay nasa detalye", isCorrect = true },
+                    new Answer { text = "Ang sining ay walang kahalagahan", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q9
-                    question = "Ayon kay Sargon, ano ang tunay na layunin ng pamumuno?"
+                    question = " Bakit tumigil ang produksyon ng sining at teknolohiya sa Indus Valley?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Pagpapayaman", isCorrect = false },
-                    new Answer { text = "Layunin at kaayusan", isCorrect = true },
-                    new Answer { text = "Takot at kapangyarihan", isCorrect = false },
-                    new Answer { text = "Katapatan sa mga diyos", isCorrect = false }
+                    new Answer { text = "Sinakop ng ibang imperyo", isCorrect = false },
+                    new Answer { text = "Nawala ang trade at sistema dahil sa climate change", isCorrect = true },
+                    new Answer { text = "Naubos ang resources", isCorrect = false },
+                    new Answer { text = "Nag-rebel ang mga craftsmen", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q10
-                    question = "Ano ang natutunang aral mula sa pamumuno ni Sargon ayon kina Chrono at Player?"
+                    question = "Ano ang pangunahing aral na naiwan ng sining at teknolohiya ng Indus Valley?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Ang kapangyarihan ay permanente", isCorrect = false },
-                    new Answer { text = "Walang silbi ang pamumuno sa dulo", isCorrect = false },
-                    new Answer { text = "Ang bawat pamahalaan ay malakas magpakailanman", isCorrect = false },
-                    new Answer { text = "Ang alaala ng mga pinuno ay mananatili sa kasaysayan", isCorrect = true }
+                    new Answer { text = "Ang sining ay para sa mga elite lang", isCorrect = false },
+                    new Answer { text = "Ang teknolohiya ay para sa digmaan", isCorrect = false },
+                    new Answer { text = "Ang yaman ay mas importante kaysa husay", isCorrect = false },
+                    new Answer { text = "Ang sining at teknolohiya ay nabubuhay sa komunidad—kapag naglaho ang komunidad, naglaho din ang lahat", isCorrect = true }
                 }
             }
         };
@@ -282,7 +282,7 @@ public class QuizTimeManagerSining : MonoBehaviour
 
     void ShowQuizResult()
     {
-        PlayerProgressManager.UnlockCivilization("Babylonian");
+        PlayerProgressManager.UnlockCivilization("HuangHe");
         
         timerText.color = Color.white;
         timerText.gameObject.SetActive(false);
@@ -342,7 +342,7 @@ public class QuizTimeManagerSining : MonoBehaviour
             nextButton.onClick.RemoveAllListeners();
             nextButton.onClick.AddListener(() =>
             {
-                SceneManager.LoadScene("CoordinateSelect");
+                SceneManager.LoadScene("ChapterSelect");
                 UpdateSaveAfterQuizCompletion();
             });
         }
@@ -463,6 +463,15 @@ private string GetNextCivilizationScene()
         {
             return sceneName.Contains("Assyrian");
         }
+        else if (currentQuizScene.Contains("Harappa"))
+        {
+            return sceneName.Contains("Harappa");
+        }
+        else if (currentQuizScene.Contains("Sining"))
+        {
+            return sceneName.Contains("Sining");
+        }
+
 
         return false;
     }

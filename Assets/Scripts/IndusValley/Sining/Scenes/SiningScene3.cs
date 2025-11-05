@@ -30,7 +30,10 @@ public class SiningScene3 : MonoBehaviour
     public Sprite PlayerCurious;
     public Sprite PlayerSmile;
     public Sprite PlayerReflective;
-    public Sprite Darocalm;
+    public Sprite PlayerThinking;
+    public Sprite SindhuProud;
+    public Sprite SindhuWise;
+    public Sprite SindhuCalm;
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
@@ -59,47 +62,52 @@ public class SiningScene3 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "CHRONO ",
-                line = " Ang sibilisasyong ito ay umaasa sa Indus River. Ang ilog ay nagbibigay ng tubig, patubig, at pagkain. Pero tulad ng lahat ng bagay na umaasa sa kalikasan... may kapalit."
+                line = " Ngunit ang pinaka-advanced na teknolohiya ng Indus Valley ay nasa metallurgy. Marunong silang magtunaw at maghalo ng metal, bronze, copper, at tin"
+            },
+            new DialogueLine
+            {
+                characterName = "SINDHU",
+                line = " Ang bronze ay halo ng copper at tin. Mas matigas ito kaysa purong copper. Ginagamit namin ito sa tools, weapons, at ornaments."
+            },
+            new DialogueLine
+            {
+                characterName = "PLAYER",
+                line = " Paano ninyo nalaman ang tamang ratio ng copper at tin?"
+            },
+            new DialogueLine
+            {
+                characterName = "SINDHU",
+                line = " Pagsubok, pagkakamali, at pagkatuto. Walang libro, walang formula, puro karanasan lang."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Nakita mo ba ang kanilang irrigation systems? Ang kanilang pagtatanim ng cotton, wheat, barley? Lahat ay nakadepende sa ilog."
+                line = " Ang Indus Valley ay isa sa mga unang sibilisasyong gumamit ng bronze. Pero interesting, wala silang malaking weapons. Karamihan ng kanilang metal tools ay para sa agriculture, construction, at craft."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Kahit gaano kasipag, umaasa pa rin sila sa kalikasan..."
+                line = " Ibig sabihin... ginagamit nila ang teknolohiya para sa kapayapaan, hindi para sa digmaan?"
             },
             new DialogueLine
             {
-                characterName = "DARO",
-                line = " Ang ilog ay buhay namin. Kung tumitigil ang daloy, tumitigil din kami."
-            },
-            new DialogueLine
-            {
-                characterName = "PLAYER",
-                line = " Paano kung... mag-iba ang daloy ng ilog?"
+                characterName = "SINDHU",
+                line = " Ang metal ay tool, hindi sandata. Ang tunay na lakas ay nasa kung paano mo ito ginagamit."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Yan mismo ang nangyari. At dahil doon, nagsimulang maglaho ang sibilisasyong ito."
+                line = " Yan ang isa sa mga dahilan kung bakit mahirap intindihin ang Indus Valley. Walang palasyo, walang malaking weapons, lahat ay para sa pang-araw-araw na buhay."
+            },
+            new DialogueLine
+            {
+                characterName = "PLAYER",
+                line = " Parang... mas matino sila kaysa sa ibang ancient civilizations."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Ngunit bago dumating ang katapusan... may naiwang pamana. Ang dunong, ang sistema, ang respeto sa kaayusan."
-            },
-            new DialogueLine
-            {
-                characterName = "PLAYER",
-                line = " May parating na pagbabago?"
-            },
-            new DialogueLine
-            {
-                characterName = "PLAYER",
-                line = " Oo. Hindi gera, hindi pananakop... kundi ang kalikasan mismo."
+                line = " O mas practical lang. Pero malapit nang matapos ang kanilang panahon."
             },
         };
     }
@@ -216,34 +224,37 @@ public class SiningScene3 : MonoBehaviour
                 break;
             case 1:
                 PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = ChronoThinking;
+                ChronocharacterRenderer.sprite = SindhuCalm;
                 break;
             case 2:
-                PlayercharacterRenderer.sprite = PlayerReflective;
+                PlayercharacterRenderer.sprite = PlayerThinking;
                 ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
             case 3:
                 PlayercharacterRenderer.sprite = PlayerSmile;
-                ChronocharacterRenderer.sprite = Darocalm;
+                ChronocharacterRenderer.sprite = SindhuWise;
                 break;
             case 4:
                 PlayercharacterRenderer.sprite = PlayerCurious;
                 ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 5:
-                PlayercharacterRenderer.sprite = PlayerCurious;
+                PlayercharacterRenderer.sprite = PlayerReflective;
                 ChronocharacterRenderer.sprite = ChronoSad;
                 break;
             case 6:
                 PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = ChronoThinking;
+                ChronocharacterRenderer.sprite = SindhuCalm;
                 break;
             case 7:
                 PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                ChronocharacterRenderer.sprite = PlayerThinking;
                 break;
             case 8:
-                PlayercharacterRenderer.sprite = PlayerReflective;
+                PlayercharacterRenderer.sprite = PlayerCurious;
+                ChronocharacterRenderer.sprite = ChronoSmile;
+                break;
+            case 9:
                 ChronocharacterRenderer.sprite = ChronoSad;
                 break;
         }
