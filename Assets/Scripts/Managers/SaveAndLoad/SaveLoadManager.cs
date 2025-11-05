@@ -744,6 +744,16 @@ public class SaveLoadManager : MonoBehaviour
             case "AssyrianScene4": return "AssyrianSceneFour_DialogueIndex";
             case "AssyrianSceneFive":
             case "AssyrianScene5": return "AssyrianSceneFive_DialogueIndex";
+            case "HarappaSceneOne":
+            case "HarappaScene1": return "HarappaSceneOne_DialogueIndex";
+            case "HarappaSceneTwo":
+            case "HarappaScene2": return "HarappaSceneTwo_DialogueIndex";
+            case "HarappaSceneThree":
+            case "HarappaScene3": return "HarappaSceneThree_DialogueIndex";
+            case "HarappaSceneFour":
+            case "HarappaScene4": return "HarappaSceneFour_DialogueIndex";
+            case "HarappaSceneFive":
+            case "HarappaScene5": return "HarappaSceneFive_DialogueIndex";
             default: return sceneName + "_DialogueIndex";
         }
     }

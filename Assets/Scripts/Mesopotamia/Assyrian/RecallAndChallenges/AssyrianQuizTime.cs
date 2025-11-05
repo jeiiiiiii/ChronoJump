@@ -342,7 +342,7 @@ public class QuizTimeManagerAssyrian : MonoBehaviour
             nextButton.onClick.RemoveAllListeners();
             nextButton.onClick.AddListener(() =>
             {
-                SceneManager.LoadScene("CoordinateSelect");
+                SceneManager.LoadScene("ChapterSelect");
             });
         }
         else

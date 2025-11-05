@@ -79,12 +79,12 @@ public class CoordinateSelect : MonoBehaviour
         }
     }
 
-    public void LoadIndus()
+    public void LoadHarappa()
     {
-        if (CanLoadWithFeedback("Indus"))
+        if (CanLoadWithFeedback("Harappa"))
         {
             ClearProgressForNewGame();
-            civilizationLoader.LoadIndus();
+            civilizationLoader.LoadHarappa();
         }
     }
     #endregion
@@ -170,7 +170,7 @@ public class CoordinateSelect : MonoBehaviour
     {
         // Clear dialogue progress for all scenes using StudentPrefs
         string[] sceneKeys = {
-            "SumerianSceneOne_DialogueIndex", "SumerianSceneTwo_DialogueIndex", 
+            "SumerianSceneOne_DialogueIndex", "SumerianSceneTwo_DialogueIndex",
             "SumerianSceneThree_DialogueIndex", "SumerianSceneFour_DialogueIndex",
             "SumerianSceneFive_DialogueIndex", "SumerianSceneSix_DialogueIndex",
             "SumerianSceneSeven_DialogueIndex",
@@ -184,7 +184,9 @@ public class CoordinateSelect : MonoBehaviour
             "AssyrianSceneOne_DialogueIndex", "AssyrianSceneTwo_DialogueIndex",
             "AssyrianSceneThree_DialogueIndex", "AssyrianSceneFour_DialogueIndex",
             "AssyrianSceneFive_DialogueIndex",
-            "IndusSceneOne_DialogueIndex", "IndusSceneTwo_DialogueIndex"
+            "HarappaSceneOne_DialogueIndex", "HarappaSceneTwo_DialogueIndex",
+            "HarappaSceneThree_DialogueIndex", "HarappaSceneFour_DialogueIndex",
+            "HarappaSceneFive_DialogueIndex"
         };
 
         foreach (string key in sceneKeys)

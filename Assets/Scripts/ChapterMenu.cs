@@ -17,6 +17,10 @@ public class ChapterMenu : MonoBehaviour
     {
         SceneManager.LoadScene("CoordinateSelect");
     }
+    public void StartIndus()
+    {
+        SceneManager.LoadScene("IndusCoordinateSelect");
+    }
 }
 
 

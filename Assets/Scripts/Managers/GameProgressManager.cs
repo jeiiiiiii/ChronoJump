@@ -20,7 +20,7 @@ public class GameProgressManager : MonoBehaviour
 
     private FirebaseFirestore db => FirebaseManager.Instance.DB;
 
-    private readonly string[] allCivilizations = { "Sumerian", "Akkadian", "Babylonian", "Assyrian", "Indus" };
+    private readonly string[] allCivilizations = { "Sumerian", "Akkadian", "Babylonian", "Assyrian", "Harappa" };
 
     #region Events
     public System.Action<string> OnCivilizationUnlocked;
@@ -46,7 +46,7 @@ public class GameProgressManager : MonoBehaviour
         { "Akkadian", "ST002" },
         { "Babylonian", "ST003" },
         { "Assyrian", "ST004" },
-        { "Indus", "ST005" }
+        { "Harappa", "ST005" }
     };
     #endregion
 
@@ -708,7 +708,7 @@ private string GetLatestUnlockedStory()
     if (gp.unlockedCivilizations != null && gp.unlockedCivilizations.Count > 0)
     {
         // Get the "highest" civilization based on progression order
-        var civOrder = new List<string> { "Sumerian", "Akkadian", "Babylonian", "Assyrian", "Indus" };
+        var civOrder = new List<string> { "Sumerian", "Akkadian", "Babylonian", "Assyrian", "Harappa" };
         var sortedCivs = gp.unlockedCivilizations
             .OrderBy(c => civOrder.IndexOf(c))
             .ToList();

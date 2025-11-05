@@ -1830,7 +1830,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3407b3de203761b48b273b842c6b4256, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  civName: Indus
+  civName: Harappa
   button: {fileID: 611671231}
   lockedImage: {fileID: 1153163863}
   unlockedImage: {fileID: 1593460732}
@@ -4218,7 +4218,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 922290072}
         m_TargetAssemblyTypeName: ChapterMenu, Assembly-CSharp
-        m_MethodName: StartChapter
+        m_MethodName: StartIndus
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5167,7 +5167,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 922290072}
         m_TargetAssemblyTypeName: ChapterMenu, Assembly-CSharp
-        m_MethodName: StartChapter
+        m_MethodName: StartIndus
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
