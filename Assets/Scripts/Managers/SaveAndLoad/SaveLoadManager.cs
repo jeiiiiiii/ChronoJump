@@ -784,6 +784,26 @@ public class SaveLoadManager : MonoBehaviour
             case "ShangScene4": return "ShangSceneFour_DialogueIndex";
             case "ShangSceneFive":
             case "ShangScene5": return "ShangSceneFive_DialogueIndex";
+            case "NileSceneOne":
+            case "NileScene1": return "NileSceneOne_DialogueIndex";
+            case "NileSceneTwo":
+            case "NileScene2": return "NileSceneTwo_DialogueIndex";
+            case "NileSceneThree":
+            case "NileScene3": return "NileSceneThree_DialogueIndex";
+            case "NileSceneFour":
+            case "NileScene4": return "NileSceneFour_DialogueIndex";
+            case "NileSceneFive":
+            case "NileScene5": return "NileSceneFive_DialogueIndex";
+            case "KingdomSceneOne":
+            case "KingdomScene1": return "KingdomSceneOne_DialogueIndex";
+            case "KingdomSceneTwo":
+            case "KingdomScene2": return "KingdomSceneTwo_DialogueIndex";
+            case "KingdomSceneThree":
+            case "KingdomScene3": return "KingdomSceneThree_DialogueIndex";
+            case "KingdomSceneFour":
+            case "KingdomScene4": return "KingdomSceneFour_DialogueIndex";
+            case "KingdomSceneFive":
+            case "KingdomScene5": return "KingdomSceneFive_DialogueIndex";
             default: return sceneName + "_DialogueIndex";
         }
     }

@@ -25,6 +25,10 @@ public class ChapterMenu : MonoBehaviour
     {
         SceneManager.LoadScene("HuangHeCoordinateSelect");
     }
+    public void StartNile()
+    {
+        SceneManager.LoadScene("NileCoordinateSelect");
+    }
 }
 
 

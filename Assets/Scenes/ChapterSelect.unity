@@ -611,7 +611,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 922290072}
         m_TargetAssemblyTypeName: ChapterMenu, Assembly-CSharp
-        m_MethodName: StartHuangHe
+        m_MethodName: StartNile
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

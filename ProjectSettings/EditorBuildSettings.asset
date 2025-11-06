@@ -498,74 +498,110 @@ EditorBuildSettings:
     path: Assets/Scenes/IndusValley/SiningRecallChallenges/SiningThirdRecallChallenges.unity
     guid: c441b76df2b2cd04fa21113ce1098723
   - enabled: 1
-    path: Assets/Scenes/AcientChina/HuangHeCoordinateSelect.unity
+    path: Assets/Scenes/AncientChina/HuangHeCoordinateSelect.unity
     guid: 5f3792199b97c0f43b52e7a94b78f63d
   - enabled: 1
-    path: Assets/Scenes/AcientChina/ShangScenes/ShangSceneTwo.unity
+    path: Assets/Scenes/AncientChina/ShangScenes/ShangSceneTwo.unity
     guid: 8ac5093bd9b9ec6408cafb077002aefd
   - enabled: 1
-    path: Assets/Scenes/AcientChina/ShangScenes/ShangSceneThree.unity
+    path: Assets/Scenes/AncientChina/ShangScenes/ShangSceneThree.unity
     guid: 70a99f9aad189e64aa531fef57573253
   - enabled: 1
-    path: Assets/Scenes/AcientChina/ShangScenes/ShangSceneOne.unity
+    path: Assets/Scenes/AncientChina/ShangScenes/ShangSceneOne.unity
     guid: 98d9244baf4d14144b2032fe71603142
   - enabled: 1
-    path: Assets/Scenes/AcientChina/ShangScenes/ShangSceneFour.unity
+    path: Assets/Scenes/AncientChina/ShangScenes/ShangSceneFour.unity
     guid: 6c06c7a854f1c4949aebc2f33a4a8394
   - enabled: 1
-    path: Assets/Scenes/AcientChina/ShangScenes/ShangSceneFive.unity
+    path: Assets/Scenes/AncientChina/ShangScenes/ShangSceneFive.unity
     guid: e44240739faaff44281eb00f47abb37d
   - enabled: 1
-    path: Assets/Scenes/AcientChina/ShangRecallChallenges/ShangThirdRecallChallenges.unity
+    path: Assets/Scenes/AncientChina/ShangRecallChallenges/ShangThirdRecallChallenges.unity
     guid: 4843e22515d9eda4d90c5eb3368c4c5d
   - enabled: 1
-    path: Assets/Scenes/AcientChina/ShangRecallChallenges/ShangSecondRecallChallenges.unity
+    path: Assets/Scenes/AncientChina/ShangRecallChallenges/ShangSecondRecallChallenges.unity
     guid: 197ccfc093dfbfa44a77bb9ccc25aec7
   - enabled: 1
-    path: Assets/Scenes/AcientChina/ShangRecallChallenges/ShangQuizTime.unity
+    path: Assets/Scenes/AncientChina/ShangRecallChallenges/ShangQuizTime.unity
     guid: 61471ef62a2bd17408b05bfae2ba4073
   - enabled: 1
-    path: Assets/Scenes/AcientChina/ShangRecallChallenges/ShangGameOver.unity
+    path: Assets/Scenes/AncientChina/ShangRecallChallenges/ShangGameOver.unity
     guid: 9d9d4282025dfde46ac0465b1714e6ca
   - enabled: 1
-    path: Assets/Scenes/AcientChina/ShangRecallChallenges/ShangFirstRecallChallenges.unity
+    path: Assets/Scenes/AncientChina/ShangRecallChallenges/ShangFirstRecallChallenges.unity
     guid: 40dad004b1522e64f898482581d7175b
   - enabled: 1
-    path: Assets/Scenes/AcientChina/ShangRecallChallenges/ShangArtifactScene.unity
+    path: Assets/Scenes/AncientChina/ShangRecallChallenges/ShangArtifactScene.unity
     guid: f2db58070d629754fa9027fe55688801
   - enabled: 1
-    path: Assets/Scenes/AcientChina/HuangHeScenes/HuangHeSceneTwo.unity
+    path: Assets/Scenes/AncientChina/HuangHeScenes/HuangHeSceneTwo.unity
     guid: 5ac6309983901e542911bfc6859f464f
   - enabled: 1
-    path: Assets/Scenes/AcientChina/HuangHeScenes/HuangHeSceneThree.unity
+    path: Assets/Scenes/AncientChina/HuangHeScenes/HuangHeSceneThree.unity
     guid: 94bbaaeae8467544aa49e91b00f2d9b1
   - enabled: 1
-    path: Assets/Scenes/AcientChina/HuangHeScenes/HuangHeSceneOne.unity
+    path: Assets/Scenes/AncientChina/HuangHeScenes/HuangHeSceneOne.unity
     guid: 1b51940304246e94cb56d344beba5cee
   - enabled: 1
-    path: Assets/Scenes/AcientChina/HuangHeScenes/HuangHeSceneFour.unity
+    path: Assets/Scenes/AncientChina/HuangHeScenes/HuangHeSceneFour.unity
     guid: a2f26aff3ce87ee4f8ae623ae56dea0f
   - enabled: 1
-    path: Assets/Scenes/AcientChina/HuangHeScenes/HuangHeSceneFive.unity
+    path: Assets/Scenes/AncientChina/HuangHeScenes/HuangHeSceneFive.unity
     guid: 68c95fbfc5fe20b4b9d8b945d3efb277
   - enabled: 1
-    path: Assets/Scenes/AcientChina/HuangHeRecallChallenges/HuangHeThirdRecallChallenges.unity
+    path: Assets/Scenes/AncientChina/HuangHeRecallChallenges/HuangHeThirdRecallChallenges.unity
     guid: ac769c823d8162744838d988de6a94cf
   - enabled: 1
-    path: Assets/Scenes/AcientChina/HuangHeRecallChallenges/HuangHeSecondRecallChallenges.unity
+    path: Assets/Scenes/AncientChina/HuangHeRecallChallenges/HuangHeSecondRecallChallenges.unity
     guid: bc4c9f52abe750f4b89de7f91b043997
   - enabled: 1
-    path: Assets/Scenes/AcientChina/HuangHeRecallChallenges/HuangHeQuizTime.unity
+    path: Assets/Scenes/AncientChina/HuangHeRecallChallenges/HuangHeQuizTime.unity
     guid: dc17ca64f349a6647a97bd56bc9cf324
   - enabled: 1
-    path: Assets/Scenes/AcientChina/HuangHeRecallChallenges/HuangHeGameOver.unity
+    path: Assets/Scenes/AncientChina/HuangHeRecallChallenges/HuangHeGameOver.unity
     guid: 5b5e5db4d9ab7ab48b74645de5ea87ef
   - enabled: 1
-    path: Assets/Scenes/AcientChina/HuangHeRecallChallenges/HuangHeFirstRecallChallenges.unity
+    path: Assets/Scenes/AncientChina/HuangHeRecallChallenges/HuangHeFirstRecallChallenges.unity
     guid: 4bbb173f703f9b74b8c56e6c35e99cf5
   - enabled: 1
-    path: Assets/Scenes/AcientChina/HuangHeRecallChallenges/HuangHeArtifactScene.unity
+    path: Assets/Scenes/AncientChina/HuangHeRecallChallenges/HuangHeArtifactScene.unity
     guid: eb2fe2170d861094f957bb4cf3499691
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileCoordinateSelect.unity
+    guid: bbbe75bc893180a40bcbf2acdf2b496d
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileScenes/NileSceneTwo.unity
+    guid: 87414b8a310452540a058349da288e37
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileScenes/NileSceneThree.unity
+    guid: 3b8ebb133e662d54593e472cc47e486d
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileScenes/NileSceneOne.unity
+    guid: 93225a50e36dbc24f9c8129e574d47a8
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileScenes/NileSceneFour.unity
+    guid: 652d46525f0ff0f4390f9448f0f2431c
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileScenes/NileSceneFive.unity
+    guid: 765ebf1adf7f0284bb674adf0e93f79d
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileRecallChallenges/NileThirdRecallChallenges.unity
+    guid: 785996aaf35e38a418c5a466e557215f
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileRecallChallenges/NileSecondRecallChallenges.unity
+    guid: 876b0b4f7bccc1446b18d7ccd3c68f3f
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileRecallChallenges/NileQuizTime.unity
+    guid: bc067f6fe80a91342a1a981cfa369949
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileRecallChallenges/NileGameOver.unity
+    guid: d0f28d1eee7eab24680fde93bb4c9575
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileRecallChallenges/NileFirstRecallChallenges.unity
+    guid: d3f7d86fd93546a4c843669ec0937cf6
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileRecallChallenges/NileArtifactScene.unity
+    guid: a2648242c7d98e44db23c03169249eb0
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
     guid: {fileID: 0}

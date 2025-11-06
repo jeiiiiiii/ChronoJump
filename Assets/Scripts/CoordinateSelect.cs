@@ -234,7 +234,13 @@ public class CoordinateSelect : MonoBehaviour
             "HuangheSceneFive_DialogueIndex",
             "ShangSceneOne_DialogueIndex", "ShangSceneTwo_DialogueIndex",
             "ShangSceneThree_DialogueIndex", "ShangSceneFour_DialogueIndex",
-            "ShangSceneFive_DialogueIndex"
+            "ShangSceneFive_DialogueIndex",
+            "NileSceneOne_DialogueIndex", "NileSceneTwo_DialogueIndex",
+            "NileSceneThree_DialogueIndex", "NileSceneFour_DialogueIndex",
+            "NileSceneFive_DialogueIndex",
+            "KingdomSceneOne_DialogueIndex", "KingdomSceneTwo_DialogueIndex",
+            "KingdomSceneThree_DialogueIndex", "KingdomSceneFour_DialogueIndex",
+            "KingdomSceneFive_DialogueIndex"
         };
 
         foreach (string key in sceneKeys)
