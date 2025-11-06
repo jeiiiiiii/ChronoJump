@@ -533,7 +533,7 @@ GameObject:
   - component: {fileID: 359210585}
   - component: {fileID: 359210586}
   m_Layer: 5
-  m_Name: SindhuFD
+  m_Name: WuDingFD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2440,7 +2440,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1417533025}
-  - component: {fileID: 1417533028}
+  - component: {fileID: 1417533029}
   m_Layer: 5
   m_Name: GameObject
   m_TagString: Untagged
@@ -2467,7 +2467,7 @@ RectTransform:
   m_AnchoredPosition: {x: 496, y: -111}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1417533028
+--- !u!114 &1417533029
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2476,7 +2476,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1417533024}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30f8762e73e2f6d40950b54f94c2bc08, type: 3}
+  m_Script: {fileID: 11500000, guid: 3740dae967862e740a637b074ff0405e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueText: {fileID: 991958766}
@@ -2488,14 +2488,13 @@ MonoBehaviour:
   currentDialogueIndex: 0
   dialogueLines: []
   PlayercharacterRenderer: {fileID: 363254929}
-  SindhuFulldrawnSprite: {fileID: 359210585}
+  WudingFulldrawnSprite: {fileID: 359210585}
   PlayerReflective: {fileID: -6828170361931683543, guid: 41872a0e55450ef43b535aba6363171a, type: 3}
   PlayerCurious: {fileID: 1425434424722430075, guid: 5c1923377ae91324084f960706141b9f, type: 3}
   PlayerEager: {fileID: 5428063399545322546, guid: c517d75299d0ddb4cb6eed3374b7a5b3, type: 3}
   PlayerEmabarrassed: {fileID: 21300000, guid: f1f43dbd9447c5f468698952cbd6a509, type: 3}
-  SindhuProud: {fileID: 0}
-  SindhuWise: {fileID: 0}
-  SindhuCalm: {fileID: 0}
+  WudingProud: {fileID: 0}
+  WudingStern: {fileID: 0}
   ChronocharacterRenderer: {fileID: 1052601367}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}

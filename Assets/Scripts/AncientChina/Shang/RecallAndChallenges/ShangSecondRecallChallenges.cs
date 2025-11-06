@@ -43,9 +43,9 @@ public class ShangSecondRecallChallenges : MonoBehaviour
     private bool challengeCompleted = false;
 
     public Image[] heartImages;
-    private bool isShowinghariDialogue = false;
-    private bool isShowingpaintingsDialogue = false;
-    private bool isShowingCarnelianDialogue = false;
+    private bool isShowingbonesDialogue = false;
+    private bool isShowingChinaDialogue = false;
+    private bool isShowingAsawaDialogue = false;
     public AudioSource finishAudioSource;
 
     public Button ArtifactImageButton;
@@ -54,9 +54,9 @@ public class ShangSecondRecallChallenges : MonoBehaviour
 
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
-    public AudioClip[] CarnelianClips;
-    public AudioClip[] hariClips;
-    public AudioClip[] paintingsClips;
+    public AudioClip[] AsawaClips;
+    public AudioClip[] bonesClips;
+    public AudioClip[] ChinaClips;
 
     void Start()
     {
@@ -97,7 +97,7 @@ public class ShangSecondRecallChallenges : MonoBehaviour
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = "  Ano ang ipinagmamalaki ng Indus Valley sa kanilang craft at Shang"
+                line = "   Sino si Fu Hao at bakit siya mahalaga sa Dinastiyang Shang?"
             },
         };
 
@@ -115,7 +115,7 @@ public class ShangSecondRecallChallenges : MonoBehaviour
                 new DialogueLine
                 {
                     characterName = "Hint",
-                    line = "Ang sagot ay isang hari na nagsimula sa Akkad at naging kauna-unahang emperor sa kasaysayan. Ang kanyang pangalan ay nagsisimula sa letrang 'S'."
+                    line = "Ang sagot ay isang bones na nagsimula sa Akkad at naging kauna-unahang emperor sa kasaysayan. Ang kanyang pangalan ay nagsisimula sa letrang 'S'."
                 },
             };
 
@@ -130,7 +130,7 @@ public class ShangSecondRecallChallenges : MonoBehaviour
                     new DialogueLine
                     {
                         characterName = "CHRONO",
-                        line = "  Ano ang ipinagmamalaki ng Indus Valley sa kanilang craft at Shang?"
+                        line = "   Sino si Fu Hao at bakit siya mahalaga sa Dinastiyang Shang?"
                     },
                 };
                 
@@ -149,41 +149,41 @@ public class ShangSecondRecallChallenges : MonoBehaviour
         }
     }
 
-    private DialogueLine[] CarnelianLines = new DialogueLine[]
+    private DialogueLine[] AsawaLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Carnelian beads at advanced pottery! Ang ganda ng kanilang craftsmanship."
+            line = " Asawa ni Wu Ding at heneral na nanguna ng 13,000 sundalo!"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Magaling! Ang kanilang Shang ay simple pero perpekto, yan ang tunay na husay."
+            line = " Magaling! Si Fu Hao ay isa sa pinakakahanga-hangang babae ng ancient China. Ang kanyang tomb ay natuklasan noong 1976, puno ng weapons at treasures."
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Ang Shang ay hindi kailangang maging malaki upang maging mahalaga. Minsan, ang pinakamaganda ay nasa detalye."
+            line = " Ang kasaysayan ay puno ng mga taong lumalabag sa inaasahan. Si Fu Hao ay patunay na ang gender ay hindi hadlang sa greatness."
         },
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Mas nakakamangha pala kapag maliit pero perpekto."
+            line = " Ang cool niya! Asawa at warrior sa sabay..."
         },
 
     };
-    private DialogueLine[] hariLines = new DialogueLine[]
+    private DialogueLine[] bonesLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Ano... mga estatwa ng mga hari ba?"
+            line = " Ano... priestess na nag-interpret ng oracle bones ba?"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Walang malalaking estatwa ng mga hari sa Indus Valley. Ang kanilang Shang ay mas praktikal, beads, pottery, at everyday objects."
+            line = " Mayroon nga siyang religious role, pero ang kanyang pinakakilalang kontribusyon ay bilang military leader."
         },
         new DialogueLine
         {
@@ -191,17 +191,17 @@ public class ShangSecondRecallChallenges : MonoBehaviour
             line = " Pumiling muli."
         }
     };
-    private DialogueLine[] paintingsLines = new DialogueLine[]
+    private DialogueLine[] ChinaLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Malalaking mural paintings... siguro?"
+            line = " Unang empress ng China... siguro?"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Hindi. Walang natagpuang malalaking paintings. Ang kanilang Shang ay maliit, detailed, at portable."
+            line = " Hindi siya empress. Siya ay isa sa maraming asawa ni Wu Ding, pero ang kanyang pagiging heneral ang nag-differentiate sa kanya."
         },
         new DialogueLine
         {
@@ -214,9 +214,9 @@ public class ShangSecondRecallChallenges : MonoBehaviour
     {
         answers = new Answer[]
         {
-            new Answer { text = "Carnelian beads at advanced pottery", isCorrect = true },
-            new Answer { text = "Mga estatwa ng mga hari", isCorrect = false },
-            new Answer { text = "Malalaking mural paintings", isCorrect = false },
+            new Answer { text = "Asawa ni Wu Ding at heneralng nanguna ng 13,000 sundalo", isCorrect = true },
+            new Answer { text = "Isang priestess na nag-interpret ng oracle bones", isCorrect = false },
+            new Answer { text = "Unang empress ng China", isCorrect = false },
         };
 
         for (int i = 0; i < answerButtons.Length; i++)
@@ -244,12 +244,12 @@ public class ShangSecondRecallChallenges : MonoBehaviour
         {
             AudioClip clipToPlay = null;
 
-            if (dialogueLines == CarnelianLines && CarnelianClips != null && currentDialogueIndex < CarnelianClips.Length)
-                clipToPlay = CarnelianClips[currentDialogueIndex];
-            else if (dialogueLines == hariLines && hariClips != null && currentDialogueIndex < hariClips.Length)
-                clipToPlay = hariClips[currentDialogueIndex];
-            else if (dialogueLines == paintingsLines && paintingsClips != null && currentDialogueIndex < paintingsClips.Length)
-                clipToPlay = paintingsClips[currentDialogueIndex];
+            if (dialogueLines == AsawaLines && AsawaClips != null && currentDialogueIndex < AsawaClips.Length)
+                clipToPlay = AsawaClips[currentDialogueIndex];
+            else if (dialogueLines == bonesLines && bonesClips != null && currentDialogueIndex < bonesClips.Length)
+                clipToPlay = bonesClips[currentDialogueIndex];
+            else if (dialogueLines == ChinaLines && ChinaClips != null && currentDialogueIndex < ChinaClips.Length)
+                clipToPlay = ChinaClips[currentDialogueIndex];
             else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
                 clipToPlay = dialogueClips[currentDialogueIndex];
 
@@ -261,7 +261,7 @@ public class ShangSecondRecallChallenges : MonoBehaviour
             }
         }
 
-        if (dialogueLines == CarnelianLines)
+        if (dialogueLines == AsawaLines)
         {
             switch (currentDialogueIndex)
             {
@@ -308,7 +308,7 @@ public class ShangSecondRecallChallenges : MonoBehaviour
 
             }
         }
-        else if (dialogueLines == hariLines)
+        else if (dialogueLines == bonesLines)
         {
             switch (currentDialogueIndex)
             {
@@ -326,7 +326,7 @@ public class ShangSecondRecallChallenges : MonoBehaviour
                     break;
             }
         }
-        else if (dialogueLines == paintingsLines)
+        else if (dialogueLines == ChinaLines)
         {
             switch (currentDialogueIndex)
             {
@@ -360,14 +360,14 @@ public class ShangSecondRecallChallenges : MonoBehaviour
             SetAnswers();
             foreach (Button btn in answerButtons)
             {
-                btn.interactable = !(dialogueLines == CarnelianLines && currentDialogueIndex == 0);
+                btn.interactable = !(dialogueLines == AsawaLines && currentDialogueIndex == 0);
                 btn.gameObject.SetActive(true);
             }
 
             // Only hide the Next button for the initial/main dialogue set.
-            // If we're displaying one of the special dialogues (Carnelian/hari/paintings) that also start at index 0,
+            // If we're displaying one of the special dialogues (Asawa/bones/China) that also start at index 0,
             // leave visibility control to the callers who set up those dialogues.
-            bool isSpecialDialogue = (dialogueLines == CarnelianLines || dialogueLines == hariLines || dialogueLines == paintingsLines);
+            bool isSpecialDialogue = (dialogueLines == AsawaLines || dialogueLines == bonesLines || dialogueLines == ChinaLines);
             if (!isSpecialDialogue)
                 nextButton.gameObject.SetActive(false);
         }
@@ -379,7 +379,7 @@ public class ShangSecondRecallChallenges : MonoBehaviour
                 nextButton.onClick.RemoveAllListeners();
 
 
-                if (isShowingCarnelianDialogue) // ✅ Correct flag for this script
+                if (isShowingAsawaDialogue) // ✅ Correct flag for this script
                 {
                     nextButton.interactable = false;
                     // Should be change
@@ -456,9 +456,9 @@ public class ShangSecondRecallChallenges : MonoBehaviour
 
         if (selected.isCorrect)
         {
-            isShowingCarnelianDialogue = true;
+            isShowingAsawaDialogue = true;
             currentDialogueIndex = 0;
-            dialogueLines = CarnelianLines;
+            dialogueLines = AsawaLines;
             ShowDialogue();
 
             nextButton.gameObject.SetActive(true);
@@ -484,27 +484,27 @@ public class ShangSecondRecallChallenges : MonoBehaviour
                 return;
             }
 
-            if (selected.text == "Mga estatwa ng mga hari")
+            if (selected.text == "Isang priestess na nag-interpret ng oracle bones")
             {
-                isShowinghariDialogue = true;
+                isShowingbonesDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = hariLines;
+                dialogueLines = bonesLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNexthariDialogue);
+                nextButton.onClick.AddListener(ShowNextbonesDialogue);
             }
-            else if (selected.text == "Malalaking mural paintings")
+            else if (selected.text == "Unang empress ng China")
             {
-                isShowingpaintingsDialogue = true;
+                isShowingChinaDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = paintingsLines;
+                dialogueLines = ChinaLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextpaintingsDialogue);
+                nextButton.onClick.AddListener(ShowNextChinaDialogue);
             }
             else
             {
@@ -517,7 +517,7 @@ public class ShangSecondRecallChallenges : MonoBehaviour
             }
         }
 
-        void ShowNexthariDialogue()
+        void ShowNextbonesDialogue()
         {
             currentDialogueIndex++;
 
@@ -526,11 +526,11 @@ public class ShangSecondRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNexthariDialogue);
+                nextButton.onClick.AddListener(ShowNextbonesDialogue);
             }
         }
 
-        void ShowNextpaintingsDialogue()
+        void ShowNextChinaDialogue()
         {
             currentDialogueIndex++;
 
@@ -539,7 +539,7 @@ public class ShangSecondRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextpaintingsDialogue);
+                nextButton.onClick.AddListener(ShowNextChinaDialogue);
             }
         }
     }

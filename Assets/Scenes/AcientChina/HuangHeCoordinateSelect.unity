@@ -153,7 +153,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.052685834, y: 0}
   m_AnchorMax: {x: 1, y: 0.467}
-  m_AnchoredPosition: {x: 66, y: -86.000015}
+  m_AnchoredPosition: {x: 56, y: -66.000015}
   m_SizeDelta: {x: 126.75, y: 193.86}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3360567
@@ -176,7 +176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Ang Sining at Teknolohiya ng Indus
+  m_text: Ang Dinastiyang Shang - Unang Pamilya ng Kapangyarihan
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ebc45d8cfd92bda418afe0359bd24d34, type: 2}
   m_sharedMaterial: {fileID: -697335396114948115, guid: ebc45d8cfd92bda418afe0359bd24d34, type: 2}
@@ -241,7 +241,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 4.1767426, y: -23.668076, z: 160.70113, w: 214.4047}
+  m_margin: {x: 4.1767426, y: -23.668076, z: 160.70113, w: 181.7244}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -514,7 +514,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 20, y: 13}
+  m_AnchoredPosition: {x: -13.300003, y: 21.099998}
   m_SizeDelta: {x: -0.0019836, y: 15.525}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &217304354
@@ -537,7 +537,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ANG NAWALANG MGA LUNGSOD NG HARAPPA AT MOHENJO-DARO
+  m_text: "Ang Ilog ng Luha \nat Pag-asa \nSimula ng \nSibilisasyong Tsino"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ebc45d8cfd92bda418afe0359bd24d34, type: 2}
   m_sharedMaterial: {fileID: -697335396114948115, guid: ebc45d8cfd92bda418afe0359bd24d34, type: 2}
@@ -570,7 +570,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 16
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -602,7 +602,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 2.1564598, y: 20.39983, z: 8.015137, w: -2.5891342}
+  m_margin: {x: 2.1564598, y: 20.39983, z: -75.24318, w: -2.5891342}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1354,7 +1354,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 99, y: -154}
+  m_AnchoredPosition: {x: 321, y: 28}
   m_SizeDelta: {x: 56, y: 52.61}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &658462689
@@ -3082,7 +3082,7 @@ GameObject:
   - component: {fileID: 1649626484}
   - component: {fileID: 1649626488}
   m_Layer: 5
-  m_Name: HarappaBT
+  m_Name: TsinoBT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3108,7 +3108,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -413, y: -10.86}
+  m_AnchoredPosition: {x: 435, y: 257}
   m_SizeDelta: {x: 341.58, y: 253}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1649626484
@@ -3170,7 +3170,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1240065478}
         m_TargetAssemblyTypeName: CoordinateSelect, Assembly-CSharp
-        m_MethodName: LoadHarappa
+        m_MethodName: LoadHuangHe
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3230,7 +3230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3407b3de203761b48b273b842c6b4256, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  civName: Harappa
+  civName: HuangHe
   button: {fileID: 1649626485}
   lockedImage: {fileID: 0}
   unlockedImage: {fileID: 0}
@@ -3251,7 +3251,7 @@ GameObject:
   - component: {fileID: 1670849997}
   - component: {fileID: 1670850001}
   m_Layer: 5
-  m_Name: SiningBT
+  m_Name: ShangBT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3280,7 +3280,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 358, y: 272}
+  m_AnchoredPosition: {x: 199, y: -107}
   m_SizeDelta: {x: 317.92, y: 166.89}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1670849997
@@ -3342,7 +3342,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2046140053}
         m_TargetAssemblyTypeName: CivilizationLoader, Assembly-CSharp
-        m_MethodName: LoadSining
+        m_MethodName: LoadShang
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3402,7 +3402,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3407b3de203761b48b273b842c6b4256, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  civName: Sining
+  civName: Shang
   button: {fileID: 1670849998}
   lockedImage: {fileID: 1316506920}
   unlockedImage: {fileID: 1914506126}
@@ -3556,7 +3556,7 @@ GameObject:
   - component: {fileID: 1757173044}
   - component: {fileID: 1757173043}
   m_Layer: 5
-  m_Name: SiningHover
+  m_Name: ShangHover
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3578,7 +3578,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 300, y: -704}
+  m_AnchoredPosition: {x: 446, y: -314}
   m_SizeDelta: {x: 517.9047, y: 171.6028}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1757173043
@@ -3601,7 +3601,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Ang Sining at Teknolohiya ng Indus
+  m_text: "Ang Dinastiyang Shang \n- Unang Pamilya ng Kapangyarihan"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 04d8fa5ccb9bf4b4b9ed6b73071af0ef, type: 2}
   m_sharedMaterial: {fileID: 3873622676898468374, guid: 04d8fa5ccb9bf4b4b9ed6b73071af0ef, type: 2}
@@ -3692,7 +3692,7 @@ GameObject:
   - component: {fileID: 1879849306}
   - component: {fileID: 1879849305}
   m_Layer: 5
-  m_Name: HarappaHover
+  m_Name: TsinoHover
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3714,7 +3714,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1035, y: -402}
+  m_AnchoredPosition: {x: 86, y: -673}
   m_SizeDelta: {x: 517.9047, y: 171.6028}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1879849305
@@ -3737,7 +3737,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ANG NAWALANG MGA LUNGSOD NG HARAPPA AT MOHENJO-DARO
+  m_text: "Ang Ilog ng Luha at \nPag-asa - Simula ng Sibilisasyong Tsino"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 04d8fa5ccb9bf4b4b9ed6b73071af0ef, type: 2}
   m_sharedMaterial: {fileID: 3873622676898468374, guid: 04d8fa5ccb9bf4b4b9ed6b73071af0ef, type: 2}
@@ -3802,7 +3802,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -178.93005, y: 0, z: -18.937622, w: 0}
+  m_margin: {x: 0.7108153, y: 0, z: -66.39014, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -4136,6 +4136,7 @@ MonoBehaviour:
   harappaStartScene: HarappaSceneOne
   siningStartScene: SiningSceneOne
   huangheStartScene: HuangheSceneOne
+  shangStartScene: ShangSceneOne
 --- !u!1 &2100023124
 GameObject:
   m_ObjectHideFlags: 0

@@ -27,15 +27,15 @@ public class ShangScene2 : MonoBehaviour
     public DialogueLine[] dialogueLines;
 
     public SpriteRenderer PlayercharacterRenderer;
-    public SpriteRenderer RaviFulldrawnSprite;
+    public SpriteRenderer FuhaoFulldrawnSprite;
 
     // public GameObject AchievementUnlockedRenderer;
     public Sprite PlayerReflective;
     public Sprite PlayerCurious;
     public Sprite PlayerEager;
     public Sprite PlayerEmabarrassed;
-    public Sprite RaviEnthusiastic;
-    public Sprite RaviPassionate;
+    public Sprite FuhaoConfident;
+    public Sprite FuhaoFierce;
 
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
@@ -67,42 +67,42 @@ public class ShangScene2 : MonoBehaviour
         {
             new DialogueLine
             {   characterName = "CHRONO",
-                line = " Ngunit hindi lang sa arkitektura mahusay ang Indus Valley. Tingnan mo ang kanilang Shang, ang beads, pottery, at metallurgy."
+                line = " Ngunit ang Shang ay hindi lang kilala sa pagsulat. Tingnan mo ang kanilang bronze technology, isa sa pinakamahusay sa ancient world."
             },
             new DialogueLine
             {
-                characterName = "RAVI",
-                line = " Ako si Ravi! Gumawa ako ng mga beads mula sa carnelian at lapis lazuli. Tingnan mo, ang bawat butas ay perpekto, kahit sobrang liit! Ginagamit ko lang ang copper drill at limestone powder."
-            },
-            new DialogueLine
-            {
-                characterName = "PLAYER",
-                line = " Paano mo ginawa 'yan? Walang microscope, walang electric drill!"
-            },
-            new DialogueLine
-            {
-                characterName = "RAVI",
-                line = " Kamay, pasensya, at siyensya! Ang bawat bead ay tumatagal ng ilang oras. Pero kapag tapos na, ito'y perpekto. Ipinagbibili namin ito hanggang Mesopotamia!"
-            },
-            new DialogueLine
-            {
-                characterName = "CHRONO",
-                line = " Ang carnelian beads ng Indus Valley ay kilala sa buong ancient world. May natagpuan pa nga sa Royal Cemetery ng Ur sa Mesopotamia, patunay ng kanilang malawak na trade network."
+                characterName = "FU HAO",
+                line = " Ako si Fu Hao, asawa ni Wu Ding at heneral ng kanyang hukbo. Nakakita ka na ba ng babaeng heneral? Sa Shang, ang kapangyarihan ay hindi nakadepende sa kasarian, nakadepende sa kakayahan."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Ibig sabihin... ang Shang nila ay umabot hanggang sa ibang kontinente?"
+                line = " Ikaw... heneral? Pero babae ka?"
             },
             new DialogueLine
             {
-                characterName = "RAVI",
-                line = " Hindi lang beads! Tingnan mo ang aming pottery, may black-on-red designs, may geometric patterns. Ginagamit namin ang potter's wheel na lubhang mabilis at tumpak."
+                characterName = "FU HAO",
+                line = " Tama. Nanguna ako ng 13,000 sundalo sa mga labanan. Nakatalo ako ng maraming kaaway. At tingnan mo ang aking mga sandata, lahat ay bronze, matigas at matalas."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Ang Indus Valley ay isa sa mga unang sibilisasyong gumamit ng potter's wheel. Dahil dito, ang kanilang pottery ay uniform at mataas ang kalidad."
+                line = " Ang Shang ay master craftsmen ng bronze. Ginagamit nila ito para sa ritual vessels, weapons, at ornaments. Ang bawat bronze piece ay obra maestra, may intricate designs ng dragons, taotie masks, at geometric patterns."
+            },
+            new DialogueLine
+            {
+                characterName = "PLAYER",
+                line = " Paano nila ito ginawa? Ang ganda ng details!"
+            },
+            new DialogueLine
+            {
+                characterName = "FU HAO",
+                line = " Piece-mold casting. Ginagawa muna namin ang clay model, pagkatapos ay gumagawa ng molds sa paligid nito. Binubuhusan namin ng tunaw na bronze, hinihintay na lumamig, tapos tinatanggal ang mold. Bawat vessel ay unique."
+            },
+            new DialogueLine
+            {
+                characterName = "CHRONO",
+                line = " Ang bronze vessels ay hindi lang decorative, ginagamit ito sa ritwal para sa mga ancestors. Sa paniniwala ng Shang, ang mga namatay na ninuno ay may kapangyarihan na tumulong o saktan ang mga buhay. Kaya importante ang pakikipag-ugnayan sa kanila."
             },
         };
     }
@@ -204,7 +204,7 @@ public class ShangScene2 : MonoBehaviour
     void ShowDialogue()
     {
         // AchievementUnlockedRenderer.SetActive(false);
-        RaviFulldrawnSprite.enabled = false;
+        FuhaoFulldrawnSprite.enabled = false;
 
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
@@ -222,17 +222,17 @@ public class ShangScene2 : MonoBehaviour
                 ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
             case 1:
-                RaviFulldrawnSprite.enabled = true;
+                FuhaoFulldrawnSprite.enabled = true;
                 PlayercharacterRenderer.sprite = PlayerEager;
                 ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 2:
                 PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                ChronocharacterRenderer.sprite = PlayerCurious;
                 break;
             case 3:
                 PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = RaviEnthusiastic;
+                ChronocharacterRenderer.sprite = FuhaoFierce;
                 break;
             case 4:
                 PlayercharacterRenderer.sprite = PlayerEmabarrassed;
@@ -244,7 +244,7 @@ public class ShangScene2 : MonoBehaviour
                 break;
             case 6:
                 PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = RaviPassionate;
+                ChronocharacterRenderer.sprite = FuhaoConfident;
                 break;
             case 7:
                 PlayercharacterRenderer.sprite = PlayerCurious;

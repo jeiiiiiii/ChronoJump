@@ -27,23 +27,22 @@ public class HuangHeScene1 : MonoBehaviour
     public DialogueLine[] dialogueLines;
 
     public SpriteRenderer PlayercharacterRenderer;
-    public SpriteRenderer DaroFulldrawnSprite;
-    public SpriteRenderer MatrikaFulldrawnSprite;
+    public SpriteRenderer DayuFulldrawnSprite;
 
     // public GameObject AchievementUnlockedRenderer;
     public Sprite PlayerReflective;
     public Sprite PlayerCurious;
     public Sprite PlayerEager;
+    public Sprite PlayerSmile;
     public Sprite PlayerEmabarrassed;
-    public Sprite DaroProud;
-    public Sprite DaroCalm;
-    public Sprite Darowise;
-    public Sprite MatrikaMysterious;
-    public Sprite MatrikaSomber;
-
+    public Sprite DayuStern;
+    public Sprite DayuCalm;
+    public Sprite Dayuwise;
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
+    public Sprite ChronoSad;
+    public Sprite ChronoCheerful;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -71,52 +70,51 @@ public class HuangHeScene1 : MonoBehaviour
         {
             new DialogueLine
             {   characterName = "PLAYER",
-                line = " Saan na naman ako? Ang ayos ng mga gusali... parang gawa ng mga engineer. Pero... wala akong nakikitang palasyo o hari."
+                line = " Saan na naman ako? Ang laki ng ilog na 'to... pero bakit dilaw ang tubig? Parang puno ng lupa."
             },
             new DialogueLine
-            {
-                characterName = "CHRONO",
-                line = " Maligayang pagdating sa Mohenjo-daro, isa sa pinakamaunlad na lungsod ng Indus Valley Civilization. Panahon ito ng 2500 BCE—isang lungsod na pinamumunuan hindi ng hari, kundi ng sistema at dunong."
-            },
-            new DialogueLine
-            {
-                characterName = "PLAYER",
-                line = " Mohenjo-daro? Hindi ba ito ang lungsod na natuklasan lang noong 1920s"
-            },
-            new DialogueLine
-            {
-                characterName = "CHRONO",
-                line = " Tumpak. Ang sibilisasyong ito ay nakabaon sa lupa ng mahigit 4,000 taon. Nagsimula ito sa lambak ng Indus River, mula sa kasalukuyang Pakistan hanggang hilagang India. Ang mga tao rito ay namuhay nang mapayapa—walang hukbo, walang digmaan."
-            },
-            new DialogueLine
-            {
-                characterName = "DARO",
-                line = " Sino kayo? Mga bisita mula sa malayong lupain? Ang Mohenjo-daro ay bukas sa lahat ng mangangalakal. Kami ay hindi gumagamit ng espada—gumagamit kami ng timbangan."
-            },
-            new DialogueLine
-            {
-                characterName = "CHRONO",
-                line = " Mangangalakal na Daro, kami'y mga tagapagmasid ng kasaysayan. Ipinapakita ko sa aking kasama ang inyong dakilang pamana—ang lungsod na walang hari, ang sistema na walang digmaan."
-            },
-            new DialogueLine
-            {
-                characterName = "DARO",
-                line = " Kung gayon, saksihan ninyo kung paano kami namuhay. Tingnan mo ang aming mga kalsada—lahat ay tuwid, nakaayos na parang grid. Walang gulo, walang kalat. Bawat bahay ay konektado sa aming drainage system."
-            },
-            new DialogueLine
-            {
-                characterName = "DARO",
-                line = " Kami ay nangangalakal hanggang Mesopotamia—lapis lazuli, beads, cotton textiles. Gumagamit kami ng standardized weights upang maging patas ang palitan. Walang nandadaya, walang nag-aaway."
+            {   characterName = "CHRONO",
+                line = " Maligayang pagdating sa Yellow River o Huang He, ang dugo ng sinaunang China. Ang ilog na ito ay nagbigay ng buhay, ngunit nagdulot din ng kamatayan. Kaya tinawag itong 'China's Sorrow."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Pero sino ang namumuno? Walang palasyo, walang hari?."
+                line = " China's Sorrow? Bakit ganyan ang tawag? Hindi ba dapat blessing ang ilog sa isang sibilisasyon?"
             },
             new DialogueLine
             {
-                characterName = "DARO",
-                line = " Ang lungsod mismo ang namumuno. Ang sistema, ang kaayusan, ang paggalang sa isa't isa. Hindi namin kailangan ng takot upang magkaisa—kailangan lang namin ng dunong."
+                characterName = "CHRONO",
+                line = " Dahil sa loess, ang dilaw na lupa na dinadalang ng ilog mula sa kabundukan. Dumadaloy ito mula sa bulubunduking rehiyon, at kapag umaapaw ang ilog, bumabagsak ang mga pader ng luwad, lumulubog ang mga pananim, nawawala ang mga tahanan."
+            },
+            new DialogueLine
+            {
+                characterName = "DA YU",
+                line = " Sino kayo? Mga dayuhan? Kung nandito kayo upang magtanong kung bakit kami nananatili sa tabi ng ilog na ito kahit mapanganib, ang sagot ay simple: walang ibang mapupuntahan."
+            },
+            new DialogueLine
+            {
+                characterName = "CHRONO",
+                line = " Mang Da Yu, kami'y mga tagapagmasid ng kasaysayan. Ipinapakita ko sa aking kasama kung paano nagsimula ang dakilang sibilisasyong Tsino, dito, sa tabi ng ilog na nagdudulot ng luha at pag-asa."
+            },
+            new DialogueLine
+            {
+                characterName = "DA YU",
+                line = " Tama ka. Ang ilog na ito ay pumapahid ng lupa sa aming mga bukid, kaya sagana ang ani. Ngunit kapag galit ito, nilulunod nito ang lahat. Minsan blessing, minsan sumpa."
+            },
+            new DialogueLine
+            {
+                characterName = "DA YU",
+                line = " Tingnan mo ang North China Plain, ang lupain sa pagitan ng Yellow River at Yangtze River. Ito ang pinakamataba, pinakaproduktibong lupain sa buong China. Dito nagsimula ang aming mga ninuno."
+            },
+            new DialogueLine
+            {
+                characterName = "PLAYER",
+                line = " Pero kung ganoon ka-dangerous ang ilog, bakit hindi kayo lumipat sa mas safe na lugar?"
+            },
+            new DialogueLine
+            {
+                characterName = "DA YU",
+                line = " Dahil protektado tayo. Tingnan mo, sa timog, ang Himalayas. Sa kanluran, ang Taklamakan at Tibet. Sa hilaga, ang Gobi desert. Mga natural na pader na hadlang sa mga mananakop. Dito tayo ligtas, at dito tayo nabuhay."
             },
         };
     }
@@ -218,8 +216,7 @@ public class HuangHeScene1 : MonoBehaviour
     void ShowDialogue()
     {
         // AchievementUnlockedRenderer.SetActive(false);
-        DaroFulldrawnSprite.enabled = false;
-        MatrikaFulldrawnSprite.enabled = false;
+        DayuFulldrawnSprite.enabled = false;
 
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
@@ -237,41 +234,41 @@ public class HuangHeScene1 : MonoBehaviour
                 ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
             case 1:
-                PlayercharacterRenderer.sprite = PlayerEager;
+                PlayercharacterRenderer.sprite = PlayerSmile;
                 ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 2:
-                PlayercharacterRenderer.sprite = PlayerReflective;
+                PlayercharacterRenderer.sprite = PlayerCurious;
                 ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
             case 3:
-                PlayercharacterRenderer.sprite = PlayerCurious;
+                PlayercharacterRenderer.sprite = PlayerSmile;
                 ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 4:
-                DaroFulldrawnSprite.enabled = true;
-                PlayercharacterRenderer.sprite = PlayerEmabarrassed;
-                ChronocharacterRenderer.sprite = ChronoThinking;
-                break;
-            case 5:
-                PlayercharacterRenderer.sprite = PlayerCurious;
+                DayuFulldrawnSprite.enabled = true;
+                PlayercharacterRenderer.sprite = PlayerSmile;
                 ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
-            case 6:
+            case 5:
                 PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = DaroProud;
+                ChronocharacterRenderer.sprite = ChronoCheerful;
+                break;
+            case 6:
+                PlayercharacterRenderer.sprite = PlayerSmile;
+                ChronocharacterRenderer.sprite = Dayuwise;
                 break;
             case 7:
-                PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = DaroProud;
+                PlayercharacterRenderer.sprite = PlayerReflective;
+                ChronocharacterRenderer.sprite = Dayuwise;
                 break;
             case 8:
-                PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = Darowise;
+                PlayercharacterRenderer.sprite = PlayerEager;
+                ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 9:
-                PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = DaroCalm;
+                PlayercharacterRenderer.sprite = PlayerReflective;
+                ChronocharacterRenderer.sprite = DayuStern;
                 break;
         }
 

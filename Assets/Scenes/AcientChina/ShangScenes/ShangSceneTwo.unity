@@ -634,7 +634,7 @@ GameObject:
   - component: {fileID: 385422580}
   - component: {fileID: 385422582}
   m_Layer: 5
-  m_Name: NPCIM
+  m_Name: FuhaoFD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2575,7 +2575,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1277758994}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7de9d53bbee795b4e96f6f3a48d0d91d, type: 3}
+  m_Script: {fileID: 11500000, guid: cc1835a3a815cd84391a995d18ddbdc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueText: {fileID: 407054477}
@@ -2587,16 +2587,16 @@ MonoBehaviour:
   currentDialogueIndex: 0
   dialogueLines: []
   PlayercharacterRenderer: {fileID: 477065903}
-  RaviFulldrawnSprite: {fileID: 385422580}
+  FuhaoFulldrawnSprite: {fileID: 385422580}
   PlayerReflective: {fileID: -6828170361931683543, guid: 41872a0e55450ef43b535aba6363171a, type: 3}
   PlayerCurious: {fileID: 1425434424722430075, guid: 5c1923377ae91324084f960706141b9f, type: 3}
   PlayerEager: {fileID: 5428063399545322546, guid: c517d75299d0ddb4cb6eed3374b7a5b3, type: 3}
   PlayerEmabarrassed: {fileID: 21300000, guid: f1f43dbd9447c5f468698952cbd6a509, type: 3}
-  RaviEnthusiastic: {fileID: 0}
-  RaviPassionate: {fileID: 0}
+  FuhaoConfident: {fileID: 0}
+  FuhaoFierce: {fileID: 0}
   ChronocharacterRenderer: {fileID: 1317386105}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
-  ChronoSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}
+  ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   audioSource: {fileID: 1652331086}
   dialogueClips: []
 --- !u!1 &1317386103

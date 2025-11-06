@@ -43,9 +43,9 @@ public class HuangHeSecondRecallChallenges : MonoBehaviour
     private bool challengeCompleted = false;
 
     public Image[] heartImages;
-    private bool isShowingtabletsDialogue = false;
-    private bool isShowingtaoDialogue = false;
-    private bool isShowingWalangDialogue = false;
+    private bool isShowingtemploDialogue = false;
+    private bool isShowingbansaDialogue = false;
+    private bool isShowingUpangDialogue = false;
     public AudioSource finishAudioSource;
 
     public Button ArtifactImageButton;
@@ -54,9 +54,9 @@ public class HuangHeSecondRecallChallenges : MonoBehaviour
 
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
-    public AudioClip[] WalangClips;
-    public AudioClip[] tabletsClips;
-    public AudioClip[] taoClips;
+    public AudioClip[] UpangClips;
+    public AudioClip[] temploClips;
+    public AudioClip[] bansaClips;
 
     void Start()
     {
@@ -149,41 +149,41 @@ public class HuangHeSecondRecallChallenges : MonoBehaviour
         }
     }
 
-    private DialogueLine[] WalangLines = new DialogueLine[]
+    private DialogueLine[] UpangLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Walang key o Rosetta Stone na natagpuan!"
+            line = " Upang kontrolin ang pagbaha at magtulungan sa survival!!"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Tumpak. Kaya hanggang ngayon, ang kanilang wika ay nananatiling misteryo."
+            line = " Magaling! Ang pangangailangan ang nag-udyok sa kanila na mag-organisa. Survival, hindi ambisyon, ang nag-unite sa kanila."
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Ang wika ay boses ng isang sibilisasyon. Kapag nawala ito, parang naging bulong na lang ang kanilang kuwento."
+            line = " Ang pinakamahirap na kaaway ay hindi laging tao, minsan, ito'y ang mundo mismo. At ang pinakamalakas na sandata ay hindi espada, kundi pagkakaisa."
         },
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Pero kahit hindi natin mabasa... nandito pa rin sila. Naririnig pa rin natin ang kanilang tahimik na sigaw."
+            line = " Mas malalim pala ang dahilan ng kanilang unity..."
         },
 
     };
-    private DialogueLine[] tabletsLines = new DialogueLine[]
+    private DialogueLine[] temploLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Ano... walang natirang clay tablets ba?"
+            line = " Ano... upang magtayo ng mga templo ba?"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " May libu-libong seals na natagpuan. Ang problema ay hindi natin alam kung paano ito basahin."
+            line = " Hindi pa yan ang prayoridad. Ang unang layunin ay mabuhay, kontrolin ang tubig, magtanim, magpatayo ng tahanan na matibay."
         },
         new DialogueLine
         {
@@ -191,17 +191,17 @@ public class HuangHeSecondRecallChallenges : MonoBehaviour
             line = " Pumiling muli."
         }
     };
-    private DialogueLine[] taoLines = new DialogueLine[]
+    private DialogueLine[] bansaLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Nilimutan na ng lahat ng tao... siguro?"
+            line = " Upang makipagdigma sa mga karatig-bansa... siguro?"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Hindi lang nilimutan, talagang nawala ang susi sa pagbasa nito. Walang koneksyon sa ibang wika."
+            line = " Hindi. Ang China ay protektado ng natural barriers, bundok, disyerto, at dagat. Ang tunay na kaaway ay ang kalikasan mismo."
         },
         new DialogueLine
         {
@@ -214,9 +214,9 @@ public class HuangHeSecondRecallChallenges : MonoBehaviour
     {
         answers = new Answer[]
         {
-            new Answer { text = "Walang key o Rosetta Stone na natagpuan ", isCorrect = true },
-            new Answer { text = "Walang natirang clay tablets", isCorrect = false },
-            new Answer { text = "Nilimutan na ng lahat ng tao", isCorrect = false },
+            new Answer { text = "Upang kontrolin ang pagbaha at magtulungan sa survival", isCorrect = true },
+            new Answer { text = "Upang magtayo ng mga templo", isCorrect = false },
+            new Answer { text = "Upang makipagdigma sa mga karatig-bansa", isCorrect = false },
         };
 
         for (int i = 0; i < answerButtons.Length; i++)
@@ -244,12 +244,12 @@ public class HuangHeSecondRecallChallenges : MonoBehaviour
         {
             AudioClip clipToPlay = null;
 
-            if (dialogueLines == WalangLines && WalangClips != null && currentDialogueIndex < WalangClips.Length)
-                clipToPlay = WalangClips[currentDialogueIndex];
-            else if (dialogueLines == tabletsLines && tabletsClips != null && currentDialogueIndex < tabletsClips.Length)
-                clipToPlay = tabletsClips[currentDialogueIndex];
-            else if (dialogueLines == taoLines && taoClips != null && currentDialogueIndex < taoClips.Length)
-                clipToPlay = taoClips[currentDialogueIndex];
+            if (dialogueLines == UpangLines && UpangClips != null && currentDialogueIndex < UpangClips.Length)
+                clipToPlay = UpangClips[currentDialogueIndex];
+            else if (dialogueLines == temploLines && temploClips != null && currentDialogueIndex < temploClips.Length)
+                clipToPlay = temploClips[currentDialogueIndex];
+            else if (dialogueLines == bansaLines && bansaClips != null && currentDialogueIndex < bansaClips.Length)
+                clipToPlay = bansaClips[currentDialogueIndex];
             else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
                 clipToPlay = dialogueClips[currentDialogueIndex];
 
@@ -261,7 +261,7 @@ public class HuangHeSecondRecallChallenges : MonoBehaviour
             }
         }
 
-        if (dialogueLines == WalangLines)
+        if (dialogueLines == UpangLines)
         {
             switch (currentDialogueIndex)
             {
@@ -308,7 +308,7 @@ public class HuangHeSecondRecallChallenges : MonoBehaviour
 
             }
         }
-        else if (dialogueLines == tabletsLines)
+        else if (dialogueLines == temploLines)
         {
             switch (currentDialogueIndex)
             {
@@ -326,7 +326,7 @@ public class HuangHeSecondRecallChallenges : MonoBehaviour
                     break;
             }
         }
-        else if (dialogueLines == taoLines)
+        else if (dialogueLines == bansaLines)
         {
             switch (currentDialogueIndex)
             {
@@ -360,14 +360,14 @@ public class HuangHeSecondRecallChallenges : MonoBehaviour
             SetAnswers();
             foreach (Button btn in answerButtons)
             {
-                btn.interactable = !(dialogueLines == WalangLines && currentDialogueIndex == 0);
+                btn.interactable = !(dialogueLines == UpangLines && currentDialogueIndex == 0);
                 btn.gameObject.SetActive(true);
             }
 
             // Only hide the Next button for the initial/main dialogue set.
-            // If we're displaying one of the special dialogues (Walang/tablets/tao) that also start at index 0,
+            // If we're displaying one of the special dialogues (Upang/templo/bansa) that also start at index 0,
             // leave visibility control to the callers who set up those dialogues.
-            bool isSpecialDialogue = (dialogueLines == WalangLines || dialogueLines == tabletsLines || dialogueLines == taoLines);
+            bool isSpecialDialogue = (dialogueLines == UpangLines || dialogueLines == temploLines || dialogueLines == bansaLines);
             if (!isSpecialDialogue)
                 nextButton.gameObject.SetActive(false);
         }
@@ -379,7 +379,7 @@ public class HuangHeSecondRecallChallenges : MonoBehaviour
                 nextButton.onClick.RemoveAllListeners();
 
 
-                if (isShowingWalangDialogue) // ✅ Correct flag for this script
+                if (isShowingUpangDialogue) // ✅ Correct flag for this script
                 {
                     nextButton.interactable = false;
                     // Should be change
@@ -456,9 +456,9 @@ public class HuangHeSecondRecallChallenges : MonoBehaviour
 
         if (selected.isCorrect)
         {
-            isShowingWalangDialogue = true;
+            isShowingUpangDialogue = true;
             currentDialogueIndex = 0;
-            dialogueLines = WalangLines;
+            dialogueLines = UpangLines;
             ShowDialogue();
 
             nextButton.gameObject.SetActive(true);
@@ -484,27 +484,27 @@ public class HuangHeSecondRecallChallenges : MonoBehaviour
                 return;
             }
 
-            if (selected.text == "Walang natirang clay tablets")
+            if (selected.text == "Upang magtayo ng mga templo")
             {
-                isShowingtabletsDialogue = true;
+                isShowingtemploDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = tabletsLines;
+                dialogueLines = temploLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNexttabletsDialogue);
+                nextButton.onClick.AddListener(ShowNexttemploDialogue);
             }
-            else if (selected.text == "Nilimutan na ng lahat ng tao")
+            else if (selected.text == "Upang makipagdigma sa mga karatig-bansa")
             {
-                isShowingtaoDialogue = true;
+                isShowingbansaDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = taoLines;
+                dialogueLines = bansaLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNexttaoDialogue);
+                nextButton.onClick.AddListener(ShowNextbansaDialogue);
             }
             else
             {
@@ -517,7 +517,7 @@ public class HuangHeSecondRecallChallenges : MonoBehaviour
             }
         }
 
-        void ShowNexttabletsDialogue()
+        void ShowNexttemploDialogue()
         {
             currentDialogueIndex++;
 
@@ -526,11 +526,11 @@ public class HuangHeSecondRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNexttabletsDialogue);
+                nextButton.onClick.AddListener(ShowNexttemploDialogue);
             }
         }
 
-        void ShowNexttaoDialogue()
+        void ShowNextbansaDialogue()
         {
             currentDialogueIndex++;
 
@@ -539,7 +539,7 @@ public class HuangHeSecondRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNexttaoDialogue);
+                nextButton.onClick.AddListener(ShowNextbansaDialogue);
             }
         }
     }

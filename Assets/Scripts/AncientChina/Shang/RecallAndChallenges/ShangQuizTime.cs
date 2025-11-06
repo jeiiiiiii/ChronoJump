@@ -54,121 +54,121 @@ public class QuizTimeManagerShang : MonoBehaviour
             new Question {
                 questionLine = new DialogueLine {
                     //Q1
-                    question = "Ano ang pangunahing layunin ng Great Bath sa Mohenjo-daro?"
+                    question = "Ano ang pinakamahalagang kontribusyon ng Dinastiyang Shang sa kasaysayan ng China?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Para sa pag-iimbak ng tubig", isCorrect = false },
-                    new Answer { text = "Para sa ritwal ng kalinisan ", isCorrect = true },
-                    new Answer { text = "Para sa sports at laro", isCorrect = false },
-                    new Answer { text = "Para sa pakikipag-ugnayan sa mga diyos", isCorrect = false }
+                    new Answer { text = "Unang nakipag-trade sa Rome", isCorrect = false },
+                    new Answer { text = "Unang nag-iwan ng nakasulat na kasaysayan gamit ang oracle bones", isCorrect = true },
+                    new Answer { text = "Unang gumamit ng iron weapons", isCorrect = false },
+                    new Answer { text = "Unang nagtayo ng Great Wall", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q2
-                    question = "Ano ang sinisimbolo ng Great Bath ayon kay Sindhu?"
+                    question = "Ano ang sinisimbolo ng Anyang bilang kabisera ng Shang?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Bunga ng libu-libong oras ng pagpaplano bawat detalye ay may layunin", isCorrect = true },
-                    new Answer { text = "Kapangyarihan ng hari", isCorrect = false },
-                    new Answer { text = "Tahanan ng mga diyos", isCorrect = false },
-                    new Answer { text = "Display ng yaman", isCorrect = false }
+                    new Answer { text = "Sentro ng kapangyarihan kung saan lumilikha ng bronze vessels at nakikipag-usap sa espiritu", isCorrect = true },
+                    new Answer { text = "Lungsod ng kapayapaan", isCorrect = false },
+                    new Answer { text = "Tahanan ng mga magsasaka", isCorrect = false },
+                    new Answer { text = "Simpleng trading post", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q3
-                    question = "Ano ang pananaw ni Sindhu tungkol sa \"teknolohiya\"?"
+                    question = "Ano ang pananaw ni Wu Ding tungkol sa \"Mandate of Heaven\"?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Teknolohiya ay tungkol sa kung gaano kalaki ang gusali", isCorrect = false },
-                    new Answer { text = "Teknolohiya ay para sa digmaan ", isCorrect = false },
-                    new Answer { text = "Teknolohiya ay regalo ng mga diyos", isCorrect = false },
-                    new Answer { text = " Teknolohiya ay hindi lang tungkol sa kung paano, kundi bakit mo ito ginawa", isCorrect = true }
+                    new Answer { text = "Titulo lang ng emperador", isCorrect = false },
+                    new Answer { text = "Pangako ng ulan mula sa langit", isCorrect = false },
+                    new Answer { text = "Walang kahalagahan", isCorrect = false },
+                    new Answer { text = "Karapatan na ibinigay ng langit na mamuno, hangga't maayos ang pamumuno", isCorrect = true }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q4
-                    question = "Sino ang kinikilalang batang craftsman na gumagawa ng carnelian at lapis lazuli beads?"
+                    question = "Sino ang kinikilalang babaeng heneral na nanguna ng 13,000 sundalo sa Dinastiyang Shang?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Matrika", isCorrect = false },
-                    new Answer { text = "Ravi", isCorrect = true },
-                    new Answer { text = "Daro", isCorrect = false },
-                    new Answer { text = "Sindhu", isCorrect = false }
+                    new Answer { text = "Wu Ding", isCorrect = false },
+                    new Answer { text = "Fu Hao", isCorrect = true },
+                    new Answer { text = "Merit", isCorrect = false },
+                    new Answer { text = "Matrika", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q5
-                    question = "Ano ang layunin ng paggamit ng carnelian beads ng mga taga-Indus Valley?"
+                    question = "Ano ang layunin ng bronze vessels sa kultura ng Shang?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Para sa religious ceremonies", isCorrect = false },
+                    new Answer { text = "Para sa dekorasyon ng palasyo", isCorrect = false },
                     new Answer { text = "Para sa digmaan", isCorrect = false },
-                    new Answer { text = "Para sa kalakalan hanggang Mesopotamia at ibang rehiyon", isCorrect = true },
-                    new Answer { text = "Para sa decoration ng mga palasyo", isCorrect = false }
+                    new Answer { text = "Para sa ritwal sa mga ancestors pakikipag-ugnayan sa spiritual world", isCorrect = true },
+                    new Answer { text = "Para sa pakikipag-trade lang", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q6
-                    question = "Ano ang naging innovation ng Indus Valley sa pottery?"
+                    question = "Ano ang naging innovation ng Shang sa bronze technology?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Gumamit ng malalaking kiln", isCorrect = false },
-                    new Answer { text = "Gumamit ng imported clay", isCorrect = false },
-                    new Answer { text = "Gumamit ng potter's wheel na mabilis at tumpak", isCorrect = true },
-                    new Answer { text = "Gumamit ng gold decoration", isCorrect = false }
+                    new Answer { text = "Unang gumamit ng iron", isCorrect = false },
+                    new Answer { text = "Simpleng hammering lang", isCorrect = false },
+                    new Answer { text = "Piece-mold casting na gumagawa ng intricate designs", isCorrect = true },
+                    new Answer { text = "Import mula sa ibang bansa", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q7
-                    question = "Ano ang simbolismo ng bronze metallurgy ayon kay Sindhu?"
+                    question = "Ano ang simbolismo ng oracle bones ayon kay Chrono?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Metal ay tool, hindi sandata ang tunay na lakas ay nasa kung paano mo ito ginagamit", isCorrect = true },
-                    new Answer { text = "Yaman at status symbol", isCorrect = false },
-                    new Answer { text = "Sandata para sa digmaan", isCorrect = false },
-                    new Answer { text = "Offerings para sa mga diyos", isCorrect = false }
+                    new Answer { text = "Paraan ng pakikipag-usap sa spiritual world pinapainit hanggang mag-crack", isCorrect = true },
+                    new Answer { text = "Laruan ng mga bata", isCorrect = false },
+                    new Answer { text = "Weapons sa digmaan", isCorrect = false },
+                    new Answer { text = "Decorations", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q8
-                    question = "Ano ang sinabi ni Chrono tungkol sa Shang ng Indus Valley?"
+                    question = "Ano ang sinabi ni Chrono tungkol sa human sacrifice sa Shang?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Ang Shang ay dapat malaki upang maging mahalaga", isCorrect = false },
-                    new Answer { text = "Ang Shang ay para sa mga mayaman lang", isCorrect = false },
-                    new Answer { text = "Ang Shang ay hindi kailangang maging malaki minsan ang pinakamaganda ay nasa detalye", isCorrect = true },
-                    new Answer { text = "Ang Shang ay walang kahalagahan", isCorrect = false }
+                    new Answer { text = "Walang human sacrifice", isCorrect = false },
+                    new Answer { text = "Ito ay maling paniniwala lang", isCorrect = false },
+                    new Answer { text = "Ang balanse ng cosmos ay nangangailangan ng sacrifice walang blessing na libre", isCorrect = true },
+                    new Answer { text = "Ginagawa lang para sa entertainment", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q9
-                    question = " Bakit tumigil ang produksyon ng Shang at teknolohiya sa Indus Valley?"
+                    question = "Bakit bumagsak ang Dinastiyang Shang noong 1027 BCE?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Sinakop ng ibang imperyo", isCorrect = false },
-                    new Answer { text = "Nawala ang trade at sistema dahil sa climate change", isCorrect = true },
-                    new Answer { text = "Naubos ang resources", isCorrect = false },
-                    new Answer { text = "Nag-rebel ang mga craftsmen", isCorrect = false }
+                    new Answer { text = "Natural disasters", isCorrect = false },
+                    new Answer { text = "Ang Mandate of Heaven ay nawala dahil naging corrupt ang pamumuno tinaob ng Zhou", isCorrect = true },
+                    new Answer { text = "Invasion mula sa Rome", isCorrect = false },
+                    new Answer { text = "Epidemic", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q10
-                    question = "Ano ang pangunahing aral na naiwan ng Shang at teknolohiya ng Indus Valley?"
+                    question = "Ano ang pangunahing aral na naiwan ng Dinastiyang Shang?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Ang Shang ay para sa mga elite lang", isCorrect = false },
-                    new Answer { text = "Ang teknolohiya ay para sa digmaan", isCorrect = false },
-                    new Answer { text = "Ang yaman ay mas importante kaysa husay", isCorrect = false },
-                    new Answer { text = "Ang Shang at teknolohiya ay nabubuhay sa komunidad—kapag naglaho ang komunidad, naglaho din ang lahat", isCorrect = true }
+                    new Answer { text = "Ang takot ay susi sa kapangyarihan", isCorrect = false },
+                    new Answer { text = "Ang digmaan ay solusyon sa lahat", isCorrect = false },
+                    new Answer { text = "Ang yaman ay mas importante", isCorrect = false },
+                    new Answer { text = "Ang kapangyarihan ay hindi karapatan ito ay responsibilidad", isCorrect = true }
                 }
             }
         };
@@ -282,7 +282,7 @@ public class QuizTimeManagerShang : MonoBehaviour
 
     void ShowQuizResult()
     {
-        PlayerProgressManager.UnlockCivilization("HuangHe");
+        PlayerProgressManager.UnlockCivilization("Nile");
         
         timerText.color = Color.white;
         timerText.gameObject.SetActive(false);

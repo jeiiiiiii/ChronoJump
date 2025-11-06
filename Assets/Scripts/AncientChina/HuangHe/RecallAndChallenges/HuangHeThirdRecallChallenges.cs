@@ -43,9 +43,9 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
     private bool challengeCompleted = false;
 
     public Image[] heartImages;
-    private bool isShowingAryanDialogue = false;
-    private bool isShowinglungsodDialogue = false;
-    private bool isShowingPagbabagoDialogue = false;
+    private bool isShowingAlpsDialogue = false;
+    private bool isShowingSaharaDialogue = false;
+    private bool isShowingHimalayasDialogue = false;
     public AudioSource finishAudioSource;
 
     public Button ArtifactImageButton;
@@ -54,9 +54,9 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
 
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
-    public AudioClip[] PagbabagoClips;
-    public AudioClip[] AryanClips;
-    public AudioClip[] lungsodClips;
+    public AudioClip[] HimalayasClips;
+    public AudioClip[] AlpsClips;
+    public AudioClip[] SaharaClips;
 
     void Start()
     {
@@ -97,7 +97,7 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Bakit hindi pa rin nababasa ang Indus script hanggang ngayon?"
+                line = " Ano-ano ang mga natural barriers na nagprotekta sa China mula sa mga mananakop?"
             },
         };
 
@@ -130,7 +130,7 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
                     new DialogueLine
                     {
                         characterName = "CHRONO",
-                        line = " Bakit hindi pa rin nababasa ang Indus script hanggang ngayon?"
+                        line = " Ano-ano ang mga natural barriers na nagprotekta sa China mula sa mga mananakop?"
                     },
                 };
                 
@@ -149,27 +149,27 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
         }
     }
 
-    private DialogueLine[] PagbabagoLines = new DialogueLine[]
+    private DialogueLine[] HimalayasLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Pagbabago ng klima at pagkatuyo ng ilog ang dahilan."
+            line = " Himalayas, Taklamakan, Tibet, at Gobi!"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Magaling. Ang kalikasan ay mas malakas pa sa pinakamataas na imperyo."
+            line = " Tumpak. Ang mga natural barriers na ito ang nagbigay kay China ng proteksyon, at isolation."
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Ang sibilisasyon ay naglaho, ngunit ang aral ay nananatili. Ang tunay na lakas ay hindi nasa espada, kundi sa dunong at kalikasan."
+            line = " Ang proteksyon ay minsan nagiging kulungan. Ang isolation ay minsan nagiging pagmamataas. Tandaan mo yan."
         },
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Parang nagsara ang isang aklat... ngunit may mga pahina pang naiwan."
+            line = " Parang double-edged sword... blessing at curse."
         },
         new DialogueLine
         {
@@ -179,21 +179,21 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
         new DialogueLine
         {
             characterName = "CHRONO ",
-            line = " Pero huwag kang mag-alala... marami pa tayong kwento sa hinaharap."
+            line = " Pero tandaan mo, ang Yellow River ay hindi tumigil. Hanggang ngayon, umaagos pa rin ito, nagdudulot pa rin ng luha... at pag-asa."
         },
 
     };
-    private DialogueLine[] AryanLines = new DialogueLine[]
+    private DialogueLine[] AlpsLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Ah... pananakop ng mga Aryan?"
+            line = " Ah... Mediterranean Sea at Alps?"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Yan ay isang lumang teorya, ngunit ang mas malinaw na dahilan ay ang pagbabago ng kapaligiran."
+            line = " Yan ay sa Europe. Ang China ay napapaligiran ng bundok, disyerto, at plateau, hindi dagat."
         },
         new DialogueLine
         {
@@ -201,17 +201,17 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
             line = " Pumiling muli."
         }
     };
-    private DialogueLine[] lungsodLines = new DialogueLine[]
+    private DialogueLine[] SaharaLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Digmaan sa pagitan ng mga lungsod ba?"
+            line = " Atlantic Ocean at Sahara ba?"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Hindi. Walang ebidensya ng digmaan. Ang kanilang pagkawala ay tahimik at natural."
+            line = " Hindi. Yan ay sa Africa at Americas. Ang China ay nasa East Asia, napapaligiran ng ibang uri ng hadlang."
         },
         new DialogueLine
         {
@@ -224,9 +224,9 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
     {
         answers = new Answer[]
         {
-            new Answer { text = "Pananakop ng mga Aryan", isCorrect = false },
-            new Answer { text = "Digmaan sa pagitan ng mga lungsod", isCorrect = false },
-            new Answer { text = "Pagbabago ng klima at pagkatuyo ng ilog", isCorrect = true },
+            new Answer { text = "Mediterranean Sea at Alps", isCorrect = false },
+            new Answer { text = "Atlantic Ocean at Sahara", isCorrect = false },
+            new Answer { text = "Himalayas, Taklamakan, Tibet, Gobi", isCorrect = true },
         };
 
         for (int i = 0; i < answerButtons.Length; i++)
@@ -254,12 +254,12 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
         {
             AudioClip clipToPlay = null;
 
-            if (dialogueLines == PagbabagoLines && PagbabagoClips != null && currentDialogueIndex < PagbabagoClips.Length)
-                clipToPlay = PagbabagoClips[currentDialogueIndex];
-            else if (dialogueLines == AryanLines && AryanClips != null && currentDialogueIndex < AryanClips.Length)
-                clipToPlay = AryanClips[currentDialogueIndex];
-            else if (dialogueLines == lungsodLines && lungsodClips != null && currentDialogueIndex < lungsodClips.Length)
-                clipToPlay = lungsodClips[currentDialogueIndex];
+            if (dialogueLines == HimalayasLines && HimalayasClips != null && currentDialogueIndex < HimalayasClips.Length)
+                clipToPlay = HimalayasClips[currentDialogueIndex];
+            else if (dialogueLines == AlpsLines && AlpsClips != null && currentDialogueIndex < AlpsClips.Length)
+                clipToPlay = AlpsClips[currentDialogueIndex];
+            else if (dialogueLines == SaharaLines && SaharaClips != null && currentDialogueIndex < SaharaClips.Length)
+                clipToPlay = SaharaClips[currentDialogueIndex];
             else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
                 clipToPlay = dialogueClips[currentDialogueIndex];
 
@@ -271,7 +271,7 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
             }
         }
 
-        if (dialogueLines == PagbabagoLines)
+        if (dialogueLines == HimalayasLines)
         {
             switch (currentDialogueIndex)
             {
@@ -326,7 +326,7 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
 
             }
         }
-        else if (dialogueLines == AryanLines)
+        else if (dialogueLines == AlpsLines)
         {
             switch (currentDialogueIndex)
             {
@@ -344,7 +344,7 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
                     break;
             }
         }
-        else if (dialogueLines == lungsodLines)
+        else if (dialogueLines == SaharaLines)
         {
             switch (currentDialogueIndex)
             {
@@ -378,14 +378,14 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
             SetAnswers();
             foreach (Button btn in answerButtons)
             {
-                btn.interactable = !(dialogueLines == PagbabagoLines && currentDialogueIndex == 0);
+                btn.interactable = !(dialogueLines == HimalayasLines && currentDialogueIndex == 0);
                 btn.gameObject.SetActive(true);
             }
 
             // Only hide the Next button for the initial/main dialogue set.
-            // If we're displaying one of the special dialogues (Pagbabago/Aryan/lungsod) that also start at index 0,
+            // If we're displaying one of the special dialogues (Himalayas/Alps/Sahara) that also start at index 0,
             // leave visibility control to the callers who set up those dialogues.
-            bool isSpecialDialogue = (dialogueLines == PagbabagoLines || dialogueLines == AryanLines || dialogueLines == lungsodLines);
+            bool isSpecialDialogue = (dialogueLines == HimalayasLines || dialogueLines == AlpsLines || dialogueLines == SaharaLines);
             if (!isSpecialDialogue)
                 nextButton.gameObject.SetActive(false);
         }
@@ -397,7 +397,7 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
                 nextButton.onClick.RemoveAllListeners();
 
 
-                if (isShowingPagbabagoDialogue) // ✅ Correct flag for this script
+                if (isShowingHimalayasDialogue) // ✅ Correct flag for this script
                 {
                     nextButton.interactable = false;
                     // Should be change
@@ -474,9 +474,9 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
 
         if (selected.isCorrect)
         {
-            isShowingPagbabagoDialogue = true;
+            isShowingHimalayasDialogue = true;
             currentDialogueIndex = 0;
-            dialogueLines = PagbabagoLines;
+            dialogueLines = HimalayasLines;
             ShowDialogue();
 
             nextButton.gameObject.SetActive(true);
@@ -502,27 +502,27 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
                 return;
             }
 
-            if (selected.text == "Pananakop ng mga Aryan")
+            if (selected.text == "Mediterranean Sea at Alps")
             {
-                isShowingAryanDialogue = true;
+                isShowingAlpsDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = AryanLines;
+                dialogueLines = AlpsLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextAryanDialogue);
+                nextButton.onClick.AddListener(ShowNextAlpsDialogue);
             }
-            else if (selected.text == "Digmaan sa pagitan ng mga lungsod")
+            else if (selected.text == "Atlantic Ocean at Sahara")
             {
-                isShowinglungsodDialogue = true;
+                isShowingSaharaDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = lungsodLines;
+                dialogueLines = SaharaLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextlungsodDialogue);
+                nextButton.onClick.AddListener(ShowNextSaharaDialogue);
             }
             else
             {
@@ -535,7 +535,7 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
             }
         }
 
-        void ShowNextAryanDialogue()
+        void ShowNextAlpsDialogue()
         {
             currentDialogueIndex++;
 
@@ -544,11 +544,11 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextAryanDialogue);
+                nextButton.onClick.AddListener(ShowNextAlpsDialogue);
             }
         }
 
-        void ShowNextlungsodDialogue()
+        void ShowNextSaharaDialogue()
         {
             currentDialogueIndex++;
 
@@ -557,7 +557,7 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextlungsodDialogue);
+                nextButton.onClick.AddListener(ShowNextSaharaDialogue);
             }
         }
     }

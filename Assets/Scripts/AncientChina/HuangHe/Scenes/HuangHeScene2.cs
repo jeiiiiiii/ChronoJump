@@ -27,18 +27,15 @@ public class HuangHeScene2 : MonoBehaviour
     public DialogueLine[] dialogueLines;
 
     public SpriteRenderer PlayercharacterRenderer;
-    public SpriteRenderer MatrikaFulldrawnSprite;
+    public SpriteRenderer QiFulldrawnSprite;
 
     // public GameObject AchievementUnlockedRenderer;
     public Sprite PlayerReflective;
     public Sprite PlayerCurious;
     public Sprite PlayerEager;
-    public Sprite PlayerEmabarrassed;
-    public Sprite DaroProud;
-    public Sprite DaroCalm;
-    public Sprite Darowise;
-    public Sprite MatrikaMysterious;
-    public Sprite MatrikaSomber;
+    public Sprite PlayerSmile;
+    public Sprite DayuWise;
+    public Sprite QiHopeful;
 
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
@@ -70,32 +67,41 @@ public class HuangHeScene2 : MonoBehaviour
         {
             new DialogueLine
             {   characterName = "CHRONO",
-                line = " Ngunit may isang misteryo sa sibilisasyong ito. Ang kanilang wika—hanggang ngayon, hindi pa rin natin nababasa."
+                line = " Ngunit sa kabila ng takot, dito nagsimula ang lahat. Ang North China Plain, sampung porsyento lamang ng kabuoang lupain ng bansa na matatatagpuan sa pagitan ng Huang He at Yangtze River."
             },
             new DialogueLine
-            {
-                characterName = "MATRIKA",
-                line = " Ako si Matrika, tagapag-ukit ng mga tatak. Ang bawat simbolo ay may kahulugan—ngunit marahil sa hinaharap, makalilimutan na ng mundo kung paano ito basahin."
+            {   characterName = "QI",
+                line = " Ako si Qi! Nagtatanim ako ng millet at wheat dito sa kapatagan. Ang lupa ay tabang-taba dahil sa loess na dinala ng ilog. Pero lagi kaming nag-aalala, baka bukas, umapaw na naman ang tubig."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Kayo ang gumagawa ng mga tatak na ito? Ano ang ibig sabihin ng mga simbolong yan?"
+                line = " Paano kayo nabubuhay nang ganyan? Laging may takot?"
+            },
+            new DialogueLine
+            {
+                characterName = "QI",
+                line = " Dahil wala kaming choice. At dahil... naniniwala kami na may solusyon. Kailangan lang nating magtulungan, magtayo ng dikes, kontrolin ang daloy ng tubig, magtrabaho bilang isang komunidad."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Ito ay mga pangalan, mga kalakal, mga mensahe. Ginagamit namin ito sa kalakalan. Ngunit ang aming wika... mawawala sa hangin."
+                line = " Ito ang simula ng organized society sa China. Hindi tulad ng Indus na may grid system, o Mesopotamia na may mga hari, ang China ay nag-organisa dahil sa pangangailangan. Survival ang nagturo sa kanila ng disiplina."
             },
             new DialogueLine
             {
-                characterName = "DARO",
-                line = " Ang Indus script ay isa sa mga pinakamalaking misteryo ng kasaysayan. Mahigit 400 symbols, ngunit walang nakakaalam kung paano ito basahin. Walang Rosetta Stone, walang key"
+                characterName = "PLAYER",
+                line = " Ibig sabihin... ang pagbaha ang nag-unite sa kanila?"
+            },
+            new DialogueLine
+            {
+                characterName = "DA YU",
+                line = " Tama. Ang isang tao ay hindi kayang pigilan ang ilog. Ngunit ang isang libong tao na nagtutulungan, maaari. Kaya nagsimula ang aming mga pamayanan, ang aming mga batas, ang aming mga pinuno."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Ibig sabihin... mawawala ang kanilang boses sa kasaysayan?"
+                line = " Dahil dito, nabuo ang konsepto ng collective work. Ang bawat tao ay may tungkulin, magtanim, magtayo ng dikes, bantayan ang ilog. Walang mayaman, walang mahirap, lahat ay pantay-pantay sa harap ng banta ng kalikasan."
             },
         };
     }
@@ -197,7 +203,7 @@ public class HuangHeScene2 : MonoBehaviour
     void ShowDialogue()
     {
         // AchievementUnlockedRenderer.SetActive(false);
-        MatrikaFulldrawnSprite.enabled = false;
+        QiFulldrawnSprite.enabled = false;
 
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
@@ -211,29 +217,37 @@ public class HuangHeScene2 : MonoBehaviour
         switch (currentDialogueIndex)
         {
             case 0:
-                PlayercharacterRenderer.sprite = PlayerCurious;
+                PlayercharacterRenderer.sprite = PlayerEager;
                 ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
             case 1:
-                MatrikaFulldrawnSprite.enabled = true;
-                PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = ChronoThinking;
+                QiFulldrawnSprite.enabled = true;
+                PlayercharacterRenderer.sprite = PlayerSmile;
+                ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
             case 2:
-                PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                PlayercharacterRenderer.sprite = PlayerCurious;
+                ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 3:
                 PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = ChronoThinking;
+                ChronocharacterRenderer.sprite = QiHopeful;
                 break;
             case 4:
-                PlayercharacterRenderer.sprite = PlayerEmabarrassed;
+                PlayercharacterRenderer.sprite = PlayerReflective;
                 ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 5:
-                PlayercharacterRenderer.sprite = PlayerCurious;
+                PlayercharacterRenderer.sprite = PlayerReflective;
                 ChronocharacterRenderer.sprite = ChronoSmile;
+                break;
+            case 6:
+                PlayercharacterRenderer.sprite = PlayerEager;
+                ChronocharacterRenderer.sprite = DayuWise;
+                break;
+            case 7:
+                PlayercharacterRenderer.sprite = PlayerSmile;
+                ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
         }
 

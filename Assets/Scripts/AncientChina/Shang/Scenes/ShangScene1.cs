@@ -27,16 +27,15 @@ public class ShangScene1 : MonoBehaviour
     public DialogueLine[] dialogueLines;
 
     public SpriteRenderer PlayercharacterRenderer;
-    public SpriteRenderer SindhuFulldrawnSprite;
+    public SpriteRenderer WudingFulldrawnSprite;
 
     // public GameObject AchievementUnlockedRenderer;
     public Sprite PlayerReflective;
     public Sprite PlayerCurious;
     public Sprite PlayerEager;
     public Sprite PlayerEmabarrassed;
-    public Sprite SindhuProud;
-    public Sprite SindhuWise;
-    public Sprite SindhuCalm;
+    public Sprite WudingProud;
+    public Sprite WudingStern;
 
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
@@ -69,52 +68,52 @@ public class ShangScene1 : MonoBehaviour
         {
             new DialogueLine
             {   characterName = "PLAYER",
-                line = " Ano 'to? Parang swimming pool... pero ang luma ng hitsura. Ang ganda ng pagkakagawa!"
+                line = " Saan na naman ako? May mga palasyo na! Hindi tulad ng Indus Valley na pantay-pantay lang lahat. May hierarchy na dito."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Maligayang pagdating sa Great Bath ng Mohenjo-daro. Isa ito sa pinakamahalagang estruktura ng Indus Valley Civilization, hindi lang para sa pagligo, kundi para sa ritwal ng kalinisan."
+                line = " Maligayang pagdating sa Anyang, kabisera ng Dinastiyang Shang. Panahon ito ng 1700 hanggang 1027 BCE, ang unang dinastiyang nag-iwan ng nakasulat na kasaysayan sa China."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = "Great Bath? Paano nila ito ginawa? Walang modernong tools noon, diba?"
+                line = "Anyang? Ito ba ang unang lungsod ng China?"
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Tumpak. Ang Great Bath ay may dimensions na 12 meters haba at 7 meters laki. Gawa ito sa standardized bricks na sobrang tibay. Ang bawat brick ay may exact na sukat, lahat ay perpekto."
+                line = " Hindi ang unang lungsod, pero ang unang documented capital. Dito natagpuan ang oracle bones, mga buto at turtle shells na may nakaukit na ancient Chinese writing. Ito ang pinakamalapit nating makikitang record ng kanilang buhay."
             },
             new DialogueLine
             {
-                characterName = "SINDHU",
-                line = " Sino kayo? Mga tagapag-aral ng aming Shang? Ang Great Bath na ito ay bunga ng libu-libong oras ng pagpaplano at pag-iisip. Bawat brick, bawat hagdan, bawat drainage, lahat ay may layunin."
+                characterName = "WU DING",
+                line = " Sino kayo? Mga bisita sa aking kaharian? Ako si Wu Ding, ika-21 na hari ng Dinastiyang Shang. Sa ilalim ng aking pamumuno, lumakas ang aming imperyo mula sa sentral na China hanggang sa mga karatig na rehiyon"
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Master Sindhu, kami'y mga tagapagmasid ng kasaysayan. Ipinapakita ko sa aking kasama ang iyong dakilang gawa, ang teknolohiya na lampas sa inyong panahon."
+                line = " Dakilang Hari Wu Ding, kami'y mga tagapagmasid ng kasaysayan. Ipinapakita ko sa aking kasama ang inyong pamana, ang unang dinastiya na nag-iwan ng nakasulat na tala, ang simula ng organized government sa China."
             },
             new DialogueLine
             {
-                characterName = "SINDHU",
-                line = " Kung gayon, tingnan ninyo kung paano namin ito ginawa. Ang bawat brick ay sinukat nang eksakto, 9 pulgada haba, 4.5 pulgada lapad, 2.25 pulgada taas. Walang brick na mali ang sukat"
+                characterName = "WU DING",
+                line = " Kung gayon, tingnan ninyo ang aking lungsod. Ang Anyang ay sentro ng kapangyarihan. Dito kami lumilikha ng bronze vessels para sa mga ritwal, dito kami nakikipag-usap sa mga espiritu ng aming mga ninuno gamit ang oracle bones."
             },
             new DialogueLine
             {
-                characterName = "SINDHU",
-                line = " Ang drainage system ay dumadaloy pababa, patungo sa main canal. Kahit maulan o tuyo, walang baha. Ang tubig ay umaagos nang natural, walang bomba, walang makina."
+                characterName = "WU DING",
+                line = " Hindi tulad ng mga barbarong nasa labas ng aming teritoryo, kami ay may sistema, may nakasulat na wika, may batas, may hierarchy. Ang bawat tao ay may lugar, ang hari sa tuktok, ang mga noble sa gitna, ang mga magsasaka sa ilalim."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Pero bakit kailangan ng ganito kalaking paliguan? Para lang ba sa pagligo?"
+                line = " Pero sir... paano kayo naging hari? Sino ang nagpasya na kayo ang mamumuno?"
             },
             new DialogueLine
             {
-                characterName = "SINDHU",
-                line = " Ang kalinisan ay sagrado. Ang tubig ay nag-lilinis hindi lang ng katawan, kundi ng kaluluwa. Ito ay ritwal, hindi simpleng pagligo."
+                characterName = "WU DING",
+                line = " Ang Mandate of Heaven, ang karapatan na ibinigay ng langit. Ang aming pamilya, ang Shang, ay pinili ng mga diyos upang mamuno. Hangga't maayos ang pamumuno namin, mayroon kaming karapatang maghari."
             },
         };
     }
@@ -216,7 +215,7 @@ public class ShangScene1 : MonoBehaviour
     void ShowDialogue()
     {
         // AchievementUnlockedRenderer.SetActive(false);
-        SindhuFulldrawnSprite.enabled = false;
+        WudingFulldrawnSprite.enabled = false;
 
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
@@ -246,7 +245,7 @@ public class ShangScene1 : MonoBehaviour
                 ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 4:
-                SindhuFulldrawnSprite.enabled = true;
+                WudingFulldrawnSprite.enabled = true;
                 PlayercharacterRenderer.sprite = PlayerEmabarrassed;
                 ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
@@ -256,19 +255,19 @@ public class ShangScene1 : MonoBehaviour
                 break;
             case 6:
                 PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = SindhuProud;
+                ChronocharacterRenderer.sprite = WudingProud;
                 break;
             case 7:
                 PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = SindhuProud;
+                ChronocharacterRenderer.sprite = WudingProud;
                 break;
             case 8:
                 PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = SindhuWise;
+                ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 9:
                 PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = SindhuCalm;
+                ChronocharacterRenderer.sprite = WudingStern;
                 break;
         }
 

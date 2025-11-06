@@ -48,17 +48,17 @@ public class ShangScene5 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Minsan ang pinakasimple ay ang pinakamahirap gawin. Ang tunay na teknolohiya ay hindi sa laki, kundi sa husay."
+                line = " Minsan ang kapangyarihan ay nanggagaling sa langit. Pero ang responsibilidad ay nasa lupa, sa mga taong pinamumunuan mo."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Ang Shang ay pamana. Ang teknolohiya ay alaala. Handa ka na sa susunod na kabanata."
+                line = " Ang Shang ay lumipas, pero ang kultura ay nananatili. Ang oracle bones ay naging Chinese characters. Ang bronze art ay naging tradisyon. Handa ka na sa Middle Kingdom."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Paalam, Mohenjo-daro. Salamat sa inyong mga kamay na lumilikha."
+                line = " Paalam, Dinastiyang Shang. Salamat sa inyong nakasulat na pamana."
             },
         };
 

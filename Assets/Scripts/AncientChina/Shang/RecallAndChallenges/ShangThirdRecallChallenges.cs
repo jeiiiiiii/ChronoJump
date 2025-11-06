@@ -43,9 +43,9 @@ public class ShangThirdRecallChallenges : MonoBehaviour
     private bool challengeCompleted = false;
 
     public Image[] heartImages;
-    private bool isShowingimperyoDialogue = false;
-    private bool isShowingresourcesDialogue = false;
-    private bool isShowingNawalaDialogue = false;
+    private bool isShowingulanDialogue = false;
+    private bool isShowingemperorDialogue = false;
+    private bool isShowingmasamaDialogue = false;
     public AudioSource finishAudioSource;
 
     public Button ArtifactImageButton;
@@ -54,9 +54,9 @@ public class ShangThirdRecallChallenges : MonoBehaviour
 
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
-    public AudioClip[] NawalaClips;
-    public AudioClip[] imperyoClips;
-    public AudioClip[] resourcesClips;
+    public AudioClip[] masamaClips;
+    public AudioClip[] ulanClips;
+    public AudioClip[] emperorClips;
 
     void Start()
     {
@@ -97,7 +97,7 @@ public class ShangThirdRecallChallenges : MonoBehaviour
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Bakit tumigil ang produksyon ng Shang at teknolohiya sa Indus Valley?"
+                line = " Ano ang \"Mandate of Heaven\" at bakit ito mahalaga sa Chinese dynasties?"
             },
         };
 
@@ -130,7 +130,7 @@ public class ShangThirdRecallChallenges : MonoBehaviour
                     new DialogueLine
                     {
                         characterName = "CHRONO",
-                        line = " Bakit tumigil ang produksyon ng Shang at teknolohiya sa Indus Valley?"
+                        line = " Ano ang \"Mandate of Heaven\" at bakit ito mahalaga sa Chinese dynasties?"
                     },
                 };
                 
@@ -149,27 +149,27 @@ public class ShangThirdRecallChallenges : MonoBehaviour
         }
     }
 
-    private DialogueLine[] NawalaLines = new DialogueLine[]
+    private DialogueLine[] masamaLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Nawala ang trade at sistema dahil sa climate change."
+            line = " Ang karapatang maghari na ibinigay ng langit, ngunit mawawala kapag ang pamumuno ay naging masama!"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Tumpak. Kapag nawala ang sistema ng sibilisasyon, namatay din ang lahat ng aspeto nito, kasama ang Shang."
+            line = " Tumpak. Ito ang foundation ng political philosophy ng China. Kapag may kalamidad, famine, floods, rebellions, ito ay sign na nawala na ang Mandate."
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Ang Shang at teknolohiya ay nabubuhay sa komunidad. Kapag naglaho ang komunidad, naglaho din ang lahat."
+            line = " Ang kapangyarihan ay hindi karapatan, ito ay responsibilidad. Kapag ginawa mong pabigat, kukunin ito sa iyo."
         },
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Parang namatay ang kaluluwa ng sibilisasyon... kahit mayroon pang katawan."
+            line = " Parang... ang langit mismo ang judge..."
         },
         new DialogueLine
         {
@@ -179,21 +179,21 @@ public class ShangThirdRecallChallenges : MonoBehaviour
         new DialogueLine
         {
             characterName = "CHRONO ",
-            line = " Pero tandaan mo, ang gawa ng kamay ay nananatili, kahit nakalimutan na ang gumagawa."
+            line = " Pero tandaan mo, ang Shang ay natapos, pero ang sistema ng dynasties ay nagsimula pa lang. Marami pang dadating."
         },
 
     };
-    private DialogueLine[] imperyoLines = new DialogueLine[]
+    private DialogueLine[] ulanLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Ah... sinakop ng ibang imperyo?"
+            line = " Ah... ang pangako ng langit na magbigay ng ulan?"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Walang ebidensya ng pananakop. Ang pagkawala ay dahil sa natural na pagbabago ng kapaligiran."
+            line = " Mas malalim pa yan. Ang Mandate ay tungkol sa legitimacy ng ruler. Kapag naging corrupt ang hari, nawala ang karapatang mamuno."
         },
         new DialogueLine
         {
@@ -201,17 +201,17 @@ public class ShangThirdRecallChallenges : MonoBehaviour
             line = " Pumiling muli."
         }
     };
-    private DialogueLine[] resourcesLines = new DialogueLine[]
+    private DialogueLine[] emperorLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Naubos ang resources ba?"
+            line = " Ang titulo ng emperor ba?"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Mayroon pa ring resources. Ang nawala ay ang sistema, ang trade routes, ang organized society na sumusuporta sa craftsmen."
+            line = " Hindi. Ito ay isang konsepto, ang ideya na ang heaven ay pumipili ng tamang ruler. Kapag naging masama ang pamumuno, lilipat ang Mandate sa iba."
         },
         new DialogueLine
         {
@@ -224,9 +224,9 @@ public class ShangThirdRecallChallenges : MonoBehaviour
     {
         answers = new Answer[]
         {
-            new Answer { text = "Sinakop ng ibang imperyo", isCorrect = false },
-            new Answer { text = "Naubos ang resources", isCorrect = false },
-            new Answer { text = "Nawala ang trade at sistema dahil sa climate change", isCorrect = true },
+            new Answer { text = "Ang pangako ng langit na magbigay ng ulan", isCorrect = false },
+            new Answer { text = "Ang titulo ng emperor", isCorrect = false },
+            new Answer { text = "Ang karapatang maghari na ibinigay ng langit, ngunit mawawala kapag ang pamumuno ay naging masama", isCorrect = true },
         };
 
         for (int i = 0; i < answerButtons.Length; i++)
@@ -254,12 +254,12 @@ public class ShangThirdRecallChallenges : MonoBehaviour
         {
             AudioClip clipToPlay = null;
 
-            if (dialogueLines == NawalaLines && NawalaClips != null && currentDialogueIndex < NawalaClips.Length)
-                clipToPlay = NawalaClips[currentDialogueIndex];
-            else if (dialogueLines == imperyoLines && imperyoClips != null && currentDialogueIndex < imperyoClips.Length)
-                clipToPlay = imperyoClips[currentDialogueIndex];
-            else if (dialogueLines == resourcesLines && resourcesClips != null && currentDialogueIndex < resourcesClips.Length)
-                clipToPlay = resourcesClips[currentDialogueIndex];
+            if (dialogueLines == masamaLines && masamaClips != null && currentDialogueIndex < masamaClips.Length)
+                clipToPlay = masamaClips[currentDialogueIndex];
+            else if (dialogueLines == ulanLines && ulanClips != null && currentDialogueIndex < ulanClips.Length)
+                clipToPlay = ulanClips[currentDialogueIndex];
+            else if (dialogueLines == emperorLines && emperorClips != null && currentDialogueIndex < emperorClips.Length)
+                clipToPlay = emperorClips[currentDialogueIndex];
             else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
                 clipToPlay = dialogueClips[currentDialogueIndex];
 
@@ -271,7 +271,7 @@ public class ShangThirdRecallChallenges : MonoBehaviour
             }
         }
 
-        if (dialogueLines == NawalaLines)
+        if (dialogueLines == masamaLines)
         {
             switch (currentDialogueIndex)
             {
@@ -326,7 +326,7 @@ public class ShangThirdRecallChallenges : MonoBehaviour
 
             }
         }
-        else if (dialogueLines == imperyoLines)
+        else if (dialogueLines == ulanLines)
         {
             switch (currentDialogueIndex)
             {
@@ -344,7 +344,7 @@ public class ShangThirdRecallChallenges : MonoBehaviour
                     break;
             }
         }
-        else if (dialogueLines == resourcesLines)
+        else if (dialogueLines == emperorLines)
         {
             switch (currentDialogueIndex)
             {
@@ -378,14 +378,14 @@ public class ShangThirdRecallChallenges : MonoBehaviour
             SetAnswers();
             foreach (Button btn in answerButtons)
             {
-                btn.interactable = !(dialogueLines == NawalaLines && currentDialogueIndex == 0);
+                btn.interactable = !(dialogueLines == masamaLines && currentDialogueIndex == 0);
                 btn.gameObject.SetActive(true);
             }
 
             // Only hide the Next button for the initial/main dialogue set.
-            // If we're displaying one of the special dialogues (Nawala/imperyo/resources) that also start at index 0,
+            // If we're displaying one of the special dialogues (masama/ulan/emperor) that also start at index 0,
             // leave visibility control to the callers who set up those dialogues.
-            bool isSpecialDialogue = (dialogueLines == NawalaLines || dialogueLines == imperyoLines || dialogueLines == resourcesLines);
+            bool isSpecialDialogue = (dialogueLines == masamaLines || dialogueLines == ulanLines || dialogueLines == emperorLines);
             if (!isSpecialDialogue)
                 nextButton.gameObject.SetActive(false);
         }
@@ -397,7 +397,7 @@ public class ShangThirdRecallChallenges : MonoBehaviour
                 nextButton.onClick.RemoveAllListeners();
 
 
-                if (isShowingNawalaDialogue) // ✅ Correct flag for this script
+                if (isShowingmasamaDialogue) // ✅ Correct flag for this script
                 {
                     nextButton.interactable = false;
                     // Should be change
@@ -474,9 +474,9 @@ public class ShangThirdRecallChallenges : MonoBehaviour
 
         if (selected.isCorrect)
         {
-            isShowingNawalaDialogue = true;
+            isShowingmasamaDialogue = true;
             currentDialogueIndex = 0;
-            dialogueLines = NawalaLines;
+            dialogueLines = masamaLines;
             ShowDialogue();
 
             nextButton.gameObject.SetActive(true);
@@ -502,27 +502,27 @@ public class ShangThirdRecallChallenges : MonoBehaviour
                 return;
             }
 
-            if (selected.text == "Sinakop ng ibang imperyo")
+            if (selected.text == "Ang pangako ng langit na magbigay ng ulan")
             {
-                isShowingimperyoDialogue = true;
+                isShowingulanDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = imperyoLines;
+                dialogueLines = ulanLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextimperyoDialogue);
+                nextButton.onClick.AddListener(ShowNextulanDialogue);
             }
-            else if (selected.text == "Naubos ang resources")
+            else if (selected.text == "Ang titulo ng emperor")
             {
-                isShowingresourcesDialogue = true;
+                isShowingemperorDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = resourcesLines;
+                dialogueLines = emperorLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextresourcesDialogue);
+                nextButton.onClick.AddListener(ShowNextemperorDialogue);
             }
             else
             {
@@ -535,7 +535,7 @@ public class ShangThirdRecallChallenges : MonoBehaviour
             }
         }
 
-        void ShowNextimperyoDialogue()
+        void ShowNextulanDialogue()
         {
             currentDialogueIndex++;
 
@@ -544,11 +544,11 @@ public class ShangThirdRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextimperyoDialogue);
+                nextButton.onClick.AddListener(ShowNextulanDialogue);
             }
         }
 
-        void ShowNextresourcesDialogue()
+        void ShowNextemperorDialogue()
         {
             currentDialogueIndex++;
 
@@ -557,7 +557,7 @@ public class ShangThirdRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextresourcesDialogue);
+                nextButton.onClick.AddListener(ShowNextemperorDialogue);
             }
         }
     }

@@ -41,9 +41,9 @@ public class ShangFirstRecallChallenges : MonoBehaviour
     private bool challengeCompleted = false;
 
     public Image[] heartImages;
-    private bool isShowingsportsDialogue = false;
-    private bool isShowingtubigDialogue = false;
-    private bool isShowingParaDialogue = false;
+    private bool isShowingweaponsDialogue = false;
+    private bool isShowingRomeDialogue = false;
+    private bool isShowingUnangDialogue = false;
     public AudioSource finishAudioSource;
 
     public Button ArtifactImageButton;
@@ -52,9 +52,9 @@ public class ShangFirstRecallChallenges : MonoBehaviour
 
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
-    public AudioClip[] ParaClips;
-    public AudioClip[] sportsClips;
-    public AudioClip[] tubigClips;
+    public AudioClip[] UnangClips;
+    public AudioClip[] weaponsClips;
+    public AudioClip[] RomeClips;
 
     void Start()
     {
@@ -95,8 +95,8 @@ public class ShangFirstRecallChallenges : MonoBehaviour
         {
             new DialogueLine
             {
-                characterName = "SINDHU",
-                line = " Ano ang pangunahing layunin ng Great Bath sa Mohenjo-daro?"
+                characterName = "Wu Ding",
+                line = " Ano ang pinakamahalagang kontribusyon ng Dinastiyang Shang sa kasaysayan ng China?"
             },
         };
 
@@ -128,8 +128,8 @@ public class ShangFirstRecallChallenges : MonoBehaviour
                 {
                     new DialogueLine
                     {
-                        characterName = "SINDHU",
-                        line = " Ano ang pangunahing layunin ng Great Bath sa Mohenjo-daro?"
+                        characterName = "Wu Ding",
+                        line = " Ano ang pinakamahalagang kontribusyon ng Dinastiyang Shang sa kasaysayan ng China?"
                     },
                 };
                 
@@ -148,58 +148,58 @@ public class ShangFirstRecallChallenges : MonoBehaviour
         }
     }
 
-    private DialogueLine[] ParaLines = new DialogueLine[]
+    private DialogueLine[] UnangLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Para sa ritwal ng kalinisan... sagrado ang tubig sa kanila."
+            line = " Unang nag-iwan ng nakasulat na kasaysayan gamit ang oracle bones!"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Tumpak. Ang kalinisan ay hindi lang pisikal, ito ay espirituwal. Isa itong tradisyon na patuloy hanggang ngayon sa South Asia."
+            line = " Tumpak. Ang oracle bones ay may kauna-unahang forms ng Chinese characters. Dahil dito, may documentation tayo ng kanilang ritwal, kultura, at pang-araw-araw na buhay."
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Ang teknolohiya ay hindi lang tungkol sa kung paano mo ito ginawa, kundi bakit mo ito ginawa. Tandaan mo 'yan."
+            line = " Ang pagsulat ay kapangyarihan. Kapag nasulat mo ang kasaysayan, ikaw ang magdedesisyon kung ano ang maaalala ng mundo."
         },
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Parang mas malalim ang kahulugan ng bawat gusali... may soul."
+            line = " Parang... ang history ay isinusulat ng mga nanalo..."
         },
 
     };
-    private DialogueLine[] sportsLines = new DialogueLine[]
+    private DialogueLine[] weaponsLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Hmm... baka para sa sports at laro?"
+            line = " Hmm... baka unang gumamit ng iron weapons?"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Hindi ito ang pangunahing gamit ng Great Bath. Ang mga ritwal ng kalinisan ang mas mahalaga sa kanilang kultura." },
+            line = " Hindi pa. Ang Shang ay bronze age civilization. Ang iron ay darating pa lang sa susunod na dinastiya." },
         new DialogueLine
         {
             characterName = "CHRONO",
             line = " Pumiling muli."
         }
     };
-    private DialogueLine[] tubigLines = new DialogueLine[]
+    private DialogueLine[] RomeLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Siguro... para sa pag-iimbak ng tubig?"
+            line = " Siguro... unang nakipag-trade sa Rome?"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " May drainage system ito, ibig sabihin, dumadaloy ang tubig. Hindi ito reservoir, kundi paliguan." },
+            line = " Imposible. Ang Rome ay hindi pa umiiral noon. At dahil sa natural barriers, ang China ay isolated pa sa Western world." },
         new DialogueLine
         {
             characterName = "CHRONO",
@@ -211,9 +211,9 @@ public class ShangFirstRecallChallenges : MonoBehaviour
     {
         answers = new Answer[]
         {
-            new Answer { text = "Para sa sports at laro", isCorrect = false },
-            new Answer { text = "Para sa ritwal ng kalinisan", isCorrect = true },
-            new Answer { text = "Para sa pag-iimbak ng tubig", isCorrect = false },
+            new Answer { text = "Unang gumamit ng iron weapons", isCorrect = false },
+            new Answer { text = "Unang nag-iwan ng nakasulat na kasaysayan gamit ang oracle bones", isCorrect = true },
+            new Answer { text = "Unang nakipag-trade sa Rome", isCorrect = false },
         };
 
         for (int i = 0; i < answerButtons.Length; i++)
@@ -241,12 +241,12 @@ public class ShangFirstRecallChallenges : MonoBehaviour
         {
             AudioClip clipToPlay = null;
 
-            if (dialogueLines == ParaLines && ParaClips != null && currentDialogueIndex < ParaClips.Length)
-                clipToPlay = ParaClips[currentDialogueIndex];
-            else if (dialogueLines == sportsLines && sportsClips != null && currentDialogueIndex < sportsClips.Length)
-                clipToPlay = sportsClips[currentDialogueIndex];
-            else if (dialogueLines == tubigLines && tubigClips != null && currentDialogueIndex < tubigClips.Length)
-                clipToPlay = tubigClips[currentDialogueIndex];
+            if (dialogueLines == UnangLines && UnangClips != null && currentDialogueIndex < UnangClips.Length)
+                clipToPlay = UnangClips[currentDialogueIndex];
+            else if (dialogueLines == weaponsLines && weaponsClips != null && currentDialogueIndex < weaponsClips.Length)
+                clipToPlay = weaponsClips[currentDialogueIndex];
+            else if (dialogueLines == RomeLines && RomeClips != null && currentDialogueIndex < RomeClips.Length)
+                clipToPlay = RomeClips[currentDialogueIndex];
             else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
                 clipToPlay = dialogueClips[currentDialogueIndex];
 
@@ -258,7 +258,7 @@ public class ShangFirstRecallChallenges : MonoBehaviour
             }
         }
 
-        if (dialogueLines == ParaLines)
+        if (dialogueLines == UnangLines)
         {
             switch (currentDialogueIndex)
             {
@@ -303,7 +303,7 @@ public class ShangFirstRecallChallenges : MonoBehaviour
 
             }
         }
-        else if (dialogueLines == sportsLines)
+        else if (dialogueLines == weaponsLines)
         {
             switch (currentDialogueIndex)
             {
@@ -321,7 +321,7 @@ public class ShangFirstRecallChallenges : MonoBehaviour
                     break;
             }
         }
-        else if (dialogueLines == tubigLines)
+        else if (dialogueLines == RomeLines)
         {
             switch (currentDialogueIndex)
             {
@@ -355,14 +355,14 @@ public class ShangFirstRecallChallenges : MonoBehaviour
             SetAnswers();
             foreach (Button btn in answerButtons)
             {
-                btn.interactable = !(dialogueLines == ParaLines && currentDialogueIndex == 0);
+                btn.interactable = !(dialogueLines == UnangLines && currentDialogueIndex == 0);
                 btn.gameObject.SetActive(true);
             }
 
             // Only hide the Next button for the initial/main dialogue set.
-            // If we're displaying one of the special dialogues (Para/sports/tubig) that also start at index 0,
+            // If we're displaying one of the special dialogues (Unang/weapons/Rome) that also start at index 0,
             // leave visibility control to the callers who set up those dialogues.
-            bool isSpecialDialogue = (dialogueLines == ParaLines || dialogueLines == sportsLines || dialogueLines == tubigLines);
+            bool isSpecialDialogue = (dialogueLines == UnangLines || dialogueLines == weaponsLines || dialogueLines == RomeLines);
             if (!isSpecialDialogue)
                 nextButton.gameObject.SetActive(false);
         }
@@ -374,7 +374,7 @@ public class ShangFirstRecallChallenges : MonoBehaviour
                 nextButton.onClick.RemoveAllListeners();
 
 
-                if (isShowingParaDialogue) // ✅ Correct flag for this script
+                if (isShowingUnangDialogue) // ✅ Correct flag for this script
                 {
                     nextButton.interactable = false;
                     // Should be change
@@ -451,9 +451,9 @@ public class ShangFirstRecallChallenges : MonoBehaviour
 
         if (selected.isCorrect)
         {
-            isShowingParaDialogue = true;
+            isShowingUnangDialogue = true;
             currentDialogueIndex = 0;
-            dialogueLines = ParaLines;
+            dialogueLines = UnangLines;
             ShowDialogue();
 
             nextButton.gameObject.SetActive(true);
@@ -479,27 +479,27 @@ public class ShangFirstRecallChallenges : MonoBehaviour
                 return;
             }
 
-            if (selected.text == "Para sa sports at laro")
+            if (selected.text == "Unang gumamit ng iron weapons")
             {
-                isShowingsportsDialogue = true;
+                isShowingweaponsDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = sportsLines;
+                dialogueLines = weaponsLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextsportsDialogue);
+                nextButton.onClick.AddListener(ShowNextweaponsDialogue);
             }
-            else if (selected.text == "Para sa pag-iimbak ng tubig")
+            else if (selected.text == "Unang nakipag-trade sa Rome")
             {
-                isShowingtubigDialogue = true;
+                isShowingRomeDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = tubigLines;
+                dialogueLines = RomeLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNexttubigDialogue);
+                nextButton.onClick.AddListener(ShowNextRomeDialogue);
             }
             else
             {
@@ -512,7 +512,7 @@ public class ShangFirstRecallChallenges : MonoBehaviour
             }
         }
 
-        void ShowNextsportsDialogue()
+        void ShowNextweaponsDialogue()
         {
             currentDialogueIndex++;
 
@@ -521,11 +521,11 @@ public class ShangFirstRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextsportsDialogue);
+                nextButton.onClick.AddListener(ShowNextweaponsDialogue);
             }
         }
 
-        void ShowNexttubigDialogue()
+        void ShowNextRomeDialogue()
         {
             currentDialogueIndex++;
 
@@ -534,7 +534,7 @@ public class ShangFirstRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNexttubigDialogue);
+                nextButton.onClick.AddListener(ShowNextRomeDialogue);
             }
         }
     }

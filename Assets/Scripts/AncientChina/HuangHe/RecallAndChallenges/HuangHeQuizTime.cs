@@ -54,126 +54,126 @@ public class QuizTimeManagerHuangHe : MonoBehaviour
             new Question {
                 questionLine = new DialogueLine {
                     //Q1
-                    question = "Ano ang pangunahing katangian ng mga lungsod ng Indus Valley tulad ng Mohenjo-daro?"
+                    question = "Bakit tinawag na \"China's Sorrow\" ang Yellow River?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Malalaking templo at palasyo", isCorrect = false },
-                    new Answer { text = "Grid system at advanced drainage", isCorrect = true },
-                    new Answer { text = "Matinding hukbo at pader", isCorrect = false },
-                    new Answer { text = "Mataas na pyramids at ziggurats", isCorrect = false }
+                    new Answer { text = "Dahil sa dilim ng tubig nito", isCorrect = false },
+                    new Answer { text = "Dahil sa mapaminsalang pagbaha na lumalamon sa mga tahanan", isCorrect = true },
+                    new Answer { text = "Dahil sa mga patay na isda", isCorrect = false },
+                    new Answer { text = "Dahil sa masamang diyos ng ilog", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q2
-                    question = "Ano ang sinisimbolo ng Mohenjo-daro ayon kay Chrono?"
+                    question = "Ano ang sinisimbolo ng Yellow River ayon kay Huang?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Lungsod na pinamumunuan ng sistema at dunong, hindi ng takot", isCorrect = true },
-                    new Answer { text = "Tahanan ng mga diyos", isCorrect = false },
-                    new Answer { text = "Sentro ng digmaan at pananakop", isCorrect = false },
-                    new Answer { text = "Lungsod ng mga hari at reyna", isCorrect = false }
+                    new Answer { text = "Blessing at sumpa minsan nagbibigay ng buhay, minsan kamatayan", isCorrect = true },
+                    new Answer { text = "Sumpa ng mga diyos", isCorrect = false },
+                    new Answer { text = "Dakilang kalaban ng China", isCorrect = false },
+                    new Answer { text = "Simpleng water source lang", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q3
-                    question = "Ano ang pananaw ni Daro tungkol sa \"kapayapaan\"?"
+                    question = "Ano ang pananaw ni Huang tungkol sa \"proteksyon\"?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Kapayapaan ay regalo ng mga diyos", isCorrect = false },
-                    new Answer { text = "Kapayapaan ay kinukuha sa pamamagitan ng takot", isCorrect = false },
-                    new Answer { text = "Kapayapaan ay resulta ng digmaan", isCorrect = false },
-                    new Answer { text = "Kapayapaan ay bunga ng dunong at sistema, hindi takot", isCorrect = true }
+                    new Answer { text = "Ang China ay protektado ng malalakas na hukbo", isCorrect = false },
+                    new Answer { text = "Ang China ay walang proteksyon", isCorrect = false },
+                    new Answer { text = "Ang China ay protektado ng mga diyos", isCorrect = false },
+                    new Answer { text = "Ang China ay protektado ng natural barriers: Himalayas, Taklamakan, Tibet, Gobi", isCorrect = true }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q4
-                    question = "Sino ang kinikilalang tagapag-ukit ng mga clay seals sa Mohenjo-daro?"
+                    question = "Sino ang kinikilalang batang magsasaka na nagtatanim ng millet at wheat sa North China Plain?"
                 },
                 answers = new Answer[] {
+                    new Answer { text = "Huang", isCorrect = false },
+                    new Answer { text = "Li", isCorrect = true },
                     new Answer { text = "Daro", isCorrect = false },
-                    new Answer { text = "Matrika", isCorrect = true },
-                    new Answer { text = "Ravi", isCorrect = false },
-                    new Answer { text = "Sindhu", isCorrect = false }
+                    new Answer { text = "Ravi", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q5
-                    question = "Ano ang layunin ng paggamit ng standardized weights ng mga taga-Indus Valley?"
+                    question = "Ano ang pangunahing dahilan kung bakit nag-organize ang mga sinaunang Tsino sa North China Plain?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Para sa religious rituals", isCorrect = false },
-                    new Answer { text = "Para sa military purposes", isCorrect = false },
-                    new Answer { text = "Para sa patas na kalakalan at palitan", isCorrect = true },
-                    new Answer { text = "Para sa construction ng mga gusali", isCorrect = false }
+                    new Answer { text = "Upang magtayo ng mga templo", isCorrect = false },
+                    new Answer { text = "Upang makipagdigma sa mga karatig-bansa", isCorrect = false },
+                    new Answer { text = "Upang kontrolin ang pagbaha at magtulungan sa survival", isCorrect = true },
+                    new Answer { text = "Upang magpatayo ng palasyo", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q6
-                    question = "Ano ang naging misteryo ng Indus Valley Civilization na hindi pa rin nalulutas?"
+                    question = "Ano ang naging foundation ng organized society sa China ayon kay Chrono?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Ang dahilan ng pagtatayo ng pyramids", isCorrect = false },
-                    new Answer { text = "Ang pagkakaroon ng malalaking hukbo", isCorrect = false },
-                    new Answer { text = "Ang Indus script na hindi pa rin nababasa", isCorrect = true },
-                    new Answer { text = "Ang sistema ng irrigation", isCorrect = false }
+                    new Answer { text = "Ang takot sa mga hari", isCorrect = false },
+                    new Answer { text = "Ang relihiyon at mga templo", isCorrect = false },
+                    new Answer { text = "Ang collective work dahil sa pangangailangan ng survival", isCorrect = true },
+                    new Answer { text = "Ang militar na kapangyarihan", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q7
-                    question = "Ano ang simbolismo ng clay seals ayon kay Matrika?"
+                    question = "Ano ang simbolismo ng natural barriers ayon kay Chrono?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Mga pangalan, kalakal, at mensahe ngunit mawawala sa kasaysayan", isCorrect = true },
-                    new Answer { text = "Mga sandata ng digmaan", isCorrect = false },
-                    new Answer { text = "Mga religious offerings", isCorrect = false },
-                    new Answer { text = "Mga tool sa construction", isCorrect = false }
+                    new Answer { text = "Proteksyon at isolation blessing at curse", isCorrect = true },
+                    new Answer { text = "Mga hadlang sa pag-unlad", isCorrect = false },
+                    new Answer { text = "Tahanan ng mga diyos", isCorrect = false },
+                    new Answer { text = "Walang kahalagahan", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q8
-                    question = "Ano ang sinabi ni Chrono tungkol sa irrigation systems at agriculture ng Indus Valley?"
+                    question = "Ano ang sinabi ni Chrono tungkol sa relationship ng tao at kalikasan?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Ginamit lang para sa mga ceremonial rituals", isCorrect = false },
-                    new Answer { text = "Mas advanced kaysa sa modernong sistema", isCorrect = false },
-                    new Answer { text = "Lahat ay nakadepende sa Indus River kapag tumitigil ang daloy, tumitigil din sila", isCorrect = true },
-                    new Answer { text = "Hindi importante sa kanilang kultura", isCorrect = false }
+                    new Answer { text = "Ang kalikasan ay kaaway", isCorrect = false },
+                    new Answer { text = "Ang kalikasan ay kaibigan", isCorrect = false },
+                    new Answer { text = "Ang kalikasan ay kapwa kailangan mong matutong makisama rito", isCorrect = true },
+                    new Answer { text = "Ang kalikasan ay hindi mahalaga", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q9
-                    question = "Ano ang dahilan ng pagbagsak ng Indus Valley Civilization ayon kay Chrono?"
+                    question = "Ano ang dahilan ng isolation ng China mula sa ibang civilizations?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Pananakop ng mga dayuhang imperyo", isCorrect = false },
-                    new Answer { text = "Pagbabago ng klima at pagkatuyo ng Indus River", isCorrect = true },
-                    new Answer { text = "Digmaan sa pagitan ng mga lungsod", isCorrect = false },
-                    new Answer { text = "Epidemic ng sakit", isCorrect = false }
+                    new Answer { text = "Dahil sa takot sa dayuhan", isCorrect = false },
+                    new Answer { text = "Dahil sa natural barriers na mahirap tawirin", isCorrect = true },
+                    new Answer { text = "Dahil sa walang interest sa trade", isCorrect = false },
+                    new Answer { text = "Dahil sa malakas na military", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q10
-                    question = "Ano ang pangunahing aral na naiwan ng Indus Valley Civilization?"
+                    question = "Ano ang pangunahing aral na naiwan ng Yellow River sa Chinese civilization?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Ang takot ay nagdudulot ng kapayapaan", isCorrect = false },
+                    new Answer { text = "Ang kalikasan ay dapat pigilan", isCorrect = false },
                     new Answer { text = "Ang tunay na lakas ay nasa espada", isCorrect = false },
-                    new Answer { text = "Ang bawat pamahalaan ay malakas magpakailanman", isCorrect = false },
-                    new Answer { text = "Ang imperyo ay tumatagal magpakailanman", isCorrect = true }
+                    new Answer { text = "Ang takot ay nagdudulot ng kapayapaan", isCorrect = false },
+                    new Answer { text = "Ang pinakamalakas na sibilisasyon ay nagsisimula sa pinakamahirap na kondisyon—luha nagiging pag-asa", isCorrect = true }
                 }
             }
         };
         ShowQuestion();
-        // ShuffleQuestionsAndAnswers();
+        ShuffleQuestionsAndAnswers();
     }
 
     void ShowQuestion()
@@ -268,21 +268,21 @@ public class QuizTimeManagerHuangHe : MonoBehaviour
     }
 
     // 🔹 Call this after quizQuestions are created
-    // private void ShuffleQuestionsAndAnswers()
-    // {
-    //     // Shuffle the questions
-    //     Shuffle(quizQuestions);
+    private void ShuffleQuestionsAndAnswers()
+    {
+        // Shuffle the questions
+        Shuffle(quizQuestions);
 
-    //     // Shuffle each question's answers
-    //     foreach (var q in quizQuestions)
-    //     {
-    //         Shuffle(q.answers);
-    //     }
-    // }
+        // Shuffle each question's answers
+        foreach (var q in quizQuestions)
+        {
+            Shuffle(q.answers);
+        }
+    }
 
     void ShowQuizResult()
     {
-        PlayerProgressManager.UnlockCivilization("Sining");
+        PlayerProgressManager.UnlockCivilization("Shang");
         
         timerText.color = Color.white;
         timerText.gameObject.SetActive(false);
@@ -342,7 +342,7 @@ public class QuizTimeManagerHuangHe : MonoBehaviour
             nextButton.onClick.RemoveAllListeners();
             nextButton.onClick.AddListener(() =>
             {
-                SceneManager.LoadScene("IndusCoordinateSelect");
+                SceneManager.LoadScene("HuangheCoordinateSelect");
                 UpdateSaveAfterQuizCompletion();
             });
         }
@@ -470,6 +470,14 @@ private string GetNextCivilizationScene()
         else if (currentQuizScene.Contains("Sining"))
         {
             return sceneName.Contains("Sining");
+        }
+        else if (currentQuizScene.Contains("HuangHe"))
+        {
+            return sceneName.Contains("HuangHe");
+        }
+        else if (currentQuizScene.Contains("Shang"))
+        {
+            return sceneName.Contains("Shang");
         }
 
         return false;

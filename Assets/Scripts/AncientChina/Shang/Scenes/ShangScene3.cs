@@ -31,9 +31,9 @@ public class ShangScene3 : MonoBehaviour
     public Sprite PlayerSmile;
     public Sprite PlayerReflective;
     public Sprite PlayerThinking;
-    public Sprite SindhuProud;
-    public Sprite SindhuWise;
-    public Sprite SindhuCalm;
+    public Sprite WudingStern;
+    public Sprite PriestCalm;
+    public Sprite PriestMysterious;
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
@@ -62,52 +62,47 @@ public class ShangScene3 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "CHRONO ",
-                line = " Ngunit ang pinaka-advanced na teknolohiya ng Indus Valley ay nasa metallurgy. Marunong silang magtunaw at maghalo ng metal, bronze, copper, at tin"
+                line = " Ngunit ang pinakamisteryo at pinakasagrado sa kultura ng Shang ay ang oracle bones, ang kanilang paraan ng pakikipag-usap sa spiritual world."
             },
             new DialogueLine
             {
-                characterName = "SINDHU",
-                line = " Ang bronze ay halo ng copper at tin. Mas matigas ito kaysa purong copper. Ginagamit namin ito sa tools, weapons, at ornaments."
+                characterName = "WU DING",
+                line = " Magtanong tayo sa aming mga ninuno. Magiging matagumpay ba ang susunod na ani? Dapat ba akong umatake sa mga kaaway sa hilaga?"
             },
             new DialogueLine
             {
-                characterName = "PLAYER",
-                line = " Paano ninyo nalaman ang tamang ratio ng copper at tin?"
+                characterName = "PRIEST",
+                line = " Ang tanong ay inuukit ko dito sa shell. Pagkatapos, ipapainit ko ito hanggang magka-crack. Ang pattern ng cracks ay magsasabi ng sagot mula sa mga espiritu."
             },
             new DialogueLine
             {
-                characterName = "SINDHU",
-                line = " Pagsubok, pagkakamali, at pagkatuto. Walang libro, walang formula, puro karanasan lang."
+                characterName = "PRIEST",
+                line = " Ang mga ninuno ay sumasang-ayon. Ang ani ay magiging sagana. Ngunit sa digmaan... kailangan pa ng karagdagang sacrifice."
             },
             new DialogueLine
             {
-                characterName = "CHRONO",
-                line = " Ang Indus Valley ay isa sa mga unang sibilisasyong gumamit ng bronze. Pero interesting, wala silang malaking weapons. Karamihan ng kanilang metal tools ay para sa agriculture, construction, at craft."
+                characterName = "PLAYER ",
+                line = " Sacrifice? Ano ibig sabihin nun?"
             },
             new DialogueLine
             {
-                characterName = "PLAYER",
-                line = " Ibig sabihin... ginagamit nila ang teknolohiya para sa kapayapaan, hindi para sa digmaan?"
-            },
-            new DialogueLine
-            {
-                characterName = "SINDHU",
-                line = " Ang metal ay tool, hindi sandata. Ang tunay na lakas ay nasa kung paano mo ito ginagamit."
+                characterName = "WU DING",
+                line = " Hayop. Minsan, tao. Ang mga diyos ay nangangailangan ng dugo upang matuwa. Yan ang presyo ng kanilang tulong."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Yan ang isa sa mga dahilan kung bakit mahirap intindihin ang Indus Valley. Walang palasyo, walang malaking weapons, lahat ay para sa pang-araw-araw na buhay."
+                line = " Ang Shang ay kilala rin sa kanilang human sacrifices. Sa mga royal burials, maraming alipin at war captives ang inilibing kasama ng hari, upang maglingkod sa kanya sa afterlife."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Parang... mas matino sila kaysa sa ibang ancient civilizations."
+                line = " Yan... yan ay brutal..."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " O mas practical lang. Pero malapit nang matapos ang kanilang panahon."
+                line = " Tama. Ngunit sa kanilang paniniwala, ito ay necessity. Ang balanse ng cosmos ay nangangailangan ng sacrifice. Walang blessing na libre."
             },
         };
     }
@@ -224,15 +219,15 @@ public class ShangScene3 : MonoBehaviour
                 break;
             case 1:
                 PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = SindhuCalm;
+                ChronocharacterRenderer.sprite = WudingStern;
                 break;
             case 2:
                 PlayercharacterRenderer.sprite = PlayerThinking;
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                ChronocharacterRenderer.sprite = PriestCalm;
                 break;
             case 3:
                 PlayercharacterRenderer.sprite = PlayerSmile;
-                ChronocharacterRenderer.sprite = SindhuWise;
+                ChronocharacterRenderer.sprite = PriestMysterious;
                 break;
             case 4:
                 PlayercharacterRenderer.sprite = PlayerCurious;
@@ -240,22 +235,19 @@ public class ShangScene3 : MonoBehaviour
                 break;
             case 5:
                 PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = ChronoSad;
+                ChronocharacterRenderer.sprite = WudingStern;
                 break;
             case 6:
-                PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = SindhuCalm;
+                PlayercharacterRenderer.sprite = PlayerSmile;
+                ChronocharacterRenderer.sprite = ChronoSad;
                 break;
             case 7:
-                PlayercharacterRenderer.sprite = PlayerCurious;
+                PlayercharacterRenderer.sprite = PlayerReflective;
                 ChronocharacterRenderer.sprite = PlayerThinking;
                 break;
             case 8:
-                PlayercharacterRenderer.sprite = PlayerCurious;
+                PlayercharacterRenderer.sprite = PlayerThinking;
                 ChronocharacterRenderer.sprite = ChronoSmile;
-                break;
-            case 9:
-                ChronocharacterRenderer.sprite = ChronoSad;
                 break;
         }
 

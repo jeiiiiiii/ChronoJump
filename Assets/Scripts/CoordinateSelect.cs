@@ -103,6 +103,30 @@ public class CoordinateSelect : MonoBehaviour
             civilizationLoader.LoadHuangHe();
         }
     }
+    public void LoadShang()
+    {
+        if (CanLoadWithFeedback("Shang"))
+        {
+            ClearProgressForNewGame();
+            civilizationLoader.LoadShang();
+        }
+    }
+    public void LoadNile()
+    {
+        if (CanLoadWithFeedback("Nile"))
+        {
+            ClearProgressForNewGame();
+            civilizationLoader.LoadNile();
+        }
+    }
+    public void LoadKingdom()
+    {
+        if (CanLoadWithFeedback("Kingdom"))
+        {
+            ClearProgressForNewGame();
+            civilizationLoader.LoadKingdom();
+        }
+    }
     #endregion
 
     #region Helper Methods
@@ -207,7 +231,10 @@ public class CoordinateSelect : MonoBehaviour
             "SiningSceneFour_DialogueIndex", "SiningSceneFive_DialogueIndex",
             "HuangheSceneOne_DialogueIndex", "HuangheSceneTwo_DialogueIndex",
             "HuangheSceneThree_DialogueIndex", "HuangheSceneFour_DialogueIndex",
-            "HuangheSceneFive_DialogueIndex"
+            "HuangheSceneFive_DialogueIndex",
+            "ShangSceneOne_DialogueIndex", "ShangSceneTwo_DialogueIndex",
+            "ShangSceneThree_DialogueIndex", "ShangSceneFour_DialogueIndex",
+            "ShangSceneFive_DialogueIndex"
         };
 
         foreach (string key in sceneKeys)

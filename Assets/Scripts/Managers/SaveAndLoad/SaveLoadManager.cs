@@ -774,6 +774,16 @@ public class SaveLoadManager : MonoBehaviour
             case "HuangHeScene4": return "HuangHeSceneFour_DialogueIndex";
             case "HuangHeSceneFive":
             case "HuangHeScene5": return "HuangHeSceneFive_DialogueIndex";
+            case "ShangSceneOne":
+            case "ShangScene1": return "ShangSceneOne_DialogueIndex";
+            case "ShangSceneTwo":
+            case "ShangScene2": return "ShangSceneTwo_DialogueIndex";
+            case "ShangSceneThree":
+            case "ShangScene3": return "ShangSceneThree_DialogueIndex";
+            case "ShangSceneFour":
+            case "ShangScene4": return "ShangSceneFour_DialogueIndex";
+            case "ShangSceneFive":
+            case "ShangScene5": return "ShangSceneFive_DialogueIndex";
             default: return sceneName + "_DialogueIndex";
         }
     }

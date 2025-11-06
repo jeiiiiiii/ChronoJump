@@ -549,22 +549,22 @@ EditorBuildSettings:
     path: Assets/Scenes/AcientChina/HuangHeScenes/HuangHeSceneFive.unity
     guid: 68c95fbfc5fe20b4b9d8b945d3efb277
   - enabled: 1
-    path: Assets/Scenes/AcientChina/HuangHeRecallChallenges/HarappaThirdRecallChallenges.unity
+    path: Assets/Scenes/AcientChina/HuangHeRecallChallenges/HuangHeThirdRecallChallenges.unity
     guid: ac769c823d8162744838d988de6a94cf
   - enabled: 1
-    path: Assets/Scenes/AcientChina/HuangHeRecallChallenges/HarappaSecondRecallChallenges.unity
+    path: Assets/Scenes/AcientChina/HuangHeRecallChallenges/HuangHeSecondRecallChallenges.unity
     guid: bc4c9f52abe750f4b89de7f91b043997
   - enabled: 1
-    path: Assets/Scenes/AcientChina/HuangHeRecallChallenges/HarappaQuizTime.unity
+    path: Assets/Scenes/AcientChina/HuangHeRecallChallenges/HuangHeQuizTime.unity
     guid: dc17ca64f349a6647a97bd56bc9cf324
   - enabled: 1
-    path: Assets/Scenes/AcientChina/HuangHeRecallChallenges/HarappaGameOver.unity
+    path: Assets/Scenes/AcientChina/HuangHeRecallChallenges/HuangHeGameOver.unity
     guid: 5b5e5db4d9ab7ab48b74645de5ea87ef
   - enabled: 1
-    path: Assets/Scenes/AcientChina/HuangHeRecallChallenges/HarappaFirstRecallChallenges.unity
+    path: Assets/Scenes/AcientChina/HuangHeRecallChallenges/HuangHeFirstRecallChallenges.unity
     guid: 4bbb173f703f9b74b8c56e6c35e99cf5
   - enabled: 1
-    path: Assets/Scenes/AcientChina/HuangHeRecallChallenges/HarappaArtifactScene.unity
+    path: Assets/Scenes/AcientChina/HuangHeRecallChallenges/HuangHeArtifactScene.unity
     guid: eb2fe2170d861094f957bb4cf3499691
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

@@ -30,7 +30,9 @@ public class HuangHeScene3 : MonoBehaviour
     public Sprite PlayerCurious;
     public Sprite PlayerSmile;
     public Sprite PlayerReflective;
-    public Sprite Darocalm;
+    public Sprite DayuCalm;
+    public Sprite DayuWise;
+    public Sprite QiWorried;
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
@@ -58,48 +60,53 @@ public class HuangHeScene3 : MonoBehaviour
         {
             new DialogueLine
             {
-                characterName = "CHRONO ",
-                line = " Ang sibilisasyong ito ay umaasa sa Indus River. Ang ilog ay nagbibigay ng tubig, patubig, at pagkain. Pero tulad ng lahat ng bagay na umaasa sa kalikasan... may kapalit."
+                characterName = "CHRONO",
+                line = "Ngunit hindi lang ang ilog ang nag-define sa China. Tingnan mo ang paligid, mga natural na hadlang na naging sanhi kung bakit nag-develop ang China nang hiwalay sa ibang mundo."
+            },
+            new DialogueLine
+            {
+                characterName = "DA YU",
+                line = " Sa timog, ang Himalayas, ang pinakamataas na bundok sa mundo. Walang makakatawid doon. Sa kanluran, ang Taklamakan at Tibet, mga disyerto at mataas na plateau. Sa hilaga, ang Gobi, tigang na lupain na walang buhay."
+            },
+            new DialogueLine
+            {
+                characterName = "PLAYER",
+                line = " Parang natural na fortress..."
+            },
+            new DialogueLine
+            {
+                characterName = "DA YU",
+                line = " Tama. Kaya ang China ay naging isolated. Walang mananakop mula sa labas, kaya ang banta ay nanggagaling sa loob, o sa kalikasan."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Nakita mo ba ang kanilang irrigation systems? Ang kanilang pagtatanim ng cotton, wheat, barley? Lahat ay nakadepende sa ilog."
+                line = " Dahil dito, ang kultura ng China ay nag-develop nang独立 (independently), sariling wika, sariling sistema ng pagsulat, sariling pilosopiya. Hindi tulad ng Mesopotamia na palaging sinasalakay, o Egypt na nakikipag-trade sa Mediterranean."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Kahit gaano kasipag, umaasa pa rin sila sa kalikasan..."
-            },
-            new DialogueLine
-            {
-                characterName = "DARO",
-                line = " Ang ilog ay buhay namin. Kung tumitigil ang daloy, tumitigil din kami."
-            },
-            new DialogueLine
-            {
-                characterName = "PLAYER",
-                line = " Paano kung... mag-iba ang daloy ng ilog?"
+                line = " Ibig sabihin... sila lang talaga? Walang outside influence?"
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Yan mismo ang nangyari. At dahil doon, nagsimulang maglaho ang sibilisasyong ito."
+                line = " Halos wala. Kaya naman sa paningin ng mga Tsino, ang kanilang lupain ay sentro ng mundo, ang 'Middle Kingdom.' Ang lahat ng nasa labas ay barbaro, hindi sibilisado."
+            },
+            new DialogueLine
+            {
+                characterName = "QI",
+                line = " Hindi namin kilala ang ibang mundo... kaya sa amin, kami lang ang mundo."
+            },
+            new DialogueLine
+            {
+                characterName = "PLAYER",
+                line = "Parang... nakakulong sila sa sarili nilang mundo?"
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Ngunit bago dumating ang katapusan... may naiwang pamana. Ang dunong, ang sistema, ang respeto sa kaayusan."
-            },
-            new DialogueLine
-            {
-                characterName = "PLAYER",
-                line = " May parating na pagbabago?"
-            },
-            new DialogueLine
-            {
-                characterName = "PLAYER",
-                line = " Oo. Hindi gera, hindi pananakop... kundi ang kalikasan mismo."
+                line = " Oo. At yan ay magiging blessing at curse sa hinaharap ng China."
             },
         };
     }
@@ -215,34 +222,38 @@ public class HuangHeScene3 : MonoBehaviour
                 ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 1:
+                PlayercharacterRenderer.sprite = PlayerSmile;
+                ChronocharacterRenderer.sprite = DayuCalm;
+                break;
+            case 2:
                 PlayercharacterRenderer.sprite = PlayerCurious;
                 ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
-            case 2:
-                PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = ChronoSmile;
-                break;
             case 3:
-                PlayercharacterRenderer.sprite = PlayerSmile;
-                ChronocharacterRenderer.sprite = Darocalm;
+                PlayercharacterRenderer.sprite = PlayerReflective;
+                ChronocharacterRenderer.sprite = DayuWise;
                 break;
             case 4:
-                PlayercharacterRenderer.sprite = PlayerCurious;
+                PlayercharacterRenderer.sprite = PlayerSmile;
                 ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 5:
-                PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = ChronoSad;
+                PlayercharacterRenderer.sprite = PlayerReflective;
+                ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
             case 6:
-                PlayercharacterRenderer.sprite = PlayerReflective;
+                PlayercharacterRenderer.sprite = PlayerCurious;
                 ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 7:
+                PlayercharacterRenderer.sprite = PlayerReflective;
+                ChronocharacterRenderer.sprite = QiWorried;
+                break;
+            case 8:
                 PlayercharacterRenderer.sprite = PlayerCurious;
                 ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
-            case 8:
+            case 9:
                 PlayercharacterRenderer.sprite = PlayerReflective;
                 ChronocharacterRenderer.sprite = ChronoSad;
                 break;

@@ -869,7 +869,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 389675048}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4aea7ae68557ef54fbcfc74d9d8c8c16, type: 3}
+  m_Script: {fileID: 11500000, guid: a4f345f0cce5893478beadae87267010, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   PlayercharacterRenderer: {fileID: 81652815}
@@ -879,7 +879,7 @@ MonoBehaviour:
   PlayerSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}
   PlayerCurious: {fileID: 1425434424722430075, guid: 5c1923377ae91324084f960706141b9f, type: 3}
   PlayerEmabarrassed: {fileID: 21300000, guid: f1f43dbd9447c5f468698952cbd6a509, type: 3}
-  ChronoThinking: {fileID: 4136276854746066415, guid: 4f214c5f48b1a574aaa3eb0d88975d7e, type: 3}
+  ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
   BlurBG: {fileID: 1061096143}
@@ -890,9 +890,7 @@ MonoBehaviour:
   nextButton: {fileID: 2136483675}
   dialogueText: {fileID: 1131181977}
   currentDialogueIndex: 0
-  dialogueLines:
-  - characterName: 
-    line: 
+  dialogueLines: []
   heartImages:
   - {fileID: 508173604}
   - {fileID: 1490102247}
@@ -903,9 +901,9 @@ MonoBehaviour:
   ArtifactButton: {fileID: 869400932}
   audioSource: {fileID: 1246413602}
   dialogueClips: []
-  PagbabagoClips: []
-  AryanClips: []
-  lungsodClips: []
+  HimalayasClips: []
+  AlpsClips: []
+  SaharaClips: []
 --- !u!1 &406098304
 GameObject:
   m_ObjectHideFlags: 0

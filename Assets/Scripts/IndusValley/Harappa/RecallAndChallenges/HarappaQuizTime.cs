@@ -173,7 +173,7 @@ public class QuizTimeManagerHarappa : MonoBehaviour
             }
         };
         ShowQuestion();
-        // ShuffleQuestionsAndAnswers();
+        ShuffleQuestionsAndAnswers();
     }
 
     void ShowQuestion()
@@ -268,17 +268,17 @@ public class QuizTimeManagerHarappa : MonoBehaviour
     }
 
     // 🔹 Call this after quizQuestions are created
-    // private void ShuffleQuestionsAndAnswers()
-    // {
-    //     // Shuffle the questions
-    //     Shuffle(quizQuestions);
+    private void ShuffleQuestionsAndAnswers()
+    {
+        // Shuffle the questions
+        Shuffle(quizQuestions);
 
-    //     // Shuffle each question's answers
-    //     foreach (var q in quizQuestions)
-    //     {
-    //         Shuffle(q.answers);
-    //     }
-    // }
+        // Shuffle each question's answers
+        foreach (var q in quizQuestions)
+        {
+            Shuffle(q.answers);
+        }
+    }
 
     void ShowQuizResult()
     {

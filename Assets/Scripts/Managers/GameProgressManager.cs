@@ -20,7 +20,7 @@ public class GameProgressManager : MonoBehaviour
 
     private FirebaseFirestore db => FirebaseManager.Instance.DB;
 
-    private readonly string[] allCivilizations = { "Sumerian", "Akkadian", "Babylonian", "Assyrian", "Harappa", "Sining", "HuangHe" };
+    private readonly string[] allCivilizations = { "Sumerian", "Akkadian", "Babylonian", "Assyrian", "Harappa", "Sining", "HuangHe", "Shang", "Nile", "Kingdom" };
 
     #region Events
     public System.Action<string> OnCivilizationUnlocked;
@@ -47,7 +47,11 @@ public class GameProgressManager : MonoBehaviour
         { "Babylonian", "ST003" },
         { "Assyrian", "ST004" },
         { "Harappa", "ST005" },
-        { "Sining", "ST006" }
+        { "Sining", "ST006" },
+        { "HuangHe", "ST007" },
+        { "Shang", "ST008" },
+        { "Nile", "ST009" },
+        { "Kingdom", "ST010" }
     };
     #endregion
 

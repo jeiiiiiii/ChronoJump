@@ -34,7 +34,9 @@ public class HuangHeScene4 : MonoBehaviour
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
     public Sprite ChronoSad;
-    public Sprite MatrikaSomber;
+    public Sprite DayuCalm;
+    public Sprite QiHopeful;
+
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -59,27 +61,27 @@ public class HuangHeScene4 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "CHRONO ",
-                line = " Noong 1900 BCE, nagsimulang mag-iba ang daloy ng Indus River. Tumigang ang lupa, naubusan ng tubig ang mga pananim. Walang digmaan, walang pananakop, simpleng pagbabago ng klima."
+                line = " Mula sa simpleng settlements, nagsimulang lumaki ang mga komunidad. Noong Panahong Paleolithic, ang Peking Man ay namuhay dito. Mula noon, unti-unting nag-evolve ang kultura, pottery, bronze, pagsulat."
             },
             new DialogueLine
             {
-                characterName = "CHRONO",
-                line = " Unti-unting umalis ang mga tao. Nag-migrate sila sa iba't ibang direksyon. Ang mga lungsod ay naiwan, tahimik, nakalimutan."
+                characterName = "DA YU",
+                line = " Nagsimula sa simpleng pag-tanim. Ngayon, mayroon na kaming mga tools, mga batas, mga pinuno. Lahat ay bunga ng pangangailangan."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Naglaho lang sila... nang walang ingay?"
+                line = " Mula sa takot sa pagbaha... naging sibilisasyon?"
             },
             new DialogueLine
             {
-                characterName = "MATRIKA",
-                line = " Kakaibang ironya. Sa paghahangad naming mamuhay nang mapayapa, hindi namin naiwasan ang pagkawala."
+                characterName = "QI",
+                line = " Hindi lang takot, pag-asa din. Ang pag-asa na kaya nating kontrolin ang aming kapalaran, kahit ang ilog ay galit."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Naglaho ang sibilisasyon. Walang dugo, walang apoy, tanging katahimikan at kalimutan. Ang dunong na hindi nakasulat sa wikang naiintindihan ay naging alaala na lang."
+                line = " At mula dito, bubuo ang mga dinastiya. Ang mga pamilyang makapangyarihan na mag-aangkin ng 'Mandate of Heaven', ang karapatan na mamuno, basta't maprotektahan nila ang bayan."
             },
         };
     }
@@ -196,7 +198,7 @@ public class HuangHeScene4 : MonoBehaviour
                 break;
             case 1:
                 PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = ChronoThinking;
+                ChronocharacterRenderer.sprite = DayuCalm;
                 break;
             case 2:
                 PlayercharacterRenderer.sprite = PlayerEmbarrassed;
@@ -204,7 +206,7 @@ public class HuangHeScene4 : MonoBehaviour
                 break;
             case 3:
                 PlayercharacterRenderer.sprite = PlayerSmile;
-                ChronocharacterRenderer.sprite = MatrikaSomber;
+                ChronocharacterRenderer.sprite = QiHopeful;
                 break;
             case 4:
                 PlayercharacterRenderer.sprite = PlayerEager;

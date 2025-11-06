@@ -23,7 +23,6 @@ public class CivilizationButton : MonoBehaviour
 
     private void UpdateButtonState()
     {
-        // Check if GameProgressManager is available and student is logged in
         bool isUnlocked = false;
         
         if (GameProgressManager.Instance != null && GameProgressManager.Instance.CurrentStudentState != null)

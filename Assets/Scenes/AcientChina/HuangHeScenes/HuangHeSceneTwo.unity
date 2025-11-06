@@ -2481,7 +2481,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1277758996}
-        m_TargetAssemblyTypeName: AssyrianScene2, Assembly-CSharp
+        m_TargetAssemblyTypeName: HuangHeScene2, Assembly-CSharp
         m_MethodName: GoToSettings
         m_Mode: 1
         m_Arguments:
@@ -2540,7 +2540,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1277758995}
   - component: {fileID: 1277758996}
-  - component: {fileID: 1277758997}
   m_Layer: 5
   m_Name: GameObject
   m_TagString: Untagged
@@ -2576,7 +2575,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1277758994}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e357d6aab4101b1448d3a2e3c53dc55f, type: 3}
+  m_Script: {fileID: 11500000, guid: ad9e9736552d5794896ff029a8cd446b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueText: {fileID: 407054477}
@@ -2588,59 +2587,13 @@ MonoBehaviour:
   currentDialogueIndex: 0
   dialogueLines: []
   PlayercharacterRenderer: {fileID: 477065903}
-  PlayerCurious: {fileID: 1425434424722430075, guid: 5c1923377ae91324084f960706141b9f, type: 3}
-  PlayerSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}
-  PlayerEmbarrassed: {fileID: 21300000, guid: f1f43dbd9447c5f468698952cbd6a509, type: 3}
-  PlayerReflective: {fileID: -6828170361931683543, guid: 41872a0e55450ef43b535aba6363171a, type: 3}
-  AshurbanipalFulldrawnSprite: {fileID: 385422580}
-  AshurbanipalWise: {fileID: 441634106754488686, guid: cff51948cab40d84193bc1f3721d8714, type: 3}
-  ChronocharacterRenderer: {fileID: 1317386105}
-  ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
-  ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
-  ChronoCheerful: {fileID: -4788844467492341420, guid: 2d820e03f038071438b5607182311759, type: 3}
-  AchievementUnlockedRenderer: {fileID: 924537611}
-  chronoAnimator: {fileID: 1317386108}
-  playerAnimator: {fileID: 477065906}
-  NPCFulldrawnAnimator: {fileID: 385422582}
-  audioSource: {fileID: 1652331086}
-  dialogueClips:
-  - {fileID: 8300000, guid: 7484921102cbc0644ac9a4f3b11e4b29, type: 3}
-  - {fileID: 8300000, guid: 9a59f748bb88d5549843170ddb748338, type: 3}
-  - {fileID: 8300000, guid: 19a337d49e3d85646a02ff7ca1b87917, type: 3}
-  - {fileID: 8300000, guid: ef861bf430e193440ab18a88cf74c427, type: 3}
-  - {fileID: 8300000, guid: b1c4a31f100a12b40915356648096ada, type: 3}
-  - {fileID: 8300000, guid: 8b6d34da727708045837a1819d5e217f, type: 3}
---- !u!114 &1277758997
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1277758994}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 357ae7f3c6163e9459d23dc1389895bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dialogueText: {fileID: 407054477}
-  nextButton: {fileID: 57267745}
-  backButton: {fileID: 1397502479}
-  saveButton: {fileID: 1551871522}
-  homeButton: {fileID: 1671613996}
-  settingsButton: {fileID: 1141512627}
-  currentDialogueIndex: 0
-  dialogueLines: []
-  PlayercharacterRenderer: {fileID: 477065903}
-  MatrikaFulldrawnSprite: {fileID: 385422580}
+  QiFulldrawnSprite: {fileID: 385422580}
   PlayerReflective: {fileID: -6828170361931683543, guid: 41872a0e55450ef43b535aba6363171a, type: 3}
   PlayerCurious: {fileID: 1425434424722430075, guid: 5c1923377ae91324084f960706141b9f, type: 3}
   PlayerEager: {fileID: 5428063399545322546, guid: c517d75299d0ddb4cb6eed3374b7a5b3, type: 3}
-  PlayerEmabarrassed: {fileID: 21300000, guid: f1f43dbd9447c5f468698952cbd6a509, type: 3}
-  DaroProud: {fileID: 0}
-  DaroCalm: {fileID: 0}
-  Darowise: {fileID: 0}
-  MatrikaMysterious: {fileID: 0}
-  MatrikaSomber: {fileID: 0}
+  PlayerSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}
+  DayuWise: {fileID: 0}
+  QiHopeful: {fileID: 0}
   ChronocharacterRenderer: {fileID: 1317386105}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
@@ -3579,7 +3532,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1277758996}
-        m_TargetAssemblyTypeName: AssyrianScene2, Assembly-CSharp
+        m_TargetAssemblyTypeName: HuangHeScene2, Assembly-CSharp
         m_MethodName: SaveAndLoad
         m_Mode: 1
         m_Arguments:
@@ -3870,8 +3823,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SumerianScene2, Assembly-CSharp
+      - m_Target: {fileID: 1277758996}
+        m_TargetAssemblyTypeName: HuangHeScene2, Assembly-CSharp
         m_MethodName: Home
         m_Mode: 1
         m_Arguments:

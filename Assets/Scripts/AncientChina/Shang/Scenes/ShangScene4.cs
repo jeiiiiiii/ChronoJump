@@ -34,8 +34,8 @@ public class ShangScene4 : MonoBehaviour
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
     public Sprite ChronoSad;
-    public Sprite RaviSomber;
-    public Sprite SindhuSomber;
+    public Sprite WudingWorried;
+    public Sprite FuhaoFierce;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -60,27 +60,27 @@ public class ShangScene4 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "CHRONO ",
-                line = " Noong nagsimulang mag-iba ang klima, unti-unting tumigil ang produksyon. Walang bagong beads, walang bagong pottery. Ang mga workshop ay naulila."
+                line = " Ngunit ang Mandate of Heaven ay hindi permanente. Kapag ang pamumuno ay naging abusado, kapag ang mga tao ay nagdusa, nawawala ang karapatan."
             },
             new DialogueLine
             {
-                characterName = "RAVI",
-                line = " Kakaiba. Gumawa ako ng libu-libong beads... ngunit wala nang bibili. Ang mga kalsada ay naulila, ang mga tao ay umalis na."
-            },
-            new DialogueLine
-            {
-                characterName = "PLAYER",
-                line = " Tumigil lang... dahil nawala ang customers?"
-            },
-            new DialogueLine
-            {
-                characterName = "SINDHU",
-                line = " Hindi lang customers, nawala ang sistema. Walang trade, walang order, walang dahilan upang gumawa pa. Ang teknolohiya ay nabuhay dahil sa pangangailangan. Kapag nawala ito, namatay din ang Shang."
+                characterName = "WU DING",
+                line = " May nakakaramdam ako... ang hangin ay nagbago. Ang mga ninuno ay tahimik na. Parang... parang may darating na pagbabago."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Naglaho ang workshops. Nakalimutan ang mga technique. Ang drainage system ay natabunan ng lupa. Ang Great Bath ay naging ruins."
+                line = " Ang huling mga hari ng Shang ay naging corrupt. Masyadong maraming sacrifice, masyadong mabigat ang buwis sa mga tao. Ang mga noble ay nag-rebel. At sa hilaga, ang Zhou ay nag-mobilize."
+            },
+            new DialogueLine
+            {
+                characterName = " FU HAO",
+                line = " Handa ako labanan ang kahit sino. Pero kapag nawala ang suporta ng langit... kahit ang pinakamalakas na heneral ay matatalo."
+            },
+            new DialogueLine
+            {
+                characterName = "CHRONO",
+                line = " Noong 1027 BCE, tinaob ng Zhou ang Shang sa Battle of Muye. Ang huling hari ng Shang ay namatay sa apoy. Ang dinastia ay natapos, pero ang pamana ay nananatili."
             },
         };
     }
@@ -197,14 +197,14 @@ public class ShangScene4 : MonoBehaviour
                 break;
             case 1:
                 PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = RaviSomber;
+                ChronocharacterRenderer.sprite = WudingWorried;
                 break;
             case 2:
                 PlayercharacterRenderer.sprite = PlayerEmbarrassed;
                 break;
             case 3:
                 PlayercharacterRenderer.sprite = PlayerSmile;
-                ChronocharacterRenderer.sprite = SindhuSomber;
+                ChronocharacterRenderer.sprite = FuhaoFierce;
                 break;
             case 4:
                 PlayercharacterRenderer.sprite = PlayerEager;

@@ -48,17 +48,17 @@ public class HuangHeScene5 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Minsan ang kapayapaan ay mas malakas kaysa sa digmaan. Ngunit ang kalikasan... mas malakas pa sa lahat."
+                line = " Minsan ang pinakamalakas na sibilisasyon ay nagsisimula sa pinakamahirap na kondisyon. Ang luha ay nagiging pag-asa, at ang takot ay nagiging lakas."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Ang sibilisasyon ay naglaho, ngunit ang misteryo ay nananatili. Handa ka na sa susunod."
+                line = " Ang ilog ay tumatagos sa panahon. Ang sibilisasyon ay nananatili. Handa ka na sa susunod, ang Shang Dynasty."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Paalam, Mohenjo-daro. Salamat sa iyong tahimik na aral."
+                line = " Paalam, Yellow River. Salamat sa iyong luha at pag-asa."
             },
         };
 
