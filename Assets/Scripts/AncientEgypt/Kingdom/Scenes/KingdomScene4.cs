@@ -30,12 +30,13 @@ public class KingdomScene4 : MonoBehaviour
     public Sprite PlayerEmbarrassed;
     public Sprite PlayerSmile;
     public Sprite PlayerEager;
+    public Sprite PlayerReflective;
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
     public Sprite ChronoSad;
-    public Sprite WudingWorried;
-    public Sprite FuhaoFierce;
+    public Sprite AhmoseDetermined;
+    public Sprite AhmoseFierce;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -60,27 +61,37 @@ public class KingdomScene4 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "CHRONO ",
-                line = " Ngunit ang Mandate of Heaven ay hindi permanente. Kapag ang pamumuno ay naging abusado, kapag ang mga tao ay nagdusa, nawawala ang karapatan."
+                line = " Ang Bagong Kaharian, 1570 hanggang 1069 BCE, ay naging peak ng Egyptian power. Ito ang panahon nina Thutmose III, Hatshepsut, Akhenaten, Tutankhamun, at Ramesses II."
             },
             new DialogueLine
             {
-                characterName = "WU DING",
-                line = " May nakakaramdam ako... ang hangin ay nagbago. Ang mga ninuno ay tahimik na. Parang... parang may darating na pagbabago."
+                characterName = "AHMOSE",
+                line = " Ang Egypt ay hindi na basta defensive power. Kami ay imperyo na! Lumaganap kami hanggang Syria sa hilaga, Nubia sa timog. Ang tribute ay dumarating mula sa lahat ng direksyon!"
+            },
+            new DialogueLine
+            {
+                characterName = "PLAYER",
+                line = " Kaya... nag-transform sila from peaceful sa warrior culture?"
+            },
+            new DialogueLine
+            {
+                characterName = "AHMOSE",
+                line = " Tama. Natutunan namin ang lesson, ang peace ay hindi guaranteed. Kailangan ng strength, ng military power, ng expansion. Ang defensive mentality ay liability."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Ang huling mga hari ng Kingdom ay naging corrupt. Masyadong maraming sacrifice, masyadong mabigat ang buwis sa mga tao. Ang mga noble ay nag-rebel. At sa hilaga, ang Zhou ay nag-mobilize."
+                line = " Ang Bagong Kaharian ay golden age ng military might, wealth, at international influence. Pero may kapalit, constant warfare, heavy taxation para sa military campaigns, at eventually, exhaustion."
             },
             new DialogueLine
             {
-                characterName = " FU HAO",
-                line = " Handa ako labanan ang kahit sino. Pero kapag nawala ang suporta ng langit... kahit ang pinakamalakas na heneral ay matatalo."
+                characterName = "PLAYER",
+                line = " Parang... lahat ng empires ay may expiration date..."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Noong 1027 BCE, tinaob ng Zhou ang Kingdom sa Battle of Muye. Ang huling hari ng Kingdom ay namatay sa apoy. Ang dinastia ay natapos, pero ang pamana ay nananatili."
+                line = " Exactly. Ang Egypt ay nag-peak, tapos unti-unting bumagsak. Noong 1069 BCE, natapos ang Bagong Kaharian. Dumating ang Third Intermediate Period, uli ang division, weakness, at foreign domination."
             },
         };
     }
@@ -197,16 +208,24 @@ public class KingdomScene4 : MonoBehaviour
                 break;
             case 1:
                 PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = WudingWorried;
+                ChronocharacterRenderer.sprite = AhmoseDetermined;
                 break;
             case 2:
-                PlayercharacterRenderer.sprite = PlayerEmbarrassed;
+                PlayercharacterRenderer.sprite = PlayerReflective;
                 break;
             case 3:
                 PlayercharacterRenderer.sprite = PlayerSmile;
-                ChronocharacterRenderer.sprite = FuhaoFierce;
+                ChronocharacterRenderer.sprite = AhmoseFierce;
                 break;
             case 4:
+                PlayercharacterRenderer.sprite = PlayerEager;
+                ChronocharacterRenderer.sprite = ChronoSad;
+                break;
+            case 5:
+                PlayercharacterRenderer.sprite = PlayerEager;
+                ChronocharacterRenderer.sprite = ChronoSad;
+                break;
+            case 6:
                 PlayercharacterRenderer.sprite = PlayerEager;
                 ChronocharacterRenderer.sprite = ChronoSad;
                 break;

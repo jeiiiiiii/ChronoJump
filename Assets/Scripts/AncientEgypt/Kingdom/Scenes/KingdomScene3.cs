@@ -27,13 +27,13 @@ public class KingdomScene3 : MonoBehaviour
     public DialogueLine[] dialogueLines;
 
     public SpriteRenderer PlayercharacterRenderer;
+    public SpriteRenderer AhmosecharacterRenderer;
     public Sprite PlayerCurious;
     public Sprite PlayerSmile;
     public Sprite PlayerReflective;
     public Sprite PlayerThinking;
-    public Sprite WudingStern;
-    public Sprite PriestCalm;
-    public Sprite PriestMysterious;
+    public Sprite AhmoseConfident;
+    public Sprite MentuhotepWise;
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
@@ -62,47 +62,47 @@ public class KingdomScene3 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "CHRONO ",
-                line = " Ngunit ang pinakamisteryo at pinakasagrado sa kultura ng Kingdom ay ang oracle bones, ang kanilang paraan ng pakikipag-usap sa spiritual world."
+                line = " Ngunit ang peace ay hindi permanent. Noong 1640 BCE, dumating ang mga Hyksos mula sa Palestine, mga foreign invaders na may superior military technology."
             },
             new DialogueLine
             {
-                characterName = "WU DING",
-                line = " Magtanong tayo sa aming mga ninuno. Magiging matagumpay ba ang susunod na ani? Dapat ba akong umatake sa mga kaaway sa hilaga?"
-            },
-            new DialogueLine
-            {
-                characterName = "PRIEST",
-                line = " Ang tanong ay inuukit ko dito sa shell. Pagkatapos, ipapainit ko ito hanggang magka-crack. Ang pattern ng cracks ay magsasabi ng sagot mula sa mga espiritu."
-            },
-            new DialogueLine
-            {
-                characterName = "PRIEST",
-                line = " Ang mga ninuno ay sumasang-ayon. Ang ani ay magiging sagana. Ngunit sa digmaan... kailangan pa ng karagdagang sacrifice."
-            },
-            new DialogueLine
-            {
-                characterName = "PLAYER ",
-                line = " Sacrifice? Ano ibig sabihin nun?"
-            },
-            new DialogueLine
-            {
-                characterName = "WU DING",
-                line = " Hayop. Minsan, tao. Ang mga diyos ay nangangailangan ng dugo upang matuwa. Yan ang presyo ng kanilang tulong."
+                characterName = "MENTUHOTEP",
+                line = " Mga chariots! Hindi natin alam paano labanan yan!"
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Ang Kingdom ay kilala rin sa kanilang human sacrifices. Sa mga royal burials, maraming alipin at war captives ang inilibing kasama ng hari, upang maglingkod sa kanya sa afterlife."
+                line = " Ang Hyksos ay nag-conquer ng Lower Egypt at namuno ng mahigit 100 years. Ito ang unang beses na nasakop ang Egypt ng foreign power. Ang pride ng mga Egyptian ay nawasak."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Yan... yan ay brutal..."
+                line = " Paano sila natalo? Akala ko ba ang Egypt ay protected ng desert?"
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Tama. Ngunit sa kanilang paniniwala, ito ay necessity. Ang balanse ng cosmos ay nangangailangan ng sacrifice. Walang blessing na libre."
+                line = " Dumating sila via trade routes sa northeast. At dahil mas advanced ang military technology nila, chariots, composite bows, hindi kayang labanan ng traditional Egyptian forces."
+            },
+            new DialogueLine
+            {
+                characterName = "AHMOSE",
+                line = " Ako si Ahmose I! Ako ang nagpalaya sa Egypt mula sa mga Hyksos! Natuto kami, kinopya namin ang kanilang technology, nag-train kami ng bagong army, at pinaalis namin sila!"
+            },
+            new DialogueLine
+            {
+                characterName = "PLAYER",
+                line = " Ikaw ang nag-kick out sa kanila? Paano?"
+            },
+            new DialogueLine
+            {
+                characterName = "AHMOSE",
+                line = " Ginamit ko ang kanilang sariling sandata laban sa kanila. Nag-build kami ng chariots, nag-train ng archers, nag-organize ng professional army. At noong 1570 BCE, pinaalis ko sila palabas ng Egypt!"
+            },
+            new DialogueLine
+            {
+                characterName = "CHRONO",
+                line = " At dito nagsimula ang Bagong Kaharian, ang Age of Empire. Ang Egypt ay nag-transform mula defensive sa aggressive, expansionist power."
             },
         };
     }
@@ -202,6 +202,7 @@ public class KingdomScene3 : MonoBehaviour
 
     void ShowDialogue()
     {
+        AhmosecharacterRenderer.enabled = false;
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
@@ -219,35 +220,36 @@ public class KingdomScene3 : MonoBehaviour
                 break;
             case 1:
                 PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = WudingStern;
+                ChronocharacterRenderer.sprite = MentuhotepWise;
                 break;
             case 2:
                 PlayercharacterRenderer.sprite = PlayerThinking;
-                ChronocharacterRenderer.sprite = PriestCalm;
+                ChronocharacterRenderer.sprite = ChronoSad;
                 break;
             case 3:
-                PlayercharacterRenderer.sprite = PlayerSmile;
-                ChronocharacterRenderer.sprite = PriestMysterious;
+                PlayercharacterRenderer.sprite = PlayerCurious;
+                ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
             case 4:
-                PlayercharacterRenderer.sprite = PlayerCurious;
+                PlayercharacterRenderer.sprite = PlayerSmile;
                 ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 5:
+                AhmosecharacterRenderer.enabled = true;
                 PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = WudingStern;
+                ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 6:
-                PlayercharacterRenderer.sprite = PlayerSmile;
+                PlayercharacterRenderer.sprite = PlayerCurious;
                 ChronocharacterRenderer.sprite = ChronoSad;
                 break;
             case 7:
                 PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = PlayerThinking;
+                ChronocharacterRenderer.sprite = AhmoseConfident;
                 break;
             case 8:
                 PlayercharacterRenderer.sprite = PlayerThinking;
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
         }
 

@@ -54,121 +54,121 @@ public class QuizTimeManagerKingdom : MonoBehaviour
             new Question {
                 questionLine = new DialogueLine {
                     //Q1
-                    question = "Ano ang pinakamahalagang kontribusyon ng Dinastiyang Kingdom sa kasaysayan ng China?"
+                    question = "Ano ang tinawag sa Lumang Kaharian ng Egypt?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Unang nakipag-trade sa Rome", isCorrect = false },
-                    new Answer { text = "Unang nag-iwan ng nakasulat na kasaysayan gamit ang oracle bones", isCorrect = true },
-                    new Answer { text = "Unang gumamit ng iron weapons", isCorrect = false },
-                    new Answer { text = "Unang nagtayo ng Great Wall", isCorrect = false }
+                    new Answer { text = "Age of the Temples", isCorrect = false },
+                    new Answer { text = "Age of the Pyramids", isCorrect = true },
+                    new Answer { text = "Age of the Warriors", isCorrect = false },
+                    new Answer { text = "Age of the Pharaohs", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q2
-                    question = "Ano ang sinisimbolo ng Anyang bilang kabisera ng Kingdom?"
+                    question = "Ano ang sinisimbolo ng Great Pyramid ni Khufu?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Sentro ng kapangyarihan kung saan lumilikha ng bronze vessels at nakikipag-usap sa espiritu", isCorrect = true },
-                    new Answer { text = "Lungsod ng kapayapaan", isCorrect = false },
-                    new Answer { text = "Tahanan ng mga magsasaka", isCorrect = false },
-                    new Answer { text = "Simpleng trading post", isCorrect = false }
+                    new Answer { text = "Eternal monument tahanan sa afterlife ng god-king", isCorrect = true },
+                    new Answer { text = "Military power", isCorrect = false },
+                    new Answer { text = "Trading center", isCorrect = false },
+                    new Answer { text = "Temple para sa mga diyos", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q3
-                    question = "Ano ang pananaw ni Wu Ding tungkol sa \"Mandate of Heaven\"?"
+                    question = "Ano ang pananaw ni Khufu tungkol sa \"pharaoh\"?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Titulo lang ng emperador", isCorrect = false },
-                    new Answer { text = "Pangako ng ulan mula sa langit", isCorrect = false },
-                    new Answer { text = "Walang kahalagahan", isCorrect = false },
-                    new Answer { text = "Karapatan na ibinigay ng langit na mamuno, hangga't maayos ang pamumuno", isCorrect = true }
+                    new Answer { text = "Servant ng mga tao", isCorrect = false },
+                    new Answer { text = "Ordinary leader lang", isCorrect = false },
+                    new Answer { text = "Military commander", isCorrect = false },
+                    new Answer { text = "God-king na nagdadala ng ma'at (balance, truth, justice)", isCorrect = true }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q4
-                    question = "Sino ang kinikilalang babaeng heneral na nanguna ng 13,000 sundalo sa Dinastiyang Kingdom?"
+                    question = "ino ang kinikilalang nag-reunify ng Egypt at nagpasimula ng Gitnang Kaharian?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Wu Ding", isCorrect = false },
-                    new Answer { text = "Fu Hao", isCorrect = true },
-                    new Answer { text = "Merit", isCorrect = false },
+                    new Answer { text = "Khufu", isCorrect = false },
+                    new Answer { text = "Mentuhotep II", isCorrect = true },
+                    new Answer { text = "Ramesses II", isCorrect = false },
                     new Answer { text = "Matrika", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q5
-                    question = "Ano ang layunin ng bronze vessels sa kultura ng Kingdom?"
+                    question = "Ano ang pagbabago sa role ng pharaoh sa Gitnang Kaharian?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Para sa dekorasyon ng palasyo", isCorrect = false },
-                    new Answer { text = "Para sa digmaan", isCorrect = false },
-                    new Answer { text = "Para sa ritwal sa mga ancestors pakikipag-ugnayan sa spiritual world", isCorrect = true },
-                    new Answer { text = "Para sa pakikipag-trade lang", isCorrect = false }
+                    new Answer { text = "Naging mas powerful at authoritarian", isCorrect = false },
+                    new Answer { text = "Nawala ang kanilang religious role", isCorrect = false },
+                    new Answer { text = "Naging \"shepherd of the people\" na nag-focus sa welfare ng bayan", isCorrect = true },
+                    new Answer { text = "Naging pure military leader", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q6
-                    question = "Ano ang naging innovation ng Kingdom sa bronze technology?"
+                    question = "Sino ang mga foreign invaders na sumakop sa Lower Egypt noong 1640 BCE?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Unang gumamit ng iron", isCorrect = false },
-                    new Answer { text = "Simpleng hammering lang", isCorrect = false },
-                    new Answer { text = "Piece-mold casting na gumagawa ng intricate designs", isCorrect = true },
-                    new Answer { text = "Import mula sa ibang bansa", isCorrect = false }
+                    new Answer { text = "Romans", isCorrect = false },
+                    new Answer { text = "Persians", isCorrect = false },
+                    new Answer { text = "Hyksos", isCorrect = true },
+                    new Answer { text = "Greeks", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q7
-                    question = "Ano ang simbolismo ng oracle bones ayon kay Chrono?"
+                    question = "Ano ang simbolismo ng Hyksos invasion ayon kay Chrono?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Paraan ng pakikipag-usap sa spiritual world pinapainit hanggang mag-crack", isCorrect = true },
-                    new Answer { text = "Laruan ng mga bata", isCorrect = false },
-                    new Answer { text = "Weapons sa digmaan", isCorrect = false },
-                    new Answer { text = "Decorations", isCorrect = false }
+                    new Answer { text = "Unang beses na nasakop ang Egypt—nawasak ang pride at nag-transform sa warrior culture", isCorrect = true },
+                    new Answer { text = "Walang impact", isCorrect = false },
+                    new Answer { text = "Peaceful cultural exchange", isCorrect = false },
+                    new Answer { text = "Economic blessing", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q8
-                    question = "Ano ang sinabi ni Chrono tungkol sa human sacrifice sa Kingdom?"
+                    question = "Sino ang nagpalaya sa Egypt mula sa Hyksos at nagsimula ng Bagong Kaharian?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Walang human sacrifice", isCorrect = false },
-                    new Answer { text = "Ito ay maling paniniwala lang", isCorrect = false },
-                    new Answer { text = "Ang balanse ng cosmos ay nangangailangan ng sacrifice walang blessing na libre", isCorrect = true },
-                    new Answer { text = "Ginagawa lang para sa entertainment", isCorrect = false }
+                    new Answer { text = "Mentuhotep II", isCorrect = false },
+                    new Answer { text = "Roa Duterte", isCorrect = false },
+                    new Answer { text = "Ahmose I", isCorrect = true },
+                    new Answer { text = "Xin Xhao", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q9
-                    question = "Bakit bumagsak ang Dinastiyang Kingdom noong 1027 BCE?"
+                    question = "Ano ang pangunahing katangian ng Bagong Kaharian ng Egypt?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Natural disasters", isCorrect = false },
-                    new Answer { text = "Ang Mandate of Heaven ay nawala dahil naging corrupt ang pamumuno tinaob ng Zhou", isCorrect = true },
-                    new Answer { text = "Invasion mula sa Rome", isCorrect = false },
-                    new Answer { text = "Epidemic", isCorrect = false }
+                    new Answer { text = "Focus sa pyramid building", isCorrect = false },
+                    new Answer { text = "Expansionist at militaristic naging imperyo", isCorrect = true },
+                    new Answer { text = "Complete isolation mula sa ibang bansa", isCorrect = false },
+                    new Answer { text = "Peaceful at agricultural", isCorrect = false }
                 }
             },
             new Question {
                 questionLine = new DialogueLine {
                     //Q10
-                    question = "Ano ang pangunahing aral na naiwan ng Dinastiyang Kingdom?"
+                    question = "Ano ang pangunahing aral ng tatlong kingdoms ng Egypt?"
                 },
                 answers = new Answer[] {
-                    new Answer { text = "Ang takot ay susi sa kapangyarihan", isCorrect = false },
-                    new Answer { text = "Ang digmaan ay solusyon sa lahat", isCorrect = false },
-                    new Answer { text = "Ang yaman ay mas importante", isCorrect = false },
-                    new Answer { text = "Ang kapangyarihan ay hindi karapatan ito ay responsibilidad", isCorrect = true }
+                    new Answer { text = "Ang glory ay walang kapalitn", isCorrect = false },
+                    new Answer { text = "Ang digmaan ay solusyon", isCorrect = false },
+                    new Answer { text = "Ang isolation ay best strategy", isCorrect = false },
+                    new Answer { text = "Tatlong lessons: Glory may presyo, Service > Glory, Power ay temporary", isCorrect = true }
                 }
             }
         };

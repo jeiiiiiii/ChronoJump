@@ -228,7 +228,7 @@ public class ShangScene2 : MonoBehaviour
                 break;
             case 2:
                 PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = PlayerCurious;
+                ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 3:
                 PlayercharacterRenderer.sprite = PlayerCurious;

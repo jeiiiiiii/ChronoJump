@@ -48,17 +48,17 @@ public class KingdomScene5 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Minsan ang kapangyarihan ay nanggagaling sa langit. Pero ang responsibilidad ay nasa lupa, sa mga taong pinamumunuan mo."
+                line = " Tatlong panahon, tatlong philosophy. Ang history ay hindi straight line, ito ay cycle ng pag-angat at pagbagsak. Pero ang aral ay nananatili."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Ang Kingdom ay lumipas, pero ang kultura ay nananatili. Ang oracle bones ay naging Chinese characters. Ang bronze art ay naging tradisyon. Handa ka na sa Middle Kingdom."
+                line = " Ang kingdoms ay lumipas, pero ang kultura ay immortal. Handa ka na sa afterlife, pyramids, mummies, at Book of the Dead."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Paalam, Dinastiyang Kingdom. Salamat sa inyong nakasulat na pamana."
+                line = " Paalam, tatlong kingdoms. Salamat sa inyong mga aral."
             },
         };
 

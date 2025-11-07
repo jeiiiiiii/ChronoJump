@@ -27,19 +27,20 @@ public class KingdomScene2 : MonoBehaviour
     public DialogueLine[] dialogueLines;
 
     public SpriteRenderer PlayercharacterRenderer;
-    public SpriteRenderer FuhaoFulldrawnSprite;
+    public SpriteRenderer MentuhotepFulldrawnSprite;
 
     // public GameObject AchievementUnlockedRenderer;
     public Sprite PlayerReflective;
     public Sprite PlayerCurious;
     public Sprite PlayerEager;
     public Sprite PlayerEmabarrassed;
-    public Sprite FuhaoConfident;
-    public Sprite FuhaoFierce;
+    public Sprite MentuhotepWise;
+    public Sprite KhufoCommanding;
 
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
+    public Sprite ChronoSad;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -67,42 +68,42 @@ public class KingdomScene2 : MonoBehaviour
         {
             new DialogueLine
             {   characterName = "CHRONO",
-                line = " Ngunit ang Kingdom ay hindi lang kilala sa pagsulat. Tingnan mo ang kanilang bronze technology, isa sa pinakamahusay sa ancient world."
+                line = " Ngunit ang glory ay hindi tumagal. Sa pagtatapos ng Lumang Kaharian, ang Egypt ay bumagsak sa chaos. Ang constant pyramid building ay ubos na ang treasury. Ang mga provincial governors ay nag-rebel."
             },
             new DialogueLine
             {
-                characterName = "FU HAO",
-                line = " Ako si Fu Hao, asawa ni Wu Ding at heneral ng kanyang hukbo. Nakakita ka na ba ng babaeng heneral? Sa Kingdom, ang kapangyarihan ay hindi nakadepende sa kasarian, nakadepende sa kakayahan."
-            },
-            new DialogueLine
-            {
-                characterName = "PLAYER",
-                line = " Ikaw... heneral? Pero babae ka?"
-            },
-            new DialogueLine
-            {
-                characterName = "FU HAO",
-                line = " Tama. Nanguna ako ng 13,000 sundalo sa mga labanan. Nakatalo ako ng maraming kaaway. At tingnan mo ang aking mga sandata, lahat ay bronze, matigas at matalas."
+                characterName = "KHUFU",
+                line = " Bakit kami patuloy na nagbabayad ng taxes para sa mga libingan ng pharaoh?! Gutom na kami!"
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Ang Kingdom ay master craftsmen ng bronze. Ginagamit nila ito para sa ritual vessels, weapons, at ornaments. Ang bawat bronze piece ay obra maestra, may intricate designs ng dragons, taotie masks, at geometric patterns."
+                line = " Ito ang tinatawag na First Intermediate Period, 200 years ng civil war, famine, at political instability. Walang central power, walang order. Ang Egypt ay divided."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Paano nila ito ginawa? Ang ganda ng details!"
-            },
-            new DialogueLine
-            {
-                characterName = "FU HAO",
-                line = " Piece-mold casting. Ginagawa muna namin ang clay model, pagkatapos ay gumagawa ng molds sa paligid nito. Binubuhusan namin ng tunaw na bronze, hinihintay na lumamig, tapos tinatanggal ang mold. Bawat vessel ay unique."
+                line = " Kaya... bumagsak sila dahil sa sobrang gastos sa pyramids?"
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Ang bronze vessels ay hindi lang decorative, ginagamit ito sa ritwal para sa mga ancestors. Sa paniniwala ng Kingdom, ang mga namatay na ninuno ay may kapangyarihan na tumulong o saktan ang mga buhay. Kaya importante ang pakikipag-ugnayan sa kanila."
+                line = " Isa yan sa dahilan. Pero dumating ang pagbabago, ang reunification. At yan ang simula ng Gitnang Kaharian."
+            },
+            new DialogueLine
+            {
+                characterName = "MENTUHOTEP",
+                line = " Ako si Mentuhotep II. Hindi ako god-king tulad ni Khufu. Ako ay 'shepherd of the people', tagapangalaga ng aking bayan. Ang aking tungkulin ay maglingkod, hindi magpahirap."
+            },
+            new DialogueLine
+            {
+                characterName = "PLAYER",
+                line = " Shepherd of the people? Ibig sabihin... nagbago ang role ng pharaoh?"
+            },
+            new DialogueLine
+            {
+                characterName = "MENTUHOTEP",
+                line = " Tama. Natutunan namin ang lesson ng nakaraan. Ang power ay hindi privilege, ito ay responsibility. Kaya sa halip na pyramids, nagtayo kami ng irrigation canals, nag-expand ng trade, nag-restore ng batas at kaayusan."
             },
         };
     }
@@ -204,7 +205,7 @@ public class KingdomScene2 : MonoBehaviour
     void ShowDialogue()
     {
         // AchievementUnlockedRenderer.SetActive(false);
-        FuhaoFulldrawnSprite.enabled = false;
+        MentuhotepFulldrawnSprite.enabled = false;
 
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
@@ -219,36 +220,36 @@ public class KingdomScene2 : MonoBehaviour
         {
             case 0:
                 PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                ChronocharacterRenderer.sprite = ChronoSad;
                 break;
             case 1:
-                FuhaoFulldrawnSprite.enabled = true;
                 PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = ChronoThinking;
+                ChronocharacterRenderer.sprite = KhufoCommanding;
                 break;
             case 2:
                 PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = PlayerCurious;
+                ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 3:
                 PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = FuhaoFierce;
+                ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
             case 4:
                 PlayercharacterRenderer.sprite = PlayerEmabarrassed;
                 ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 5:
+                MentuhotepFulldrawnSprite.enabled = true;
                 PlayercharacterRenderer.sprite = PlayerReflective;
                 ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
             case 6:
-                PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = FuhaoConfident;
-                break;
-            case 7:
                 PlayercharacterRenderer.sprite = PlayerCurious;
                 ChronocharacterRenderer.sprite = ChronoThinking;
+                break;
+            case 7:
+                PlayercharacterRenderer.sprite = PlayerReflective;
+                ChronocharacterRenderer.sprite = MentuhotepWise;
                 break;
         }
 

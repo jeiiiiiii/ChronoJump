@@ -2265,7 +2265,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1417533024}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a075e5dd0de92c44974850817c7bca7, type: 3}
+  m_Script: {fileID: 11500000, guid: 82811bbca4e9ce94d88f799f00f58068, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueText: {fileID: 991958766}
@@ -2280,12 +2280,13 @@ MonoBehaviour:
   PlayerEmbarrassed: {fileID: 21300000, guid: f1f43dbd9447c5f468698952cbd6a509, type: 3}
   PlayerSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}
   PlayerEager: {fileID: 5428063399545322546, guid: c517d75299d0ddb4cb6eed3374b7a5b3, type: 3}
+  PlayerReflective: {fileID: -6828170361931683543, guid: 41872a0e55450ef43b535aba6363171a, type: 3}
   ChronocharacterRenderer: {fileID: 1052601367}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
-  WudingWorried: {fileID: 0}
-  FuhaoFierce: {fileID: 0}
+  AhmoseDetermined: {fileID: 0}
+  AhmoseFierce: {fileID: 0}
   audioSource: {fileID: 599946919}
   dialogueClips: []
 --- !u!1001 &1598657690

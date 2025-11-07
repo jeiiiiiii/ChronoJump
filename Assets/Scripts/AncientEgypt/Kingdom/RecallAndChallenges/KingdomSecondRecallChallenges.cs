@@ -43,9 +43,9 @@ public class KingdomSecondRecallChallenges : MonoBehaviour
     private bool challengeCompleted = false;
 
     public Image[] heartImages;
-    private bool isShowingbonesDialogue = false;
-    private bool isShowingChinaDialogue = false;
-    private bool isShowingAsawaDialogue = false;
+    private bool isShowingauthoritarianDialogue = false;
+    private bool isShowingroleDialogue = false;
+    private bool isShowingNagingDialogue = false;
     public AudioSource finishAudioSource;
 
     public Button ArtifactImageButton;
@@ -54,9 +54,9 @@ public class KingdomSecondRecallChallenges : MonoBehaviour
 
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
-    public AudioClip[] AsawaClips;
-    public AudioClip[] bonesClips;
-    public AudioClip[] ChinaClips;
+    public AudioClip[] NagingClips;
+    public AudioClip[] authoritarianClips;
+    public AudioClip[] roleClips;
 
     void Start()
     {
@@ -115,7 +115,7 @@ public class KingdomSecondRecallChallenges : MonoBehaviour
                 new DialogueLine
                 {
                     characterName = "Hint",
-                    line = "Ang sagot ay isang bones na nagsimula sa Akkad at naging kauna-unahang emperor sa kasaysayan. Ang kanyang pangalan ay nagsisimula sa letrang 'S'."
+                    line = "Ang sagot ay isang authoritarian na nagsimula sa Akkad at naging kauna-unahang emperor sa kasaysayan. Ang kanyang pangalan ay nagsisimula sa letrang 'S'."
                 },
             };
 
@@ -149,41 +149,41 @@ public class KingdomSecondRecallChallenges : MonoBehaviour
         }
     }
 
-    private DialogueLine[] AsawaLines = new DialogueLine[]
+    private DialogueLine[] NagingLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Asawa ni Wu Ding at heneral na nanguna ng 13,000 sundalo!"
+            line = " Naging 'shepherd of the people' na nag-focus sa welfare ng bayan!"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Magaling! Si Fu Hao ay isa sa pinakakahanga-hangang babae ng ancient China. Ang kanyang tomb ay natuklasan noong 1976, puno ng weapons at treasures."
+            line = " Magaling! Ang Gitnang Kaharian ay mas humanitarian. Focus sa irrigation, trade, justice, hindi lang sa personal glory ng pharaoh."
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Ang kasaysayan ay puno ng mga taong lumalabag sa inaasahan. Si Fu Hao ay patunay na ang gender ay hindi hadlang sa greatness."
+            line = " Ang true leadership ay hindi tungkol sa glory, ito ay tungkol sa sacrifice para sa iyong tao."
         },
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Ang cool niya! Asawa at warrior sa sabay..."
+            line = " Mas inspiring ang leadership style na 'to..."
         },
 
     };
-    private DialogueLine[] bonesLines = new DialogueLine[]
+    private DialogueLine[] authoritarianLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Ano... priestess na nag-interpret ng oracle bones ba?"
+            line = " Ano... naging mas powerful at authoritarian ba?"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Mayroon nga siyang religious role, pero ang kanyang pinakakilalang kontribusyon ay bilang military leader."
+            line = " Actually, baliktad. Naging mas compassionate ang leadership style. Ang focus ay nasa service, hindi domination."
         },
         new DialogueLine
         {
@@ -191,17 +191,17 @@ public class KingdomSecondRecallChallenges : MonoBehaviour
             line = " Pumiling muli."
         }
     };
-    private DialogueLine[] ChinaLines = new DialogueLine[]
+    private DialogueLine[] roleLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Unang empress ng China... siguro?"
+            line = " Nawala ang kanilang religious role... siguro?"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Hindi siya empress. Siya ay isa sa maraming asawa ni Wu Ding, pero ang kanyang pagiging heneral ang nag-differentiate sa kanya."
+            line = " Hindi. Nananatili pa rin silang religious leader. Ang nagbago lang ay ang emphasis, from divine ruler to servant leader."
         },
         new DialogueLine
         {
@@ -214,9 +214,9 @@ public class KingdomSecondRecallChallenges : MonoBehaviour
     {
         answers = new Answer[]
         {
-            new Answer { text = "Asawa ni Wu Ding at heneralng nanguna ng 13,000 sundalo", isCorrect = true },
-            new Answer { text = "Isang priestess na nag-interpret ng oracle bones", isCorrect = false },
-            new Answer { text = "Unang empress ng China", isCorrect = false },
+            new Answer { text = "Naging \"shepherd of the people\" na nag-focus sa welfare ng bayan", isCorrect = true },
+            new Answer { text = "Naging mas powerful at authoritarian", isCorrect = false },
+            new Answer { text = "Nawala ang kanilang religious role", isCorrect = false },
         };
 
         for (int i = 0; i < answerButtons.Length; i++)
@@ -244,12 +244,12 @@ public class KingdomSecondRecallChallenges : MonoBehaviour
         {
             AudioClip clipToPlay = null;
 
-            if (dialogueLines == AsawaLines && AsawaClips != null && currentDialogueIndex < AsawaClips.Length)
-                clipToPlay = AsawaClips[currentDialogueIndex];
-            else if (dialogueLines == bonesLines && bonesClips != null && currentDialogueIndex < bonesClips.Length)
-                clipToPlay = bonesClips[currentDialogueIndex];
-            else if (dialogueLines == ChinaLines && ChinaClips != null && currentDialogueIndex < ChinaClips.Length)
-                clipToPlay = ChinaClips[currentDialogueIndex];
+            if (dialogueLines == NagingLines && NagingClips != null && currentDialogueIndex < NagingClips.Length)
+                clipToPlay = NagingClips[currentDialogueIndex];
+            else if (dialogueLines == authoritarianLines && authoritarianClips != null && currentDialogueIndex < authoritarianClips.Length)
+                clipToPlay = authoritarianClips[currentDialogueIndex];
+            else if (dialogueLines == roleLines && roleClips != null && currentDialogueIndex < roleClips.Length)
+                clipToPlay = roleClips[currentDialogueIndex];
             else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
                 clipToPlay = dialogueClips[currentDialogueIndex];
 
@@ -261,7 +261,7 @@ public class KingdomSecondRecallChallenges : MonoBehaviour
             }
         }
 
-        if (dialogueLines == AsawaLines)
+        if (dialogueLines == NagingLines)
         {
             switch (currentDialogueIndex)
             {
@@ -308,7 +308,7 @@ public class KingdomSecondRecallChallenges : MonoBehaviour
 
             }
         }
-        else if (dialogueLines == bonesLines)
+        else if (dialogueLines == authoritarianLines)
         {
             switch (currentDialogueIndex)
             {
@@ -326,7 +326,7 @@ public class KingdomSecondRecallChallenges : MonoBehaviour
                     break;
             }
         }
-        else if (dialogueLines == ChinaLines)
+        else if (dialogueLines == roleLines)
         {
             switch (currentDialogueIndex)
             {
@@ -360,14 +360,14 @@ public class KingdomSecondRecallChallenges : MonoBehaviour
             SetAnswers();
             foreach (Button btn in answerButtons)
             {
-                btn.interactable = !(dialogueLines == AsawaLines && currentDialogueIndex == 0);
+                btn.interactable = !(dialogueLines == NagingLines && currentDialogueIndex == 0);
                 btn.gameObject.SetActive(true);
             }
 
             // Only hide the Next button for the initial/main dialogue set.
-            // If we're displaying one of the special dialogues (Asawa/bones/China) that also start at index 0,
+            // If we're displaying one of the special dialogues (Naging/authoritarian/role) that also start at index 0,
             // leave visibility control to the callers who set up those dialogues.
-            bool isSpecialDialogue = (dialogueLines == AsawaLines || dialogueLines == bonesLines || dialogueLines == ChinaLines);
+            bool isSpecialDialogue = (dialogueLines == NagingLines || dialogueLines == authoritarianLines || dialogueLines == roleLines);
             if (!isSpecialDialogue)
                 nextButton.gameObject.SetActive(false);
         }
@@ -379,7 +379,7 @@ public class KingdomSecondRecallChallenges : MonoBehaviour
                 nextButton.onClick.RemoveAllListeners();
 
 
-                if (isShowingAsawaDialogue) // ✅ Correct flag for this script
+                if (isShowingNagingDialogue) // ✅ Correct flag for this script
                 {
                     nextButton.interactable = false;
                     // Should be change
@@ -456,9 +456,9 @@ public class KingdomSecondRecallChallenges : MonoBehaviour
 
         if (selected.isCorrect)
         {
-            isShowingAsawaDialogue = true;
+            isShowingNagingDialogue = true;
             currentDialogueIndex = 0;
-            dialogueLines = AsawaLines;
+            dialogueLines = NagingLines;
             ShowDialogue();
 
             nextButton.gameObject.SetActive(true);
@@ -484,27 +484,27 @@ public class KingdomSecondRecallChallenges : MonoBehaviour
                 return;
             }
 
-            if (selected.text == "Isang priestess na nag-interpret ng oracle bones")
+            if (selected.text == "Naging mas powerful at authoritarian")
             {
-                isShowingbonesDialogue = true;
+                isShowingauthoritarianDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = bonesLines;
+                dialogueLines = authoritarianLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextbonesDialogue);
+                nextButton.onClick.AddListener(ShowNextauthoritarianDialogue);
             }
-            else if (selected.text == "Unang empress ng China")
+            else if (selected.text == "Nawala ang kanilang religious role")
             {
-                isShowingChinaDialogue = true;
+                isShowingroleDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = ChinaLines;
+                dialogueLines = roleLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextChinaDialogue);
+                nextButton.onClick.AddListener(ShowNextroleDialogue);
             }
             else
             {
@@ -517,7 +517,7 @@ public class KingdomSecondRecallChallenges : MonoBehaviour
             }
         }
 
-        void ShowNextbonesDialogue()
+        void ShowNextauthoritarianDialogue()
         {
             currentDialogueIndex++;
 
@@ -526,11 +526,11 @@ public class KingdomSecondRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextbonesDialogue);
+                nextButton.onClick.AddListener(ShowNextauthoritarianDialogue);
             }
         }
 
-        void ShowNextChinaDialogue()
+        void ShowNextroleDialogue()
         {
             currentDialogueIndex++;
 
@@ -539,7 +539,7 @@ public class KingdomSecondRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextChinaDialogue);
+                nextButton.onClick.AddListener(ShowNextroleDialogue);
             }
         }
     }

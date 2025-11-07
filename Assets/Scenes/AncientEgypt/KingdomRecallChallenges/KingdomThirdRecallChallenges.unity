@@ -869,7 +869,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 389675048}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a1d215658a870549b656a1dbab564d1, type: 3}
+  m_Script: {fileID: 11500000, guid: fb4959e2202ce864a82760e616735e6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   PlayercharacterRenderer: {fileID: 81652815}
@@ -901,9 +901,9 @@ MonoBehaviour:
   ArtifactButton: {fileID: 869400932}
   audioSource: {fileID: 1246413602}
   dialogueClips: []
-  masamaClips: []
-  ulanClips: []
-  emperorClips: []
+  imperyoClips: []
+  buildingClips: []
+  bansaClips: []
 --- !u!1 &406098304
 GameObject:
   m_ObjectHideFlags: 0

@@ -43,9 +43,9 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
     private bool challengeCompleted = false;
 
     public Image[] heartImages;
-    private bool isShowingulanDialogue = false;
-    private bool isShowingemperorDialogue = false;
-    private bool isShowingmasamaDialogue = false;
+    private bool isShowingbuildingDialogue = false;
+    private bool isShowingbansaDialogue = false;
+    private bool isShowingimperyoDialogue = false;
     public AudioSource finishAudioSource;
 
     public Button ArtifactImageButton;
@@ -54,9 +54,9 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
 
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
-    public AudioClip[] masamaClips;
-    public AudioClip[] ulanClips;
-    public AudioClip[] emperorClips;
+    public AudioClip[] imperyoClips;
+    public AudioClip[] buildingClips;
+    public AudioClip[] bansaClips;
 
     void Start()
     {
@@ -115,7 +115,7 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
                 new DialogueLine
                 {
                     characterName = "Hint",
-                    line = "Ang sagot ay isang hari na nagsimula sa Akkad at naging kauna-unahang emperor sa kasaysayan. Ang kanyang pangalan ay nagsisimula sa letrang 'S'."
+                    line = "Ang sagot ay isang hari na nagsimula sa Akkad at naging kauna-unahang bansa sa kasaysayan. Ang kanyang pangalan ay nagsisimula sa letrang 'S'."
                 },
             };
 
@@ -149,27 +149,27 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
         }
     }
 
-    private DialogueLine[] masamaLines = new DialogueLine[]
+    private DialogueLine[] imperyoLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Ang karapatang maghari na ibinigay ng langit, ngunit mawawala kapag ang pamumuno ay naging masama!"
+            line = " Expansionist at militaristic, naging imperyo!"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Tumpak. Ito ang foundation ng political philosophy ng China. Kapag may kalamidad, famine, floods, rebellions, ito ay sign na nawala na ang Mandate."
+            line = " Tumpak. Ang Bagong Kaharian ay naging aggressive power. Sumakop sila ng neighboring territories at naging international superpower."
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Ang kapangyarihan ay hindi karapatan, ito ay responsibilidad. Kapag ginawa mong pabigat, kukunin ito sa iyo."
+            line = " Ang tatlong kingdoms ay tatlong lessons: Lumang Kaharian, ang glory may presyo. Gitnang Kaharian, ang service ay mas important kaysa glory. Bagong Kaharian, ang power ay temporary."
         },
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Parang... ang langit mismo ang judge..."
+            line = " Parang... rise, fall, rise, fall... yan ang cycle ng lahat ng civilizations..."
         },
         new DialogueLine
         {
@@ -179,21 +179,21 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
         new DialogueLine
         {
             characterName = "CHRONO ",
-            line = " Pero tandaan mo, ang Kingdom ay natapos, pero ang sistema ng dynasties ay nagsimula pa lang. Marami pang dadating."
+            line = " Pero tandaan mo, ang Egypt ay tumagal ng 3,000 years. Tatlong golden ages, maraming intermediate periods. Pero ang legacy ay nananatili, pyramids, hieroglyphics, mummies, mythology."
         },
 
     };
-    private DialogueLine[] ulanLines = new DialogueLine[]
+    private DialogueLine[] buildingLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Ah... ang pangako ng langit na magbigay ng ulan?"
+            line = " Ah... focus sa pyramid building?"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Mas malalim pa yan. Ang Mandate ay tungkol sa legitimacy ng ruler. Kapag naging corrupt ang hari, nawala ang karapatang mamuno."
+            line = " Yan ay sa Lumang Kaharian. Sa Bagong Kaharian, ang focus ay military expansion at wealth accumulation."
         },
         new DialogueLine
         {
@@ -201,17 +201,17 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
             line = " Pumiling muli."
         }
     };
-    private DialogueLine[] emperorLines = new DialogueLine[]
+    private DialogueLine[] bansaLines = new DialogueLine[]
     {
         new DialogueLine
         {
             characterName = "PLAYER",
-            line = " Ang titulo ng emperor ba?"
+            line = " Complete isolation mula sa ibang bansa ba?"
         },
         new DialogueLine
         {
             characterName = "CHRONO",
-            line = " Hindi. Ito ay isang konsepto, ang ideya na ang heaven ay pumipili ng tamang ruler. Kapag naging masama ang pamumuno, lilipat ang Mandate sa iba."
+            line = " Baliktad. Ang Bagong Kaharian ay peak ng international relations, may trade, diplomacy, at warfare sa buong region."
         },
         new DialogueLine
         {
@@ -224,9 +224,9 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
     {
         answers = new Answer[]
         {
-            new Answer { text = "Ang pangako ng langit na magbigay ng ulan", isCorrect = false },
-            new Answer { text = "Ang titulo ng emperor", isCorrect = false },
-            new Answer { text = "Ang karapatang maghari na ibinigay ng langit, ngunit mawawala kapag ang pamumuno ay naging masama", isCorrect = true },
+            new Answer { text = "Focus sa pyramid building", isCorrect = false },
+            new Answer { text = "Complete isolation mula sa ibang bansa", isCorrect = false },
+            new Answer { text = "Expansionist at militaristic, naging imperyo ", isCorrect = true },
         };
 
         for (int i = 0; i < answerButtons.Length; i++)
@@ -254,12 +254,12 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
         {
             AudioClip clipToPlay = null;
 
-            if (dialogueLines == masamaLines && masamaClips != null && currentDialogueIndex < masamaClips.Length)
-                clipToPlay = masamaClips[currentDialogueIndex];
-            else if (dialogueLines == ulanLines && ulanClips != null && currentDialogueIndex < ulanClips.Length)
-                clipToPlay = ulanClips[currentDialogueIndex];
-            else if (dialogueLines == emperorLines && emperorClips != null && currentDialogueIndex < emperorClips.Length)
-                clipToPlay = emperorClips[currentDialogueIndex];
+            if (dialogueLines == imperyoLines && imperyoClips != null && currentDialogueIndex < imperyoClips.Length)
+                clipToPlay = imperyoClips[currentDialogueIndex];
+            else if (dialogueLines == buildingLines && buildingClips != null && currentDialogueIndex < buildingClips.Length)
+                clipToPlay = buildingClips[currentDialogueIndex];
+            else if (dialogueLines == bansaLines && bansaClips != null && currentDialogueIndex < bansaClips.Length)
+                clipToPlay = bansaClips[currentDialogueIndex];
             else if (dialogueClips != null && currentDialogueIndex < dialogueClips.Length)
                 clipToPlay = dialogueClips[currentDialogueIndex];
 
@@ -271,7 +271,7 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
             }
         }
 
-        if (dialogueLines == masamaLines)
+        if (dialogueLines == imperyoLines)
         {
             switch (currentDialogueIndex)
             {
@@ -326,7 +326,7 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
 
             }
         }
-        else if (dialogueLines == ulanLines)
+        else if (dialogueLines == buildingLines)
         {
             switch (currentDialogueIndex)
             {
@@ -344,7 +344,7 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
                     break;
             }
         }
-        else if (dialogueLines == emperorLines)
+        else if (dialogueLines == bansaLines)
         {
             switch (currentDialogueIndex)
             {
@@ -378,14 +378,14 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
             SetAnswers();
             foreach (Button btn in answerButtons)
             {
-                btn.interactable = !(dialogueLines == masamaLines && currentDialogueIndex == 0);
+                btn.interactable = !(dialogueLines == imperyoLines && currentDialogueIndex == 0);
                 btn.gameObject.SetActive(true);
             }
 
             // Only hide the Next button for the initial/main dialogue set.
-            // If we're displaying one of the special dialogues (masama/ulan/emperor) that also start at index 0,
+            // If we're displaying one of the special dialogues (imperyo/building/bansa) that also start at index 0,
             // leave visibility control to the callers who set up those dialogues.
-            bool isSpecialDialogue = (dialogueLines == masamaLines || dialogueLines == ulanLines || dialogueLines == emperorLines);
+            bool isSpecialDialogue = (dialogueLines == imperyoLines || dialogueLines == buildingLines || dialogueLines == bansaLines);
             if (!isSpecialDialogue)
                 nextButton.gameObject.SetActive(false);
         }
@@ -397,7 +397,7 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
                 nextButton.onClick.RemoveAllListeners();
 
 
-                if (isShowingmasamaDialogue) // ✅ Correct flag for this script
+                if (isShowingimperyoDialogue) // ✅ Correct flag for this script
                 {
                     nextButton.interactable = false;
                     // Should be change
@@ -474,9 +474,9 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
 
         if (selected.isCorrect)
         {
-            isShowingmasamaDialogue = true;
+            isShowingimperyoDialogue = true;
             currentDialogueIndex = 0;
-            dialogueLines = masamaLines;
+            dialogueLines = imperyoLines;
             ShowDialogue();
 
             nextButton.gameObject.SetActive(true);
@@ -502,27 +502,27 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
                 return;
             }
 
-            if (selected.text == "Ang pangako ng langit na magbigay ng ulan")
+            if (selected.text == "Focus sa pyramid building")
             {
-                isShowingulanDialogue = true;
+                isShowingbuildingDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = ulanLines;
+                dialogueLines = buildingLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextulanDialogue);
+                nextButton.onClick.AddListener(ShowNextbuildingDialogue);
             }
-            else if (selected.text == "Ang titulo ng emperor")
+            else if (selected.text == "Complete isolation mula sa ibang bansa")
             {
-                isShowingemperorDialogue = true;
+                isShowingbansaDialogue = true;
                 currentDialogueIndex = 0;
-                dialogueLines = emperorLines;
+                dialogueLines = bansaLines;
                 ShowDialogue();
 
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextemperorDialogue);
+                nextButton.onClick.AddListener(ShowNextbansaDialogue);
             }
             else
             {
@@ -535,7 +535,7 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
             }
         }
 
-        void ShowNextulanDialogue()
+        void ShowNextbuildingDialogue()
         {
             currentDialogueIndex++;
 
@@ -544,11 +544,11 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextulanDialogue);
+                nextButton.onClick.AddListener(ShowNextbuildingDialogue);
             }
         }
 
-        void ShowNextemperorDialogue()
+        void ShowNextbansaDialogue()
         {
             currentDialogueIndex++;
 
@@ -557,7 +557,7 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
                 ShowDialogue();
                 nextButton.gameObject.SetActive(true);
                 nextButton.onClick.RemoveAllListeners();
-                nextButton.onClick.AddListener(ShowNextemperorDialogue);
+                nextButton.onClick.AddListener(ShowNextbansaDialogue);
             }
         }
     }
