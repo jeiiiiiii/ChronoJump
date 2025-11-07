@@ -2487,5 +2487,178 @@ private async Task<string> FindStoryDirectory(string storyId, string teacherBase
         }
     }
 
+    #region S3 Integration
+
+    /// <summary>
+    /// Upload all story images to S3 and update Firebase with URLs
+    /// Call this when saving/publishing a story
+    /// </summary>
+    public async Task<bool> UploadStoryImagesToS3(StoryData story)
+    {
+        if (!S3StorageService.Instance.IsReady)
+        {
+            Debug.LogWarning("⚠️ S3 not ready, skipping cloud upload");
+            return false;
+        }
+
+        try
+        {
+            string teacherId = GetCurrentTeacherId();
+            int storyIndex = story.storyIndex;
+
+            bool anyUploaded = false;
+
+            // ✅ Upload background if it's a local path (not already an S3 URL)
+            if (!string.IsNullOrEmpty(story.backgroundPath) && !IsS3Url(story.backgroundPath))
+            {
+                Texture2D bgTex = ImageStorage.LoadImage(story.backgroundPath);
+                if (bgTex != null)
+                {
+                    string s3Url = await S3StorageService.Instance.UploadBackgroundImage(bgTex, teacherId, storyIndex);
+                    if (!string.IsNullOrEmpty(s3Url))
+                    {
+                        story.backgroundPath = s3Url; // Replace with S3 URL
+                        anyUploaded = true;
+                        Debug.Log($"✅ Background uploaded to S3: {s3Url}");
+                    }
+                }
+            }
+
+            // ✅ Upload character 1
+            if (!string.IsNullOrEmpty(story.character1Path) && !IsS3Url(story.character1Path))
+            {
+                Texture2D char1Tex = ImageStorage.LoadImage(story.character1Path);
+                if (char1Tex != null)
+                {
+                    string s3Url = await S3StorageService.Instance.UploadCharacter1Image(char1Tex, teacherId, storyIndex);
+                    if (!string.IsNullOrEmpty(s3Url))
+                    {
+                        story.character1Path = s3Url;
+                        anyUploaded = true;
+                        Debug.Log($"✅ Character 1 uploaded to S3: {s3Url}");
+                    }
+                }
+            }
+
+            // ✅ Upload character 2
+            if (!string.IsNullOrEmpty(story.character2Path) && !IsS3Url(story.character2Path))
+            {
+                Texture2D char2Tex = ImageStorage.LoadImage(story.character2Path);
+                if (char2Tex != null)
+                {
+                    string s3Url = await S3StorageService.Instance.UploadCharacter2Image(char2Tex, teacherId, storyIndex);
+                    if (!string.IsNullOrEmpty(s3Url))
+                    {
+                        story.character2Path = s3Url;
+                        anyUploaded = true;
+                        Debug.Log($"✅ Character 2 uploaded to S3: {s3Url}");
+                    }
+                }
+            }
+
+            if (anyUploaded)
+            {
+                // Save the updated URLs to local storage
+                SaveStories();
+                Debug.Log("✅ All story images uploaded to S3");
+            }
+
+            return anyUploaded;
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Failed to upload story images to S3: {ex.Message}");
+            return false;
+        }
+    }
+
+
+    /// <summary>
+    /// Check if a path is an S3 URL
+    /// </summary>
+    private bool IsS3Url(string path)
+    {
+        return !string.IsNullOrEmpty(path) &&
+               (path.StartsWith("https://") || path.StartsWith("http://")) &&
+               path.Contains("s3") &&
+               path.Contains("amazonaws.com");
+    }
+
+
+    /// <summary>
+    /// UPDATED: Save story to Firestore with S3 URLs
+    /// Replaces the existing SaveStoryToFirestore method
+    /// </summary>
+    public async Task<bool> SaveStoryToFirestoreWithS3(StoryData story)
+    {
+        try
+        {
+            if (!IsFirebaseReady)
+            {
+                Debug.LogError("❌ No user logged in, cannot save to Firestore");
+                return false;
+            }
+
+            // ✅ STEP 1: Upload images to S3 first (this updates the story paths to S3 URLs)
+            await UploadStoryImagesToS3(story);
+
+            // ✅ STEP 2: Now save to Firestore with S3 URLs
+            bool storyExists = await CheckIfStoryExistsInFirestore(story.storyId);
+
+            if (storyExists)
+            {
+                IncrementStoryVersion(story);
+                Debug.Log($"💾 Saving UPDATED story (v{story.storyVersion}): {story.storyTitle}");
+                ClearStoryCache(story.storyId);
+            }
+            else
+            {
+                Debug.Log($"💾 Saving NEW story (v{story.storyVersion}): {story.storyTitle}");
+            }
+
+            string teachId = GetCurrentTeacherId();
+            if (string.IsNullOrEmpty(teachId))
+            {
+                Debug.LogError("❌ No teacher ID found, cannot save story");
+                return false;
+            }
+
+            int storyIndex = story.storyIndex;
+            if (storyIndex < 0)
+            {
+                Debug.LogWarning($"⚠️ Story '{story.storyTitle}' has invalid index: {storyIndex}. Using list position.");
+                storyIndex = allStories.IndexOf(story);
+                if (storyIndex == -1)
+                {
+                    storyIndex = allStories.Count;
+                }
+            }
+
+            // ✅ STEP 3: Map to Firestore model (now contains S3 URLs)
+            var firestoreStory = MapToFirestoreStory(story, teachId, storyIndex);
+
+            // ✅ STEP 4: Save main story document
+            var storyRef = _firestore
+                .Collection("createdStories")
+                .Document(story.storyId);
+
+            await storyRef.SetAsync(firestoreStory);
+
+            // ✅ STEP 5: Save dialogues and questions subcollections
+            await SaveDialoguesToFirestore(story.storyId, story.dialogues);
+            await SaveQuestionsToFirestore(story.storyId, story.quizQuestions);
+
+            Debug.Log($"✅ Story '{story.storyTitle}' saved to Firestore with S3 URLs (v{story.storyVersion})");
+            return true;
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Failed to save story to Firestore: {ex.Message}");
+            return false;
+        }
+    }
+
+
+    #endregion
 
 }

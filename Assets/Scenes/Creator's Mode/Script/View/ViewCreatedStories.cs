@@ -166,7 +166,7 @@ private void OnStoriesLoaded(List<StoryData> stories) // RECEIVE the stories lis
         }
     }
 
-    void UpdateStorySlot(int index)
+    private async void UpdateStorySlot(int index)
     {
         if (index < 0 || index >= storySlots.Length) return;
 
@@ -176,8 +176,8 @@ private void OnStoriesLoaded(List<StoryData> stories) // RECEIVE the stories lis
         bool hasValidSavedStory = false;
         StoryData story = null;
 
-        if (StoryManager.Instance != null && 
-            StoryManager.Instance.allStories != null && 
+        if (StoryManager.Instance != null &&
+            StoryManager.Instance.allStories != null &&
             index < StoryManager.Instance.allStories.Count)
         {
             story = StoryManager.Instance.allStories[index];
@@ -188,10 +188,29 @@ private void OnStoriesLoaded(List<StoryData> stories) // RECEIVE the stories lis
 
         if (hasValidSavedStory && story != null)
         {
-            if (!string.IsNullOrEmpty(story.backgroundPath) && ImageStorage.ImageExists(story.backgroundPath))
+            if (!string.IsNullOrEmpty(story.backgroundPath))
             {
-                backgroundToUse = ImageStorage.LoadImage(story.backgroundPath);
-                Debug.Log($"[Slot {index}] Using custom background from relative path: {story.backgroundPath}");
+                // ✅ USE ASYNC LOADING FOR S3 URLs
+                if (ImageStorage.IsS3Url(story.backgroundPath))
+                {
+                    Debug.Log($"[Slot {index}] Downloading background from S3: {story.backgroundPath}");
+                    backgroundToUse = await ImageStorage.LoadImageAsync(story.backgroundPath);
+
+                    if (backgroundToUse != null)
+                    {
+                        Debug.Log($"[Slot {index}] ✅ Successfully loaded S3 background");
+                    }
+                    else
+                    {
+                        Debug.LogError($"[Slot {index}] ❌ Failed to load S3 background");
+                    }
+                }
+                else
+                {
+                    // Handle local files
+                    backgroundToUse = ImageStorage.LoadImage(story.backgroundPath);
+                    Debug.Log($"[Slot {index}] Using local background: {story.backgroundPath}");
+                }
             }
             else if (storyButtonImages != null && index < storyButtonImages.Length && storyButtonImages[index] != null)
             {
@@ -227,6 +246,7 @@ private void OnStoriesLoaded(List<StoryData> stories) // RECEIVE the stories lis
             Debug.LogWarning($"[Slot {index}] No background available");
         }
     }
+
 
     void OnDestroy()
     {

@@ -98,3 +98,6 @@ InitTestScene*.unity*
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 
+# AWS Config files
+Assets/Scripts/Managers/CloudStorage/AWSConfig.cs
+**/AWSConfig.cs

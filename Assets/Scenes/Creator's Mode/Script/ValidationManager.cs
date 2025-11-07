@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 public class ValidationManager : MonoBehaviour
 {
@@ -23,6 +24,10 @@ public class ValidationManager : MonoBehaviour
 
     // NEW: Combined limit for name + dialogue
     public int maxNameDialogueCombinedLength = 118;
+
+    // File validation settings
+    public long maxFileSizeBytes = 10 * 1024 * 1024; // 10MB
+    public string[] allowedImageExtensions = { ".jpg", ".jpeg", ".png", ".bmp", ".gif" };
 
     private System.Action onConfirmAction;
     private System.Action onBackAction;
@@ -120,7 +125,6 @@ public class ValidationManager : MonoBehaviour
 
         return new ValidationResult { isValid = true };
     }
-
 
     public ValidationResult ValidateDescription(string description)
     {
@@ -285,7 +289,6 @@ public class ValidationManager : MonoBehaviour
         return new ValidationResult { isValid = true };
     }
 
-
     public bool HasDialogues(List<DialogueLine> dialogues)
     {
         return dialogues != null && dialogues.Count > 0;
@@ -363,7 +366,70 @@ public class ValidationManager : MonoBehaviour
         return new ValidationResult { isValid = true };
     }
 
+    // FILE VALIDATION METHODS
+    public ValidationResult ValidateFileFormat(string filePath)
+    {
+        if (string.IsNullOrEmpty(filePath))
+        {
+            return new ValidationResult { isValid = false, message = "File path is empty!" };
+        }
 
+        if (!File.Exists(filePath))
+        {
+            return new ValidationResult { isValid = false, message = "File does not exist!" };
+        }
+
+        string extension = Path.GetExtension(filePath).ToLower();
+        if (!allowedImageExtensions.Contains(extension))
+        {
+            string allowedFormats = string.Join(", ", allowedImageExtensions);
+            return new ValidationResult
+            {
+                isValid = false,
+                message = $"Unsupported file format: {extension}\n\nPlease select a valid image file ({allowedFormats})."
+            };
+        }
+
+        return new ValidationResult { isValid = true };
+    }
+
+    public ValidationResult ValidateFileSize(string filePath)
+    {
+        if (string.IsNullOrEmpty(filePath))
+        {
+            return new ValidationResult { isValid = false, message = "File path is empty!" };
+        }
+
+        if (!File.Exists(filePath))
+        {
+            return new ValidationResult { isValid = false, message = "File does not exist!" };
+        }
+
+        try
+        {
+            FileInfo fileInfo = new FileInfo(filePath);
+            if (fileInfo.Length > maxFileSizeBytes)
+            {
+                double sizeInMB = fileInfo.Length / (1024.0 * 1024.0);
+                double maxSizeInMB = maxFileSizeBytes / (1024.0 * 1024.0);
+                return new ValidationResult
+                {
+                    isValid = false,
+                    message = $"File is too large: {sizeInMB:F1}MB\n\nMaximum allowed size is {maxSizeInMB}MB. Please select a smaller image."
+                };
+            }
+
+            return new ValidationResult { isValid = true };
+        }
+        catch (System.Exception ex)
+        {
+            return new ValidationResult
+            {
+                isValid = false,
+                message = $"Unable to read file: {ex.Message}"
+            };
+        }
+    }
 }
 
 [System.Serializable]
@@ -372,4 +438,3 @@ public class ValidationResult
     public bool isValid;
     public string message;
 }
-
