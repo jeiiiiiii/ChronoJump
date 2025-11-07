@@ -2174,7 +2174,6 @@ GameObject:
   - component: {fileID: 906367088}
   - component: {fileID: 906367087}
   - component: {fileID: 906367085}
-  - component: {fileID: 906367086}
   m_Layer: 5
   m_Name: AhmoseFD
   m_TagString: Untagged
@@ -2226,7 +2225,7 @@ SpriteRenderer:
   m_SortingLayerID: -2022608575
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -3098384088182992010, guid: a635fda65f880af4695e5443dd138ae5, type: 3}
+  m_Sprite: {fileID: 755620140656967605, guid: 07efbfd3aaca50c4aa3abf001d94dc27, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2237,28 +2236,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &906367086
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 906367084}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 7cb4021060129674187d769d7ac122b1, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!222 &906367087
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2283,7 +2260,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -132.35999, y: -72.72}
+  m_AnchoredPosition: {x: -38, y: -72.72}
   m_SizeDelta: {x: 1019.1, y: 961.26}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1170712473
@@ -3063,8 +3040,8 @@ MonoBehaviour:
   PlayerSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}
   PlayerReflective: {fileID: -6828170361931683543, guid: 41872a0e55450ef43b535aba6363171a, type: 3}
   PlayerThinking: {fileID: 21300000, guid: f1f43dbd9447c5f468698952cbd6a509, type: 3}
-  AhmoseConfident: {fileID: 0}
-  MentuhotepWise: {fileID: 0}
+  AhmoseConfident: {fileID: 7075786088656561906, guid: 87d8508a3b9dd53478a33c3187c229ec, type: 3}
+  MentuhotepWise: {fileID: -1385612247081616407, guid: 31d6d5637bec296489caaa221996236b, type: 3}
   ChronocharacterRenderer: {fileID: 808504571}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}

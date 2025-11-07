@@ -35,7 +35,7 @@ public class SiningScene2 : MonoBehaviour
     public Sprite PlayerEager;
     public Sprite PlayerEmabarrassed;
     public Sprite RaviEnthusiastic;
-    public Sprite RaviPassionate;
+    public Sprite RaviHopeful;
 
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
@@ -244,7 +244,7 @@ public class SiningScene2 : MonoBehaviour
                 break;
             case 6:
                 PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = RaviPassionate;
+                ChronocharacterRenderer.sprite = RaviHopeful;
                 break;
             case 7:
                 PlayercharacterRenderer.sprite = PlayerCurious;

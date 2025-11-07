@@ -35,11 +35,6 @@ public class HarappaScene2 : MonoBehaviour
     public Sprite PlayerEager;
     public Sprite PlayerEmabarrassed;
     public Sprite DaroProud;
-    public Sprite DaroCalm;
-    public Sprite Darowise;
-    public Sprite MatrikaMysterious;
-    public Sprite MatrikaSomber;
-
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
@@ -229,7 +224,7 @@ public class HarappaScene2 : MonoBehaviour
                 break;
             case 4:
                 PlayercharacterRenderer.sprite = PlayerEmabarrassed;
-                ChronocharacterRenderer.sprite = ChronoThinking;
+                ChronocharacterRenderer.sprite = DaroProud;
                 break;
             case 5:
                 PlayercharacterRenderer.sprite = PlayerCurious;

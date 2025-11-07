@@ -2938,9 +2938,9 @@ MonoBehaviour:
   PlayerSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}
   PlayerReflective: {fileID: -6828170361931683543, guid: 41872a0e55450ef43b535aba6363171a, type: 3}
   PlayerThinking: {fileID: 5428063399545322546, guid: c517d75299d0ddb4cb6eed3374b7a5b3, type: 3}
-  SindhuProud: {fileID: 0}
-  SindhuWise: {fileID: 0}
-  SindhuCalm: {fileID: 0}
+  SindhuProud: {fileID: -5094780453514364954, guid: 8a0e6f1f8bd3dc941afe8e687a66d5ff, type: 3}
+  SindhuWise: {fileID: -1385612247081616407, guid: b4951ec0ce7d07247bf7e397ec2df886, type: 3}
+  SindhuCalm: {fileID: -5080951992958775113, guid: 384c02c6adc07c1448f30736a8099cdd, type: 3}
   ChronocharacterRenderer: {fileID: 808504571}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}

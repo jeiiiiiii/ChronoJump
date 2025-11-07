@@ -632,7 +632,6 @@ GameObject:
   - component: {fileID: 385422579}
   - component: {fileID: 385422581}
   - component: {fileID: 385422580}
-  - component: {fileID: 385422582}
   m_Layer: 5
   m_Name: MertiFD
   m_TagString: Untagged
@@ -656,7 +655,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 21, y: -63}
+  m_AnchoredPosition: {x: 21, y: -98}
   m_SizeDelta: {x: 1019.1, y: 961.26}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &385422580
@@ -703,7 +702,7 @@ SpriteRenderer:
   m_SortingLayerID: -2022608575
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -3098384088182992010, guid: a635fda65f880af4695e5443dd138ae5, type: 3}
+  m_Sprite: {fileID: 755620140656967605, guid: 8ca7114a7e1480b448d93c13a810c85f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -722,28 +721,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 385422578}
   m_CullTransparentMesh: 1
---- !u!95 &385422582
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 385422578}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 7cb4021060129674187d769d7ac122b1, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &407054476
 GameObject:
   m_ObjectHideFlags: 0
@@ -2592,8 +2569,8 @@ MonoBehaviour:
   PlayerCurious: {fileID: 1425434424722430075, guid: 5c1923377ae91324084f960706141b9f, type: 3}
   PlayerEager: {fileID: 5428063399545322546, guid: c517d75299d0ddb4cb6eed3374b7a5b3, type: 3}
   PlayerSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}
-  ImhotepWise: {fileID: 0}
-  MeritHopeful: {fileID: 0}
+  ImhotepWise: {fileID: 9058362152534986573, guid: 3fc8c6ac35af91748a2c06ddf713c5a5, type: 3}
+  MeritHopeful: {fileID: -7859419320659649158, guid: 574ec51f7beebfc48a3136b233166c60, type: 3}
   ChronocharacterRenderer: {fileID: 1317386105}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}

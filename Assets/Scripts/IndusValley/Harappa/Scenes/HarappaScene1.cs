@@ -28,7 +28,6 @@ public class HarappaScene1 : MonoBehaviour
 
     public SpriteRenderer PlayercharacterRenderer;
     public SpriteRenderer DaroFulldrawnSprite;
-    public SpriteRenderer MatrikaFulldrawnSprite;
 
     // public GameObject AchievementUnlockedRenderer;
     public Sprite PlayerReflective;
@@ -38,8 +37,6 @@ public class HarappaScene1 : MonoBehaviour
     public Sprite DaroProud;
     public Sprite DaroCalm;
     public Sprite Darowise;
-    public Sprite MatrikaMysterious;
-    public Sprite MatrikaSomber;
 
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
@@ -219,7 +216,6 @@ public class HarappaScene1 : MonoBehaviour
     {
         // AchievementUnlockedRenderer.SetActive(false);
         DaroFulldrawnSprite.enabled = false;
-        MatrikaFulldrawnSprite.enabled = false;
 
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";

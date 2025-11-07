@@ -2284,8 +2284,8 @@ MonoBehaviour:
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
-  DayuCalm: {fileID: 0}
-  QiHopeful: {fileID: 0}
+  DayuCalm: {fileID: -1385612247081616407, guid: 00eadfc8b65f93c47be32513174ff21d, type: 3}
+  QiHopeful: {fileID: 7075786088656561906, guid: 69e9a751cfc49744fb9e5a3a8cc4cc3e, type: 3}
   audioSource: {fileID: 599946919}
   dialogueClips: []
 --- !u!1001 &1598657690

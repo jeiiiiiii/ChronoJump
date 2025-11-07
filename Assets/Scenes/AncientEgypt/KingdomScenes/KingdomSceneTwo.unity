@@ -703,7 +703,7 @@ SpriteRenderer:
   m_SortingLayerID: -2022608575
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -3098384088182992010, guid: a635fda65f880af4695e5443dd138ae5, type: 3}
+  m_Sprite: {fileID: 755620140656967605, guid: 35f1dd1a366539a49a2f4bfb2086eede, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2240,8 +2240,8 @@ MonoBehaviour:
   PlayerCurious: {fileID: 1425434424722430075, guid: 5c1923377ae91324084f960706141b9f, type: 3}
   PlayerEager: {fileID: 5428063399545322546, guid: c517d75299d0ddb4cb6eed3374b7a5b3, type: 3}
   PlayerEmabarrassed: {fileID: 21300000, guid: f1f43dbd9447c5f468698952cbd6a509, type: 3}
-  MentuhotepWise: {fileID: 0}
-  KhufoCommanding: {fileID: 0}
+  MentuhotepWise: {fileID: -1385612247081616407, guid: 31d6d5637bec296489caaa221996236b, type: 3}
+  KhufoCommanding: {fileID: 6793313338321924247, guid: ccfdb8170b4c3db4f86df4d0c94b0758, type: 3}
   ChronocharacterRenderer: {fileID: 1317386105}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}

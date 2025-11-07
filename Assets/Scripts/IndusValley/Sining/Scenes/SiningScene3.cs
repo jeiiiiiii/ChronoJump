@@ -248,7 +248,7 @@ public class SiningScene3 : MonoBehaviour
                 break;
             case 7:
                 PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = PlayerThinking;
+                ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 8:
                 PlayercharacterRenderer.sprite = PlayerCurious;

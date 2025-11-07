@@ -531,7 +531,6 @@ GameObject:
   - component: {fileID: 359210584}
   - component: {fileID: 359210583}
   - component: {fileID: 359210585}
-  - component: {fileID: 359210586}
   m_Layer: 5
   m_Name: SindhuFD
   m_TagString: Untagged
@@ -640,7 +639,7 @@ SpriteRenderer:
   m_SortingLayerID: -2022608575
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -3665178506736524260, guid: 05bd4b2f0fbffa34dbd49014e34ad9ba, type: 3}
+  m_Sprite: {fileID: 755620140656967605, guid: 670e093695a864a4fbd0ace50f40c271, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -651,28 +650,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &359210586
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 359210581}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 57197b5608f90e942b7fda52b56c03af, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &363254925
 GameObject:
   m_ObjectHideFlags: 0
@@ -2493,9 +2470,9 @@ MonoBehaviour:
   PlayerCurious: {fileID: 1425434424722430075, guid: 5c1923377ae91324084f960706141b9f, type: 3}
   PlayerEager: {fileID: 5428063399545322546, guid: c517d75299d0ddb4cb6eed3374b7a5b3, type: 3}
   PlayerEmabarrassed: {fileID: 21300000, guid: f1f43dbd9447c5f468698952cbd6a509, type: 3}
-  SindhuProud: {fileID: 0}
-  SindhuWise: {fileID: 0}
-  SindhuCalm: {fileID: 0}
+  SindhuProud: {fileID: -5094780453514364954, guid: 8a0e6f1f8bd3dc941afe8e687a66d5ff, type: 3}
+  SindhuWise: {fileID: -1385612247081616407, guid: b4951ec0ce7d07247bf7e397ec2df886, type: 3}
+  SindhuCalm: {fileID: -5080951992958775113, guid: 384c02c6adc07c1448f30736a8099cdd, type: 3}
   ChronocharacterRenderer: {fileID: 1052601367}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
