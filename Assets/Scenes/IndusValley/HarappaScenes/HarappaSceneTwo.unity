@@ -602,7 +602,7 @@ SpriteRenderer:
   m_SortingLayerID: -521335263
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 3381988405232326519, guid: 54ce6b3be8dd1754eb1ed8435c09666a, type: 3}
+  m_Sprite: {fileID: 8023634663984783972, guid: 408fd47e54d2f2f40ae668a02c64f30b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2218,10 +2218,6 @@ MonoBehaviour:
   PlayerEager: {fileID: 5428063399545322546, guid: c517d75299d0ddb4cb6eed3374b7a5b3, type: 3}
   PlayerEmabarrassed: {fileID: 21300000, guid: f1f43dbd9447c5f468698952cbd6a509, type: 3}
   DaroProud: {fileID: -5094780453514364954, guid: e75b3cadd706bc344a74b61e8c5d0fc3, type: 3}
-  DaroCalm: {fileID: -5080951992958775113, guid: 5d853b9b98d6d344bb4525513fe9ff75, type: 3}
-  Darowise: {fileID: -1385612247081616407, guid: 4ed3936cd431c0d43a495202c8d4d6c8, type: 3}
-  MatrikaMysterious: {fileID: 5102750413458871501, guid: f296d652c46ecad4c94429c20c73f739, type: 3}
-  MatrikaSomber: {fileID: 1851208726622695707, guid: 8611d1489c9c75442844fa29a24bb653, type: 3}
   ChronocharacterRenderer: {fileID: 1317386105}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
