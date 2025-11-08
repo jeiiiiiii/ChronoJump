@@ -500,6 +500,31 @@ string GetTeacherId()
     {
         Debug.Log($"🖼️ Attempting to load background: {imagePath}");
 
+        // ✅ FIX: Handle S3 URLs with async loading
+        if (ImageStorage.IsS3Url(imagePath))
+        {
+            Debug.Log($"🌐 Background is S3 URL, downloading: {imagePath}");
+            SetDownloadPlaceholder(backgroundImage, "Background");
+
+            // Start async download
+            var downloadTask = ImageStorage.LoadImageAsync(imagePath);
+            yield return new WaitUntil(() => downloadTask.IsCompleted);
+
+            if (downloadTask.Result != null)
+            {
+                ApplyBackgroundTexture(downloadTask.Result);
+                Debug.Log($"✅ Successfully loaded background from S3: {imagePath}");
+                yield break;
+            }
+            else
+            {
+                Debug.LogError($"❌ Failed to download background from S3: {imagePath}");
+                SetDefaultBackground();
+                yield break;
+            }
+        }
+
+        // Handle local files (existing code)
         Texture2D localTexture = ImageStorage.LoadImage(imagePath);
         if (localTexture != null)
         {
@@ -516,15 +541,41 @@ string GetTeacherId()
         }
         else
         {
-            Debug.Log($"⚠️ Background path not found locally and not a Firebase URL: {imagePath}");
+            Debug.Log($"⚠️ Background path not found locally: {imagePath}");
             SetDefaultBackground();
         }
     }
+
 
     private IEnumerator LoadCharacterImage(string imagePath, RawImage characterImage, int characterNumber)
     {
         Debug.Log($"👤 Attempting to load character {characterNumber}: {imagePath}");
 
+        // ✅ FIX: Handle S3 URLs with async loading
+        if (ImageStorage.IsS3Url(imagePath))
+        {
+            Debug.Log($"🌐 Character {characterNumber} is S3 URL, downloading: {imagePath}");
+            SetDownloadPlaceholder(characterImage, $"Character {characterNumber}");
+
+            // Start async download
+            var downloadTask = ImageStorage.LoadImageAsync(imagePath);
+            yield return new WaitUntil(() => downloadTask.IsCompleted);
+
+            if (downloadTask.Result != null)
+            {
+                ApplyCharacterTexture(characterImage, downloadTask.Result);
+                Debug.Log($"✅ Successfully loaded character {characterNumber} from S3: {imagePath}");
+                yield break;
+            }
+            else
+            {
+                Debug.LogError($"❌ Failed to download character {characterNumber} from S3: {imagePath}");
+                characterImage.gameObject.SetActive(false);
+                yield break;
+            }
+        }
+
+        // Handle local files (existing code)
         Texture2D localTexture = ImageStorage.LoadImage(imagePath);
         if (localTexture != null)
         {
@@ -545,6 +596,7 @@ string GetTeacherId()
             characterImage.gameObject.SetActive(false);
         }
     }
+
 
     private bool IsFirebaseStoragePath(string path)
     {

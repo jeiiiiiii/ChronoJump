@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class CharacterSetter : MonoBehaviour
 {
@@ -10,18 +11,18 @@ public class CharacterSetter : MonoBehaviour
     {
         string userRole = PlayerPrefs.GetString("UserRole", "student");
 
-        // ✅ FIX: Student mode uses StudentPrefs, Teacher mode uses StoryManager
+        // ✅ FIX: Use coroutines for both student and teacher modes
         if (userRole.ToLower() == "student")
         {
-            LoadStudentStoryCharacters();
+            StartCoroutine(LoadStudentStoryCharacters());
         }
         else
         {
-            LoadTeacherStoryCharacters();
+            StartCoroutine(LoadTeacherStoryCharacters());
         }
     }
 
-    private void LoadStudentStoryCharacters()
+    private IEnumerator LoadStudentStoryCharacters()
     {
         // Load from StudentPrefs for student mode
         string storyJson = StudentPrefs.GetString("CurrentStoryData", "");
@@ -40,78 +41,141 @@ public class CharacterSetter : MonoBehaviour
             }
         }
 
-        LoadCharacters(story, "STUDENT");
+        yield return StartCoroutine(LoadCharactersAsync(story, "STUDENT"));
     }
 
-    private void LoadTeacherStoryCharacters()
+    private IEnumerator LoadTeacherStoryCharacters()
     {
         // Load from StoryManager for teacher mode
         StoryData story = StoryManager.Instance?.currentStory;
         Debug.Log($"✅ CharacterSetter: Using TEACHER StoryManager - {story?.storyTitle}");
 
-        LoadCharacters(story, "TEACHER");
+        yield return StartCoroutine(LoadCharactersAsync(story, "TEACHER"));
     }
 
-    private void LoadCharacters(StoryData story, string mode)
+    private IEnumerator LoadCharactersAsync(StoryData story, string mode)
     {
         if (story == null)
         {
             Debug.LogWarning($"❌ No current story found for {mode} CharacterSetter.");
-            return;
-        }
-
-        // ✅ Character 1
-        if (!string.IsNullOrEmpty(story.character1Path))
-        {
-            Debug.Log($"🔍 Attempting to load {mode} Character 1 from: {story.character1Path}");
-            Texture2D tex1 = ImageStorage.LoadImage(story.character1Path);
-            if (tex1 != null)
-            {
-                SetCharacterImage(characterImageOne, tex1);
-                Debug.Log($"✅ SUCCESS: Loaded {mode} character 1 from: {story.character1Path}");
-            }
-            else
-            {
-                Debug.LogWarning($"❌ FAILED: Could not load {mode} character 1 from: {story.character1Path}");
-                characterImageOne.gameObject.SetActive(false);
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"ℹ️ No character1Path specified in {mode} story data");
+            // Hide both character holders if no story
             characterImageOne.gameObject.SetActive(false);
+            characterImageTwo.gameObject.SetActive(false);
+            yield break;
         }
 
-        // ✅ Character 2
-        if (!string.IsNullOrEmpty(story.character2Path))
+        bool hasCharacter1 = !string.IsNullOrEmpty(story.character1Path);
+        bool hasCharacter2 = !string.IsNullOrEmpty(story.character2Path);
+
+        Debug.Log($"🎭 Character Setup - {mode}: Char1={hasCharacter1}, Char2={hasCharacter2}");
+
+        // ✅ SOLUTION 1: Handle single-character stories properly
+        if (hasCharacter1 && !hasCharacter2)
         {
-            Debug.Log($"🔍 Attempting to load {mode} Character 2 from: {story.character2Path}");
-            Texture2D tex2 = ImageStorage.LoadImage(story.character2Path);
-            if (tex2 != null)
+            // Single character story - load character 1 and hide character 2
+            yield return StartCoroutine(LoadSingleCharacter(story.character1Path, characterImageOne, 1, mode));
+            characterImageTwo.gameObject.SetActive(false);
+            Debug.Log($"ℹ️ Single-character story detected - hiding character 2 holder");
+        }
+        else if (!hasCharacter1 && hasCharacter2)
+        {
+            // Single character story - load character 2 and hide character 1
+            yield return StartCoroutine(LoadSingleCharacter(story.character2Path, characterImageTwo, 2, mode));
+            characterImageOne.gameObject.SetActive(false);
+            Debug.Log($"ℹ️ Single-character story detected - hiding character 1 holder");
+        }
+        else if (hasCharacter1 && hasCharacter2)
+        {
+            // Two-character story - load both characters
+            yield return StartCoroutine(LoadSingleCharacter(story.character1Path, characterImageOne, 1, mode));
+            yield return StartCoroutine(LoadSingleCharacter(story.character2Path, characterImageTwo, 2, mode));
+            Debug.Log($"ℹ️ Two-character story detected - showing both character holders");
+        }
+        else
+        {
+            // No characters - hide both holders
+            characterImageOne.gameObject.SetActive(false);
+            characterImageTwo.gameObject.SetActive(false);
+            Debug.LogWarning($"ℹ️ No character paths specified in {mode} story data - hiding both character holders");
+        }
+    }
+
+    private IEnumerator LoadSingleCharacter(string characterPath, RawImage characterHolder, int characterIndex, string mode)
+    {
+        if (string.IsNullOrEmpty(characterPath))
+        {
+            Debug.LogWarning($"❌ No path specified for {mode} character {characterIndex}");
+            characterHolder.gameObject.SetActive(false);
+            yield break;
+        }
+
+        Debug.Log($"🔍 Attempting to load {mode} Character {characterIndex} from: {characterPath}");
+
+        Texture2D characterTexture = null;
+
+        if (ImageStorage.IsS3Url(characterPath))
+        {
+            // Handle S3 URLs with async download
+            var downloadTask = ImageStorage.LoadImageAsync(characterPath);
+            yield return new WaitUntil(() => downloadTask.IsCompleted);
+
+            characterTexture = downloadTask.Result;
+
+            if (characterTexture != null)
             {
-                SetCharacterImage(characterImageTwo, tex2);
-                Debug.Log($"✅ SUCCESS: Loaded {mode} character 2 from: {story.character2Path}");
+                Debug.Log($"✅ SUCCESS: Loaded {mode} character {characterIndex} from S3: {characterPath}");
             }
             else
             {
-                Debug.LogWarning($"❌ FAILED: Could not load {mode} character 2 from: {story.character2Path}");
-                characterImageTwo.gameObject.SetActive(false);
+                Debug.LogWarning($"❌ FAILED: Could not load {mode} character {characterIndex} from S3: {characterPath}");
             }
         }
         else
         {
-            Debug.LogWarning($"ℹ️ No character2Path specified in {mode} story data");
-            characterImageTwo.gameObject.SetActive(false);
+            // Handle local files
+            characterTexture = ImageStorage.LoadImage(characterPath);
+            if (characterTexture != null)
+            {
+                Debug.Log($"✅ SUCCESS: Loaded {mode} character {characterIndex} from local: {characterPath}");
+            }
+            else
+            {
+                Debug.LogWarning($"❌ FAILED: Could not load {mode} character {characterIndex} from local: {characterPath}");
+            }
+        }
+
+        // Set the character image or hide if failed
+        if (characterTexture != null)
+        {
+            SetCharacterImage(characterHolder, characterTexture);
+        }
+        else
+        {
+            characterHolder.gameObject.SetActive(false);
+            Debug.LogWarning($"❌ Failed to load texture for {mode} character {characterIndex}");
         }
     }
 
     private void SetCharacterImage(RawImage image, Texture2D texture)
     {
+        if (texture == null)
+        {
+            Debug.LogWarning("⚠️ Attempted to set null texture to character image");
+            image.gameObject.SetActive(false);
+            return;
+        }
+
         image.texture = texture;
+
+        // Fix aspect ratio
         var fitter = image.GetComponent<AspectRatioFitter>();
         if (fitter != null)
+        {
             fitter.aspectRatio = (float)texture.width / texture.height;
+            Debug.Log($"📐 Set aspect ratio for character: {texture.width}x{texture.height} = {fitter.aspectRatio:F2}");
+        }
 
         image.gameObject.SetActive(true);
+        Debug.Log($"👤 Character image set successfully: {texture.width}x{texture.height}");
     }
 }
