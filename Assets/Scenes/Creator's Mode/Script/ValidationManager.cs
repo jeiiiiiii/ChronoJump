@@ -27,7 +27,7 @@ public class ValidationManager : MonoBehaviour
 
     // File validation settings
     public long maxFileSizeBytes = 10 * 1024 * 1024; // 10MB
-    public string[] allowedImageExtensions = { ".jpg", ".jpeg", ".png", ".bmp", ".gif" };
+    public string[] allowedImageExtensions = { ".jpg", ".jpeg", ".png", ".bmp" }; // Removed .gif
 
     private System.Action onConfirmAction;
     private System.Action onBackAction;
@@ -380,6 +380,17 @@ public class ValidationManager : MonoBehaviour
         }
 
         string extension = Path.GetExtension(filePath).ToLower();
+        
+        // ✅ Explicitly reject GIF files
+        if (extension == ".gif")
+        {
+            return new ValidationResult
+            {
+                isValid = false,
+                message = "GIF files are not supported.\n\nPlease select a JPG, PNG, or BMP image."
+            };
+        }
+        
         if (!allowedImageExtensions.Contains(extension))
         {
             string allowedFormats = string.Join(", ", allowedImageExtensions);

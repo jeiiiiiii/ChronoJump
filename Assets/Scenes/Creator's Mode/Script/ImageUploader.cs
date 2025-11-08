@@ -228,7 +228,7 @@ public class ImageUploader : MonoBehaviour
             }
 
             var extensions = new[] {
-                new ExtensionFilter("Image files", "jpg", "jpeg", "png", "bmp", "gif")
+                new ExtensionFilter("Image files", "jpg", "jpeg", "png", "bmp")
             };
 
             var paths = StandaloneFileBrowser.OpenFilePanel("Select Image", "", extensions, false);
@@ -251,7 +251,13 @@ public class ImageUploader : MonoBehaviour
             if (!File.Exists(selectedPath))
             {
                 Debug.LogError($"❌ File not found: {selectedPath}");
-                UpdateStatus("Error: File not found");
+                UpdateStatus("");
+                ValidationManager.Instance.ShowWarning(
+                    "File Not Found",
+                    "The selected file could not be found.",
+                    null,
+                    null
+                );
                 CompleteLocalSave(false);
                 CompleteCloudSave(false);
                 isUploading = false;
@@ -263,6 +269,7 @@ public class ImageUploader : MonoBehaviour
             if (!formatValidation.isValid)
             {
                 Debug.LogError($"❌ Invalid file format: {formatValidation.message}");
+                UpdateStatus("");
                 ValidationManager.Instance.ShowWarning(
                     "Invalid File Format",
                     formatValidation.message,
@@ -280,6 +287,7 @@ public class ImageUploader : MonoBehaviour
             if (!sizeValidation.isValid)
             {
                 Debug.LogError($"❌ File too large: {sizeValidation.message}");
+                UpdateStatus("");
                 ValidationManager.Instance.ShowWarning(
                     "File Too Large",
                     sizeValidation.message,
@@ -294,7 +302,9 @@ public class ImageUploader : MonoBehaviour
 
             // ✅ SAFE IMAGE LOADING WITH PROPER ERROR HANDLING
             Texture2D tex = null;
-            bool imageLoadFailed = false;
+            bool loadingFailed = false;
+            string errorTitle = "";
+            string errorMessage = "";
 
             try
             {
@@ -304,31 +314,36 @@ public class ImageUploader : MonoBehaviour
                 if (fileData == null || fileData.Length == 0)
                 {
                     Debug.LogError("❌ File is empty or could not be read");
-                    ValidationManager.Instance.ShowWarning(
-                        "Invalid Image File",
-                        "The selected file appears to be empty or corrupted.\n\nPlease select a different file.",
-                        null,
-                        null
-                    );
-                    imageLoadFailed = true;
+                    loadingFailed = true;
+                    errorTitle = "Invalid Image File";
+                    errorMessage = "The selected file appears to be empty or corrupted.\n\nPlease select a different file.";
                 }
                 else
                 {
                     tex = new Texture2D(2, 2);
 
                     // Try to load the image data with additional validation
-                    bool loadSuccess = tex.LoadImage(fileData);
+                    bool loadSuccess = false;
+                    try
+                    {
+                        loadSuccess = tex.LoadImage(fileData);
+                    }
+                    catch (System.Exception innerEx)
+                    {
+                        Debug.LogError($"❌ LoadImage failed: {innerEx.Message}");
+                        loadSuccess = false;
+                    }
 
-                    if (!loadSuccess || tex.width <= 0 || tex.height <= 0)
+                    if (!loadSuccess || tex == null || tex.width <= 0 || tex.height <= 0)
                     {
                         Debug.LogError("❌ Failed to load image. The file may be corrupted or not a valid image format.");
-                        ValidationManager.Instance.ShowWarning(
-                            "Invalid Image File",
-                            "The selected file appears to be corrupted or is not a valid image.\n\nPlease select a different file.",
-                            null,
-                            null
-                        );
-                        imageLoadFailed = true;
+                        loadingFailed = true;
+                        errorTitle = "Invalid Image File";
+                        errorMessage = "The selected file appears to be corrupted or is not a valid image.\n\nPlease select a different file.";
+
+                        // DON'T destroy the texture here - just null it out
+                        // Destroying it immediately might cause issues with Unity's internal state
+                        tex = null;
                     }
                     else
                     {
@@ -339,38 +354,55 @@ public class ImageUploader : MonoBehaviour
             catch (System.Exception loadEx)
             {
                 Debug.LogError($"❌ Error loading image file: {loadEx.Message}");
-                ValidationManager.Instance.ShowWarning(
-                    "File Read Error",
-                    $"Could not read the selected file: {loadEx.Message}\n\nPlease select a different file.",
-                    null,
-                    null
-                );
-                imageLoadFailed = true;
+                loadingFailed = true;
+                errorTitle = "File Read Error";
+                errorMessage = "Could not read the selected file.\n\nPlease select a different file.";
+
+                // Just null it out - don't destroy
+                tex = null;
             }
 
-            // If image loading failed, clean up and return
-            if (imageLoadFailed)
+            // Handle any loading failures
+            if (loadingFailed)
             {
-                // Clean up the failed texture
-                if (tex != null)
-                {
-                    DestroyImmediate(tex);
-                    tex = null;
-                }
+                Debug.Log("🛑 ABOUT TO CLEANUP - Before UpdateStatus");
+                UpdateStatus("");
+                Debug.Log("🛑 ABOUT TO CLEANUP - After UpdateStatus, before CompleteLocalSave");
                 CompleteLocalSave(false);
+                Debug.Log("🛑 ABOUT TO CLEANUP - After CompleteLocalSave, before CompleteCloudSave");
                 CompleteCloudSave(false);
+                Debug.Log("🛑 ABOUT TO CLEANUP - After CompleteCloudSave, before isUploading");
                 isUploading = false;
+                Debug.Log("🛑 ABOUT TO SHOW WARNING");
+
+                // Show warning LAST, after everything is cleaned up
+                if (ValidationManager.Instance != null)
+                {
+                    ValidationManager.Instance.ShowWarning(errorTitle, errorMessage, null, null);
+                }
+                Debug.Log("🛑 AFTER SHOWING WARNING - ABOUT TO RETURN");
                 return;
             }
 
-            // If we get here, we have a valid texture
-            if (tex == null)
+            // Final safety check - this should never trigger if loadingFailed works correctly
+            if (tex == null || tex.width <= 0 || tex.height <= 0)
             {
-                Debug.LogError("❌ Unexpected error: Texture is null after loading");
-                UpdateStatus("Error: Failed to load image");
+                Debug.LogError("❌ CRITICAL: Texture is invalid but loadingFailed was not set!");
+                tex = null; // Just null it, don't destroy
+                UpdateStatus("");
                 CompleteLocalSave(false);
                 CompleteCloudSave(false);
                 isUploading = false;
+
+                if (ValidationManager.Instance != null)
+                {
+                    ValidationManager.Instance.ShowWarning(
+                        "Invalid Image File",
+                        "Failed to load the image. Please select a different file.",
+                        null,
+                        null
+                    );
+                }
                 return;
             }
 
@@ -437,6 +469,13 @@ public class ImageUploader : MonoBehaviour
             catch (System.Exception localSaveEx)
             {
                 Debug.LogError($"❌ Local save failed: {localSaveEx.Message}");
+                UpdateStatus("");
+                ValidationManager.Instance.ShowWarning(
+                    "Save Failed",
+                    "Could not save the image locally.\n\nPlease try again.",
+                    null,
+                    null
+                );
                 DestroyImmediate(tex);
                 CompleteLocalSave(false);
                 CompleteCloudSave(false);
@@ -456,7 +495,6 @@ public class ImageUploader : MonoBehaviour
                     if (!string.IsNullOrEmpty(s3Url))
                     {
                         story.character1Path = s3Url; // Store S3 URL as primary
-                        // Don't assign to ImageStorage.uploadedTexture1 - it might not exist
                     }
                 }
                 else if (slot == 2)
@@ -465,7 +503,6 @@ public class ImageUploader : MonoBehaviour
                     if (!string.IsNullOrEmpty(s3Url))
                     {
                         story.character2Path = s3Url; // Store S3 URL as primary
-                        // Don't assign to ImageStorage.uploadedTexture2 - it might not exist
                     }
                 }
                 else if (slot == 3)
@@ -474,7 +511,6 @@ public class ImageUploader : MonoBehaviour
                     if (!string.IsNullOrEmpty(s3Url))
                     {
                         story.backgroundPath = s3Url; // Store S3 URL as primary
-                        // Don't assign to ImageStorage.UploadedTexture - it might not exist
                     }
                 }
 
@@ -523,7 +559,7 @@ public class ImageUploader : MonoBehaviour
         catch (System.Exception ex)
         {
             Debug.LogError($"❌ Upload process error: {ex.Message}");
-            UpdateStatus($"Error: {ex.Message}");
+            UpdateStatus("");
 
             // ✅ Mark both saves as failed
             CompleteLocalSave(false);
@@ -534,7 +570,7 @@ public class ImageUploader : MonoBehaviour
             {
                 ValidationManager.Instance.ShowWarning(
                     "Upload Failed",
-                    $"An error occurred while uploading the image: {ex.Message}\n\nPlease try again.",
+                    "An error occurred while uploading the image.\n\nPlease try again.",
                     null,
                     null
                 );
