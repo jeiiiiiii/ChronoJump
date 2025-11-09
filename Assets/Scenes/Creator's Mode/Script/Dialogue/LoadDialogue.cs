@@ -347,10 +347,33 @@ public class DialoguePlayer : MonoBehaviour
                     var studentStory = JsonUtility.FromJson<StoryData>(storyJson);
                     if (!string.IsNullOrEmpty(studentStory.backgroundPath))
                     {
-                        string[] pathParts = studentStory.backgroundPath.Split(Path.DirectorySeparatorChar);
-                        if (pathParts.Length > 0)
+                        // ✅ Check if it's an S3 URL
+                        if (studentStory.backgroundPath.StartsWith("http"))
                         {
-                            return pathParts[0];
+                            // Extract teacher ID from S3 URL
+                            // URL format: https://jei-cj.s3.ap-southeast-1.amazonaws.com/images/TEACHER_ID/story_X/...
+                            string[] urlParts = studentStory.backgroundPath.Split('/');
+
+                            // Find "images" in the URL, teacher ID is right after it
+                            for (int i = 0; i < urlParts.Length - 1; i++)
+                            {
+                                if (urlParts[i] == "images")
+                                {
+                                    string teacherId = urlParts[i + 1];
+                                    Debug.Log($"✅ Extracted teacher ID from S3 URL: {teacherId}");
+                                    return teacherId;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // Local path format: TEACHER_ID/story_X/...
+                            string[] pathParts = studentStory.backgroundPath.Split(new char[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
+                            if (pathParts.Length > 0)
+                            {
+                                Debug.Log($"✅ Extracted teacher ID from local path: {pathParts[0]}");
+                                return pathParts[0];
+                            }
                         }
                     }
                 }
@@ -368,6 +391,7 @@ public class DialoguePlayer : MonoBehaviour
 
         return TeacherPrefs.GetString("CurrentTeachId", "default");
     }
+
 
     int GetStoryIndex()
     {

@@ -541,10 +541,9 @@ public class StudentClassroomManager : MonoBehaviour
         }
     }
 
+    // ✅ FIXED: LoadDialoguesFromFirestore method in StudentClassroomManager.cs
+    // Replace your existing method with this one
 
-
-
-    // ✅ CORRECTED DIALOGUE LOADING METHOD
     private async Task<List<DialogueLine>> LoadDialoguesFromFirestore(string storyId)
     {
         var dialogues = new List<DialogueLine>();
@@ -578,13 +577,33 @@ public class StudentClassroomManager : MonoBehaviour
 
                     Debug.Log($"💬 Processing dialogue: {dialogueData.characterName} - {dialogueData.dialogueText}");
 
-                    // Convert to game model - NOTE: using 'text' field instead of 'dialogueText'
+                    // ✅ CRITICAL FIX: Create DialogueLine with ALL audio metadata
                     if (!string.IsNullOrEmpty(dialogueData.dialogueText))
                     {
-                        dialogues.Add(new DialogueLine(
+                        var dialogue = new DialogueLine(
                             dialogueData.characterName ?? "Unknown",
                             dialogueData.dialogueText
-                        ));
+                        );
+
+                        // ✅ NEW: Copy ALL audio-related fields from Firestore
+                        dialogue.selectedVoiceId = dialogueData.selectedVoiceId ?? "";
+                        dialogue.audioFilePath = dialogueData.audioFilePath ?? "";
+                        dialogue.audioFileName = dialogueData.audioFileName ?? "";
+                        dialogue.audioStoragePath = dialogueData.audioStoragePath ?? "";
+                        dialogue.audioFileSize = dialogueData.audioFileSize;
+                        dialogue.hasAudio = dialogueData.hasAudio;
+
+                        // ✅ Log what we loaded
+                        if (dialogue.hasAudio)
+                        {
+                            Debug.Log($"   🎵 Has audio: Local={dialogue.audioFilePath}, S3={dialogue.audioStoragePath}");
+                        }
+                        else
+                        {
+                            Debug.Log($"   🔇 No audio for this dialogue");
+                        }
+
+                        dialogues.Add(dialogue);
                     }
                     else
                     {
@@ -604,7 +623,28 @@ public class StudentClassroomManager : MonoBehaviour
 
                         if (!string.IsNullOrEmpty(dialogueText))
                         {
-                            dialogues.Add(new DialogueLine(characterName, dialogueText));
+                            var dialogue = new DialogueLine(characterName, dialogueText);
+
+                            // ✅ Also load audio metadata in fallback
+                            if (data.ContainsKey("selectedVoiceId"))
+                                dialogue.selectedVoiceId = data["selectedVoiceId"].ToString();
+
+                            if (data.ContainsKey("audioFilePath"))
+                                dialogue.audioFilePath = data["audioFilePath"].ToString();
+
+                            if (data.ContainsKey("audioFileName"))
+                                dialogue.audioFileName = data["audioFileName"].ToString();
+
+                            if (data.ContainsKey("audioStoragePath"))
+                                dialogue.audioStoragePath = data["audioStoragePath"].ToString();
+
+                            if (data.ContainsKey("audioFileSize"))
+                                dialogue.audioFileSize = Convert.ToInt64(data["audioFileSize"]);
+
+                            if (data.ContainsKey("hasAudio"))
+                                dialogue.hasAudio = Convert.ToBoolean(data["hasAudio"]);
+
+                            dialogues.Add(dialogue);
                         }
                     }
                     catch (System.Exception fallbackEx)
@@ -614,7 +654,7 @@ public class StudentClassroomManager : MonoBehaviour
                 }
             }
 
-            Debug.Log($"✅ Successfully loaded {dialogues.Count} dialogues");
+            Debug.Log($"✅ Successfully loaded {dialogues.Count} dialogues with audio metadata");
         }
         catch (System.Exception ex)
         {
@@ -624,6 +664,7 @@ public class StudentClassroomManager : MonoBehaviour
 
         return dialogues;
     }
+
 
     // ✅ CORRECTED QUESTION LOADING METHOD
     private async Task<List<Question>> LoadQuestionsFromFirestore(string storyId)
