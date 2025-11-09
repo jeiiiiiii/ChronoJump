@@ -80,7 +80,7 @@ public class StudentClassroomManager : MonoBehaviour
             Debug.Log("Waiting for ClassInfo to load data...");
         }
         if (refreshLeaderboardButton != null)
-        refreshLeaderboardButton.onClick.AddListener(RefreshLeaderboard);
+            refreshLeaderboardButton.onClick.AddListener(RefreshLeaderboard);
     }
 
     private void OnClassDataLoaded(StudentClassData classData)
@@ -185,7 +185,7 @@ public class StudentClassroomManager : MonoBehaviour
             Debug.Log($"✅ Updated classroom display name to: {newName}");
         }
     }
-    
+
 
     private void LoadStudentName()
     {
@@ -353,19 +353,18 @@ public class StudentClassroomManager : MonoBehaviour
             {
                 story = JsonUtility.FromJson<StoryData>(cachedStoryJson);
 
-                // ✅ CRITICAL FIX: Only use cache if version matches
+                // ✅ ENHANCED CACHE VALIDATION: Check version AND audio completeness
                 if (story != null && story.dialogues != null && story.dialogues.Count > 0 &&
-                    story.storyVersion == currentVersion)
+                    story.storyVersion == currentVersion &&
+                    !ShouldRefreshCache(story, currentVersion)) // ← NEW CHECK
                 {
                     Debug.Log($"✅ Loaded story from local cache (v{story.storyVersion}): {story.storyTitle}");
-
-                    // ✅ Load voice assignments for cached story
                     await LoadVoiceAssignmentsForStory(storyId, story.dialogues);
                     return story;
                 }
                 else
                 {
-                    Debug.Log($"🔄 Cache outdated or invalid. Cached v{story?.storyVersion ?? 0}, Firestore v{currentVersion}. Fetching fresh...");
+                    Debug.Log($"🔄 Cache outdated or incomplete. Cached v{story?.storyVersion ?? 0}, Firestore v{currentVersion}. Fetching fresh...");
                     story = null; // Force fresh fetch
                 }
             }
@@ -849,5 +848,31 @@ public class StudentClassroomManager : MonoBehaviour
             });
         });
     }
+
+    private bool ShouldRefreshCache(StoryData cachedStory, int currentVersion)
+    {
+        // If versions don't match, definitely refresh
+        if (cachedStory.storyVersion != currentVersion)
+            return true;
+
+        // If audio is missing but should exist, refresh
+        if (cachedStory.dialogues != null)
+        {
+            foreach (var dialogue in cachedStory.dialogues)
+            {
+                // If dialogue has a voice but no audio, cache might be stale
+                if (!string.IsNullOrEmpty(dialogue.selectedVoiceId) &&
+                    !dialogue.hasAudio &&
+                    !VoiceLibrary.IsNoVoice(dialogue.selectedVoiceId))
+                {
+                    Debug.Log($"🔄 Cache refresh needed: Dialogue '{dialogue.characterName}' has voice but no audio");
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+    
 
 }

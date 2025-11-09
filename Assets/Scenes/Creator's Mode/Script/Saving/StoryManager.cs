@@ -956,7 +956,8 @@ public class StoryManager : MonoBehaviour
             audioFilePath = unityDialogue.audioFilePath,
             hasAudio = unityDialogue.hasAudio,
             audioFileName = unityDialogue.audioFileName,
-            audioStoragePath = unityDialogue.audioStoragePath,
+            audioStoragePath = unityDialogue.audioStoragePath,    
+            audioFileSize = unityDialogue.audioFileSize,      
             orderIndex = orderIndex
         };
     }
@@ -972,9 +973,11 @@ public class StoryManager : MonoBehaviour
             audioFilePath = firestoreDialogue.audioFilePath,
             hasAudio = firestoreDialogue.hasAudio,
             audioFileName = firestoreDialogue.audioFileName,
-            audioStoragePath = firestoreDialogue.audioStoragePath
+            audioStoragePath = firestoreDialogue.audioStoragePath,  
+            audioFileSize = firestoreDialogue.audioFileSize        
         };
     }
+
 
 
 
@@ -1893,96 +1896,70 @@ public class StoryManager : MonoBehaviour
     }
 
 
-    // ✅ UPDATED: Clean up audio files with correct directory structure
-private async Task CleanupStoryVoices(string storyId, string teacherBaseDir)
-{
-    try
+    private async Task CleanupStoryVoices(string storyId, string teacherBaseDir)
     {
-        int audioFilesDeleted = 0;
-
-        // ✅ FIX: Look for audio files in story_X directories instead of using storyId as directory name
-        // First, find which story directory contains this story
-        string storyDirectory = await FindStoryDirectory(storyId, teacherBaseDir);
-        
-        if (!string.IsNullOrEmpty(storyDirectory))
+        try
         {
-            string audioDir = Path.Combine(storyDirectory, "audio");
-            Debug.Log($"🔍 Looking for audio files in correct story directory: {audioDir}");
+            int audioFilesDeleted = 0;
 
-            if (Directory.Exists(audioDir))
+            // Get all dialogues for this story to find S3 URLs
+            var story = allStories.FirstOrDefault(s => s?.storyId == storyId);
+            if (story != null && story.dialogues != null)
             {
-                // Delete all audio files in the story's audio directory
-                string[] audioFileTypes = { "*.wav", "*.mp3", "*.ogg", "*.aiff" };
-                
-                foreach (string fileType in audioFileTypes)
+                // Delete from S3 if available
+                if (S3StorageService.Instance != null && S3StorageService.Instance.IsReady)
                 {
-                    string[] audioFiles = Directory.GetFiles(audioDir, fileType);
+                    foreach (var dialogue in story.dialogues)
+                    {
+                        if (!string.IsNullOrEmpty(dialogue.audioStoragePath))
+                        {
+                            Debug.Log($"🗑️ Deleting S3 audio: {dialogue.audioStoragePath}");
+                            bool deleted = await S3StorageService.Instance.DeleteImage(dialogue.audioStoragePath);
+                            if (deleted) audioFilesDeleted++;
+                        }
+                    }
+                }
+            }
+
+            // Clean up local files using existing logic
+            string storyDirectory = await FindStoryDirectory(storyId, teacherBaseDir);
+
+            if (!string.IsNullOrEmpty(storyDirectory))
+            {
+                string audioDir = Path.Combine(storyDirectory, "audio");
+
+                if (Directory.Exists(audioDir))
+                {
+                    string[] audioFiles = Directory.GetFiles(audioDir, "*.mp3");
                     foreach (string audioFile in audioFiles)
                     {
                         try
                         {
                             File.Delete(audioFile);
                             audioFilesDeleted++;
-                            Debug.Log($"🗑️ Deleted audio file: {Path.GetFileName(audioFile)}");
                         }
-                        catch (System.Exception ex)
+                        catch (Exception ex)
                         {
-                            Debug.LogWarning($"⚠️ Could not delete audio file {audioFile}: {ex.Message}");
+                            Debug.LogWarning($"⚠️ Could not delete {audioFile}: {ex.Message}");
                         }
                     }
-                }
-                
-                // Try to delete the audio directory if it's empty
-                try
-                {
-                    if (Directory.GetFiles(audioDir).Length == 0 && Directory.GetDirectories(audioDir).Length == 0)
+
+                    // Delete empty directory
+                    if (Directory.GetFiles(audioDir).Length == 0)
                     {
                         Directory.Delete(audioDir);
-                        Debug.Log($"🗑️ Deleted empty audio directory: {audioDir}");
-                        
-                        // Also try to delete the parent story directory if it's empty
-                        string storyDir = Path.GetDirectoryName(audioDir);
-                        if (Directory.Exists(storyDir) && 
-                            Directory.GetFiles(storyDir).Length == 0 && 
-                            Directory.GetDirectories(storyDir).Length == 0)
-                        {
-                            Directory.Delete(storyDir);
-                            Debug.Log($"🗑️ Deleted empty story directory: {storyDir}");
-                        }
-                    }
-                    else
-                    {
-                        Debug.Log($"ℹ️ Audio directory not empty, keeping: {audioDir}");
                     }
                 }
-                catch (System.Exception ex)
-                {
-                    Debug.LogWarning($"⚠️ Could not delete audio directory: {ex.Message}");
-                }
             }
-            else
-            {
-                Debug.Log($"ℹ️ Audio directory not found: {audioDir}");
-            }
+
+            Debug.Log($"✅ Deleted {audioFilesDeleted} audio files for story: {storyId}");
         }
-        else
+        catch (Exception ex)
         {
-            Debug.Log($"ℹ️ Could not find story directory for story ID: {storyId}");
-            
-            // ✅ FALLBACK: Check all possible story_X directories
-            await CheckAllStoryDirectories(storyId, teacherBaseDir);
+            Debug.LogError($"❌ Audio cleanup failed: {ex.Message}");
         }
-        
-        // ✅ Clean up voice assignment preferences
-        CleanupVoiceAssignments(storyId);
-        
-        Debug.Log($"✅ Deleted {audioFilesDeleted} audio files for story: {storyId}");
     }
-    catch (System.Exception ex)
-    {
-        Debug.LogError($"❌ Audio cleanup failed: {ex.Message}");
-    }
-}
+
 
 // ✅ NEW: Find which story directory contains the given story ID
 private async Task<string> FindStoryDirectory(string storyId, string teacherBaseDir)

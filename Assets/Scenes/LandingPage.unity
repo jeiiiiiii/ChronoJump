@@ -921,6 +921,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d95d37e00f7ab1d47852694de6ed5c53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  accessKey: AKIA4YE2TN355C3XSLPN
+  secretKey: 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
+  region: ap-southeast-1
+  bucketName: jei-cj
 --- !u!4 &1002675656
 Transform:
   m_ObjectHideFlags: 0

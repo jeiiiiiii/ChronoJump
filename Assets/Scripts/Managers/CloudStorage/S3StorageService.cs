@@ -107,10 +107,11 @@ public class S3StorageService : MonoBehaviour
     /// Upload voice audio file to S3
     /// </summary>
     public async Task<string> UploadVoiceAudio(byte[] audioData, string teacherId, int storyIndex, string dialogueId)
-    {
-        string key = $"voices/{teacherId}/story_{storyIndex}/{dialogueId}.wav";
-        return await UploadFileToS3(audioData, key, "audio/wav");
-    }
+{
+    string key = $"voices/{teacherId}/story_{storyIndex}/dialogue_{dialogueId}.mp3";
+    
+    return await UploadFileToS3(audioData, key, "audio/mpeg");
+}
 
     /// <summary>
     /// Generic image upload method

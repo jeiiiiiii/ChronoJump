@@ -101,3 +101,7 @@ InitTestScene*.unity*
 # AWS Config files
 Assets/Scripts/Managers/CloudStorage/AWSConfig.cs
 **/AWSConfig.cs
+Assets/Scripts/Managers/CloudStorage/AWSTestConnection.cs
+Assets/Scripts/Managers/CloudStorage/AWSTestConnection.cs.meta
+Assets/Scripts/Managers/CloudStorage/AWSTestConnection.cs
+Assets/Scripts/Managers/CloudStorage/AWSTestConnection.cs.meta

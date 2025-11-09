@@ -42,11 +42,12 @@ public class DialogueLineFirestore
     [FirestoreProperty] public string selectedVoiceId { get; set; }
     [FirestoreProperty] public int orderIndex { get; set; }
 
-    // ✅ Audio fields for voice narration (simplified)
-    [FirestoreProperty] public string audioFilePath { get; set; }
+    // ✅ Audio fields - ensure these are being populated
+    [FirestoreProperty] public string audioFilePath { get; set; }        // Local relative path
     [FirestoreProperty] public bool hasAudio { get; set; }
     [FirestoreProperty] public string audioFileName { get; set; }
-    [FirestoreProperty] public string audioStoragePath { get; set; }
+    [FirestoreProperty] public string audioStoragePath { get; set; }    // ⭐ S3 URL
+    [FirestoreProperty] public long audioFileSize { get; set; }  
 
     public DialogueLineFirestore()
     {
