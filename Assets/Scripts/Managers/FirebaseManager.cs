@@ -423,49 +423,237 @@ public void GetPublishedStoriesByClass(string classCode, Action<Dictionary<strin
         });
 }
 
-public void GetPublishedStoryQuizAttempts(string storyId, string studentStudId, Action<Dictionary<string, Dictionary<string, object>>> callback)
-{
-    Debug.Log($"🔍 Fetching quiz attempts for published storyId: {storyId}, student: {studentStudId}");
+    public void GetPublishedStoryQuizAttempts(string storyId, string studentStudId, Action<Dictionary<string, Dictionary<string, object>>> callback)
+    {
+        Debug.Log($"🔍 Fetching quiz attempts for published storyId: {storyId}, student: {studentStudId}");
 
-    DB.Collection("createdStories")
-        .Document(storyId)
-        .Collection("quizAttempts")
-        .Document(studentStudId)
-        .Collection("attempts")
+        DB.Collection("createdStories")
+            .Document(storyId)
+            .Collection("quizAttempts")
+            .Document(studentStudId)
+            .Collection("attempts")
+            .GetSnapshotAsync()
+            .ContinueWith(task =>
+            {
+                UnityDispatcher.RunOnMainThread(() =>
+                {
+                    var attempts = new Dictionary<string, Dictionary<string, object>>();
+
+                    if (task.IsCompletedSuccessfully && task.Result != null)
+                    {
+                        foreach (var doc in task.Result.Documents)
+                        {
+                            var data = doc.ToDictionary();
+                            attempts[doc.Id] = data;
+
+                            Debug.Log($"✅ Found quiz attempt for story {storyId}: {doc.Id}");
+                            Debug.Log($"   - quizId: {data.GetValueOrDefault("quizId", "N/A")}");
+                            Debug.Log($"   - attemptNumber: {data.GetValueOrDefault("attemptNumber", "N/A")}");
+                            Debug.Log($"   - score: {data.GetValueOrDefault("score", "N/A")}");
+                            Debug.Log($"   - isPassed: {data.GetValueOrDefault("isPassed", "N/A")}");
+                        }
+                        Debug.Log($"📊 Total {attempts.Count} quiz attempts for story {storyId}");
+                    }
+                    else if (task.IsFaulted)
+                    {
+                        Debug.LogError($"❌ Error fetching quiz attempts for story {storyId}: {task.Exception}");
+                    }
+                    else
+                    {
+                        Debug.Log($"ℹ️ No quiz attempts found for story {storyId}");
+                    }
+
+                    callback?.Invoke(attempts);
+                });
+            });
+    }
+
+    public void UpdateStudentName(string userId, string newName, System.Action<bool> callback)
+{
+    if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(newName))
+    {
+        Debug.LogError("❌ UpdateStudentName: Invalid parameters");
+        UnityDispatcher.RunOnMainThread(() => callback?.Invoke(false));
+        return;
+    }
+
+    Debug.Log($"💾 Updating student name for userId: {userId} to: {newName}");
+
+    // First, get the student document by querying the students collection with userId
+    DB.Collection("students")
+        .WhereEqualTo("userId", userId)
         .GetSnapshotAsync()
         .ContinueWith(task =>
         {
             UnityDispatcher.RunOnMainThread(() =>
             {
-                var attempts = new Dictionary<string, Dictionary<string, object>>();
-
-                if (task.IsCompletedSuccessfully && task.Result != null)
+                if (task.IsFaulted || task.IsCanceled)
                 {
-                    foreach (var doc in task.Result.Documents)
-                    {
-                        var data = doc.ToDictionary();
-                        attempts[doc.Id] = data;
-
-                        Debug.Log($"✅ Found quiz attempt for story {storyId}: {doc.Id}");
-                        Debug.Log($"   - quizId: {data.GetValueOrDefault("quizId", "N/A")}");
-                        Debug.Log($"   - attemptNumber: {data.GetValueOrDefault("attemptNumber", "N/A")}");
-                        Debug.Log($"   - score: {data.GetValueOrDefault("score", "N/A")}");
-                        Debug.Log($"   - isPassed: {data.GetValueOrDefault("isPassed", "N/A")}");
-                    }
-                    Debug.Log($"📊 Total {attempts.Count} quiz attempts for story {storyId}");
+                    Debug.LogError($"❌ Failed to find student: {task.Exception}");
+                    callback?.Invoke(false);
+                    return;
                 }
-                else if (task.IsFaulted)
+
+                var snapshot = task.Result;
+                var documents = snapshot.Documents.ToList(); // Convert to List for indexing
+
+                if (documents.Count == 0)
                 {
-                    Debug.LogError($"❌ Error fetching quiz attempts for story {storyId}: {task.Exception}");
+                    Debug.LogError("❌ No student document found for userId");
+                    callback?.Invoke(false);
+                    return;
+                }
+
+                // Get the student document and its data
+                var studentDoc = documents[0];
+                string studentDocId = studentDoc.Id;
+                var studentData = studentDoc.ToDictionary();
+                string classCode = studentData.ContainsKey("classCode") ? studentData["classCode"].ToString() : null;
+
+                Debug.Log($"✅ Found student document: {studentDocId}, classCode: {classCode}");
+
+                // Create a batch write to update all collections atomically
+                var batch = DB.StartBatch();
+
+                // 1. Update studName in students collection
+                var studentRef = DB.Collection("students").Document(studentDocId);
+                batch.Update(studentRef, new Dictionary<string, object>
+                {
+                    { "studName", newName },
+                    { "dateUpdated", FieldValue.ServerTimestamp }
+                });
+
+                // 2. Update displayName in userAccounts collection
+                var userRef = DB.Collection("userAccounts").Document(userId);
+                batch.Update(userRef, new Dictionary<string, object>
+                {
+                    { "displayName", newName }
+                });
+
+                // 3. Update displayName in studentLeaderboards collection (if exists)
+                // Note: studentLeaderboards uses studId (student doc ID) as the document ID
+                if (!string.IsNullOrEmpty(classCode))
+                {
+                    // Use the student document ID directly since that's what studentLeaderboards uses
+                    var leaderboardRef = DB.Collection("studentLeaderboards").Document(studentDocId);
+                    
+                    // Check if the leaderboard document exists for this class
+                    leaderboardRef.GetSnapshotAsync().ContinueWith(leaderboardTask =>
+                    {
+                        UnityDispatcher.RunOnMainThread(() =>
+                        {
+                            if (leaderboardTask.IsFaulted || leaderboardTask.IsCanceled)
+                            {
+                                Debug.LogWarning($"⚠️ Could not check leaderboard: {leaderboardTask.Exception}");
+                                // Continue anyway - don't fail the whole operation
+                                CommitBatch(batch, callback);
+                                return;
+                            }
+
+                            var leaderboardDoc = leaderboardTask.Result;
+                            
+                            if (leaderboardDoc.Exists)
+                            {
+                                var leaderboardData = leaderboardDoc.ToDictionary();
+                                string leaderboardClassCode = leaderboardData.ContainsKey("classCode") 
+                                    ? leaderboardData["classCode"].ToString() 
+                                    : null;
+                                
+                                // Verify this leaderboard entry is for the correct class
+                                if (leaderboardClassCode == classCode)
+                                {
+                                    batch.Update(leaderboardRef, new Dictionary<string, object>
+                                    {
+                                        { "displayName", newName },
+                                        { "dateUpdated", FieldValue.ServerTimestamp }
+                                    });
+
+                                    Debug.Log($"✅ Added leaderboard update to batch for studId: {studentDocId}");
+                                }
+                                else
+                                {
+                                    Debug.LogWarning($"⚠️ Leaderboard class mismatch. Expected: {classCode}, Found: {leaderboardClassCode}");
+                                }
+                            }
+                            else
+                            {
+                                Debug.Log($"ℹ️ No leaderboard entry found for studId: {studentDocId} in class {classCode}");
+                            }
+
+                            // Commit the batch with all updates
+                            CommitBatch(batch, callback);
+                        });
+                    });
                 }
                 else
                 {
-                    Debug.Log($"ℹ️ No quiz attempts found for story {storyId}");
+                    // No class code, just commit what we have
+                    Debug.LogWarning("⚠️ No classCode found, skipping leaderboard update");
+                    CommitBatch(batch, callback);
                 }
-
-                callback?.Invoke(attempts);
             });
         });
 }
+
+    // Helper method to commit the batch
+    private void CommitBatch(WriteBatch batch, System.Action<bool> callback)
+    {
+        batch.CommitAsync().ContinueWith(commitTask =>
+        {
+            UnityDispatcher.RunOnMainThread(() =>
+            {
+                if (commitTask.IsFaulted || commitTask.IsCanceled)
+                {
+                    Debug.LogError($"❌ Failed to update student name: {commitTask.Exception}");
+                    callback?.Invoke(false);
+                }
+                else
+                {
+                    Debug.Log($"✅ Student name updated successfully in all collections");
+                    callback?.Invoke(true);
+                }
+            });
+        });
+    }
+
+    public void GetStudentByUserId(string userId, System.Action<StudentModel> callback)
+    {
+        if (string.IsNullOrEmpty(userId))
+        {
+            Debug.LogError("❌ GetStudentByUserId: Invalid userId");
+            UnityDispatcher.RunOnMainThread(() => callback?.Invoke(null));
+            return;
+        }
+
+        DB.Collection("students")
+            .WhereEqualTo("userId", userId)
+            .GetSnapshotAsync()
+            .ContinueWith(task =>
+            {
+                if (task.IsFaulted || task.IsCanceled)
+                {
+                    Debug.LogError($"❌ Failed to get student: {task.Exception}");
+                    UnityDispatcher.RunOnMainThread(() => callback?.Invoke(null));
+                    return;
+                }
+
+                var snapshot = task.Result;
+                var documents = snapshot.Documents.ToList();
+
+                if (documents.Count == 0)
+                {
+                    Debug.LogWarning($"⚠️ No student found for userId: {userId}");
+                    UnityDispatcher.RunOnMainThread(() => callback?.Invoke(null));
+                    return;
+                }
+
+                var studentDoc = documents[0];
+                var studentData = studentDoc.ConvertTo<StudentModel>();
+                studentData.studId = studentDoc.Id;
+
+                Debug.Log($"✅ Found student: {studentData.studName}");
+                UnityDispatcher.RunOnMainThread(() => callback?.Invoke(studentData));
+            });
+    }
 
 }
