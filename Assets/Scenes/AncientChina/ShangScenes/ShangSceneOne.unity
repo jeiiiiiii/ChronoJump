@@ -1213,8 +1213,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AssyrianScene1, Assembly-CSharp
+      - m_Target: {fileID: 1417533029}
+        m_TargetAssemblyTypeName: ShangScene1, Assembly-CSharp
         m_MethodName: SaveAndLoad
         m_Mode: 1
         m_Arguments:

@@ -180,7 +180,37 @@ void OnDestroy()
                                  lastScene == "AssyrianSceneTwo" || lastScene == "AssyrianScene2" ||
                                  lastScene == "AssyrianSceneThree" || lastScene == "AssyrianScene3" ||
                                  lastScene == "AssyrianSceneFour" || lastScene == "AssyrianScene4" ||
-                                 lastScene == "AssyrianSceneFive" || lastScene == "AssyrianScene5"
+                                 lastScene == "AssyrianSceneFive" || lastScene == "AssyrianScene5" ||
+                                 lastScene == "HarappaSceneOne" || lastScene == "HarappaScene1" ||
+                                 lastScene == "HarappaSceneTwo" || lastScene == "HarappaScene2" ||
+                                 lastScene == "HarappaSceneThree" || lastScene == "HarappaScene3" ||
+                                 lastScene == "HarappaSceneFour" || lastScene == "HarappaScene4" ||
+                                 lastScene == "HarappaSceneFive" || lastScene == "HarappaScene5" ||
+                                 lastScene == "SiningSceneOne" || lastScene == "SiningScene1" ||
+                                 lastScene == "SiningSceneTwo" || lastScene == "SiningScene2" ||
+                                 lastScene == "SiningSceneThree" || lastScene == "SiningScene3" ||
+                                 lastScene == "SiningSceneFour" || lastScene == "SiningScene4" ||
+                                 lastScene == "SiningSceneFive" || lastScene == "SiningScene5" ||
+                                 lastScene == "HuangHeSceneOne" || lastScene == "HuangHeScene1" ||
+                                 lastScene == "HuangHeSceneTwo" || lastScene == "HuangHeScene2" ||
+                                 lastScene == "HuangHeSceneThree" || lastScene == "HuangHeScene3" ||
+                                 lastScene == "HuangHeSceneFour" || lastScene == "HuangHeScene4" ||
+                                 lastScene == "HuangHeSceneFive" || lastScene == "HuangHeScene5" ||
+                                 lastScene == "ShangSceneOne" || lastScene == "ShangScene1" ||
+                                 lastScene == "ShangSceneTwo" || lastScene == "ShangScene2" ||
+                                 lastScene == "ShangSceneThree" || lastScene == "ShangScene3" ||
+                                 lastScene == "ShangSceneFour" || lastScene == "ShangScene4" ||
+                                 lastScene == "ShangSceneFive" || lastScene == "ShangScene5" ||
+                                 lastScene == "NileSceneOne" || lastScene == "NileScene1" ||
+                                 lastScene == "NileSceneTwo" || lastScene == "NileScene2" ||
+                                 lastScene == "NileSceneThree" || lastScene == "NileScene3" ||
+                                 lastScene == "NileSceneFour" || lastScene == "NileScene4" ||
+                                 lastScene == "NileSceneFive" || lastScene == "NileScene5" ||
+                                 lastScene == "KingdomSceneOne" || lastScene == "KingdomScene1" ||
+                                 lastScene == "KingdomSceneTwo" || lastScene == "KingdomScene2" ||
+                                 lastScene == "KingdomSceneThree" || lastScene == "KingdomScene3" ||
+                                 lastScene == "KingdomSceneFour" || lastScene == "KingdomScene4" ||
+                                 lastScene == "KingdomSceneFive" || lastScene == "KingdomScene5" 
                                  ;
 
         bool cameFromStoryScene = saveSource == "StoryScene" && isValidStoryScene;
@@ -434,7 +464,37 @@ void OnDestroy()
                                  lastScene == "AssyrianSceneTwo" || lastScene == "AssyrianScene2" ||
                                  lastScene == "AssyrianSceneThree" || lastScene == "AssyrianScene3" ||
                                  lastScene == "AssyrianSceneFour" || lastScene == "AssyrianScene4" ||
-                                 lastScene == "AssyrianSceneFive" || lastScene == "AssyrianScene5"
+                                 lastScene == "AssyrianSceneFive" || lastScene == "AssyrianScene5" ||
+                                 lastScene == "HarappaSceneOne" || lastScene == "HarappaScene1" ||
+                                 lastScene == "HarappaSceneTwo" || lastScene == "HarpaScene2" ||
+                                 lastScene == "HarappaSceneThree" || lastScene == "HarappaScene3" ||
+                                 lastScene == "HarappaSceneFour" || lastScene == "HarappaScene4" ||
+                                 lastScene == "HarappaSceneFive" || lastScene == "HarappaScene5" ||
+                                 lastScene == "SiningSceneOne" || lastScene == "SiningScene1" ||
+                                 lastScene == "SiningSceneTwo" || lastScene == "SiningScene2" ||
+                                 lastScene == "SiningSceneThree" || lastScene == "SiningScene3" ||
+                                 lastScene == "SiningSceneFour" || lastScene == "SiningScene4" ||
+                                 lastScene == "SiningSceneFive" || lastScene == "SiningScene5" ||
+                                 lastScene == "HuangHeSceneOne" || lastScene == "HuangHeScene1" ||
+                                 lastScene == "HuangHeSceneTwo" || lastScene == "HuangHeScene2" ||
+                                 lastScene == "HuangHeSceneThree" || lastScene == "HuangHeScene3" ||
+                                 lastScene == "HuangHeSceneFour" || lastScene == "HuangHeScene4" ||
+                                 lastScene == "HuangHeSceneFive" || lastScene == "HuangHeScene5" ||
+                                 lastScene == "ShangSceneOne" || lastScene == "ShangScene1" ||
+                                 lastScene == "ShangSceneTwo" || lastScene == "ShangScene2" ||
+                                 lastScene == "ShangSceneThree" || lastScene == "ShangScene3" ||
+                                 lastScene == "ShangSceneFour" || lastScene == "ShangScene4" ||
+                                 lastScene == "ShangSceneFive" || lastScene == "ShangScene5" ||
+                                 lastScene == "NileSceneOne" || lastScene == "NileScene1" ||
+                                 lastScene == "NileSceneTwo" || lastScene == "NileScene2" ||
+                                 lastScene == "NileSceneThree" || lastScene == "NileScene3" ||
+                                 lastScene == "NileSceneFour" || lastScene == "NileScene4" ||
+                                 lastScene == "NileSceneFive" || lastScene == "NileScene5" ||
+                                 lastScene == "KingdomSceneOne" || lastScene == "KingdomScene1" ||
+                                 lastScene == "KingdomSceneTwo" || lastScene == "KingdomScene2" ||
+                                 lastScene == "KingdomSceneThree" || lastScene == "KingdomScene3" ||
+                                 lastScene == "KingdomSceneFour" || lastScene == "KingdomScene4" ||
+                                 lastScene == "KingdomSceneFive" || lastScene == "KingdomScene5"
                                 ;
 
     bool cameFromStoryScene = saveSource == "StoryScene" && isValidStoryScene;
@@ -764,6 +824,96 @@ void ConfirmDelete()
             case "AssyrianScene5":
             case "AssyrianSceneFive":
                 return "Assyrian Scene 5";
+            case "HarappaScene1":
+            case "HarappaSceneOne":
+                return "Harappa Scene 1";
+            case "HarappaScene2":
+            case "HarappaSceneTwo":
+                return "Harappa Scene 2";
+            case "HarappaScene3":
+            case "HarappaSceneThree":
+                return "Harappa Scene 3";
+            case "HarappaScene4":
+            case "HarappaSceneFour":
+                return "Harappa Scene 4";
+            case "HarappaScene5":
+            case "HarappaSceneFive":
+                return "Harappa Scene 5";
+            case "SiningScene1":
+            case "SiningSceneOne":
+                return "Sining Scene 1";
+            case "SiningScene2":
+            case "SiningSceneTwo":
+                return "Sining Scene 2";
+            case "SiningScene3":
+            case "SiningSceneThree":
+                return "Sining Scene 3";
+            case "SiningScene4":
+            case "SiningSceneFour":
+                return "Sining Scene 4";
+            case "SiningScene5":
+            case "SiningSceneFive":
+                return "Sining Scene 5";
+            case "HuangHeScene1":
+            case "HuangHeSceneOne":
+                return "HuangHe Scene 1";
+            case "HuangHeScene2":
+            case "HuangHeSceneTwo":
+                return "HuangHe Scene 2";
+            case "HuangHeScene3":
+            case "HuangHeSceneThree":
+                return "HuangHe Scene 3";
+            case "HuangHeScene4":
+            case "HuangHeSceneFour":
+                return "HuangHe Scene 4";
+            case "HuangHeScene5":
+            case "HuangHeSceneFive":
+                return "HuangHe Scene 5";
+            case "ShangScene1":
+            case "ShangSceneOne":
+                return "Shang Scene 1";
+            case "ShangScene2":
+            case "ShangSceneTwo":
+                return "Shang Scene 2";
+            case "ShangScene3":
+            case "ShangSceneThree":
+                return "Shang Scene 3";
+            case "ShangScene4":
+            case "ShangSceneFour":
+                return "Shang Scene 4";
+            case "ShangScene5":
+            case "ShangSceneFive":
+                return "Shang Scene 5";
+            case "NileScene1":
+            case "NileSceneOne":
+                return "Nile Scene 1";
+            case "NileScene2":
+            case "NileSceneTwo":
+                return "Nile Scene 2";
+            case "NileScene3":
+            case "NileSceneThree":
+                return "Nile Scene 3";
+            case "NileScene4":
+            case "NileSceneFour":
+                return "Nile Scene 4";
+            case "NileScene5":
+            case "NileSceneFive":
+                return "Nile Scene 5";
+            case "KingdomScene1":
+            case "KingdomSceneOne":
+                return "Kingdom Scene 1";
+            case "KingdomScene2":
+            case "KingdomSceneTwo":
+                return "Kingdom Scene 2";
+            case "KingdomScene3":
+            case "KingdomSceneThree":
+                return "Kingdom Scene 3";
+            case "KingdomScene4":
+            case "KingdomSceneFour":
+                return "Kingdom Scene 4";
+            case "KingdomScene5":
+            case "KingdomSceneFive":
+                return "Kingdom Scene 5";
             default:
                 return sceneName;
         }

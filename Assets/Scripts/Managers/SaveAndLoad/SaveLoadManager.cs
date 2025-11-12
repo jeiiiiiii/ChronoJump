@@ -491,7 +491,85 @@ public class SaveLoadManager : MonoBehaviour
         
         // Assyrian Quiz and Artifact scenes
         {"AssyrianQuizTime", 35}, {"AssyrianArtifactScene", 36},
-    };
+        
+        // Harappa chapters
+        {"HarappaSceneOne", 37}, {"HarappaScene1", 37},
+        {"HarappaSceneTwo", 38}, {"HarappaScene2", 38},
+        {"HarappaSceneThree", 39}, {"HarappaScene3", 39},
+        {"HarappaSceneFour", 40}, {"HarappaScene4", 40},
+        {"HarappaSceneFive", 41}, {"HarappaScene5", 41},
+        
+        // Harappa Challenge scenes
+        {"HarappaFirstRecallChallenges", 38}, {"HarappaSecondRecallChallenges", 40},
+        
+        // Harappa Quiz and Artifact scenes
+        {"HarappaQuizTime", 42}, {"HarappaArtifactScene", 43},
+
+        // Sining chapters
+        {"SiningSceneOne", 44}, {"SiningScene1", 44},
+        {"SiningSceneTwo", 45}, {"SiningScene2", 45},
+        {"SiningSceneThree", 46}, {"SiningScene3", 46},
+        {"SiningSceneFour", 47}, {"SiningScene4", 47},
+        {"SiningSceneFive", 48}, {"SiningScene5", 48},
+        
+        // Sining Challenge scenes
+        {"SiningFirstRecallChallenges", 45}, {"SiningSecondRecallChallenges", 47},
+        
+        // Sining Quiz and Artifact scenes
+        {"SiningQuizTime", 49}, {"SiningArtifactScene", 50},
+
+        // Huanghe chapters
+        {"HuangHeSceneOne", 51}, {"HuangHeScene1", 51},
+        {"HuangHeSceneTwo", 52}, {"HuangHeScene2", 52},
+        {"HuangHeSceneThree", 53}, {"HuangHeScene3", 53},
+        {"HuangHeSceneFour", 54}, {"HuangHeScene4", 54},
+        {"HuangHeSceneFive", 55}, {"HuangHeScene5", 55},
+
+        // Huanghe Challenge scenes
+        {"HuangHeFirstRecallChallenges", 52}, {"HuangHeSecondRecallChallenges", 54},
+
+        // Huanghe Quiz and Artifact scenes
+        {"HuangHeQuizTime", 56}, {"HuangHeArtifactScene", 57},
+
+        // Shang chapters
+        {"ShangSceneOne", 58}, {"ShangScene1", 58},
+        {"ShangSceneTwo", 59}, {"ShangScene2", 59},
+        {"ShangSceneThree", 60}, {"ShangScene3", 60},
+        {"ShangSceneFour", 61}, {"ShangScene4", 61},
+        {"ShangSceneFive", 62}, {"ShangScene5", 62},
+
+        // Shang Challenge scenes
+        {"ShangFirstRecallChallenges", 59}, {"ShangSecondRecallChallenges", 61},
+
+        // Shang Quiz and Artifact scenes
+        {"ShangQuizTime", 63}, {"ShangArtifactScene", 64},
+
+        // Nile chapters
+        {"NileSceneOne", 65}, {"NileScene1", 65},
+        {"NileSceneTwo", 66}, {"NileScene2", 66},
+        {"NileSceneThree", 67}, {"NileScene3", 67},
+        {"NileSceneFour", 68}, {"NileScene4", 68},
+        {"NileSceneFive", 69}, {"NileScene5", 69},
+
+        // Nile Challenge scenes
+        {"NileFirstRecallChallenges", 66}, {"NileSecondRecallChallenges", 68},
+
+        // Nile Quiz and Artifact scenes
+        {"NileQuizTime", 70}, {"NileArtifactScene", 71},
+
+        // Kingdom chapters
+        {"KingdomSceneOne", 72}, {"KingdomScene1", 72},
+        {"KingdomSceneTwo", 73}, {"KingdomScene2", 73},
+        {"KingdomSceneThree", 74}, {"KingdomScene3", 74},
+        {"KingdomSceneFour", 75}, {"KingdomScene4", 75},
+        {"KingdomSceneFive", 76}, {"KingdomScene5", 76},
+
+        // Kingdom Challenge scenes
+        {"KingdomFirstRecallChallenges", 73}, {"KingdomSecondRecallChallenges", 75},
+
+        // Kingdom Quiz and Artifact scenes
+        {"KingdomQuizTime", 77}, {"KingdomArtifactScene", 78},
+        };
 
         int existingChapter = chapterOrder.ContainsKey(existingScene) ? chapterOrder[existingScene] : 0;
         int newChapter = chapterOrder.ContainsKey(newScene) ? chapterOrder[newScene] : 0;

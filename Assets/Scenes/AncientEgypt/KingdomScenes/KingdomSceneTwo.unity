@@ -3004,8 +3004,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AssyrianScene2, Assembly-CSharp
+      - m_Target: {fileID: 1277758996}
+        m_TargetAssemblyTypeName: KingdomScene2, Assembly-CSharp
         m_MethodName: SaveAndLoad
         m_Mode: 1
         m_Arguments:
