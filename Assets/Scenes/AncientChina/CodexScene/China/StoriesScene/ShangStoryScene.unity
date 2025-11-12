@@ -381,29 +381,29 @@ MonoBehaviour:
   backButton: {fileID: 798681859}
   stories:
   - storyTitle: 
-    storyContent: "\tPagbukas ng portal, natagpuan nina Player at Chrono ang kanilang
-      mga sarili sa harap ng matatayog na pader ng Nineveh, kabisera ng makapangyarihang
-      Assyria. Masigla ngunit mahigpit ang lungsod. Mga sundalo\u2019y nagbabantay
-      sa bawat tarangkahan at mga mensahero\u2019y kumakaripas sa malalapad na kalsada.
-      Ipinaliwanag ni Chrono na ito ang sentro ng isang imperyong itinayo sa lakas
-      ng espada at sa takot ng mga nasakop.(1)\n\n\tLumapit sa kanila si Tiglath-Pileser
-      I, nakasuot ng mabigat na baluti. Sa malamig na tinig, ibinahagi niya kung
-      paano niya pinalawak ang sakop ng Assyria mula sa mga Hittite hanggang sa baybayin
-      ng Mediterranean sa pamamagitan ng walang humpay na pananakop at mahigpit na
-      pamamahala. Sa kanyang mga mata, ang kapayapaan ay bunga ng takot at pagsunod.(2)"
+    storyContent: "\tSa paglalakbay ni Player kasama si Chrono, napadpad sila sa
+      Anyang, ang kabisera ng Dinastiyang Shang ang unang dinastiyang nag-iwan ng
+      nakasulat na kasaysayan sa China. Dito nila nakilala si Haring Wu Ding, na
+      nagpakita ng maunlad na lungsod na may organisadong pamahalaan, malinaw na
+      hierarchy, at mga ritwal na gumagamit ng oracle bones bilang paraan ng pakikipag-usap
+      sa mga ninuno. Ipinaliwanag ni Chrono na ang mga butong ito ang unang anyo
+      ng Chinese writing, simbolo ng simula ng dokumentadong kasaysayan ng bansa.(1)\n\n\tNakilala
+      rin nila si Fu Hao, asawa ni Wu Ding at isang matapang na heneral na pinamunuan
+      ang 13,000 sundalo sa mga digmaan. Sa pamamagitan ni Fu Hao, nakita ni Player
+      ang kahusayan ng Shang sa paggawa ng bronze vessels gamit ang piece-mold casting,
+      na ginamit hindi lamang sa sining kundi sa relihiyosong ritwal. Ipinakita rin
+      ng mga oracle bone ceremonies kung gaano kalalim ang paniniwala ng mga Shang
+      sa mundo ng espiritu, maging sa punto ng pag-aalay ng hayop at tao bilang sakripisyo.(2)"
   - storyTitle: 
-    storyContent: "\tSa paglalakbay nila sa loob ng lungsod, ipinakilala ni Chrono
-      ang isa pang dakilang pinuno, si Ashurbanipal. Sa halip na espada, ipinakita
-      nito ang kanyang yaman: isang napakalaking silid-aklatan na naglalaman ng libu-libong
-      tabletang luwad, kasaysayan, medisina, batas, at panalangin. Dito natutunan
-      ng Player na kahit sa gitna ng kalupitan, may puwang para sa kaalaman.(3)\n\n\tNgunit
-      sa huli, ikinuwento ni Chrono ang pagbagsak ng Nineveh noong 612 BCE nang magkaisa
-      ang mga dating kaaway na Chaldean, Medes, at Persian upang wasakin ang imperyo.
-      Ang lungsod ay nilamon ng apoy at abo, at ang mga tore nito ay gumuho magpakailanman.(4)\n\n\tMuling
-      bumukas ang portal at bumalik si Player sa kasalukuyan, tangan ang isang maliit
-      na clay tablet mula sa aklatan ni Ashurbanipal bilang paalala na ang tunay
-      na lakas ng isang kaharian ay masusukat hindi sa takot na ipinapadama nito,
-      kundi sa karunungang naiiwan sa kasaysayan.(5)"
+    storyContent: "\tNgunit habang lumilipas ang panahon, unti-unting nawala sa mga
+      Shang ang Mandate of Heaven\u2014ang karapatang mamuno na ibinibigay ng langit.
+      Dahil sa katiwalian at labis na sakripisyo, tinalo sila ng Dinastiyang Zhou
+      sa Battle of Muye noong 1027 BCE.(3)\n\n\tSa pagtatapos ng kanilang paglalakbay,
+      napagtanto ni Player na ang tunay na kapangyarihan ay hindi lamang galing sa
+      langit kundi sa mabuting pamumuno at responsableng paggamit nito. Ang Dinastiyang
+      Shang ay maaaring nagwakas, ngunit ang kanilang nakasulat na pamana\u2014ang
+      oracle bones, bronze art, at konsepto ng Mandate of Heaven ay naging pundasyon
+      ng kulturang Tsino na tumagal hanggang sa susunod na mga dinastiya.(4)\n"
 --- !u!1 &426330772
 GameObject:
   m_ObjectHideFlags: 0
@@ -1023,8 +1023,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -707, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: -461.12, y: -9.25}
+  m_SizeDelta: {x: 691.76, y: 68.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1371687836
 MonoBehaviour:
@@ -1046,7 +1046,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Assyrian Story
+  m_text: Dinastiyang Shang Story
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8e37122d6e7034f4389c42cbc3516813, type: 2}
   m_sharedMaterial: {fileID: -9095057548130661126, guid: 8e37122d6e7034f4389c42cbc3516813, type: 2}
@@ -1111,7 +1111,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -421.2602, w: 0}
+  m_margin: {x: 0, y: 0, z: 10.159317, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1501,7 +1501,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Assyrian
+  m_text: Disnastiyang Shang
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 04d8fa5ccb9bf4b4b9ed6b73071af0ef, type: 2}
   m_sharedMaterial: {fileID: 3873622676898468374, guid: 04d8fa5ccb9bf4b4b9ed6b73071af0ef, type: 2}
@@ -1566,7 +1566,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -151.78476, w: 0}
+  m_margin: {x: 0, y: 0, z: 2.0780716, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1597,8 +1597,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -58, y: 329}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 59, y: 316.93}
+  m_SizeDelta: {x: 676.67, y: 74.14}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2061141253
 GameObject:
