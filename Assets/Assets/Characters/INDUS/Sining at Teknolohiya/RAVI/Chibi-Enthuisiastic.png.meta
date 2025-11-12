@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7c4ed1ad59ac5ea4baaa7bfcdd069fd5
+guid: df4a9ee9352f2e74ba6595d2eeb4b620
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7859419320659649158
-    second: Chibi-Hopeful_0
+      213: 3728146943776470229
+    second: Chibi-Enthuisiastic_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,12 +113,12 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Chibi-Hopeful_0
+      name: Chibi-Enthuisiastic_0
       rect:
         serializedVersion: 2
-        x: 323
+        x: 303
         y: 28
-        width: 347
+        width: 398
         height: 963
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a7d5d33d4cbbde290800000000000000
-      internalID: -7859419320659649158
+      spriteID: 5d4314e84e90db330800000000000000
+      internalID: 3728146943776470229
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Chibi-Hopeful_0: -7859419320659649158
+      Chibi-Enthuisiastic_0: 3728146943776470229
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

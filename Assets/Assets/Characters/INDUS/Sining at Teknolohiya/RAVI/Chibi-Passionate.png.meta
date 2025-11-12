@@ -5,9 +5,6 @@ TextureImporter:
   - first:
       213: -6072734632687826848
     second: Chibi-Passionate_0
-  - first:
-      213: 5832688018872761978
-    second: Chibi-Passionate_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -54,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 1
+  spritePixelsToUnits: 1.5
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -119,28 +116,6 @@ TextureImporter:
       name: Chibi-Passionate_0
       rect:
         serializedVersion: 2
-        x: 204
-        y: 56
-        width: 135
-        height: 142
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0680e6bb60059bba0800000000000000
-      internalID: -6072734632687826848
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Chibi-Passionate_1
-      rect:
-        serializedVersion: 2
         x: 309
         y: 17
         width: 412
@@ -153,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a7e769aa9ded1f050800000000000000
-      internalID: 5832688018872761978
+      spriteID: 0680e6bb60059bba0800000000000000
+      internalID: -6072734632687826848
       vertices: []
       indices: 
       edges: []
@@ -174,7 +149,6 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       Chibi-Passionate_0: -6072734632687826848
-      Chibi-Passionate_1: 5832688018872761978
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

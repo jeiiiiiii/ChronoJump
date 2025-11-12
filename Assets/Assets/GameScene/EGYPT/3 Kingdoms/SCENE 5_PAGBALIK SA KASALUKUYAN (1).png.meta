@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7c4ed1ad59ac5ea4baaa7bfcdd069fd5
+guid: d1a13f150e40b904e86e7d7b126ef6f5
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7859419320659649158
-    second: Chibi-Hopeful_0
+      213: 3109618343370486530
+    second: SCENE 5_PAGBALIK SA KASALUKUYAN (1)_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,12 +46,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 1.5
+  spritePixelsToUnits: 1
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Chibi-Hopeful_0
+      name: SCENE 5_PAGBALIK SA KASALUKUYAN (1)_0
       rect:
         serializedVersion: 2
-        x: 323
-        y: 28
-        width: 347
-        height: 963
+        x: 0
+        y: 0
+        width: 1920
+        height: 1080
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a7d5d33d4cbbde290800000000000000
-      internalID: -7859419320659649158
+      spriteID: 203f2a76865972b20800000000000000
+      internalID: 3109618343370486530
       vertices: []
       indices: 
       edges: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Chibi-Hopeful_0: -7859419320659649158
+      SCENE 5_PAGBALIK SA KASALUKUYAN (1)_0: 3109618343370486530
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
