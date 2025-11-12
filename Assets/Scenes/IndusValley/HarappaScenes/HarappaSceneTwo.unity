@@ -2105,8 +2105,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AssyrianScene2, Assembly-CSharp
+      - m_Target: {fileID: 1277758997}
+        m_TargetAssemblyTypeName: HarappaScene2, Assembly-CSharp
         m_MethodName: GoToSettings
         m_Mode: 1
         m_Arguments:
@@ -3271,8 +3271,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SumerianScene2, Assembly-CSharp
+      - m_Target: {fileID: 1277758997}
+        m_TargetAssemblyTypeName: HarappaScene2, Assembly-CSharp
         m_MethodName: Home
         m_Mode: 1
         m_Arguments:
