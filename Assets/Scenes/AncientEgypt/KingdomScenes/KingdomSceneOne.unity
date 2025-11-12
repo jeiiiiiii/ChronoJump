@@ -1213,8 +1213,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AssyrianScene1, Assembly-CSharp
+      - m_Target: {fileID: 1417533026}
+        m_TargetAssemblyTypeName: KingdomScene1, Assembly-CSharp
         m_MethodName: SaveAndLoad
         m_Mode: 1
         m_Arguments:
@@ -2749,8 +2749,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AssyrianScene1, Assembly-CSharp
+      - m_Target: {fileID: 1417533026}
+        m_TargetAssemblyTypeName: KingdomScene1, Assembly-CSharp
         m_MethodName: GoToSettings
         m_Mode: 1
         m_Arguments:
@@ -3021,8 +3021,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SumerianScene1, Assembly-CSharp
+      - m_Target: {fileID: 1417533026}
+        m_TargetAssemblyTypeName: KingdomScene1, Assembly-CSharp
         m_MethodName: Home
         m_Mode: 1
         m_Arguments:
