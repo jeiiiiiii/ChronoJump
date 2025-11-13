@@ -97,7 +97,7 @@ public class HarappaThirdRecallChallenges : MonoBehaviour
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Bakit hindi pa rin nababasa ang Indus script hanggang ngayon?"
+                line = " Ano ang pangunahing dahilan ng pagkawala ng Indus Valley Civilization?"
             },
         };
 
@@ -130,7 +130,7 @@ public class HarappaThirdRecallChallenges : MonoBehaviour
                     new DialogueLine
                     {
                         characterName = "CHRONO",
-                        line = " Bakit hindi pa rin nababasa ang Indus script hanggang ngayon?"
+                        line = " Ano ang pangunahing dahilan ng pagkawala ng Indus Valley Civilization?"
                     },
                 };
                 
@@ -400,9 +400,6 @@ public class HarappaThirdRecallChallenges : MonoBehaviour
                 if (isShowingPagbabagoDialogue) // ✅ Correct flag for this script
                 {
                     nextButton.interactable = false;
-                    // Should be change
-                    nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
 
                     // Calculate dialogue audio duration
                     float dialogueDelay = 0f;
@@ -434,14 +431,11 @@ public class HarappaThirdRecallChallenges : MonoBehaviour
                 }
                 else
                 {
-                    // For wrong answers, keep original logic
                     nextButton.onClick.AddListener(() =>
-                {
-                    if (finishAudioSource != null)
-                        finishAudioSource.Play();
-                    nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
-                });
+                    {
+                        currentDialogueIndex = 0;
+                        ShowDialogue();
+                    });
                 }
             }
 

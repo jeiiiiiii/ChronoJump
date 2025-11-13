@@ -2994,10 +2994,21 @@ MonoBehaviour:
   ArtifactUseButton: {fileID: 317194327}
   ArtifactButton: {fileID: 317194327}
   audioSource: {fileID: 568145474}
-  dialogueClips: []
-  GridClips: []
-  temploClips: []
-  hukboClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: c686d92631800ca4abf8e1c543999b31, type: 3}
+  GridClips:
+  - {fileID: 8300000, guid: d6e64191e9b60af41ba0004d8d2b766e, type: 3}
+  - {fileID: 8300000, guid: 6dc4069e7c00ab3478b0d7ae627c5365, type: 3}
+  - {fileID: 8300000, guid: 8d0b971e0c9e774468efe334c7dbdc73, type: 3}
+  - {fileID: 8300000, guid: 7a3bd51361df52c44bbc85386cc79499, type: 3}
+  temploClips:
+  - {fileID: 8300000, guid: 795d00c465f9210449503b235c4208c4, type: 3}
+  - {fileID: 8300000, guid: c1b6dd4ebbb9b4044bcb2683707dd229, type: 3}
+  - {fileID: 8300000, guid: caca1c04dee9f2f4cbd396a4da8bd64f, type: 3}
+  hukboClips:
+  - {fileID: 8300000, guid: 377095769f7119046b854a638cdfebae, type: 3}
+  - {fileID: 8300000, guid: c8b2a8d219983b04ab2e4de0263c2c9c, type: 3}
+  - {fileID: 8300000, guid: caca1c04dee9f2f4cbd396a4da8bd64f, type: 3}
 --- !u!1 &1261902334
 GameObject:
   m_ObjectHideFlags: 0

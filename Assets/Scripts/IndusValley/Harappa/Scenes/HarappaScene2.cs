@@ -34,7 +34,9 @@ public class HarappaScene2 : MonoBehaviour
     public Sprite PlayerCurious;
     public Sprite PlayerEager;
     public Sprite PlayerEmabarrassed;
-    public Sprite DaroProud;
+    public Sprite MatrikaCalm;
+    public Sprite MatrikaMysterious;
+    public Sprite MatrikaSomber;
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
@@ -79,17 +81,17 @@ public class HarappaScene2 : MonoBehaviour
             },
             new DialogueLine
             {
-                characterName = "CHRONO",
+                characterName = "MATRIKA",
                 line = " Ito ay mga pangalan, mga kalakal, mga mensahe. Ginagamit namin ito sa kalakalan. Ngunit ang aming wika... mawawala sa hangin."
             },
             new DialogueLine
             {
-                characterName = "DARO",
+                characterName = "CHRONO",
                 line = " Ang Indus script ay isa sa mga pinakamalaking misteryo ng kasaysayan. Mahigit 400 symbols, ngunit walang nakakaalam kung paano ito basahin. Walang Rosetta Stone, walang key"
             },
             new DialogueLine
             {
-                characterName = "CHRONO",
+                characterName = "PLAYER",
                 line = " Ibig sabihin... mawawala ang kanilang boses sa kasaysayan?"
             },
         };
@@ -220,11 +222,11 @@ public class HarappaScene2 : MonoBehaviour
                 break;
             case 3:
                 PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = ChronoThinking;
+                ChronocharacterRenderer.sprite = MatrikaCalm;
                 break;
             case 4:
                 PlayercharacterRenderer.sprite = PlayerEmabarrassed;
-                ChronocharacterRenderer.sprite = DaroProud;
+                ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
             case 5:
                 PlayercharacterRenderer.sprite = PlayerCurious;

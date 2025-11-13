@@ -95,7 +95,7 @@ public class HarappaFirstRecallChallenges : MonoBehaviour
         {
             new DialogueLine
             {
-                characterName = "DARO",
+                characterName = "CHRONO",
                 line = " Ano ang pangunahing katangian ng mga lungsod ng Indus Valley tulad ng Mohenjo-daro?"
             },
         };
@@ -128,7 +128,7 @@ public class HarappaFirstRecallChallenges : MonoBehaviour
                 {
                     new DialogueLine
                     {
-                        characterName = "DARO",
+                        characterName = "CHRONO",
                         line = " Ano ang pangunahing katangian ng mga lungsod ng Indus Valley tulad ng Mohenjo-daro?"
                     },
                 };
@@ -374,12 +374,9 @@ public class HarappaFirstRecallChallenges : MonoBehaviour
                 nextButton.onClick.RemoveAllListeners();
 
 
-                if (isShowingGridDialogue) // ✅ Correct flag for this script
+                if (isShowingGridDialogue)
                 {
                     nextButton.interactable = false;
-                    // Should be change
-                    nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
 
                     // Calculate dialogue audio duration
                     float dialogueDelay = 0f;
@@ -411,14 +408,11 @@ public class HarappaFirstRecallChallenges : MonoBehaviour
                 }
                 else
                 {
-                    // For wrong answers, keep original logic
                     nextButton.onClick.AddListener(() =>
-                {
-                    if (finishAudioSource != null)
-                        finishAudioSource.Play();
-                    nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
-                });
+                    {
+                        currentDialogueIndex = 0;
+                        ShowDialogue();
+                    });
                 }
             }
 

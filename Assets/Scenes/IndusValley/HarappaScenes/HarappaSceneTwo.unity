@@ -2217,12 +2217,20 @@ MonoBehaviour:
   PlayerCurious: {fileID: 1425434424722430075, guid: 5c1923377ae91324084f960706141b9f, type: 3}
   PlayerEager: {fileID: 5428063399545322546, guid: c517d75299d0ddb4cb6eed3374b7a5b3, type: 3}
   PlayerEmabarrassed: {fileID: 21300000, guid: f1f43dbd9447c5f468698952cbd6a509, type: 3}
-  DaroProud: {fileID: -5094780453514364954, guid: e75b3cadd706bc344a74b61e8c5d0fc3, type: 3}
+  MatrikaCalm: {fileID: -5080951992958775113, guid: 1dc926e4f5debf44cbe04af56be1a025, type: 3}
+  MatrikaMysterious: {fileID: 5102750413458871501, guid: f296d652c46ecad4c94429c20c73f739, type: 3}
+  MatrikaSomber: {fileID: 1851208726622695707, guid: 8611d1489c9c75442844fa29a24bb653, type: 3}
   ChronocharacterRenderer: {fileID: 1317386105}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   audioSource: {fileID: 1652331086}
-  dialogueClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 09c57538358508a4b9b595582f800b7a, type: 3}
+  - {fileID: 8300000, guid: 5390913582d5a6941ac9cd51e5395fbe, type: 3}
+  - {fileID: 8300000, guid: d83962d876185bc4883b873a1e0bc642, type: 3}
+  - {fileID: 8300000, guid: 9b0fc4f5d044da94e8051a55d9cb8770, type: 3}
+  - {fileID: 8300000, guid: 820fe0eb4e7475b42a9d7a092bc03ecd, type: 3}
+  - {fileID: 8300000, guid: dc8470841220a534b90ec515e61f7718, type: 3}
 --- !u!1 &1317386103
 GameObject:
   m_ObjectHideFlags: 0
