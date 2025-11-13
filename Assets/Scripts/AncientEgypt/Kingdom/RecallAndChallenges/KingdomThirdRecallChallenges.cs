@@ -97,7 +97,7 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Ano ang \"Mandate of Heaven\" at bakit ito mahalaga sa Chinese dynasties?"
+                line = "  Ano ang pangunahing katangian ng Bagong Kaharian ng Egypt?"
             },
         };
 
@@ -130,7 +130,7 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
                     new DialogueLine
                     {
                         characterName = "CHRONO",
-                        line = " Ano ang \"Mandate of Heaven\" at bakit ito mahalaga sa Chinese dynasties?"
+                        line = "  Ano ang pangunahing katangian ng Bagong Kaharian ng Egypt?"
                     },
                 };
                 
@@ -400,9 +400,6 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
                 if (isShowingimperyoDialogue) // ✅ Correct flag for this script
                 {
                     nextButton.interactable = false;
-                    // Should be change
-                    nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
 
                     // Calculate dialogue audio duration
                     float dialogueDelay = 0f;
@@ -434,14 +431,11 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
                 }
                 else
                 {
-                    // For wrong answers, keep original logic
                     nextButton.onClick.AddListener(() =>
-                {
-                    if (finishAudioSource != null)
-                        finishAudioSource.Play();
-                    nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
-                });
+                    {
+                        currentDialogueIndex = 0;
+                        ShowDialogue();
+                    });
                 }
             }
 

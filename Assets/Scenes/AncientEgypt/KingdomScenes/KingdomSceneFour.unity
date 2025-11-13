@@ -2288,7 +2288,14 @@ MonoBehaviour:
   AhmoseDetermined: {fileID: -4316112825199775776, guid: 9d1e9899ae7488f4cbd0c98227d7c4be, type: 3}
   AhmoseFierce: {fileID: 8065478591464320819, guid: 14f6b0e62b7d8de439e529f506edfe65, type: 3}
   audioSource: {fileID: 599946919}
-  dialogueClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: e95d8a751e60e9c42a764f5b208d9da3, type: 3}
+  - {fileID: 8300000, guid: 61471e494061f834bbff1bc9a37c1330, type: 3}
+  - {fileID: 8300000, guid: 9eb6b697f4d70d344a55182d0b26b886, type: 3}
+  - {fileID: 8300000, guid: 24109ceb19abaf544b762cff277af3d7, type: 3}
+  - {fileID: 8300000, guid: 20ccef844ecdb7341a03c5e6f3f5ccac, type: 3}
+  - {fileID: 8300000, guid: 33ea407032647cc47bb2ab0975938dbb, type: 3}
+  - {fileID: 8300000, guid: 1c99b93cfb2a14349a187c5348d222d7, type: 3}
 --- !u!1001 &1598657690
 PrefabInstance:
   m_ObjectHideFlags: 0

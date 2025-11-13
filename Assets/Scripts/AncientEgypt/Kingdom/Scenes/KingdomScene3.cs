@@ -66,7 +66,7 @@ public class KingdomScene3 : MonoBehaviour
             },
             new DialogueLine
             {
-                characterName = "MENTUHOTEP",
+                characterName = "MGA TAO",
                 line = " Mga chariots! Hindi natin alam paano labanan yan!"
             },
             new DialogueLine
@@ -220,7 +220,7 @@ public class KingdomScene3 : MonoBehaviour
                 break;
             case 1:
                 PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = MentuhotepWise;
+                ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 2:
                 PlayercharacterRenderer.sprite = PlayerThinking;

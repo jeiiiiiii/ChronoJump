@@ -35,8 +35,8 @@ public class KingdomScene2 : MonoBehaviour
     public Sprite PlayerEager;
     public Sprite PlayerEmabarrassed;
     public Sprite MentuhotepWise;
-    public Sprite KhufoCommanding;
-
+    public Sprite KhufuCommanding;
+    public Sprite KhufuProud;
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
@@ -72,7 +72,7 @@ public class KingdomScene2 : MonoBehaviour
             },
             new DialogueLine
             {
-                characterName = "KHUFU",
+                characterName = "MGA TAO",
                 line = " Bakit kami patuloy na nagbabayad ng taxes para sa mga libingan ng pharaoh?! Gutom na kami!"
             },
             new DialogueLine
@@ -224,7 +224,7 @@ public class KingdomScene2 : MonoBehaviour
                 break;
             case 1:
                 PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = KhufoCommanding;
+                ChronocharacterRenderer.sprite = KhufuProud;
                 break;
             case 2:
                 PlayercharacterRenderer.sprite = PlayerReflective;

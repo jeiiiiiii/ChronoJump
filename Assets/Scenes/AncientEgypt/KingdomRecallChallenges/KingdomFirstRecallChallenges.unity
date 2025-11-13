@@ -2994,10 +2994,21 @@ MonoBehaviour:
   ArtifactUseButton: {fileID: 317194327}
   ArtifactButton: {fileID: 317194327}
   audioSource: {fileID: 568145474}
-  dialogueClips: []
-  AgeClips: []
-  TemplesClips: []
-  WarriorsClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 8d2a561944c90ee47a298e76ba474a4c, type: 3}
+  AgeClips:
+  - {fileID: 8300000, guid: 34f9e0141b0779b4ca76d9163677557b, type: 3}
+  - {fileID: 8300000, guid: 0744ba3e25316be4e8021498e354f44e, type: 3}
+  - {fileID: 8300000, guid: 84ea4c6cee49c9d44a138b034b60e85c, type: 3}
+  - {fileID: 8300000, guid: f32dbff461cad214aa29556b62caef6d, type: 3}
+  TemplesClips:
+  - {fileID: 8300000, guid: 72729a44bd82b6643bcfa67020f728ea, type: 3}
+  - {fileID: 8300000, guid: 091ca14727ac1d247b0b0b73656e29f0, type: 3}
+  - {fileID: 8300000, guid: f8740599fa5bbdb44a991c0e78b0e9be, type: 3}
+  WarriorsClips:
+  - {fileID: 8300000, guid: b9c006153746ac4449ad4cd039484a6a, type: 3}
+  - {fileID: 8300000, guid: 8d7210aec754f5a4e8d50aeb58c917c8, type: 3}
+  - {fileID: 8300000, guid: f8740599fa5bbdb44a991c0e78b0e9be, type: 3}
 --- !u!1 &1261902334
 GameObject:
   m_ObjectHideFlags: 0

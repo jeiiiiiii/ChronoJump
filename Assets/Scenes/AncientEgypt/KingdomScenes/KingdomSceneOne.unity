@@ -2477,7 +2477,17 @@ MonoBehaviour:
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   ChronoCheerful: {fileID: -6563817684089387956, guid: 8609898f81a07f949bc2af292e5799f5, type: 3}
   audioSource: {fileID: 559845528}
-  dialogueClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 359f41770fcf90d49a31878906f3c273, type: 3}
+  - {fileID: 8300000, guid: 5dcd3e542afbe534798ea20f81857f21, type: 3}
+  - {fileID: 8300000, guid: 21b553568c881ae4e934776459216ff0, type: 3}
+  - {fileID: 8300000, guid: 40a23199617606f4b865a5d9b15e697f, type: 3}
+  - {fileID: 8300000, guid: a0482bc18b825d04bacf635df6c1394e, type: 3}
+  - {fileID: 8300000, guid: 1720b8e0cc7cf234182f76432f07929f, type: 3}
+  - {fileID: 8300000, guid: c2856be5ed388ce47b1713a0bfb2ef2a, type: 3}
+  - {fileID: 8300000, guid: 7fd56907e9540a84ba66677cf847bc8f, type: 3}
+  - {fileID: 8300000, guid: a92322482edd3ad4f88280fe8eb56d9e, type: 3}
+  - {fileID: 8300000, guid: 2cee967855c7aae498624f2648d8eeca, type: 3}
 --- !u!1 &1550358816
 GameObject:
   m_ObjectHideFlags: 0
