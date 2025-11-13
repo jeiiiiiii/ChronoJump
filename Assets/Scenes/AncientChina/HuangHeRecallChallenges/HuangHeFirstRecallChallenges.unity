@@ -2994,10 +2994,21 @@ MonoBehaviour:
   ArtifactUseButton: {fileID: 317194327}
   ArtifactButton: {fileID: 317194327}
   audioSource: {fileID: 568145474}
-  dialogueClips: []
-  DahilClips: []
-  nitoClips: []
-  isdaClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: b853cc47e48ead247864fdd3692a63bb, type: 3}
+  DahilClips:
+  - {fileID: 8300000, guid: e589f28636731384abc9d215fad9f56e, type: 3}
+  - {fileID: 8300000, guid: c03003daec609ba4e9e256122cab7771, type: 3}
+  - {fileID: 8300000, guid: 00d8fc70904baa24b81543544d0f4416, type: 3}
+  - {fileID: 8300000, guid: 46969d5fc8757ca4ea3f68c1f753db4e, type: 3}
+  nitoClips:
+  - {fileID: 8300000, guid: 93d793d9d1660ff4194b7e11ff6e7411, type: 3}
+  - {fileID: 8300000, guid: a1ff6655732abae47af60178c47fe420, type: 3}
+  - {fileID: 8300000, guid: b3b39fed99adfd84c8c3cbf9cd96a712, type: 3}
+  isdaClips:
+  - {fileID: 8300000, guid: 8257bd2233f1a3d4191e170955a398d8, type: 3}
+  - {fileID: 8300000, guid: cb98570cc2902e441b008775a379d579, type: 3}
+  - {fileID: 8300000, guid: b3b39fed99adfd84c8c3cbf9cd96a712, type: 3}
 --- !u!1 &1261902334
 GameObject:
   m_ObjectHideFlags: 0

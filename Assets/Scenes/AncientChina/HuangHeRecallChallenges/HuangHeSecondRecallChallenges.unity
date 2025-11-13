@@ -2221,10 +2221,21 @@ MonoBehaviour:
   ArtifactUseButton: {fileID: 1594683679}
   ArtifactButton: {fileID: 1594683679}
   audioSource: {fileID: 1278491037}
-  dialogueClips: []
-  UpangClips: []
-  temploClips: []
-  bansaClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: cff3bd30221b1c046b37a266d8a4b333, type: 3}
+  UpangClips:
+  - {fileID: 8300000, guid: 3f1674e273265364a9f7b520ff3414dc, type: 3}
+  - {fileID: 8300000, guid: 585756009642c074b8b18a2d852980bb, type: 3}
+  - {fileID: 8300000, guid: 70cb1639604167a4b90a5afaaca8ff89, type: 3}
+  - {fileID: 8300000, guid: cae9b047966d5ca41909c0d8fc4312d6, type: 3}
+  temploClips:
+  - {fileID: 8300000, guid: 04079a9eff35cad4488c19db8d7bf810, type: 3}
+  - {fileID: 8300000, guid: 7d8bdcdb0993cf84bb605ba7cfe28da1, type: 3}
+  - {fileID: 8300000, guid: c99a22cd881d6594992035dff6ca6f93, type: 3}
+  bansaClips:
+  - {fileID: 8300000, guid: c8c3be821b820694abe222ab3e840ad9, type: 3}
+  - {fileID: 8300000, guid: f320b88ff5a13f640bf6c295d4666a36, type: 3}
+  - {fileID: 8300000, guid: c99a22cd881d6594992035dff6ca6f93, type: 3}
 --- !u!1 &1278491035
 GameObject:
   m_ObjectHideFlags: 0
@@ -3696,8 +3707,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 38
+  m_fontSizeBase: 38
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

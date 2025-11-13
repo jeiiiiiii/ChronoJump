@@ -97,7 +97,7 @@ public class HuangHeSecondRecallChallenges : MonoBehaviour
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Bakit hindi pa rin nababasa ang Indus script hanggang ngayon?"
+                line = " Ano ang pangunahing dahilan kung bakit nag-organize ang mga sinaunang Tsino sa North China Plain?"
             },
         };
 
@@ -130,7 +130,7 @@ public class HuangHeSecondRecallChallenges : MonoBehaviour
                     new DialogueLine
                     {
                         characterName = "CHRONO",
-                        line = " Bakit hindi pa rin nababasa ang Indus script hanggang ngayon?"
+                        line = " Ano ang pangunahing dahilan kung bakit nag-organize ang mga sinaunang Tsino sa North China Plain?"
                     },
                 };
                 
@@ -382,9 +382,6 @@ public class HuangHeSecondRecallChallenges : MonoBehaviour
                 if (isShowingUpangDialogue) // ✅ Correct flag for this script
                 {
                     nextButton.interactable = false;
-                    // Should be change
-                    nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
 
                     // Calculate dialogue audio duration
                     float dialogueDelay = 0f;
@@ -416,14 +413,11 @@ public class HuangHeSecondRecallChallenges : MonoBehaviour
                 }
                 else
                 {
-                    // For wrong answers, keep original logic
                     nextButton.onClick.AddListener(() =>
-                {
-                    if (finishAudioSource != null)
-                        finishAudioSource.Play();
-                    nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
-                });
+                    {
+                        currentDialogueIndex = 0;
+                        ShowDialogue();
+                    });
                 }
             }
 

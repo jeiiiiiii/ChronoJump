@@ -95,7 +95,7 @@ public class HuangHeFirstRecallChallenges : MonoBehaviour
         {
             new DialogueLine
             {
-                characterName = "DA YU",
+                characterName = "CHRONO",
                 line = " Bakit tinawag na \"China's Sorrow\" ang Yellow River?"
             },
         };
@@ -128,7 +128,7 @@ public class HuangHeFirstRecallChallenges : MonoBehaviour
                 {
                     new DialogueLine
                     {
-                        characterName = "DA YU",
+                        characterName = "CHRONO",
                         line = " Bakit tinawag na \"China's Sorrow\" ang Yellow River?"
                     },
                 };
@@ -377,9 +377,6 @@ public class HuangHeFirstRecallChallenges : MonoBehaviour
                 if (isShowingDahilDialogue) // ✅ Correct flag for this script
                 {
                     nextButton.interactable = false;
-                    // Should be change
-                    nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
 
                     // Calculate dialogue audio duration
                     float dialogueDelay = 0f;
@@ -411,14 +408,11 @@ public class HuangHeFirstRecallChallenges : MonoBehaviour
                 }
                 else
                 {
-                    // For wrong answers, keep original logic
                     nextButton.onClick.AddListener(() =>
-                {
-                    if (finishAudioSource != null)
-                        finishAudioSource.Play();
-                    nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
-                });
+                    {
+                        currentDialogueIndex = 0;
+                        ShowDialogue();
+                    });
                 }
             }
 

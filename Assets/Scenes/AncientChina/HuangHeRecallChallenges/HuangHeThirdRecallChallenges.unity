@@ -900,10 +900,23 @@ MonoBehaviour:
   ArtifactUseButton: {fileID: 869400932}
   ArtifactButton: {fileID: 869400932}
   audioSource: {fileID: 1246413602}
-  dialogueClips: []
-  HimalayasClips: []
-  AlpsClips: []
-  SaharaClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: e7128baedb85e2d4999d53b8899060a3, type: 3}
+  HimalayasClips:
+  - {fileID: 8300000, guid: 6273d0b4778902847bceb6ae1327c784, type: 3}
+  - {fileID: 8300000, guid: 50f53e0ef5dfe3a4aa95e5e502e05980, type: 3}
+  - {fileID: 8300000, guid: b8a6378102453004ba0bff398119acc4, type: 3}
+  - {fileID: 8300000, guid: bd64e374828f11d4289996c49f4c2bc2, type: 3}
+  - {fileID: 8300000, guid: 89046238ea456b547bce186f80d8eb29, type: 3}
+  - {fileID: 8300000, guid: 5a97aeee839981240a12b67ad32bfe2d, type: 3}
+  AlpsClips:
+  - {fileID: 8300000, guid: 16ee598968816d047b2187966794a830, type: 3}
+  - {fileID: 8300000, guid: 80d3fa814e1d8f94a83fe0d817e65174, type: 3}
+  - {fileID: 8300000, guid: 84315f8b09b85ee489173739a299044f, type: 3}
+  SaharaClips:
+  - {fileID: 8300000, guid: d8f7f86f295fa9e4ba0502370a728708, type: 3}
+  - {fileID: 8300000, guid: 8cdb23faa085c5d469ce7a62a6dca3ac, type: 3}
+  - {fileID: 8300000, guid: 84315f8b09b85ee489173739a299044f, type: 3}
 --- !u!1 &406098304
 GameObject:
   m_ObjectHideFlags: 0
