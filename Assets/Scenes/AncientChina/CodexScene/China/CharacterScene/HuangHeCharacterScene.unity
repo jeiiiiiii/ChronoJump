@@ -390,24 +390,34 @@ MonoBehaviour:
   playerCharacterObject: {fileID: 1162725208}
   descriptionObject: {fileID: 239111328}
   nameObject: {fileID: 1902345326}
-  nextButton: {fileID: 0}
-  backButton: {fileID: 0}
+  nextButton: {fileID: 987950320}
+  backButton: {fileID: 1488324616}
   characters:
-  - characterName: SARGON I
-    characterSprite: {fileID: -7799825275644032524, guid: 09b8997c8a7c6a44abce8aed35e2403d, type: 3}
-    description: "\tPinuno ng Akkadian Empire at pangunahing historical figure ng
-      yugto. Malakas ang presensya: may awtoridad ngunit may mainit na pagtrato sa
-      mga kausap. Kilala sa pagiging hindi ipinanganak na maharlika ngunit umangat
-      mula sa pagiging tagapagsilbi hanggang sa maging hari. Pinaniniwalaang lumaki
-      bilang tagapangalaga ng hardin bago naging pinuno ng hukbo. Pinag-isa ang mga
-      lungsod-estado ng Sumer sa ilalim ng kanyang pamumuno at itinatag ang kauna-unahang
-      imperyo sa kasaysayan, na umabot mula sa Persian Gulf hanggang sa Mediterranean.
-      Ipinakilala ang sistematikong pamahalaan sa pamamagitan ng pagtatalaga ng mga
-      gobernador sa iba\u2019t ibang rehiyon. Sa mga tala, siya\u2019y namuno ng
-      higit apat na dekada at nagtatag ng dinastiyang tumagal ng halos isang siglo.
-      Nagpapakita ng kombinasyon ng disiplina, husay sa estratehiya, at malalim na
-      pag-unawa sa layunin ng kapangyarihan, hindi lamang para sa pagsakop kundi
-      para sa pagpapatatag ng pamamahala."
+  - characterName: DA YU
+    characterSprite: {fileID: 755620140656967605, guid: cd23bbf5edb324b4b97b9052238ed47c, type: 3}
+    description: "\tIsang matandang magsasaka na namumuhay sa tabi ng Yellow River
+      noong Neolithic period, bahagi ng mga unang settlers ng North China Plain.
+      Nakaranas ng paulit-ulit na pagbaha ng ilog na nagdulot ng luha at pag-asa,
+      ang loess ay nagpapatabang ng lupa pero kapag umaapaw ang tubig, nilulunod
+      nito ang lahat. Marunong at matatag, alam niyang ang survival ay nakadepende
+      sa collective work at pakikipagtulungan sa komunidad. Ipinagmamalaki niya na
+      protektado sila ng natural barriers, Himalayas, Taklamakan, Tibet, at Gobi
+      desert, pero alam din niyang ang tunay na kaaway ay ang kalikasan mismo. Pagod
+      ngunit hindi sumusuko, sumasalamin siya sa resilience ng mga sinaunang Tsino
+      na nag-organisa dahil sa pangangailangan, hindi sa ambisyon. Ang kanyang wisdom
+      ay bunga ng decades ng pakikipaglaban sa ilog at kalikasan."
+  - characterName: QI
+    characterSprite: {fileID: 755620140656967605, guid: c3e63237a2ae62144bdd966c50ff4ea7, type: 3}
+    description: "\tIsang batang magsasaka na namumuhay sa North China Plain, nagtatanim
+      ng millet at wheat sa tabang-tabang lupa mula sa loess na dinala ng Yellow
+      River. May takot sa kanyang mga mata dahil laging may banta ng pagbaha, ngunit
+      may pag-asa pa rin na kaya nilang kontrolin ang kanilang kapalaran gamit ang
+      collective work, pagtatayo ng dikes, irrigation systems, at organized community
+      effort. Masigasig at hopeful, naniniwala siyang ang solusyon ay nasa pakikipagtulungan,
+      hindi sa individual na lakas. Sumasalamin siya sa kabataan ng Chinese civilization
+      na nagsisimula pa lang mag-organisa bilang society. Ang kanyang character ay
+      simbolo ng transition mula sa simple survival tungo sa organized civilization,
+      at ang kanyang pag-asa ay magiging foundation ng future dynasties."
 --- !u!1 &426330772
 GameObject:
   m_ObjectHideFlags: 0
@@ -440,6 +450,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 779079109}
+  - {fileID: 987950323}
+  - {fileID: 1488324620}
   - {fileID: 76972060}
   - {fileID: 1317410780}
   - {fileID: 1162725209}
@@ -646,6 +658,126 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &987950319
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 987950323}
+  - component: {fileID: 987950322}
+  - component: {fileID: 987950321}
+  - component: {fileID: 987950320}
+  m_Layer: 5
+  m_Name: NextBT
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &987950320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 987950319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 987950321}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &987950321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 987950319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 6337757556742298555, guid: 8ec53f4862d0e834b89bdbf5d90b20b4, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &987950322
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 987950319}
+  m_CullTransparentMesh: 1
+--- !u!224 &987950323
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 987950319}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.00008, y: 1.00008, z: 1.00008}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 426330773}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 862.00006, y: -474.99997}
+  m_SizeDelta: {x: 70.57, y: 69.74}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1127859141
 GameObject:
   m_ObjectHideFlags: 0
@@ -691,7 +823,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1127859141}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ae760f3bac5c364e896978db2366364, type: 3}
+  m_Script: {fileID: 11500000, guid: d72f0a27415fc104dae4a159fcfac73e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1162725208
@@ -855,7 +987,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1127859143}
-        m_TargetAssemblyTypeName: ChapterCoordinate, Assembly-CSharp
+        m_TargetAssemblyTypeName: ChinaChapterCoordinate, Assembly-CSharp
         m_MethodName: BackCharacterCoordinate
         m_Mode: 1
         m_Arguments:
@@ -1006,7 +1138,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Akkadian Character
+  m_text: HuangHe Character
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8e37122d6e7034f4389c42cbc3516813, type: 2}
   m_sharedMaterial: {fileID: -9095057548130661126, guid: 8e37122d6e7034f4389c42cbc3516813, type: 2}
@@ -1085,6 +1217,139 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1371687834}
   m_CullTransparentMesh: 1
+--- !u!1 &1488324615
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1488324620}
+  - component: {fileID: 1488324619}
+  - component: {fileID: 1488324617}
+  - component: {fileID: 1488324616}
+  - component: {fileID: 1488324618}
+  m_Layer: 5
+  m_Name: BackBT
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1488324616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1488324615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 1488324617}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1488324617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1488324615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 5000927251509650613, guid: 025ca8cdb61eb2a4c9ae370b63b80b77, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1488324618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1488324615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ae760f3bac5c364e896978db2366364, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!222 &1488324619
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1488324615}
+  m_CullTransparentMesh: 1
+--- !u!224 &1488324620
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1488324615}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.00008, y: 1.00008, z: 1.00008}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 426330773}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 759, y: -474.99997}
+  m_SizeDelta: {x: 70.57, y: 69.74}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1553947878
 GameObject:
   m_ObjectHideFlags: 0

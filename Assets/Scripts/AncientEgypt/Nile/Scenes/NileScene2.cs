@@ -86,7 +86,7 @@ public class NileScene2 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Ito ang dahilan kung bakit ang Egypt ay naging stable. May surplus production sila, ibig sabihin, hindi lahat ay farmers. May scribes, craftsmen, priests, soldiers. Lahat ay possible dahil sa Nile."
+                line = " Ito ang dahilan kung bakit ang Egypt ay naging stable. May surplus production sila, ibig sabihin, hindi lahat ay farmers. May scribes, craftsmen, s, soldiers. Lahat ay possible dahil sa Nile."
             },
             new DialogueLine
             {

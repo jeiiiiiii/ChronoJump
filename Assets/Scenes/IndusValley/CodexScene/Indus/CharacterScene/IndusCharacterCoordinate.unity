@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 13646024}
   - component: {fileID: 13646023}
   m_Layer: 5
-  m_Name: HuangHe
+  m_Name: HarappaBT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -203,8 +203,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1859896709}
-        m_TargetAssemblyTypeName: ChapterCoordinate, Assembly-CSharp
-        m_MethodName: Akkadian
+        m_TargetAssemblyTypeName: IndusChapterCoordinate, Assembly-CSharp
+        m_MethodName: Harappa
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -386,7 +386,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: HuangHe
+  m_text: Harappa at Mohenjo-Daro
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ebc45d8cfd92bda418afe0359bd24d34, type: 2}
   m_sharedMaterial: {fileID: -697335396114948115, guid: ebc45d8cfd92bda418afe0359bd24d34, type: 2}
@@ -731,7 +731,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1859896709}
-        m_TargetAssemblyTypeName: ChapterCoordinate, Assembly-CSharp
+        m_TargetAssemblyTypeName: IndusChapterCoordinate, Assembly-CSharp
         m_MethodName: Back
         m_Mode: 1
         m_Arguments:
@@ -1047,8 +1047,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1859896709}
-        m_TargetAssemblyTypeName: ChapterCoordinate, Assembly-CSharp
-        m_MethodName: Sumerian
+        m_TargetAssemblyTypeName: IndusChapterCoordinate, Assembly-CSharp
+        m_MethodName: Sining
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1370,7 +1370,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Shang
+  m_text: Sining at Teknolohiya
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ebc45d8cfd92bda418afe0359bd24d34, type: 2}
   m_sharedMaterial: {fileID: -697335396114948115, guid: ebc45d8cfd92bda418afe0359bd24d34, type: 2}
@@ -1494,7 +1494,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1859896707}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ae760f3bac5c364e896978db2366364, type: 3}
+  m_Script: {fileID: 11500000, guid: df5c15553b51a134ca416c08399a266e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2061141253

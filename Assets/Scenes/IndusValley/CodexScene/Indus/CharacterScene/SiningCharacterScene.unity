@@ -393,33 +393,32 @@ MonoBehaviour:
   nextButton: {fileID: 1567195856}
   backButton: {fileID: 798681859}
   characters:
-  - characterName: TIGLATH-PILISER I
-    characterSprite: {fileID: -3665178506736524260, guid: 05bd4b2f0fbffa34dbd49014e34ad9ba, type: 3}
-    description: "\tIsang makapangyarihang hari ng Assyria na namuno mula 1114 hanggang
-      1076 BCE, kilala sa kanyang malawakang pananakop at pagpapalawak ng teritoryo.
-      Pinamunuan niya ang mga matagumpay na kampanya laban sa mga Hittite, Aramean,
-      at iba pang kalapit na kaharian, na nagtatag ng pundasyon para sa imperyal
-      na tradisyon ng Assyria. Nag-ulat siya ng higit 40 kampanya militar, ipinagmamalaki
-      ang kanyang lakas bilang \u201Chari ng sansinukob.\u201D Hindi nag-aatubili
-      sa paggamit ng dahas at takot bilang sandata ng pamumuno, at ipinakilala ang
-      mahigpit na sistemang militar na ginaya ng mga sumunod na henerasyon ng mga
-      hari ng Assyrian. Malamig at mayabang ang personalidad, ngunit makikita ang
-      kanyang estratehikong pananaw sa pagtatatag ng Assyria bilang makapangyarihang
-      kapangyarihan sa sinaunang mundo.\r\n"
-  - characterName: ASHURBANIPAL
-    characterSprite: {fileID: -3098384088182992010, guid: a635fda65f880af4695e5443dd138ae5, type: 3}
-    description: "\tHari ng Assyria na namuno mula 668 hanggang 627 BCE, kilala bilang
-      isa sa pinaka-edukadong monarko ng sinaunang mundo. Pinakatanyag sa pagtatag
-      ng Library of Ashurbanipal sa Nineveh, na naglaman ng libo-libong clay tablets
-      na nakatala sa cuneiform, kasama na ang Epic of Gilgamesh. Pinagsama niya ang
-      karunungan at interes sa kaalaman sa isang pamumuno na hindi nag-atubiling
-      gumamit ng kalupitan laban sa mga kaaway. Sa kanyang pamumuno, naabot ng Assyrian
-      ang pinakamalawak na hangganan, umaabot mula Egypt hanggang Elam. Marunong
-      sa pagbasa at pagsulat ng Sumerian at Akkadian, siya\u2019y kakaiba sa mga
-      hari ng panahong iyon na bihira ang direktang marunong sa sining ng pagsulat.
-      Gayunman, nananatili siyang kilala sa walang kompromiso ng pamumuno, isang
-      hari na parehong tagapangalaga ng kaalaman at simbolo ng brutalidad ng Assyrian
-      Empire."
+  - characterName: SINDHU
+    characterSprite: {fileID: 755620140656967605, guid: 58d35dc40a58ecd45ba3a16519a21aef, type: 3}
+    description: "\tIsang master builder at engineer ng Indus Valley Civilization,
+      namumuhay noong 2500 BCE, responsable sa pagtatayo ng mga advanced structures
+      tulad ng Great Bath at sophisticated drainage systems ng Mohenjo-daro. Eksperto
+      sa paggamit ng standardized bricks (9 pulgada x 4.5 pulgada x 2.25 pulgada)
+      at pagpaplano ng urban infrastructure. Ipinagmamalaki niya ang kanyang mathematical
+      precision at engineering knowledge na lampas sa kanilang panahon. May dignidad
+      at awtoridad, ngunit hindi mayabang, naniniwala siyang ang gusali ay dapat
+      may layunin, hindi lang para sa display ng kapangyarihan. Marunong sa geometry
+      at hydraulic engineering, at ang kanyang mga gawa ay patunay ng Indus Valley's
+      advanced technological capabilities. Matatag ang kanyang paniniwala na ang
+      kalinisan ay sagrado, kaya espirituwal din ang kanyang approach sa construction.\r"
+  - characterName: RAVI
+    characterSprite: {fileID: 755620140656967605, guid: 670e093695a864a4fbd0ace50f40c271, type: 3}
+    description: "\tIsang batang craftsman na namumuhay sa Mohenjo-daro noong 2500
+      BCE, eksperto sa paggawa ng carnelian at lapis lazuli beads gamit lamang ang
+      copper drill at limestone powder. Masigasig at puno ng enerhiya, ipinagmamalaki
+      niya ang kanyang husay sa pagbubutas ng perpektong mga butas sa maliit na beads
+      na tumatagal ng ilang oras bawat isa. Ang kanyang mga produkto ay ipinagbibili
+      hanggang Mesopotamia, at may natagpuan pa nga sa Royal Cemetery ng Ur. Optimistic
+      at passionate tungkol sa kanyang craft, ngunit sa huli ay makakaranas ng kalungkutan
+      nang magsimulang maglaho ang kanilang sibilisasyon at mawalan ng customers.
+      Sumisimbolo siya sa dedication at artistry ng mga craftsmen ng Indus Valley,
+      at ang kanyang mga kamay ay lumilikha ng mga obra maestra na tatagal ng libu-libong
+      taon.\r"
 --- !u!1 &426330772
 GameObject:
   m_ObjectHideFlags: 0
@@ -838,7 +837,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1127859141}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ae760f3bac5c364e896978db2366364, type: 3}
+  m_Script: {fileID: 11500000, guid: df5c15553b51a134ca416c08399a266e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1162725208
@@ -1002,7 +1001,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1127859143}
-        m_TargetAssemblyTypeName: ChapterCoordinate, Assembly-CSharp
+        m_TargetAssemblyTypeName: IndusChapterCoordinate, Assembly-CSharp
         m_MethodName: BackCharacterCoordinate
         m_Mode: 1
         m_Arguments:
@@ -1130,8 +1129,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -707, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: -370.89, y: -9.25}
+  m_SizeDelta: {x: 872.22, y: 68.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1371687836
 MonoBehaviour:
@@ -1153,7 +1152,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Sumerian Character
+  m_text: Sining at Teknolohiya Character
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8e37122d6e7034f4389c42cbc3516813, type: 2}
   m_sharedMaterial: {fileID: -9095057548130661126, guid: 8e37122d6e7034f4389c42cbc3516813, type: 2}
@@ -1218,7 +1217,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -421.2602, w: 0}
+  m_margin: {x: 0, y: 0, z: -0.36788943, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

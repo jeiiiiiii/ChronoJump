@@ -196,6 +196,139 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 76972059}
   m_CullTransparentMesh: 1
+--- !u!1 &138051974
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 138051979}
+  - component: {fileID: 138051978}
+  - component: {fileID: 138051976}
+  - component: {fileID: 138051975}
+  - component: {fileID: 138051977}
+  m_Layer: 5
+  m_Name: BackBT (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &138051975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138051974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 138051976}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &138051976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138051974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 5000927251509650613, guid: 025ca8cdb61eb2a4c9ae370b63b80b77, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &138051977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138051974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ae760f3bac5c364e896978db2366364, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!222 &138051978
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138051974}
+  m_CullTransparentMesh: 1
+--- !u!224 &138051979
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138051974}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.00008, y: 1.00008, z: 1.00008}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 426330773}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 759, y: -474.99997}
+  m_SizeDelta: {x: 70.57, y: 69.74}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &239111328
 GameObject:
   m_ObjectHideFlags: 0
@@ -390,24 +523,33 @@ MonoBehaviour:
   playerCharacterObject: {fileID: 1162725208}
   descriptionObject: {fileID: 239111328}
   nameObject: {fileID: 1902345326}
-  nextButton: {fileID: 0}
-  backButton: {fileID: 0}
+  nextButton: {fileID: 817233257}
+  backButton: {fileID: 138051975}
   characters:
-  - characterName: SARGON I
-    characterSprite: {fileID: -7799825275644032524, guid: 09b8997c8a7c6a44abce8aed35e2403d, type: 3}
-    description: "\tPinuno ng Akkadian Empire at pangunahing historical figure ng
-      yugto. Malakas ang presensya: may awtoridad ngunit may mainit na pagtrato sa
-      mga kausap. Kilala sa pagiging hindi ipinanganak na maharlika ngunit umangat
-      mula sa pagiging tagapagsilbi hanggang sa maging hari. Pinaniniwalaang lumaki
-      bilang tagapangalaga ng hardin bago naging pinuno ng hukbo. Pinag-isa ang mga
-      lungsod-estado ng Sumer sa ilalim ng kanyang pamumuno at itinatag ang kauna-unahang
-      imperyo sa kasaysayan, na umabot mula sa Persian Gulf hanggang sa Mediterranean.
-      Ipinakilala ang sistematikong pamahalaan sa pamamagitan ng pagtatalaga ng mga
-      gobernador sa iba\u2019t ibang rehiyon. Sa mga tala, siya\u2019y namuno ng
-      higit apat na dekada at nagtatag ng dinastiyang tumagal ng halos isang siglo.
-      Nagpapakita ng kombinasyon ng disiplina, husay sa estratehiya, at malalim na
-      pag-unawa sa layunin ng kapangyarihan, hindi lamang para sa pagsakop kundi
-      para sa pagpapatatag ng pamamahala."
+  - characterName: DARO
+    characterSprite: {fileID: 755620140656967605, guid: 8ad29adc70f9c5846bb1d3a1cdcd739c, type: 3}
+    description: "\tIsang mangangalakal mula sa Harappa na namumuhay noong 2500 BCE,
+      kilala sa kanyang kahusayan sa pakikipagkalakalan gamit ang standardized weights
+      at measures. Naglalakbay siya mula Harappa hanggang Mohenjo-daro, at kahit
+      hanggang Mesopotamia, upang ipagbili ang kanilang mga produkto tulad ng carnelian
+      beads, lapis lazuli, at cotton textiles. May malalim na pag-unawa sa sistema
+      ng grid-pattern cities at drainage, at ipinagmamalaki ang kanilang sibilisasyong
+      hindi nangangailangan ng hari o hukbo. Kalmado at mapagpakumbaba ang personalidad,
+      ngunit matatag sa kanyang paniniwala na ang dunong at sistema, hindi takot,
+      ang tunay na pundasyon ng isang maunlad na lipunan. Ang kanyang clay seal na
+      may ukit ng humped bull ay simbolo ng kanyang propesyon at katayuan sa lipunan.\r"
+  - characterName: MATRIKA
+    characterSprite: {fileID: 755620140656967605, guid: b7a51f23bb97393448f70485112eed6e, type: 3}
+    description: "\tIsang matandang babae at master craftsman na gumagawa ng mga
+      clay seals na may nakaukit na Indus script, namumuhay sa Mohenjo-daro noong
+      2500 BCE. Eksperto sa pag-ukit ng mga misteryosong simbolo na ginagamit sa
+      kalakalan at dokumentasyon, ngunit mayroon siyang malungkot na pag-unawa na
+      ang kanilang wika ay makalilimutan ng mundo sa hinaharap. Tahimik at mahinahon,
+      may hiwaga sa kanyang personalidad dahil alam niyang siya ay tagapag-alaga
+      ng isang tradisyon na mawawala sa kasaysayan. Ang kanyang mga kamay ay puno
+      ng karanasan mula sa libu-libong oras ng pag-uukit, at bawat tatak na kanyang
+      ginagawa ay isang mensahe sa hinaharap na hindi na mababasa. Malalim ang kanyang
+      respeto sa karunungan at kultura ng kanilang sibilisasyon."
 --- !u!1 &426330772
 GameObject:
   m_ObjectHideFlags: 0
@@ -441,6 +583,8 @@ RectTransform:
   m_Children:
   - {fileID: 779079109}
   - {fileID: 76972060}
+  - {fileID: 817233260}
+  - {fileID: 138051979}
   - {fileID: 1317410780}
   - {fileID: 1162725209}
   - {fileID: 1127859142}
@@ -646,6 +790,126 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &817233256
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 817233260}
+  - component: {fileID: 817233259}
+  - component: {fileID: 817233258}
+  - component: {fileID: 817233257}
+  m_Layer: 5
+  m_Name: NextBT
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &817233257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817233256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 817233258}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &817233258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817233256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 6337757556742298555, guid: 8ec53f4862d0e834b89bdbf5d90b20b4, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &817233259
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817233256}
+  m_CullTransparentMesh: 1
+--- !u!224 &817233260
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817233256}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.00008, y: 1.00008, z: 1.00008}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 426330773}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 862.00006, y: -474.99997}
+  m_SizeDelta: {x: 70.57, y: 69.74}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1127859141
 GameObject:
   m_ObjectHideFlags: 0
@@ -691,7 +955,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1127859141}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ae760f3bac5c364e896978db2366364, type: 3}
+  m_Script: {fileID: 11500000, guid: df5c15553b51a134ca416c08399a266e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1162725208
@@ -855,7 +1119,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1127859143}
-        m_TargetAssemblyTypeName: ChapterCoordinate, Assembly-CSharp
+        m_TargetAssemblyTypeName: IndusChapterCoordinate, Assembly-CSharp
         m_MethodName: BackCharacterCoordinate
         m_Mode: 1
         m_Arguments:
@@ -983,8 +1247,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -707, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: -323.96, y: -3.03}
+  m_SizeDelta: {x: 966.08, y: 56.06}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1371687836
 MonoBehaviour:
@@ -1006,7 +1270,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Akkadian Character
+  m_text: Harappa at Mohenjo-Daro Character
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8e37122d6e7034f4389c42cbc3516813, type: 2}
   m_sharedMaterial: {fileID: -9095057548130661126, guid: 8e37122d6e7034f4389c42cbc3516813, type: 2}
@@ -1071,7 +1335,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -421.2602, w: 0}
+  m_margin: {x: 0, y: 0, z: 2.66008, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
