@@ -95,7 +95,7 @@ public class NileFirstRecallChallenges : MonoBehaviour
         {
             new DialogueLine
             {
-                characterName = "IMHOTEP",
+                characterName = "CHRONO",
                 line = " Bakit tinawag ni Herodotus na \"Gift of the Nile\" ang Egypt?"
             },
         };
@@ -128,7 +128,7 @@ public class NileFirstRecallChallenges : MonoBehaviour
                 {
                     new DialogueLine
                     {
-                        characterName = "IMHOTEP",
+                        characterName = "CHRONO",
                         line = " Bakit tinawag ni Herodotus na \"Gift of the Nile\" ang Egypt?"
                     },
                 };
@@ -378,9 +378,6 @@ public class NileFirstRecallChallenges : MonoBehaviour
                 if (isShowingDahilDialogue) // ✅ Correct flag for this script
                 {
                     nextButton.interactable = false;
-                    // Should be change
-                    nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
 
                     // Calculate dialogue audio duration
                     float dialogueDelay = 0f;
@@ -412,14 +409,11 @@ public class NileFirstRecallChallenges : MonoBehaviour
                 }
                 else
                 {
-                    // For wrong answers, keep original logic
                     nextButton.onClick.AddListener(() =>
-                {
-                    if (finishAudioSource != null)
-                        finishAudioSource.Play();
-                    nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
-                });
+                    {
+                        currentDialogueIndex = 0;
+                        ShowDialogue();
+                    });
                 }
             }
 

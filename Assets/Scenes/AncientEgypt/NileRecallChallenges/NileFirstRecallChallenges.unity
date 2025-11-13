@@ -2994,10 +2994,21 @@ MonoBehaviour:
   ArtifactUseButton: {fileID: 317194327}
   ArtifactButton: {fileID: 317194327}
   audioSource: {fileID: 568145474}
-  dialogueClips: []
-  DahilClips: []
-  ilogClips: []
-  dulotClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: a6151612816141e4182769c57a671f78, type: 3}
+  DahilClips:
+  - {fileID: 8300000, guid: 061be62e9f2cdfc41a83963075da9e1a, type: 3}
+  - {fileID: 8300000, guid: 1afb1c664cfa76c4f857eccaf604ce15, type: 3}
+  - {fileID: 8300000, guid: d2dbd6992c9c8c34aa09a6c21d2edeb6, type: 3}
+  - {fileID: 8300000, guid: eba2fe4dfc75db4459b1f869f5d080cc, type: 3}
+  ilogClips:
+  - {fileID: 8300000, guid: 5cacbe5fd1cc3884ea9af2fc088bd3b6, type: 3}
+  - {fileID: 8300000, guid: 9de97e8e4061e874e9dcb318cf4bebf9, type: 3}
+  - {fileID: 8300000, guid: e5448dced5abe0144980aea9aa24c6db, type: 3}
+  dulotClips:
+  - {fileID: 8300000, guid: 1d6ced944ba00214bbd4bbd2c8fa14b3, type: 3}
+  - {fileID: 8300000, guid: 471f71156be05e545b852c0377c7e1b6, type: 3}
+  - {fileID: 8300000, guid: e5448dced5abe0144980aea9aa24c6db, type: 3}
 --- !u!1 &1261902334
 GameObject:
   m_ObjectHideFlags: 0

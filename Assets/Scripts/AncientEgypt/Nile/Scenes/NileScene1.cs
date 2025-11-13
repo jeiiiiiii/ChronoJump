@@ -88,7 +88,7 @@ public class NileScene1 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "IMHOTEP",
-                line = " Sino kayo? Mga ImhotepFulldrawnSpritehan mula sa disyerto? Kung nandito kayo upang magtanong tungkol sa Nile, makinig kayo. Ang ilog na ito ay hindi simpleng tubig, ito ay buhay, ito ay diyos, ito ay Egypt mismo."
+                line = " Sino kayo? Mga dayuhan mula sa disyerto? Kung nandito kayo upang magtanong tungkol sa Nile, makinig kayo. Ang ilog na ito ay hindi simpleng tubig, ito ay buhay, ito ay diyos, ito ay Egypt mismo."
             },
             new DialogueLine
             {

@@ -2221,10 +2221,21 @@ MonoBehaviour:
   ArtifactUseButton: {fileID: 1594683679}
   ArtifactButton: {fileID: 1594683679}
   audioSource: {fileID: 1278491037}
-  dialogueClips: []
-  MalawakClips: []
-  SeaClips: []
-  bundokClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 0112a26c003a89340a70653696e996d8, type: 3}
+  MalawakClips:
+  - {fileID: 8300000, guid: 470ff7ae3b3cbe4489c89b510045ec9f, type: 3}
+  - {fileID: 8300000, guid: 328f4f120136dbf47b804d5ba35b7cd5, type: 3}
+  - {fileID: 8300000, guid: d9e2744172e9e8b4695584321d785e0b, type: 3}
+  - {fileID: 8300000, guid: 87a901c341b42ba4db4c0ae206f2a0d4, type: 3}
+  SeaClips:
+  - {fileID: 8300000, guid: 5c499b2887bf4ca4b846206b46e1a778, type: 3}
+  - {fileID: 8300000, guid: 6fc95f0fd0bdfc8419372f40c9606004, type: 3}
+  - {fileID: 8300000, guid: 2de9fde39236bab45b36a920179e5d93, type: 3}
+  bundokClips:
+  - {fileID: 8300000, guid: fb93070a495e3384e8a558a0c43a1772, type: 3}
+  - {fileID: 8300000, guid: 2d4baf231dd0ed047bef3fa29d1dd5a2, type: 3}
+  - {fileID: 8300000, guid: 2de9fde39236bab45b36a920179e5d93, type: 3}
 --- !u!1 &1278491035
 GameObject:
   m_ObjectHideFlags: 0

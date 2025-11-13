@@ -48,17 +48,17 @@ public class NileScene5 : MonoBehaviour
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Minsan ang pinakamalakas na sibilisasyon ay nagsisimula sa pinakamahirap na kondisyon. Ang luha ay nagiging pag-asa, at ang takot ay nagiging lakas."
+                line = " Minsan ang pinakasimpleng bagay, tubig, ay nagiging foundation ng isang dakilang sibilisasyon. Pero ang dependency ay may price."
             },
             new DialogueLine
             {
                 characterName = "CHRONO",
-                line = " Ang ilog ay tumatagos sa panahon. Ang sibilisasyon ay nananatili. Handa ka na sa susunod, ang Shang Dynasty."
+                line = " Ang ilog ay nagbigay ng buhay. Ang tao ay lumikha ng kultura. Handa ka na sa pyramids at pharaohs, ang Lumang Kaharian."
             },
             new DialogueLine
             {
                 characterName = "PLAYER",
-                line = " Paalam, Yellow River. Salamat sa iyong luha at pag-asa."
+                line = " Paalam, Nile. Salamat sa iyong walang hanggang kaloob."
             },
         };
 
