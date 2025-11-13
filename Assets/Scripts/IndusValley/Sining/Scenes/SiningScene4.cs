@@ -34,7 +34,7 @@ public class SiningScene4 : MonoBehaviour
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
     public Sprite ChronoSad;
-    public Sprite RaviSomber;
+    public Sprite RaviHopeful;
     public Sprite SindhuSomber;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
@@ -197,7 +197,7 @@ public class SiningScene4 : MonoBehaviour
                 break;
             case 1:
                 PlayercharacterRenderer.sprite = PlayerEager;
-                ChronocharacterRenderer.sprite = RaviSomber;
+                ChronocharacterRenderer.sprite = RaviHopeful;
                 break;
             case 2:
                 PlayercharacterRenderer.sprite = PlayerEmbarrassed;

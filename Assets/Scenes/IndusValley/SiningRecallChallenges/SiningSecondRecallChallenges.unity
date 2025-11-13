@@ -2221,10 +2221,21 @@ MonoBehaviour:
   ArtifactUseButton: {fileID: 1594683679}
   ArtifactButton: {fileID: 1594683679}
   audioSource: {fileID: 1278491037}
-  dialogueClips: []
-  CarnelianClips: []
-  hariClips: []
-  paintingsClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 19bd88f8a3f12a941b16497d434dfe92, type: 3}
+  CarnelianClips:
+  - {fileID: 8300000, guid: b92439033e3775e4b9b642a29011381c, type: 3}
+  - {fileID: 8300000, guid: 6f4aa13ae8860944bbe919585039e840, type: 3}
+  - {fileID: 8300000, guid: bf96160f040272b41bf29b12db483f06, type: 3}
+  - {fileID: 8300000, guid: 3bc6e4aa366b97742bb6a59e6663ed63, type: 3}
+  hariClips:
+  - {fileID: 8300000, guid: 8969da035de16154d8f40c5b445ee436, type: 3}
+  - {fileID: 8300000, guid: 2d12a5be9be46a14fa5864c59199f0d1, type: 3}
+  - {fileID: 8300000, guid: 7d0da67566393694f92c5984328a3d19, type: 3}
+  paintingsClips:
+  - {fileID: 8300000, guid: 09e2c07c537df2d4c9faa2bc0fd4b39f, type: 3}
+  - {fileID: 8300000, guid: a0c00166cc76ca248854b300db0c0a1f, type: 3}
+  - {fileID: 8300000, guid: 7d0da67566393694f92c5984328a3d19, type: 3}
 --- !u!1 &1278491035
 GameObject:
   m_ObjectHideFlags: 0

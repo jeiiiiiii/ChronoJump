@@ -400,9 +400,6 @@ public class SiningThirdRecallChallenges : MonoBehaviour
                 if (isShowingNawalaDialogue) // ✅ Correct flag for this script
                 {
                     nextButton.interactable = false;
-                    // Should be change
-                    nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
 
                     // Calculate dialogue audio duration
                     float dialogueDelay = 0f;
@@ -434,14 +431,11 @@ public class SiningThirdRecallChallenges : MonoBehaviour
                 }
                 else
                 {
-                    // For wrong answers, keep original logic
                     nextButton.onClick.AddListener(() =>
-                {
-                    if (finishAudioSource != null)
-                        finishAudioSource.Play();
-                    nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
-                });
+                    {
+                        currentDialogueIndex = 0;
+                        ShowDialogue();
+                    });
                 }
             }
 

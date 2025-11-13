@@ -2570,12 +2570,20 @@ MonoBehaviour:
   PlayerEager: {fileID: 5428063399545322546, guid: c517d75299d0ddb4cb6eed3374b7a5b3, type: 3}
   PlayerEmabarrassed: {fileID: 21300000, guid: f1f43dbd9447c5f468698952cbd6a509, type: 3}
   RaviEnthusiastic: {fileID: 4009798615336877887, guid: 9712b3f97e7fa8942a2da640bf43d4dc, type: 3}
-  RaviHopeful: {fileID: -7859419320659649158, guid: 7c4ed1ad59ac5ea4baaa7bfcdd069fd5, type: 3}
+  RaviHopeful: {fileID: 21300000, guid: 7c4ed1ad59ac5ea4baaa7bfcdd069fd5, type: 3}
   ChronocharacterRenderer: {fileID: 1317386105}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   audioSource: {fileID: 1652331086}
-  dialogueClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: f42ce5d4dcb9c744f822afd2448885ca, type: 3}
+  - {fileID: 8300000, guid: 5aa163795ebb5154c996e562cc0958de, type: 3}
+  - {fileID: 8300000, guid: 047b5ca3bc35e6e4bb4dd292b6034904, type: 3}
+  - {fileID: 8300000, guid: 9d174788e32ac0a48976ccf04ba15bc4, type: 3}
+  - {fileID: 8300000, guid: f5abc4aa77a5bc24988091d01ceb5405, type: 3}
+  - {fileID: 8300000, guid: 50d5cb68a69c9664ea35afc7c61dc322, type: 3}
+  - {fileID: 8300000, guid: a456b00ed2ab64f45893673b50606460, type: 3}
+  - {fileID: 8300000, guid: f9e9125ed078a8249ac4f5b2aa7ef6fd, type: 3}
 --- !u!1 &1317386103
 GameObject:
   m_ObjectHideFlags: 0

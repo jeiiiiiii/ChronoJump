@@ -2284,10 +2284,15 @@ MonoBehaviour:
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
-  RaviSomber: {fileID: 0}
+  RaviHopeful: {fileID: 21300000, guid: 7c4ed1ad59ac5ea4baaa7bfcdd069fd5, type: 3}
   SindhuSomber: {fileID: -1385612247081616407, guid: b4951ec0ce7d07247bf7e397ec2df886, type: 3}
   audioSource: {fileID: 599946919}
-  dialogueClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 7ce57f53e8189a9408f470692eb375a8, type: 3}
+  - {fileID: 8300000, guid: 7f5ef81c017981746bd9832ed1d2118c, type: 3}
+  - {fileID: 8300000, guid: 54f114e55c7c96e4c9d4d12e18d916ea, type: 3}
+  - {fileID: 8300000, guid: 5b70da763a44bab408e7b7da05e15c5e, type: 3}
+  - {fileID: 8300000, guid: 485570f9b9e1be643b044114d0b34661, type: 3}
 --- !u!1001 &1598657690
 PrefabInstance:
   m_ObjectHideFlags: 0

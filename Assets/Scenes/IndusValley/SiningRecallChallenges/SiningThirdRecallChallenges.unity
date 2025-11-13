@@ -900,10 +900,23 @@ MonoBehaviour:
   ArtifactUseButton: {fileID: 869400932}
   ArtifactButton: {fileID: 869400932}
   audioSource: {fileID: 1246413602}
-  dialogueClips: []
-  NawalaClips: []
-  imperyoClips: []
-  resourcesClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 89458efbaebdefd40aaf11f1e8dbb304, type: 3}
+  NawalaClips:
+  - {fileID: 8300000, guid: ec9cba1b35b69d248b81a8d6abea2c3e, type: 3}
+  - {fileID: 8300000, guid: e98a172b9c167274e84d6ab75be5da9c, type: 3}
+  - {fileID: 8300000, guid: bf2e36c980787ce4bac78846f25b88ab, type: 3}
+  - {fileID: 8300000, guid: 628c09a710128b94fa2fe6c273297772, type: 3}
+  - {fileID: 8300000, guid: 21b189d5524e59149a1ea1d8dc15b189, type: 3}
+  - {fileID: 8300000, guid: 073f2ea056b11e14cbd68ee9395c1bd7, type: 3}
+  imperyoClips:
+  - {fileID: 8300000, guid: 7e3ee3235021a3645a04a3ac44a50cef, type: 3}
+  - {fileID: 8300000, guid: b0b4cb2069554b140abd2bc92c84fe9a, type: 3}
+  - {fileID: 8300000, guid: 60fb467e668dd5e4fb412e611654b140, type: 3}
+  resourcesClips:
+  - {fileID: 8300000, guid: a911b2925bc93624d8a8de3f2a7b0295, type: 3}
+  - {fileID: 8300000, guid: 32c18ad14a61d824bbc50937b84d4354, type: 3}
+  - {fileID: 8300000, guid: 60fb467e668dd5e4fb412e611654b140, type: 3}
 --- !u!1 &406098304
 GameObject:
   m_ObjectHideFlags: 0
