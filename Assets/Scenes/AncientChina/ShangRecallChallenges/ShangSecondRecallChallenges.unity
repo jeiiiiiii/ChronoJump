@@ -2221,10 +2221,21 @@ MonoBehaviour:
   ArtifactUseButton: {fileID: 1594683679}
   ArtifactButton: {fileID: 1594683679}
   audioSource: {fileID: 1278491037}
-  dialogueClips: []
-  AsawaClips: []
-  bonesClips: []
-  ChinaClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 780aa4cdc873e0c43ad2829b29f3b27c, type: 3}
+  AsawaClips:
+  - {fileID: 8300000, guid: 61a238a39b903494893faa7d18b70cc9, type: 3}
+  - {fileID: 8300000, guid: 70661e3eab4bd544d8f83af06d2c10bc, type: 3}
+  - {fileID: 8300000, guid: 12325f1fccfb410418b928969c4d68a8, type: 3}
+  - {fileID: 8300000, guid: d07e872569dfd7d4786b7a2dc118fb28, type: 3}
+  bonesClips:
+  - {fileID: 8300000, guid: 3b7289f7505c2244d8101592aec37bef, type: 3}
+  - {fileID: 8300000, guid: 8d88fb7d9b5e2734c99a4ac8132a19f3, type: 3}
+  - {fileID: 8300000, guid: c24b408cdd60b7845b94c08fbccbf9cb, type: 3}
+  ChinaClips:
+  - {fileID: 8300000, guid: a33f5708e1f8d2f4c9c96c4c1eda0106, type: 3}
+  - {fileID: 8300000, guid: 13e1618d95ef3054d81eaa7e6cb2fd57, type: 3}
+  - {fileID: 8300000, guid: c24b408cdd60b7845b94c08fbccbf9cb, type: 3}
 --- !u!1 &1278491035
 GameObject:
   m_ObjectHideFlags: 0
@@ -3696,8 +3707,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 38
+  m_fontSizeBase: 38
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

@@ -2994,10 +2994,21 @@ MonoBehaviour:
   ArtifactUseButton: {fileID: 317194327}
   ArtifactButton: {fileID: 317194327}
   audioSource: {fileID: 568145474}
-  dialogueClips: []
-  UnangClips: []
-  weaponsClips: []
-  RomeClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 11b4e6f9de2f6804a881079a3192a4c4, type: 3}
+  UnangClips:
+  - {fileID: 8300000, guid: 571f91876d6b0304e98c48b94be79cf3, type: 3}
+  - {fileID: 8300000, guid: 7da859405d340174e83ef0fc3aa1cdf7, type: 3}
+  - {fileID: 8300000, guid: 1ca1bfc50adb368498216db9e1c16b54, type: 3}
+  - {fileID: 8300000, guid: 34a175581e3088149be40efe5608c523, type: 3}
+  weaponsClips:
+  - {fileID: 8300000, guid: a38cbb26d913d794b85681ba31b57d0a, type: 3}
+  - {fileID: 8300000, guid: 82d0e9216da066c44a9e57cdd5b57442, type: 3}
+  - {fileID: 8300000, guid: 75ab5863394da4442a674a1779afc634, type: 3}
+  RomeClips:
+  - {fileID: 8300000, guid: f605df7dd5a2fe148874bc529664924c, type: 3}
+  - {fileID: 8300000, guid: ee9a05a654100a7429b83b03d671e64f, type: 3}
+  - {fileID: 8300000, guid: 75ab5863394da4442a674a1779afc634, type: 3}
 --- !u!1 &1261902334
 GameObject:
   m_ObjectHideFlags: 0

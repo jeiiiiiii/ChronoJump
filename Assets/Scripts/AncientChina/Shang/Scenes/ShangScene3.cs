@@ -27,6 +27,7 @@ public class ShangScene3 : MonoBehaviour
     public DialogueLine[] dialogueLines;
 
     public SpriteRenderer PlayercharacterRenderer;
+    public SpriteRenderer PriestFulldrawnSprite;
     public Sprite PlayerCurious;
     public Sprite PlayerSmile;
     public Sprite PlayerReflective;
@@ -34,6 +35,8 @@ public class ShangScene3 : MonoBehaviour
     public Sprite WudingStern;
     public Sprite PriestCalm;
     public Sprite PriestMysterious;
+    public Sprite PriestFocused;
+    public Sprite PriestSomber;
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
@@ -202,6 +205,8 @@ public class ShangScene3 : MonoBehaviour
 
     void ShowDialogue()
     {
+        PriestFulldrawnSprite.enabled = false;
+        
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
@@ -223,7 +228,8 @@ public class ShangScene3 : MonoBehaviour
                 break;
             case 2:
                 PlayercharacterRenderer.sprite = PlayerThinking;
-                ChronocharacterRenderer.sprite = PriestCalm;
+                ChronocharacterRenderer.sprite = ChronoThinking;
+                PriestFulldrawnSprite.enabled = true;
                 break;
             case 3:
                 PlayercharacterRenderer.sprite = PlayerSmile;
@@ -243,7 +249,7 @@ public class ShangScene3 : MonoBehaviour
                 break;
             case 7:
                 PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = PlayerThinking;
+                ChronocharacterRenderer.sprite = ChronoThinking;
                 break;
             case 8:
                 PlayercharacterRenderer.sprite = PlayerThinking;

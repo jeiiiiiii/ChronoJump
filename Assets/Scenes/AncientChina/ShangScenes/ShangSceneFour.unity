@@ -2287,7 +2287,12 @@ MonoBehaviour:
   WudingWorried: {fileID: 3308754523399262558, guid: 574edddf9d733cf46bb5bd37b7d0a892, type: 3}
   FuhaoFierce: {fileID: 8065478591464320819, guid: dd6f815d5a17b9346a7044b91d77d04f, type: 3}
   audioSource: {fileID: 599946919}
-  dialogueClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: bb119fa4ca29d5a44ae911b69da781fe, type: 3}
+  - {fileID: 8300000, guid: a1bb4f13b14157e4496c43ed3940579d, type: 3}
+  - {fileID: 8300000, guid: f9a76322b5f466141879a8fad393b272, type: 3}
+  - {fileID: 8300000, guid: 3982837bd93059842a25a9d6f0a05dba, type: 3}
+  - {fileID: 8300000, guid: 174df3be16bd6e840bac403498779f52, type: 3}
 --- !u!1001 &1598657690
 PrefabInstance:
   m_ObjectHideFlags: 0

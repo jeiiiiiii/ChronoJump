@@ -900,10 +900,23 @@ MonoBehaviour:
   ArtifactUseButton: {fileID: 869400932}
   ArtifactButton: {fileID: 869400932}
   audioSource: {fileID: 1246413602}
-  dialogueClips: []
-  masamaClips: []
-  ulanClips: []
-  emperorClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 934759ee242e8294bac8be8db5ef047e, type: 3}
+  masamaClips:
+  - {fileID: 8300000, guid: bb0464bd07b52f348bc3668375204233, type: 3}
+  - {fileID: 8300000, guid: 13753ac60ff4d9f4eb114e6aabc3ac93, type: 3}
+  - {fileID: 8300000, guid: c3a265a02fde4054096e506f914d74a6, type: 3}
+  - {fileID: 8300000, guid: 7e563865826965541922bbafa27c38ce, type: 3}
+  - {fileID: 8300000, guid: cccee024038aa4346b61761ee8b0be17, type: 3}
+  - {fileID: 8300000, guid: 9f984282b53bf9942ae19420f22d91f6, type: 3}
+  ulanClips:
+  - {fileID: 8300000, guid: 3ebc5a3854d39a643aeeac3d0a3303bb, type: 3}
+  - {fileID: 8300000, guid: 2acd2a04212864943a64f91c0696ef11, type: 3}
+  - {fileID: 8300000, guid: 0871f4815573b8446bbd6d14a7cf07f4, type: 3}
+  emperorClips:
+  - {fileID: 8300000, guid: a706b981f79185c48a70fcb1c076fbe9, type: 3}
+  - {fileID: 8300000, guid: f56bce1adcf925540bb6fb5d3be6de4a, type: 3}
+  - {fileID: 8300000, guid: 0871f4815573b8446bbd6d14a7cf07f4, type: 3}
 --- !u!1 &406098304
 GameObject:
   m_ObjectHideFlags: 0

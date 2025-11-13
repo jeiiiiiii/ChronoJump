@@ -95,7 +95,7 @@ public class ShangFirstRecallChallenges : MonoBehaviour
         {
             new DialogueLine
             {
-                characterName = "Wu Ding",
+                characterName = "CHRONO",
                 line = " Ano ang pinakamahalagang kontribusyon ng Dinastiyang Shang sa kasaysayan ng China?"
             },
         };
@@ -128,7 +128,7 @@ public class ShangFirstRecallChallenges : MonoBehaviour
                 {
                     new DialogueLine
                     {
-                        characterName = "Wu Ding",
+                        characterName = "CHRONO",
                         line = " Ano ang pinakamahalagang kontribusyon ng Dinastiyang Shang sa kasaysayan ng China?"
                     },
                 };
@@ -377,9 +377,6 @@ public class ShangFirstRecallChallenges : MonoBehaviour
                 if (isShowingUnangDialogue) // ✅ Correct flag for this script
                 {
                     nextButton.interactable = false;
-                    // Should be change
-                    nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
 
                     // Calculate dialogue audio duration
                     float dialogueDelay = 0f;
@@ -411,14 +408,11 @@ public class ShangFirstRecallChallenges : MonoBehaviour
                 }
                 else
                 {
-                    // For wrong answers, keep original logic
                     nextButton.onClick.AddListener(() =>
-                {
-                    if (finishAudioSource != null)
-                        finishAudioSource.Play();
-                    nextButton.interactable = false;
-                    Invoke(nameof(LoadNextScene), 2f);
-                });
+                    {
+                        currentDialogueIndex = 0;
+                        ShowDialogue();
+                    });
                 }
             }
 
