@@ -382,30 +382,50 @@ MonoBehaviour:
   stories:
   - storyTitle: 
     storyContent: "\tPagbukas ng portal, natagpuan nina Player at Chrono ang kanilang
-      mga sarili sa lungsod ng Akkad, masigla ngunit disiplinado, puno ng sundalo,
-      mangangalakal, at mga tagapagtala. Ipinaliwanag ni Chrono na ito ang puso ng
-      kauna-unahang imperyo sa mundo, itinatag ng isang pinunong hindi isinilang
-      sa trono, si Sargon I. Sa kanilang paglalakad, humarap mismo si Sargon, nakasuot
-      ng baluti at may dignidad, at inanyayahan silang sumama upang masaksihan ang
-      simula ng kanyang pamumuno.(1)\n\n\tSa gitna ng mga sundalong nagsasanay, ibinahagi
-      ni Sargon na noong una, kanya-kanya ang mga lungsod-estado at lahat ay naghahangad
-      ng kapangyarihan. Hindi niya sila kinumbinsi, pinag-isa niya ang mga ito sa
-      pamamagitan ng husay sa digmaan at matatag na pamamahala. Nagtalaga siya ng
-      mga gobernador upang mapanatili ang kaayusan at tiyakin na gumagana ang imperyo
-      kahit wala siya.(2)"
+      mga sarili sa harap ng isang napakalaking paliguan na gawa sa matibay na laryo
+      ang Great Bath ng Mohenjo-daro. May mga hagdan pababa at sophisticated drainage
+      system na umaagos nang natural. \"Isa ito sa pinakamahalagang estruktura ng
+      Indus Valley,\" paliwanag ni Chrono. \"Hindi lang para sa pagligo, kundi para
+      sa ritwal ng kalinisan.\".(1)\n\n\tLumapit sa kanila si Sindhu, isang matandang
+      master builder na may hawak na measuring tool. \"Ang Great Bath na ito ay bunga
+      ng libu-libong oras ng pagpaplano,\" pagmamalaki niya. \"Ang bawat brick ay
+      sinukat nang eksakto 9 pulgada haba, 4.5 pulgada lapad, 2.25 pulgada taas.
+      Walang brick na mali ang sukat. Ang drainage system ay dumadaloy pababa, patungo
+      sa main canal. Kahit maulan o tuyo, walang baha.\".(2)"
   - storyTitle: 
-    storyContent: "\tNgunit tinanong ni Player kung ano ang nangyari pagkatapos.
-      Ikinuwento ni Chrono na sa pamumuno ng apo niyang si Naram-Sin, humina ang
-      imperyo at tuluyang bumagsak matapos salakayin ng mga Amorite at Hurrian. Malungkot
-      na inamin ni Sargon na kahit gaano kalawak ang isang imperyo, maaari itong
-      gumuho kung hindi kayang ipagtanggol.(3)\n\n\tGayunpaman, nanatili ang kanyang
-      pamana. Matapos ang panandaliang pagbawi ng lungsod ng Ur, nagtunggali naman
-      ang Isin at Larsa para sa kapangyarihan sa timog Mesopotamia. Sa huling pagninilay,
-      pinaalala ni Sargon na ang tunay na pamumuno ay nakabatay sa layunin, hindi
-      sa takot.(4)\n\n\tMuling bumukas ang portal at bumalik si Player sa kasalukuyan,
-      tangan ang maliit na clay amulet bilang alaala ng aral mula kay Sargon, na
-      hindi lahat ng dakilang pinuno ay isinilang sa palasyo ngunit ang kanilang
-      ambag ay maaaring tumagal higit pa sa kanilang imperyo.(5)"
+    storyContent: "\tDinala nila si Player sa isang workshop na puno ng beads, pottery,
+      at metal tools. Doon ay nakilala nila si Ravi, isang batang craftsman na masigasig
+      na gumagawa ng carnelian at lapis lazuli beads. \"Tingnan mo ang bawat butas
+      ay perpekto, kahit sobrang liit!\" sigaw niya habang ipinakikita ang kanyang
+      gawa. \"Ginagamit ko lang ang copper drill at limestone powder. Ang bawat bead
+      ay tumatagal ng ilang oras. Ipinagbibili namin ito hanggang Mesopotamia!\"(3)\n\n\tIpinaliwanag
+      ni Chrono na ang carnelian beads ng Indus Valley ay kilala sa buong ancient
+      world. May natagpuan pa nga sa Royal Cemetery ng Ur sa Mesopotamia. \"Hindi
+      lang beads! Tingnan mo ang aming pottery may black-on-red designs, may geometric
+      patterns,\" dagdag ni Ravi habang itinuturo ang potter's wheel. \"Ginagamit
+      namin ito na lubhang mabilis at tumpak.\".(4)"
+  - storyTitle: 
+    storyContent: "\tSa metal workshop, ipinakita ni Sindhu ang bronze technology.
+      \"Ang bronze ay halo ng copper at tin. Mas matigas ito kaysa purong copper.
+      Ginagamit namin ito sa tools, weapons, at ornaments.\" Ngunit interesting,
+      wala silang malaking weapons karamihan ay para sa agriculture, construction,
+      at craft. \"Ang metal ay tool, hindi sandata. Ang tunay na lakas ay nasa kung
+      paano mo ito ginagamit,\" paalala ni Sindhu.\"(5)\n\n\tNgunit sa huli, ikinuwento
+      ni Chrono ang katapusan. \"Noong nagsimulang mag-iba ang klima, unti-unting
+      tumigil ang produksyon. Walang bagong beads, walang bagong pottery. Ang mga
+      workshop ay naulila.\" Lumilingon si Ravi sa kanyang gawa, malungkot. \"Gumawa
+      ako ng libu-libong beads... ngunit wala nang bibili. Ang mga tao ay umalis
+      na.\" Naglaho ang workshops, nakalimutan ang mga technique, at ang Great Bath
+      ay naging ruins.(6)"
+  - storyTitle: 
+    storyContent: "\tMuling bumalik ang portal at bago pumasok si Player, ibinigay
+      ni Ravi ang isang carnelian bead. \"Dalhin mo ito. Tandaan mo ang sining at
+      teknolohiya ay nabubuhay sa komunidad. Kapag naglaho ang komunidad, naglaho
+      din ang lahat. Pero ang gawa ng kamay ay nananatili, kahit nakalimutan na ang
+      gumagawa.\"(7)\r\n\n\tBumalik si Player sa kasalukuyan, tangan ang kumikinang
+      na carnelian bead, na nagpapaalala na minsan ang pinakasimple ay ang pinakamahirap
+      gawin, at ang tunay na teknolohiya ay hindi sa laki, kundi sa husay at dedikasyon
+      ng mga kamay na lumilikha.(8)\r"
 --- !u!1 &426330772
 GameObject:
   m_ObjectHideFlags: 0
@@ -810,7 +830,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1127859141}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d8d33b8c3e7f664caa0c778e7ff4451, type: 3}
+  m_Script: {fileID: 11500000, guid: ed455620e6862b84a8bec4ddea7aeced, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1317410779
@@ -897,7 +917,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1127859143}
-        m_TargetAssemblyTypeName: StoryCoordinate, Assembly-CSharp
+        m_TargetAssemblyTypeName: IndusStoryCoordinate, Assembly-CSharp
         m_MethodName: BackStoryCoordinate
         m_Mode: 1
         m_Arguments:
@@ -1048,7 +1068,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Akkadian Story
+  m_text: Sining at Teknolohiya
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8e37122d6e7034f4389c42cbc3516813, type: 2}
   m_sharedMaterial: {fileID: -9095057548130661126, guid: 8e37122d6e7034f4389c42cbc3516813, type: 2}
@@ -1503,7 +1523,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Akkadian
+  m_text: Sining at Teknolohiya
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 04d8fa5ccb9bf4b4b9ed6b73071af0ef, type: 2}
   m_sharedMaterial: {fileID: 3873622676898468374, guid: 04d8fa5ccb9bf4b4b9ed6b73071af0ef, type: 2}
@@ -1568,7 +1588,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -151.78476, w: 0}
+  m_margin: {x: 0, y: 0, z: 8.687088, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1599,8 +1619,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -58, y: 329}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 45, y: 310.83}
+  m_SizeDelta: {x: 726.83, y: 86.33}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2061141253
 GameObject:

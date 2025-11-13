@@ -730,8 +730,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: StoryCoordinate, Assembly-CSharp
+      - m_Target: {fileID: 1859896709}
+        m_TargetAssemblyTypeName: ChinaStoryCoordinate, Assembly-CSharp
         m_MethodName: Back
         m_Mode: 1
         m_Arguments:

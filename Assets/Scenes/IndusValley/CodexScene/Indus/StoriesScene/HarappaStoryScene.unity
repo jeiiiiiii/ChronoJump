@@ -382,28 +382,48 @@ MonoBehaviour:
   stories:
   - storyTitle: 
     storyContent: "\tPagbukas ng portal, natagpuan nina Player at Chrono ang kanilang
-      mga sarili sa harap ng matatayog na pader ng Nineveh, kabisera ng makapangyarihang
-      Assyria. Masigla ngunit mahigpit ang lungsod. Mga sundalo\u2019y nagbabantay
-      sa bawat tarangkahan at mga mensahero\u2019y kumakaripas sa malalapad na kalsada.
-      Ipinaliwanag ni Chrono na ito ang sentro ng isang imperyong itinayo sa lakas
-      ng espada at sa takot ng mga nasakop.(1)\n\n\tLumapit sa kanila si Tiglath-Pileser
-      I, nakasuot ng mabigat na baluti. Sa malamig na tinig, ibinahagi niya kung
-      paano niya pinalawak ang sakop ng Assyria mula sa mga Hittite hanggang sa baybayin
-      ng Mediterranean sa pamamagitan ng walang humpay na pananakop at mahigpit na
-      pamamahala. Sa kanyang mga mata, ang kapayapaan ay bunga ng takot at pagsunod.(2)"
+      mga sarili sa gitna ng isang lungsod na tila gawa ng mga henyo. Mga kalsadang
+      tuwid na tuwid, nakaayos na parang chessboard, at mga gusaling yari sa napakapulang
+      laryo ay nakahanay nang maayos. Walang palasyo, walang templo na nakataas,
+      tanging mga tahanan at mga gusaling pantimbangan lamang ang nakikita.(1)\n\n\t\"Maligayang
+      pagdating sa Mohenjo-daro,\" sabi ni Chrono habang tumitingin sa paligid. \"Isa
+      ito sa pinakamaunlad na lungsod ng sinaunang daigdig noong 2500 BCE. Ngunit
+      tingnan mo, walang tore, walang estatwa ng hari. \"Sino kaya ang namumuno dito?\"(2)\n\n\tLumapit
+      sa kanila ang isang lalaking may dalang clay seal na may ukit ng isang humped
+      bull at mga simbolong hindi maintindihan. \"Ako si Daro, isang mangangalakal
+      mula sa Harappa,\" pakilala niya habang inaayos ang kanyang standardized weights.
+      \"Ang aming mga lungsod ay hindi nangangailangan ng hari. Ang bawat isa ay
+      may tungkulin, ako'y nangangalakal, ang iba'y gumagawa ng beads, pottery, at
+      cotton cloth. Ang aming sistema ng tubig at drainage ay gumagana ng kusa. Tingnan
+      mo.\"(3)"
   - storyTitle: 
-    storyContent: "\tSa paglalakbay nila sa loob ng lungsod, ipinakilala ni Chrono
-      ang isa pang dakilang pinuno, si Ashurbanipal. Sa halip na espada, ipinakita
-      nito ang kanyang yaman: isang napakalaking silid-aklatan na naglalaman ng libu-libong
-      tabletang luwad, kasaysayan, medisina, batas, at panalangin. Dito natutunan
-      ng Player na kahit sa gitna ng kalupitan, may puwang para sa kaalaman.(3)\n\n\tNgunit
-      sa huli, ikinuwento ni Chrono ang pagbagsak ng Nineveh noong 612 BCE nang magkaisa
-      ang mga dating kaaway na Chaldean, Medes, at Persian upang wasakin ang imperyo.
-      Ang lungsod ay nilamon ng apoy at abo, at ang mga tore nito ay gumuho magpakailanman.(4)\n\n\tMuling
-      bumukas ang portal at bumalik si Player sa kasalukuyan, tangan ang isang maliit
-      na clay tablet mula sa aklatan ni Ashurbanipal bilang paalala na ang tunay
-      na lakas ng isang kaharian ay masusukat hindi sa takot na ipinapadama nito,
-      kundi sa karunungang naiiwan sa kasaysayan.(5)"
+    storyContent: "\tInilakad sila ni Daro sa mga kalye. Sa ilalim ng mga hagdan,
+      makikita ang sophisticated na drainage system, bawat bahay ay konektado sa
+      pangunahing kanal. \"Walang ibang sibilisasyon ang mayroon nito,\" pagmamalaki
+      ni Daro. \"Kahit ang aming Great Bath ay ginagamit para sa mga ritwal ng kalinisan.\"(4)\n\tDinala
+      nila si Player sa isang silid kung saan gumagawa ng mga mysterious seals. Isang
+      matandang babae ang nag-ukit ng mga simbolo. \"Ako si Matrika,\" sabi niya.
+      \"Ang mga tatak na ito ay naglalaman ng aming wika, ngunit marahil sa hinaharap,
+      makalilimutan na ng mundo kung paano ito basahin.\"(5)\r\n\tHuminto si Chrono
+      at seryosong tumingin kay Player. \"Tama si Matrika. Hanggang sa iyong panahon,
+      hindi pa rin nababasa ang Indus script. Ito ang pinakamalaking misteryo ng
+      sibilisasyong ito.\"(6)\n\tNaglakbay pa sila at nakita nila ang mga farmers
+      sa tabi ng Indus River, gumagamit ng advanced irrigation systems. Nakita rin
+      nila ang mga craftsmen na gumagawa ng lapis lazuli beads na ipinagbibili hanggang
+      Mesopotamia. Lahat ay masipag, organisado, at tahimik.(7)"
+  - storyTitle: 
+    storyContent: "\tNgunit sa huli, ikinuwento ni Chrono ang biglang pagkawala.
+      \"Noong 1900 BCE, nagsimulang mag-iba ang daloy ng ilog. Tumigang ang lupa,
+      naubusan ng tubig ang mga pananim. Unti-unting umalis ang mga tao, nakalimutan
+      ang kanilang mga lungsod. Walang gera, walang pananakop, simpleng pagbabago
+      ng kalikasan.\"(8)\n\n\tMuling bumalik ang portal at bago pumasok si Player,
+      ibinigay ni Daro ang isang clay seal. \"Dalhin mo ito. Kahit nakalimutan ng
+      mundo ang aming wika, huwag kalilimutan na may sibilisasyong namuhay nang mapayapa,
+      organisado, at maunlad, hindi sa pamamagitan ng espada, kundi sa karunungan
+      ng pagpaplano at paggalang sa kalikasan.\"(9)\r\n\n\tBumalik si Player sa kasalukuyan,
+      tangan ang clay seal, na nagpapaalala na hindi laging takot at kapangyarihan
+      ang sukatan ng kadakilaan, kung minsan, ito ay simpleng dunong at respeto sa
+      kapaligiran.\"(10)"
 --- !u!1 &426330772
 GameObject:
   m_ObjectHideFlags: 0
@@ -808,7 +828,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1127859141}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d8d33b8c3e7f664caa0c778e7ff4451, type: 3}
+  m_Script: {fileID: 11500000, guid: ed455620e6862b84a8bec4ddea7aeced, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1317410779
@@ -895,7 +915,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1127859143}
-        m_TargetAssemblyTypeName: StoryCoordinate, Assembly-CSharp
+        m_TargetAssemblyTypeName: IndusStoryCoordinate, Assembly-CSharp
         m_MethodName: BackStoryCoordinate
         m_Mode: 1
         m_Arguments:
@@ -1023,8 +1043,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -707, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: -454.18, y: -1.51}
+  m_SizeDelta: {x: 705.64, y: 53.03}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1371687836
 MonoBehaviour:
@@ -1046,7 +1066,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Assyrian Story
+  m_text: Harappa at Mohenjo-Daro
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8e37122d6e7034f4389c42cbc3516813, type: 2}
   m_sharedMaterial: {fileID: -9095057548130661126, guid: 8e37122d6e7034f4389c42cbc3516813, type: 2}
@@ -1111,7 +1131,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -421.2602, w: 0}
+  m_margin: {x: 0, y: 0, z: -0.39997092, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1501,7 +1521,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Assyrian
+  m_text: Harappa at Mohenjo-Daro
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 04d8fa5ccb9bf4b4b9ed6b73071af0ef, type: 2}
   m_sharedMaterial: {fileID: 3873622676898468374, guid: 04d8fa5ccb9bf4b4b9ed6b73071af0ef, type: 2}
@@ -1566,7 +1586,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -151.78476, w: 0}
+  m_margin: {x: 0, y: 0, z: -6.451767, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1597,8 +1617,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -58, y: 329}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 4, y: 319.92}
+  m_SizeDelta: {x: 814.64, y: 68.17}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2061141253
 GameObject:

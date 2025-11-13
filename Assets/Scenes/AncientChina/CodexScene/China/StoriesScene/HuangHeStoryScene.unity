@@ -824,7 +824,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1127859141}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d8d33b8c3e7f664caa0c778e7ff4451, type: 3}
+  m_Script: {fileID: 11500000, guid: 9c4c9ad6dd34ca04f82d3d25e82e42bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1317410779
@@ -911,7 +911,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1127859143}
-        m_TargetAssemblyTypeName: StoryCoordinate, Assembly-CSharp
+        m_TargetAssemblyTypeName: ChinaStoryCoordinate, Assembly-CSharp
         m_MethodName: BackStoryCoordinate
         m_Mode: 1
         m_Arguments:

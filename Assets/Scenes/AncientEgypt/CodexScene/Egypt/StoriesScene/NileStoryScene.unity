@@ -381,29 +381,34 @@ MonoBehaviour:
   backButton: {fileID: 798681859}
   stories:
   - storyTitle: 
-    storyContent: "\tPagbukas ng portal, natagpuan nina Player at Chrono ang kanilang
-      mga sarili sa harap ng matatayog na pader ng Nineveh, kabisera ng makapangyarihang
-      Assyria. Masigla ngunit mahigpit ang lungsod. Mga sundalo\u2019y nagbabantay
-      sa bawat tarangkahan at mga mensahero\u2019y kumakaripas sa malalapad na kalsada.
-      Ipinaliwanag ni Chrono na ito ang sentro ng isang imperyong itinayo sa lakas
-      ng espada at sa takot ng mga nasakop.(1)\n\n\tLumapit sa kanila si Tiglath-Pileser
-      I, nakasuot ng mabigat na baluti. Sa malamig na tinig, ibinahagi niya kung
-      paano niya pinalawak ang sakop ng Assyria mula sa mga Hittite hanggang sa baybayin
-      ng Mediterranean sa pamamagitan ng walang humpay na pananakop at mahigpit na
-      pamamahala. Sa kanyang mga mata, ang kapayapaan ay bunga ng takot at pagsunod.(2)"
+    storyContent: "\tSa paglalakbay nina Player at Chrono, napunta sila sa kaharian
+      ng sinaunang Egypt, sa tabi ng Ilog Nile ang \u201CGift of the Nile,\u201D
+      ayon kay Herodotus. Ipinaliwanag ni Chrono na ang ilog na ito ang pinagmulan
+      ng lahat ng buhay sa Egypt, dahil sa taunang pagbaha na nag-iiwan ng matabang
+      lupa o silt na perpekto para sa pagsasaka. Nakilala nila si Imhotep, isang
+      matalinong scribe at engineer, na nagsabing ang Nile ay hindi lamang ilog kundi
+      diyos na nagbibigay-buhay at direksyon sa lipunan.(1)\n\n\tNakilala rin nila
+      si Merit, isang babaeng magsasaka na umaasa sa biyaya ng Nile para sa kanilang
+      ani. Sa pamamagitan niya, naunawaan ni Player kung paano naging organisado
+      ang lipunan ng Egypt mula sa mga magsasaka, scribes, at craftsmen, hanggang
+      sa mga pari at pinuno. Ang labis na produktibong lupa ay nagbigay-daan sa pagbuo
+      ng mga propesyon at pamahalaang may matatag na sistema. Ipinaliwanag din ni
+      Chrono na ang mga disyerto sa magkabilang panig ng Nile ang nagsilbing natural
+      na proteksyon ng bansa laban sa mga mananakop, dahilan upang manatiling ligtas
+      at hiwalay ang kanilang sibilisasyon.(2)"
   - storyTitle: 
-    storyContent: "\tSa paglalakbay nila sa loob ng lungsod, ipinakilala ni Chrono
-      ang isa pang dakilang pinuno, si Ashurbanipal. Sa halip na espada, ipinakita
-      nito ang kanyang yaman: isang napakalaking silid-aklatan na naglalaman ng libu-libong
-      tabletang luwad, kasaysayan, medisina, batas, at panalangin. Dito natutunan
-      ng Player na kahit sa gitna ng kalupitan, may puwang para sa kaalaman.(3)\n\n\tNgunit
-      sa huli, ikinuwento ni Chrono ang pagbagsak ng Nineveh noong 612 BCE nang magkaisa
-      ang mga dating kaaway na Chaldean, Medes, at Persian upang wasakin ang imperyo.
-      Ang lungsod ay nilamon ng apoy at abo, at ang mga tore nito ay gumuho magpakailanman.(4)\n\n\tMuling
-      bumukas ang portal at bumalik si Player sa kasalukuyan, tangan ang isang maliit
-      na clay tablet mula sa aklatan ni Ashurbanipal bilang paalala na ang tunay
-      na lakas ng isang kaharian ay masusukat hindi sa takot na ipinapadama nito,
-      kundi sa karunungang naiiwan sa kasaysayan.(5)"
+    storyContent: "\tSa Papyrus Marshes, ipinakita ni Imhotep kung paano ginamit
+      ng mga Egyptian ang papyrus bilang unang uri ng papel para sa pagsulat ng kasaysayan,
+      batas, at kultura. Ang Nile rin ang naging pangunahing daan ng transportasyon,
+      pinagmumulan ng pagkain, at puso ng ekonomiya. Gayunman, ipinakita rin ni Chrono
+      ang kahinaan ng sistemang ito ang lubos na pagdepende ng mga Egyptian sa ilog.
+      Kapag hindi ito bumaha, nagdudulot ito ng taggutom at paghihirap sa buong bansa.(3)\n\n\tSa
+      pagtatapos, napagtanto ni Player na ang Nile ay parehong biyaya at panganib
+      isang paalala na ang kalikasan ay maaaring maging mapagbigay ngunit marupok.
+      Ang Egypt ay umusbong dahil sa ilog, ngunit ang kanilang kapalaran ay nakatali
+      rin dito. Bago bumalik sa kasalukuyan, naunawaan niya na ang tunay na lakas
+      ng sibilisasyon ay nasa balanse sa pagitan ng pagtitiwala sa kalikasan at ng
+      kakayahang umangkop sa pagbabago.(4)"
 --- !u!1 &426330772
 GameObject:
   m_ObjectHideFlags: 0
@@ -808,7 +813,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1127859141}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d8d33b8c3e7f664caa0c778e7ff4451, type: 3}
+  m_Script: {fileID: 11500000, guid: c81879abcd2c9c24a9b66a1f4a526ae0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1317410779
@@ -895,7 +900,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1127859143}
-        m_TargetAssemblyTypeName: StoryCoordinate, Assembly-CSharp
+        m_TargetAssemblyTypeName: EgyptStoryCoordinate, Assembly-CSharp
         m_MethodName: BackStoryCoordinate
         m_Mode: 1
         m_Arguments:
@@ -1046,7 +1051,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Assyrian Story
+  m_text: Ilog Nile
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8e37122d6e7034f4389c42cbc3516813, type: 2}
   m_sharedMaterial: {fileID: -9095057548130661126, guid: 8e37122d6e7034f4389c42cbc3516813, type: 2}
@@ -1501,7 +1506,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Assyrian
+  m_text: Ilog Nile
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 04d8fa5ccb9bf4b4b9ed6b73071af0ef, type: 2}
   m_sharedMaterial: {fileID: 3873622676898468374, guid: 04d8fa5ccb9bf4b4b9ed6b73071af0ef, type: 2}

@@ -635,6 +635,87 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/AncientEgypt/KingdomScenes/KingdomSceneFive.unity
     guid: 5e0380f01269a1e43ae9f3ae94643bc7
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/CodexScene/China/ChinaArtifactsScene.unity
+    guid: a45ce85ea0643204d9d99e27d98defd2
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/CodexScene/China/ChinaCodexScene.unity
+    guid: 4570fbf8b349d964c8a999ca189b1bb1
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/CodexScene/China/ChinaAchievementsScene.unity
+    guid: 52d95658fb88fb445840b3b45226e3a1
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/CodexScene/China/CharacterScene/ShangCharacterScene.unity
+    guid: 650b804554540c843ad70f64fb587644
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/CodexScene/China/CharacterScene/HuangHeCharacterScene.unity
+    guid: f1de8692f12615b4c8877cca33af4e38
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/CodexScene/China/CharacterScene/ChinaCharacterCoordinate.unity
+    guid: f204b9ed109569240b2e1dc2d9338de3
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/CodexScene/China/StoriesScene/ShangStoryScene.unity
+    guid: 0ca6890fa8966304dba6d943ec3af25c
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/CodexScene/China/StoriesScene/HuangHeStoryScene.unity
+    guid: 745999e47bbf850418fe25369b1719db
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/CodexScene/China/StoriesScene/ChinaStoryCoordinate.unity
+    guid: 6fc9f4bae9a7a02459c749243072cb0b
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/CodexScene/Egypt/EgyptCodexScene.unity
+    guid: c0051ee38dc3e1540a8ba520e638330d
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/CodexScene/Egypt/EgyptArtifactsScene.unity
+    guid: 4837a065d0675964ba8aa6c5f3273172
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/CodexScene/Egypt/EgyptAchievementsScene.unity
+    guid: 38ba5511c4fe02f4c897dde397fbb64f
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/CodexScene/Egypt/StoriesScene/NileStoryScene.unity
+    guid: ebe7efb962188c44f97f4387cbf048b3
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/CodexScene/Egypt/StoriesScene/KingdomStoryScene.unity
+    guid: af43c27ab6528ae488fd8d272c8e6296
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/CodexScene/Egypt/StoriesScene/EgyptStoryCoordinate.unity
+    guid: 724115b2f66c113439bf3be73236d83f
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/CodexScene/Egypt/CharacterScene/NileCharacterScene.unity
+    guid: f6e4fa46db2c4bc4daaeff173df4fa84
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/CodexScene/Egypt/CharacterScene/KingdomCharacterScene.unity
+    guid: 173ae7cdad30dd24fb7766f72c8bc45d
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/CodexScene/Egypt/CharacterScene/EgyptCharacterCoordinate.unity
+    guid: 5485b83a926247744ac9c96cb3cabfe2
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/CodexScene/Indus/StoriesScene/SiningStoryScene.unity
+    guid: e937e3671cda8344f8ca112bc627f493
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/CodexScene/Indus/StoriesScene/IndusStoryCoordinate.unity
+    guid: 7e22ac1968ea4c74d9c8252b6249959e
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/CodexScene/Indus/StoriesScene/HarappaStoryScene.unity
+    guid: 31615e3172d623a40996cce07afd4a29
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/CodexScene/Indus/IndusCodexScene.unity
+    guid: d4616a271300e0246a815c9fc5baaf5f
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/CodexScene/Indus/IndusArtifactsScene.unity
+    guid: 9e4aff1f7b45764459b5be58ee71f535
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/CodexScene/Indus/IndusAchievementsScene.unity
+    guid: da69c0676af7ffe4bbf796be8d6f4667
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/CodexScene/Indus/CharacterScene/SiningCharacterScene.unity
+    guid: 74a414c235285444f8a0edc5e1ab4de5
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/CodexScene/Indus/CharacterScene/IndusCharacterCoordinate.unity
+    guid: 9d6b69fcedcbd2b4bb3c56325d2a4b89
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/CodexScene/Indus/CharacterScene/HarappaCharacterScene.unity
+    guid: f7dab476d65f428459c63a676e8df7bc
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
     guid: {fileID: 0}

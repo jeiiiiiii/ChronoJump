@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class EgyptStoryNavigator : MonoBehaviour
+public class IndusStoryNavigator : MonoBehaviour
 {
     [Header("UI References")]
     [SerializeField] private GameObject storyTextObject;    // Your TextMeshPro GameObject
