@@ -6,7 +6,7 @@ public class ChinaCodexScene : MonoBehaviour
 {
     public void Back()
     {
-        SceneManager.LoadScene("HuangHeStoryCoordinate");
+        SceneManager.LoadScene("HuangHeCoordinateSelect");
     }
     public void AchievementsScene()
     {

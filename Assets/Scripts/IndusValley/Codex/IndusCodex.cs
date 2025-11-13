@@ -6,7 +6,7 @@ public class IndusCodexScene : MonoBehaviour
 {
     public void Back()
     {
-        SceneManager.LoadScene("IndusStoryCoordinate");
+        SceneManager.LoadScene("IndusCoordinateSelect");
     }
     public void AchievementsScene()
     {

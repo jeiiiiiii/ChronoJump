@@ -1454,7 +1454,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1859896709}
         m_TargetAssemblyTypeName: EgyptCodexScene, Assembly-CSharp
-        m_MethodName: Artifacts
+        m_MethodName: Story
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

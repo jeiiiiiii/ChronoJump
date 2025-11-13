@@ -6,7 +6,7 @@ public class EgyptCodexScene : MonoBehaviour
 {
     public void Back()
     {
-        SceneManager.LoadScene("EgyptStoryCoordinate");
+        SceneManager.LoadScene("NileCoordinateSelect");
     }
     public void AchievementsScene()
     {

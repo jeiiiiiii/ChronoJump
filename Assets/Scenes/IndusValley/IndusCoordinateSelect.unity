@@ -986,7 +986,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1240065478}
         m_TargetAssemblyTypeName: CoordinateSelect, Assembly-CSharp
-        m_MethodName: LoadCodexScene
+        m_MethodName: IndusCodexScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1556,7 +1556,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1240065478}
         m_TargetAssemblyTypeName: CoordinateSelect, Assembly-CSharp
-        m_MethodName: LoadAchievementScene
+        m_MethodName: IndusAchievementScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4136,6 +4136,9 @@ MonoBehaviour:
   harappaStartScene: HarappaSceneOne
   siningStartScene: SiningSceneOne
   huangheStartScene: HuangheSceneOne
+  shangStartScene: ShangSceneOne
+  kingdomStartScene: KingdomSceneOne
+  nileStartScene: NileSceneOne
 --- !u!1 &2100023124
 GameObject:
   m_ObjectHideFlags: 0
