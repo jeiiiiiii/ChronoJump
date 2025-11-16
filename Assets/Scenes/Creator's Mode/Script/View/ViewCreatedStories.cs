@@ -22,8 +22,10 @@ public class ViewCreatedStoriesScene : MonoBehaviour
     [SerializeField] private Texture2D defaultButtonBackground;
 
     [SerializeField] private GameObject loadingSpinnerPrefab; // Assign your prefab in Inspector
+    [SerializeField] private Button refreshButton; // ADD THIS LINE
 
     private bool _storiesLoaded = false;
+    private bool _isRefreshing = false; // ADD THIS LINE - track refresh state
 
     void Start()
     {
@@ -33,6 +35,14 @@ public class ViewCreatedStoriesScene : MonoBehaviour
         if (storyActionPopup != null)
         {
             storyActionPopup.SetActive(false);
+        }
+
+        // NEW: Setup refresh button
+        if (refreshButton != null)
+        {
+            refreshButton.onClick.RemoveAllListeners();
+            refreshButton.onClick.AddListener(OnRefreshButtonClicked);
+            Debug.Log("✅ Refresh button listener added");
         }
 
         // Subscribe to StoryManager events
@@ -237,6 +247,12 @@ private void OnStoriesLoaded(List<StoryData> stories) // RECEIVE the stories lis
             StoryManager.Instance.OnStoriesLoaded -= OnStoriesLoaded;
             StoryManager.Instance.OnStoriesLoadFailed -= OnStoriesLoadFailed;
         }
+        
+        // NEW: Clean up refresh button listener
+        if (refreshButton != null)
+        {
+            refreshButton.onClick.RemoveAllListeners();
+        }
     }
 
     // Add manual refresh capability
@@ -389,6 +405,89 @@ private void OnStoriesLoaded(List<StoryData> stories) // RECEIVE the stories lis
         }
 
         Debug.Log("🔍 === END DEBUG ===");
+    }
+
+    // NEW: Public method for refresh button
+    public void OnRefreshButtonClicked()
+    {
+        Debug.Log("🔄 Refresh button clicked - reloading stories from Firebase");
+        
+        if (_isRefreshing)
+        {
+            Debug.LogWarning("⚠️ Already refreshing, ignoring click");
+            return;
+        }
+        
+        if (StoryManager.Instance == null)
+        {
+            Debug.LogError("❌ StoryManager.Instance is null");
+            return;
+        }
+        
+        StartCoroutine(RefreshStories());
+    }
+
+    private IEnumerator RefreshStories()
+    {
+        _isRefreshing = true;
+        _storiesLoaded = false;
+        
+        // Disable refresh button
+        if (refreshButton != null)
+        {
+            refreshButton.interactable = false;
+            Debug.Log("🔘 Refresh button DISABLED");
+        }
+        
+        // Show loading spinners
+        SetLoadingState(true);
+        Debug.Log("⏳ Showing loading spinners...");
+        
+        // Clear current stories in StoryManager
+        if (StoryManager.Instance != null)
+        {
+            StoryManager.Instance.allStories.Clear();
+            Debug.Log("🗑️ Cleared current stories from StoryManager");
+        }
+        
+        // Wait a frame
+        yield return null;
+        
+        // Reload stories from Firestore (CORRECTED METHOD NAME)
+        if (StoryManager.Instance != null)
+        {
+            Debug.Log("📡 Requesting fresh data from Firestore...");
+            StoryManager.Instance.LoadStoriesFromFirestore(); // ✅ CORRECTED
+        }
+        
+        // Wait for stories to load (with timeout)
+        float timeout = 10f;
+        float elapsed = 0f;
+        
+        while (!_storiesLoaded && elapsed < timeout)
+        {
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        
+        if (elapsed >= timeout)
+        {
+            Debug.LogWarning("⚠️ Story loading timed out after 10 seconds");
+            SetLoadingState(false);
+        }
+        
+        // Add small delay to ensure UI is updated
+        yield return new WaitForSeconds(0.3f);
+        
+        // Re-enable refresh button
+        if (refreshButton != null)
+        {
+            refreshButton.interactable = true;
+            Debug.Log("🔘 Refresh button ENABLED");
+        }
+        
+        _isRefreshing = false;
+        Debug.Log("✅ Refresh complete");
     }
 
 }

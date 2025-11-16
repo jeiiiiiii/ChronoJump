@@ -551,6 +551,112 @@ public class TeacherDashboardManager : MonoBehaviour
                 }
             });
     }
+    
+    // Refresh landing page data (both progress and leaderboard)
+    public void OnRefreshLandingPageClicked()
+    {
+        Debug.Log("🔄 Landing page refresh clicked - refreshing both progress and leaderboard previews");
+        
+        if (string.IsNullOrEmpty(_dashboardState.selectedClassCode))
+        {
+            Debug.LogWarning("No class selected, cannot refresh");
+            return;
+        }
+        
+        // Disable the refresh button
+        if (dashboardView != null)
+        {
+            dashboardView.SetLandingRefreshButtonEnabled(false);
+        }
+        
+        // Clear the cached data for current class to force fresh fetch
+        _dashboardState.cachedStudents.Remove(_dashboardState.selectedClassCode);
+        _dashboardState.cachedLeaderboards.Remove(_dashboardState.selectedClassCode);
+        
+        // Show loading states
+        ShowLoadingStates();
+        
+        // Reload both student progress and leaderboard
+        LoadStudentProgress(_dashboardState.selectedClassCode);
+        LoadStudentLeaderboard(_dashboardState.selectedClassCode);
+        
+        // Re-enable button after loading completes
+        StartCoroutine(ReEnableLandingRefreshButton());
+    }
+
+    // Refresh full student progress page
+    public void OnRefreshFullStudentProgressClicked()
+    {
+        Debug.Log("🔄 Full progress page refresh clicked");
+        
+        if (string.IsNullOrEmpty(_dashboardState.selectedClassCode))
+        {
+            Debug.LogWarning("No class selected, cannot refresh");
+            return;
+        }
+        
+        // Disable the refresh button
+        if (dashboardView != null)
+        {
+            dashboardView.SetFullProgressRefreshButtonEnabled(false);
+        }
+        
+        // Clear only student progress cache
+        _dashboardState.cachedStudents.Remove(_dashboardState.selectedClassCode);
+        
+        // Show loading state for progress
+        if (studentProgressView != null)
+        {
+            studentProgressView.ShowLoadingState(_isViewingAllStudents);
+        }
+        
+        // Reload student progress with current view state
+        LoadStudentProgress(_dashboardState.selectedClassCode);
+        
+        // Re-enable button after loading completes
+        StartCoroutine(ReEnableFullProgressRefreshButton());
+    }
+
+    // Coroutine to re-enable landing refresh button
+    private IEnumerator ReEnableLandingRefreshButton()
+    {
+        // Wait until both loading operations are complete
+        while (_isLoadingProgress || _isLoadingLeaderboard)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+        
+        // Add a small delay to ensure UI is fully updated
+        yield return new WaitForSeconds(0.3f);
+        
+        if (dashboardView != null)
+        {
+            dashboardView.SetLandingRefreshButtonEnabled(true);
+        }
+        
+        Debug.Log("✅ Landing refresh button re-enabled");
+    }
+
+    // Coroutine to re-enable full progress refresh button
+    private IEnumerator ReEnableFullProgressRefreshButton()
+    {
+        // Wait until loading is complete
+        while (_isLoadingProgress)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+        
+        // Add a small delay to ensure UI is fully updated
+        yield return new WaitForSeconds(0.3f);
+        
+        if (dashboardView != null)
+        {
+            dashboardView.SetFullProgressRefreshButtonEnabled(true);
+        }
+        
+        Debug.Log("✅ Full progress refresh button re-enabled");
+    }
+
 
     public void OnBackToStudentProgressClicked()
     {

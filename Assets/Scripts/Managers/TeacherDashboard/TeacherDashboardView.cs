@@ -45,9 +45,13 @@ public class TeacherDashboardView : MonoBehaviour, IDashboardView
     [Header("Student Progress Controls")]
     public GameObject viewAllProgressButton;
     public GameObject deleteStudentButton;
+    public Button landingRefreshButton; // ADD THIS - refresh button on landing page
 
     [Header("Leaderboard Controls")]
     public GameObject viewAllLeaderboardButton;
+
+    [Header("Full Page Controls")]
+    public Button fullProgressRefreshButton; // ADD THIS - refresh button on full progress page
 
     [Header("Others")]
     public GameObject newClassButton;
@@ -373,57 +377,88 @@ public void HideAllPages()
 }
 
     private void SetActivePanel(GameObject activePanel)
-{
-    Debug.Log($"🔄 Setting active panel: {activePanel?.name}");
+    {
+        Debug.Log($"📄 Setting active panel: {activePanel?.name}");
 
-    landingPage.SetActive(activePanel == landingPage);
-    emptyLandingPage.SetActive(activePanel == emptyLandingPage);
-    studentProgressPage.SetActive(activePanel == studentProgressPage);
-    leaderboardPage.SetActive(activePanel == leaderboardPage);
-    createNewClassPanel.SetActive(false);
+        landingPage.SetActive(activePanel == landingPage);
+        emptyLandingPage.SetActive(activePanel == emptyLandingPage);
+        studentProgressPage.SetActive(activePanel == studentProgressPage);
+        leaderboardPage.SetActive(activePanel == leaderboardPage);
+        createNewClassPanel.SetActive(false);
 
-    // Handle overview page
-    if (studentOverviewPage != null)
-    {
-        studentOverviewPage.SetActive(activePanel == studentOverviewPage);
-        Debug.Log($"📊 Overview page active: {(activePanel == studentOverviewPage)}");
+        // Handle overview page
+        if (studentOverviewPage != null)
+        {
+            studentOverviewPage.SetActive(activePanel == studentOverviewPage);
+        }
+
+        // ✅ NEW: Update dashboard title based on active panel
+        if (activePanel == studentProgressPage)
+        {
+            UpdateDashboardTitle("Student Progress");
+        }
+        else if (activePanel == leaderboardPage)
+        {
+            UpdateDashboardTitle("Student Leaderboards");
+        }
+        else if (activePanel == studentOverviewPage)
+        {
+            UpdateDashboardTitle("Student Overview");
+        }
+        else if (activePanel == landingPage || activePanel == emptyLandingPage)
+        {
+            UpdateDashboardTitle("Teacher's Dashboard");
+        }
+
+        if (newClassButton != null)
+        {
+            bool shouldShowNewClass = (activePanel == landingPage || activePanel == emptyLandingPage);
+            newClassButton.SetActive(shouldShowNewClass);
+        }
+
+        // ✅ NEW: LANDING PAGE REFRESH BUTTON
+        if (landingRefreshButton != null)
+        {
+            landingRefreshButton.gameObject.SetActive(activePanel == landingPage);
+        }
+
+        // ✅ NEW: FULL PROGRESS PAGE REFRESH BUTTON
+        if (fullProgressRefreshButton != null)
+        {
+            fullProgressRefreshButton.gameObject.SetActive(activePanel == studentProgressPage);
+        }
+
+        if (activePanel == landingPage)
+        {
+            SetViewAllProgressButtonVisible(true);
+            SetViewAllLeaderboardButtonVisible(true);
+            SetDeleteStudentButtonVisible(true);
+        }
+        else
+        {
+            SetViewAllProgressButtonVisible(false);
+            SetViewAllLeaderboardButtonVisible(false);
+            SetDeleteStudentButtonVisible(false);
+        }
     }
 
-    // ✅ NEW: Update dashboard title based on active panel
-    if (activePanel == studentProgressPage)
+    // NEW: Method to enable/disable landing refresh button
+    public void SetLandingRefreshButtonEnabled(bool enabled)
     {
-        UpdateDashboardTitle("Student Progress");
-    }
-    else if (activePanel == leaderboardPage)
-    {
-        UpdateDashboardTitle("Student Leaderboards");
-    }
-    else if (activePanel == studentOverviewPage)
-    {
-        UpdateDashboardTitle("Student Overview");
-    }
-    else if (activePanel == landingPage || activePanel == emptyLandingPage)
-    {
-        UpdateDashboardTitle("Teacher's Dashboard");
+        if (landingRefreshButton != null)
+        {
+            landingRefreshButton.interactable = enabled;
+            Debug.Log($"🔘 Landing refresh button: {(enabled ? "ENABLED" : "DISABLED")}");
+        }
     }
 
-    if (newClassButton != null)
+    // NEW: Method to enable/disable full progress refresh button
+    public void SetFullProgressRefreshButtonEnabled(bool enabled)
     {
-        bool shouldShowNewClass = (activePanel == landingPage || activePanel == emptyLandingPage);
-        newClassButton.SetActive(shouldShowNewClass);
+        if (fullProgressRefreshButton != null)
+        {
+            fullProgressRefreshButton.interactable = enabled;
+            Debug.Log($"🔘 Full progress refresh button: {(enabled ? "ENABLED" : "DISABLED")}");
+        }
     }
-
-    if (activePanel == landingPage)
-    {
-        SetViewAllProgressButtonVisible(true);
-        SetViewAllLeaderboardButtonVisible(true);
-        SetDeleteStudentButtonVisible(true);
-    }
-    else
-    {
-        SetViewAllProgressButtonVisible(false);
-        SetViewAllLeaderboardButtonVisible(false);
-        SetDeleteStudentButtonVisible(false);
-    }
-}
 }

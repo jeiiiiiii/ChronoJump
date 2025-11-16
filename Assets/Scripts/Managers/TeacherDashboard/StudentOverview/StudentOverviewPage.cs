@@ -20,6 +20,7 @@ public class StudentOverviewPage : MonoBehaviour
     public Button huangHeButton;
     public Button ehiptoButton;
     public Button publishedStoriesButton;
+    public Button refreshButton;
 
     [Header("Content Section")]
     public GameObject contentSection;
@@ -189,6 +190,12 @@ public class StudentOverviewPage : MonoBehaviour
         {
             publishedStoriesButton.onClick.RemoveAllListeners();
             publishedStoriesButton.onClick.AddListener(() => OnFilterButtonClicked("Published Stories"));
+        }
+
+        if (refreshButton != null)
+        {
+            refreshButton.onClick.RemoveAllListeners();
+            refreshButton.onClick.AddListener(OnRefreshButtonClicked);
         }
     }
 
@@ -405,7 +412,9 @@ public class StudentOverviewPage : MonoBehaviour
         if (huangHeButton != null) huangHeButton.onClick.RemoveAllListeners();
         if (ehiptoButton != null) ehiptoButton.onClick.RemoveAllListeners();
         if (publishedStoriesButton != null) publishedStoriesButton.onClick.RemoveAllListeners();
+        if (refreshButton != null) refreshButton.onClick.RemoveAllListeners(); // ADD THIS LINE
     }
+
 
     private void LoadStudentOverviewData()
     {
@@ -976,4 +985,55 @@ public class StudentOverviewPage : MonoBehaviour
             Debug.LogWarning($"⚠️ [EXPIRED] Operation no longer valid in delayed call - PageActive: {_isPageActive}, GameObjectActive: {gameObject.activeInHierarchy}");
         }
     }
+
+    public void OnRefreshButtonClicked()
+    {
+        Debug.Log($"🔄 Refresh button clicked - Current filter: {_currentFilter}");
+        
+        if (!_isPageActive)
+        {
+            Debug.LogWarning("⚠️ Page not active, cannot refresh");
+            return;
+        }
+        
+        if (_currentStudent == null)
+        {
+            Debug.LogWarning("⚠️ No student loaded, cannot refresh");
+            return;
+        }
+        
+        // Disable refresh button during refresh
+        if (refreshButton != null)
+        {
+            refreshButton.interactable = false;
+        }
+        
+        // Clear the cache for this student
+        if (_studentOverviewCache.ContainsKey(_currentStudent.userId))
+        {
+            _studentOverviewCache.Remove(_currentStudent.userId);
+            Debug.Log($"🗑️ Cleared cache for student: {_currentStudent.studName}");
+        }
+        
+        StopAllCoroutines();
+        _isLoading = false;
+        ClearContent();
+        ShowLoading(true);
+        
+        LoadStudentOverviewData();
+        
+        // Re-enable refresh button after a short delay
+        StartCoroutine(ReEnableRefreshButton());
+    }
+
+
+    private IEnumerator ReEnableRefreshButton()
+    {
+        yield return new WaitForSeconds(1f);
+        if (refreshButton != null)
+        {
+            refreshButton.interactable = true;
+        }
+    }
+
 }
