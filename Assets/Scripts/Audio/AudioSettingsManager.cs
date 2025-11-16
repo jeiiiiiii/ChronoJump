@@ -18,10 +18,6 @@ public class AudioSettingsManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            // ✅ Load saved values
-            musicVolume = StudentPrefs.GetFloat(MusicVolumeKey, 0.5f);
-            voiceVolume = StudentPrefs.GetFloat(VoiceVolumeKey, 0.5f);
-
             // ✅ Apply volumes when new scenes load
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
@@ -38,7 +34,17 @@ public class AudioSettingsManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        // ✅ Reload volumes when a new scene loads (in case student changed)
+        LoadVolumes();
         ApplyVolumesToScene();
+    }
+
+    // ✅ NEW: Public method to reload volumes (call this after student login)
+    public void LoadVolumes()
+    {
+        musicVolume = StudentPrefs.GetFloat(MusicVolumeKey, 0.5f);
+        voiceVolume = StudentPrefs.GetFloat(VoiceVolumeKey, 0.5f);
+        Debug.Log($"[AudioSettingsManager] Loaded volumes - Music: {musicVolume}, Voice: {voiceVolume}");
     }
 
     // 🎵 --- MUSIC ---
@@ -63,7 +69,7 @@ public class AudioSettingsManager : MonoBehaviour
         ApplyVolumesToScene();
     }
 
-    // 🔊 Apply both volumes to the active scene
+    // 📊 Apply both volumes to the active scene
     public void ApplyVolumesToScene()
     {
         AudioSource[] allAudio = Object.FindObjectsByType<AudioSource>(FindObjectsSortMode.None);

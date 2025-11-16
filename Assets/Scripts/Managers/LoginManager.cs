@@ -252,6 +252,12 @@ public class LoginManager : MonoBehaviour
 
                                     // Handle Remember Me for student
                                     HandleRememberMe(email);
+
+                                    if (AudioSettingsManager.Instance != null)
+                                    {
+                                        AudioSettingsManager.Instance.LoadVolumes();
+                                        AudioSettingsManager.Instance.ApplyVolumesToScene();
+                                    }
                                     
                                     // Now it's safe to load the TitleScreen
                                     SceneManager.LoadScene("TitleScreen");
