@@ -1487,9 +1487,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 477065901}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ae6faf8cb6f17ef4c821ed61189c566e, type: 2}
+  m_Controller: {fileID: 9100000, guid: 66776b651117f9e4784292f1fb4866af, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2574,6 +2574,8 @@ MonoBehaviour:
   ChronocharacterRenderer: {fileID: 1317386105}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
+  chronoAnimator: {fileID: 1317386108}
+  playerAnimator: {fileID: 477065906}
   audioSource: {fileID: 1652331086}
   dialogueClips:
   - {fileID: 8300000, guid: 5cb6be67f0d18244e81be9353ee3e070, type: 3}
@@ -2724,9 +2726,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1317386103}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 7703396119542d84a8fde9ea44b97974, type: 2}
+  m_Controller: {fileID: 9100000, guid: c0d277b1a21bf8a4c8ec4e11c3eddb7c, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
