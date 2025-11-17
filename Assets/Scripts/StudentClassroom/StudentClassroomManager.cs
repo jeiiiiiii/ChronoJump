@@ -29,48 +29,53 @@ public class StudentClassroomManager : MonoBehaviour
     private StudentClassData currentClass;
     private bool isInitialized = false;
     private bool isLoadingStories = false;
+    private bool isDestroyed = false; // ✅ ADD THIS FLAG
 
     private void OnEnable()
     {
+        isDestroyed = false; // ✅ Reset flag
         ClassInfo.OnClassDataLoaded += OnClassDataLoaded;
-        // NEW: Subscribe to static event
         OnStudentNameChanged += HandleStudentNameChanged;
     }
 
     private void OnDisable()
     {
+        isDestroyed = true; // ✅ Set flag when disabling
         ClassInfo.OnClassDataLoaded -= OnClassDataLoaded;
-        // NEW: Unsubscribe from static event
         OnStudentNameChanged -= HandleStudentNameChanged;
     }
 
-    // Change the event
     public static System.Action<string, StudentClassData> OnStudentDataChanged;
 
     private void SetStudentName(string name)
     {
-        if (studentNameText != null)
+        // ✅ Check if destroyed
+        if (isDestroyed || studentNameText == null) return;
+
+        studentNameText.text = name;
+
+        ClassInfo classInfo = FindAnyObjectByType<ClassInfo>();
+        StudentClassData classData = null;
+        if (classInfo != null && classInfo.IsDataLoaded())
         {
-            studentNameText.text = name;
-
-            ClassInfo classInfo = FindAnyObjectByType<ClassInfo>();
-            StudentClassData classData = null;
-            if (classInfo != null && classInfo.IsDataLoaded())
-            {
-                classData = classInfo.GetCurrentClassData();
-            }
-
-            OnStudentDataChanged?.Invoke(name, classData);
+            classData = classInfo.GetCurrentClassData();
         }
-    }
 
+        OnStudentDataChanged?.Invoke(name, classData);
+    }
 
     private void Start()
     {
+        // ✅ Validate UI references at start
+        if (!ValidateUIReferences())
+        {
+            Debug.LogError("❌ StudentClassroomManager: Critical UI references missing!");
+            return;
+        }
+
         if (refreshButton != null)
             refreshButton.onClick.AddListener(RefreshStories);
 
-        // Check if ClassInfo already has data loaded
         if (classInfoComponent != null && classInfoComponent.IsDataLoaded())
         {
             InitializeClassroom();
@@ -79,12 +84,42 @@ public class StudentClassroomManager : MonoBehaviour
         {
             Debug.Log("Waiting for ClassInfo to load data...");
         }
+
         if (refreshLeaderboardButton != null)
-        refreshLeaderboardButton.onClick.AddListener(RefreshLeaderboard);
+            refreshLeaderboardButton.onClick.AddListener(RefreshLeaderboard);
+    }
+
+    // ✅ NEW: Validate all critical UI references
+    private bool ValidateUIReferences()
+    {
+        bool isValid = true;
+
+        if (storiesContainer == null)
+        {
+            Debug.LogError("❌ Stories Container is not assigned!");
+            isValid = false;
+        }
+
+        if (storyItemPrefab == null)
+        {
+            Debug.LogError("❌ Story Item Prefab is not assigned!");
+            isValid = false;
+        }
+
+        if (classInfoComponent == null)
+        {
+            Debug.LogError("❌ ClassInfo component is not assigned!");
+            isValid = false;
+        }
+
+        return isValid;
     }
 
     private void OnClassDataLoaded(StudentClassData classData)
     {
+        // ✅ Check if destroyed
+        if (isDestroyed) return;
+
         Debug.Log($"📢 Received class data loaded event: {classData?.classCode ?? "NULL"}");
 
         if (!isInitialized)
@@ -95,6 +130,9 @@ public class StudentClassroomManager : MonoBehaviour
 
     private void InitializeClassroom()
     {
+        // ✅ Check if destroyed
+        if (isDestroyed) return;
+
         if (isInitialized)
         {
             Debug.Log("Already initialized, skipping...");
@@ -115,14 +153,14 @@ public class StudentClassroomManager : MonoBehaviour
         isInitialized = true;
 
         LoadStudentName();
-
         LoadPublishedStories();
     }
 
-
     private async void LoadPublishedStories()
     {
-        // Prevent multiple simultaneous loads
+        // ✅ Check if destroyed
+        if (isDestroyed) return;
+
         if (isLoadingStories)
         {
             Debug.Log("⚠️ Stories are already loading, skipping...");
@@ -136,7 +174,7 @@ public class StudentClassroomManager : MonoBehaviour
             return;
         }
 
-        Debug.Log($"🔍 Loading stories for class: {currentClass.classCode}, Teacher: {currentClass.teacherName}");
+        Debug.Log($"📚 Loading stories for class: {currentClass.classCode}, Teacher: {currentClass.teacherName}");
 
         isLoadingStories = true;
         ClearStoryItems();
@@ -144,8 +182,10 @@ public class StudentClassroomManager : MonoBehaviour
 
         try
         {
-            // ✅ FIX: Call GetPublishedStoriesFromFirestore directly instead of GetPublishedStoriesFromFirestoreWithRetry
             var stories = await GetPublishedStoriesFromFirestore(currentClass.classCode);
+
+            // ✅ Check if destroyed after async operation
+            if (isDestroyed || this == null) return;
 
             if (stories.Count == 0)
             {
@@ -162,6 +202,9 @@ public class StudentClassroomManager : MonoBehaviour
         }
         catch (System.Exception ex)
         {
+            // ✅ Check if destroyed
+            if (isDestroyed || this == null) return;
+
             Debug.LogError($"❌ Failed to load stories: {ex.Message}");
             ShowNoStoriesMessage("Failed to load stories. Please try again.");
         }
@@ -171,36 +214,32 @@ public class StudentClassroomManager : MonoBehaviour
         }
     }
 
-    // NEW: Static event for name changes
     public static System.Action<string> OnStudentNameChanged;
 
-    // NEW: Handle the name change event
     private void HandleStudentNameChanged(string newName)
     {
+        // ✅ Check if destroyed
+        if (isDestroyed || studentNameText == null) return;
+
         Debug.Log($"🔄 StudentClassroomManager: Name changed via event to {newName}");
 
-        if (studentNameText != null)
-        {
-            studentNameText.text = newName;
-            Debug.Log($"✅ Updated classroom display name to: {newName}");
-        }
+        studentNameText.text = newName;
+        Debug.Log($"✅ Updated classroom display name to: {newName}");
     }
-    
 
     private void LoadStudentName()
     {
-        if (studentNameText == null)
-        {
-            Debug.LogWarning("Student name text component not assigned");
-            return;
-        }
+        // ✅ Check if destroyed
+        if (isDestroyed || studentNameText == null) return;
 
         studentNameText.text = "Loading...";
         Debug.Log("🎯 LoadStudentName() called");
 
-        // Get current student data from Firebase
         FirebaseManager.Instance.GetUserData(userData =>
         {
+            // ✅ Check if destroyed in callback
+            if (isDestroyed || this == null || studentNameText == null) return;
+
             if (userData == null)
             {
                 Debug.LogError("❌ userData is NULL");
@@ -210,9 +249,11 @@ public class StudentClassroomManager : MonoBehaviour
 
             Debug.Log($"✅ Got user data: {userData.displayName}");
 
-            // Get student data from students collection to access studName
             FirebaseManager.Instance.GetStudentByUserId(userData.userId, studentData =>
             {
+                // ✅ Check if destroyed in nested callback
+                if (isDestroyed || this == null || studentNameText == null) return;
+
                 if (studentData == null)
                 {
                     Debug.LogError("❌ studentData is NULL");
@@ -232,7 +273,6 @@ public class StudentClassroomManager : MonoBehaviour
         {
             Debug.Log($"[DIRECT] Fetching stories for class: '{classCode}'");
 
-            // Quick check - if Firebase isn't ready, just return empty list
             if (FirebaseManager.Instance?.DB == null)
             {
                 Debug.Log("ℹ️ Firebase not available, no stories loaded");
@@ -247,6 +287,14 @@ public class StudentClassroomManager : MonoBehaviour
                 .WhereEqualTo("isPublished", true);
 
             var snapshot = await storiesQuery.GetSnapshotAsync();
+
+            // ✅ Check if destroyed after await
+            if (isDestroyed || this == null)
+            {
+                Debug.Log("⚠️ Component destroyed during story fetch, aborting");
+                return new List<PublishedStory>();
+            }
+
             var stories = new List<PublishedStory>();
 
             foreach (var storyDoc in snapshot.Documents)
@@ -271,8 +319,12 @@ public class StudentClassroomManager : MonoBehaviour
             return new List<PublishedStory>();
         }
     }
+
     private void DisplayStories()
     {
+        // ✅ Check if destroyed
+        if (isDestroyed) return;
+
         foreach (PublishedStory story in availableStories)
         {
             CreateStoryItem(story);
@@ -281,9 +333,18 @@ public class StudentClassroomManager : MonoBehaviour
 
     private void CreateStoryItem(PublishedStory story)
     {
-        if (storyItemPrefab == null || storiesContainer == null)
+        // ✅ Enhanced validation
+        if (isDestroyed || storyItemPrefab == null || storiesContainer == null)
         {
-            Debug.LogError("Story item prefab or container not assigned");
+            if (!isDestroyed)
+                Debug.LogError("❌ Story item prefab or container not assigned");
+            return;
+        }
+
+        // ✅ Validate container is a scene object
+        if (storiesContainer.gameObject.scene.name == null)
+        {
+            Debug.LogError("❌ Stories container is a prefab, not a scene object!");
             return;
         }
 
@@ -302,16 +363,20 @@ public class StudentClassroomManager : MonoBehaviour
 
     private async void OnPlayStory(PublishedStory story)
     {
+        // ✅ Check if destroyed
+        if (isDestroyed) return;
+
         Debug.Log($"Starting story: {story.storyTitle} (ID: {story.storyId})");
 
         try
         {
-            // ✅ LOAD STORY DIRECTLY - NO STORYMANAGER
             var storyData = await LoadStoryFromFirestore(story.storyId);
+
+            // ✅ Check if destroyed after async
+            if (isDestroyed || this == null) return;
 
             if (storyData != null)
             {
-                // Store in StudentPrefs for GameScene to use
                 string storyJson = JsonUtility.ToJson(storyData);
                 StudentPrefs.SetString("CurrentStoryData", storyJson);
                 StudentPrefs.SetString("SelectedStoryID", story.storyId);
@@ -330,20 +395,22 @@ public class StudentClassroomManager : MonoBehaviour
         }
         catch (System.Exception ex)
         {
+            if (isDestroyed || this == null) return;
+
             Debug.LogError($"Error loading story: {ex.Message}");
             ShowNoStoriesMessage("Error loading story. Please try again.");
         }
     }
 
-
     private async Task<StoryData> LoadStoryFromFirestore(string storyId)
     {
-        // ✅ FIRST: Check local cache WITH VERSION VALIDATION
         string localStoryKey = $"CachedStory_{storyId}";
         string cachedStoryJson = StudentPrefs.GetString(localStoryKey, "");
 
-        // ✅ NEW: Get current version from Firestore to check if cache is stale
         int currentVersion = await GetStoryVersionFromFirestore(storyId);
+
+        // ✅ Check if destroyed after await
+        if (isDestroyed || this == null) return null;
 
         StoryData story = null;
 
@@ -353,20 +420,22 @@ public class StudentClassroomManager : MonoBehaviour
             {
                 story = JsonUtility.FromJson<StoryData>(cachedStoryJson);
 
-                // ✅ CRITICAL FIX: Only use cache if version matches
                 if (story != null && story.dialogues != null && story.dialogues.Count > 0 &&
                     story.storyVersion == currentVersion)
                 {
                     Debug.Log($"✅ Loaded story from local cache (v{story.storyVersion}): {story.storyTitle}");
 
-                    // ✅ Load voice assignments for cached story
                     await LoadVoiceAssignmentsForStory(storyId, story.dialogues);
+                    
+                    // ✅ Check if destroyed after await
+                    if (isDestroyed || this == null) return null;
+                    
                     return story;
                 }
                 else
                 {
                     Debug.Log($"🔄 Cache outdated or invalid. Cached v{story?.storyVersion ?? 0}, Firestore v{currentVersion}. Fetching fresh...");
-                    story = null; // Force fresh fetch
+                    story = null;
                 }
             }
             catch (System.Exception ex)
@@ -375,7 +444,6 @@ public class StudentClassroomManager : MonoBehaviour
             }
         }
 
-        // ✅ SECOND: Fetch from Firebase if no valid local cache
         try
         {
             if (FirebaseManager.Instance?.DB == null)
@@ -387,6 +455,9 @@ public class StudentClassroomManager : MonoBehaviour
             var firestore = FirebaseManager.Instance.DB;
             var storyDoc = await firestore.Collection("createdStories").Document(storyId).GetSnapshotAsync();
 
+            // ✅ Check if destroyed after await
+            if (isDestroyed || this == null) return null;
+
             if (!storyDoc.Exists)
             {
                 Debug.LogError($"Story document {storyId} not found in Firestore");
@@ -395,14 +466,15 @@ public class StudentClassroomManager : MonoBehaviour
 
             var storyData = storyDoc.ToDictionary();
 
-            // Load dialogues and questions
             var dialogues = await LoadDialoguesFromFirestore(storyId);
+            if (isDestroyed || this == null) return null;
+
             var questions = await LoadQuestionsFromFirestore(storyId);
+            if (isDestroyed || this == null) return null;
 
-            // ✅ CRITICAL: Load voice assignments BEFORE creating the story
             await LoadVoiceAssignmentsForStory(storyId, dialogues);
+            if (isDestroyed || this == null) return null;
 
-            // Create StoryData object
             story = new StoryData
             {
                 storyId = storyId,
@@ -416,10 +488,9 @@ public class StudentClassroomManager : MonoBehaviour
                 assignedClasses = storyData.ContainsKey("assignedClasses") ?
                     ((List<object>)storyData["assignedClasses"]).ConvertAll(x => x.ToString()) :
                     new List<string>(),
-                storyVersion = currentVersion // Set the current version
+                storyVersion = currentVersion
             };
 
-            // ✅ Save to local cache for future use
             string storyJson = JsonUtility.ToJson(story);
             StudentPrefs.SetString(localStoryKey, storyJson);
             StudentPrefs.Save();
@@ -429,13 +500,13 @@ public class StudentClassroomManager : MonoBehaviour
         }
         catch (System.Exception ex)
         {
+            if (isDestroyed || this == null) return null;
+
             Debug.LogError($"❌ Failed to load story from Firestore: {ex.Message}");
             return null;
         }
-
     }
 
-    // ✅ NEW: Method to get current story version from Firestore
     private async Task<int> GetStoryVersionFromFirestore(string storyId)
     {
         try
@@ -458,7 +529,7 @@ public class StudentClassroomManager : MonoBehaviour
                 }
             }
 
-            return 1; // Default version if not found
+            return 1;
         }
         catch (System.Exception ex)
         {
@@ -467,9 +538,6 @@ public class StudentClassroomManager : MonoBehaviour
         }
     }
 
-
-
-    // ✅ NEW: Load voice assignments for all dialogues in a story
     private async Task LoadVoiceAssignmentsForStory(string storyId, List<DialogueLine> dialogues)
     {
         try
@@ -480,15 +548,11 @@ public class StudentClassroomManager : MonoBehaviour
 
             for (int i = 0; i < dialogues.Count; i++)
             {
-                // Use the same key format as VoiceStorageManager
                 string voiceKey = $"{storyId}_Dialogue_{i}_VoiceId";
-
-                // Try to load from TeacherPrefs (this works for students too)
                 string voiceId = TeacherPrefs.GetString(voiceKey, "");
 
                 if (!string.IsNullOrEmpty(voiceId))
                 {
-                    // Only update if different
                     if (dialogues[i].selectedVoiceId != voiceId)
                     {
                         dialogues[i].selectedVoiceId = voiceId;
@@ -500,7 +564,6 @@ public class StudentClassroomManager : MonoBehaviour
                 }
                 else
                 {
-                    // Fallback: use default voice
                     if (string.IsNullOrEmpty(dialogues[i].selectedVoiceId))
                     {
                         dialogues[i].selectedVoiceId = VoiceLibrary.GetDefaultVoice().voiceId;
@@ -510,7 +573,6 @@ public class StudentClassroomManager : MonoBehaviour
                 }
             }
 
-            // ✅ CRITICAL: If we made changes, update the cached story
             if (hasChanges)
             {
                 string localStoryKey = $"CachedStory_{storyId}";
@@ -542,10 +604,6 @@ public class StudentClassroomManager : MonoBehaviour
         }
     }
 
-
-
-
-    // ✅ CORRECTED DIALOGUE LOADING METHOD
     private async Task<List<DialogueLine>> LoadDialoguesFromFirestore(string storyId)
     {
         var dialogues = new List<DialogueLine>();
@@ -559,7 +617,7 @@ public class StudentClassroomManager : MonoBehaviour
             }
 
             var firestore = FirebaseManager.Instance.DB;
-            Debug.Log($"🔍 Loading dialogues for story: {storyId}");
+            Debug.Log($"📖 Loading dialogues for story: {storyId}");
 
             var dialoguesSnapshot = await firestore
                 .Collection("createdStories")
@@ -574,12 +632,10 @@ public class StudentClassroomManager : MonoBehaviour
             {
                 try
                 {
-                    // Use the Firestore data model
                     var dialogueData = dialogueDoc.ConvertTo<DialogueLineFirestore>();
 
                     Debug.Log($"💬 Processing dialogue: {dialogueData.characterName} - {dialogueData.dialogueText}");
 
-                    // Convert to game model - NOTE: using 'text' field instead of 'dialogueText'
                     if (!string.IsNullOrEmpty(dialogueData.dialogueText))
                     {
                         dialogues.Add(new DialogueLine(
@@ -596,7 +652,6 @@ public class StudentClassroomManager : MonoBehaviour
                 {
                     Debug.LogError($"❌ Error processing dialogue document {dialogueDoc.Id}: {docEx.Message}");
 
-                    // Fallback: try dictionary approach
                     try
                     {
                         var data = dialogueDoc.ToDictionary();
@@ -626,7 +681,6 @@ public class StudentClassroomManager : MonoBehaviour
         return dialogues;
     }
 
-    // ✅ CORRECTED QUESTION LOADING METHOD
     private async Task<List<Question>> LoadQuestionsFromFirestore(string storyId)
     {
         var questions = new List<Question>();
@@ -640,7 +694,7 @@ public class StudentClassroomManager : MonoBehaviour
             }
 
             var firestore = FirebaseManager.Instance.DB;
-            Debug.Log($"🔍 Loading questions for story: {storyId}");
+            Debug.Log($"📖 Loading questions for story: {storyId}");
 
             var questionsSnapshot = await firestore
                 .Collection("createdStories")
@@ -655,13 +709,11 @@ public class StudentClassroomManager : MonoBehaviour
             {
                 try
                 {
-                    // Use the Firestore data model
                     var questionData = questionDoc.ConvertTo<QuestionFirestore>();
 
                     Debug.Log($"❓ Processing question: {questionData.questionText}");
                     Debug.Log($"📝 Choices count: {questionData.choices?.Count ?? 0}");
 
-                    // Convert to game model
                     if (questionData.choices != null && questionData.choices.Count >= 2)
                     {
                         questions.Add(new Question(
@@ -679,7 +731,6 @@ public class StudentClassroomManager : MonoBehaviour
                 {
                     Debug.LogError($"❌ Error processing question document {questionDoc.Id}: {docEx.Message}");
 
-                    // Fallback: try dictionary approach
                     try
                     {
                         var data = questionDoc.ToDictionary();
@@ -717,11 +768,8 @@ public class StudentClassroomManager : MonoBehaviour
         return questions;
     }
 
-
-
     public void JoinNewClass(string classCode)
     {
-        // ✅ Use StudentPrefs instead of PlayerPrefs
         StudentPrefs.SetString("JoinedClassCode", classCode);
         StudentPrefs.Save();
 
@@ -731,7 +779,7 @@ public class StudentClassroomManager : MonoBehaviour
 
     private void ClearStoryItems()
     {
-        if (storiesContainer == null) return;
+        if (isDestroyed || storiesContainer == null) return;
 
         foreach (Transform child in storiesContainer)
         {
@@ -744,26 +792,24 @@ public class StudentClassroomManager : MonoBehaviour
 
     private void ShowNoStoriesMessage(string message)
     {
-        if (noStoriesText != null)
-        {
-            noStoriesText.text = message;
-            noStoriesText.gameObject.SetActive(true);
-        }
+        if (isDestroyed || noStoriesText == null) return;
+
+        noStoriesText.text = message;
+        noStoriesText.gameObject.SetActive(true);
     }
 
     private void HideNoStoriesMessage()
     {
-        if (noStoriesText != null)
-        {
-            noStoriesText.gameObject.SetActive(false);
-        }
+        if (isDestroyed || noStoriesText == null) return;
+
+        noStoriesText.gameObject.SetActive(false);
     }
 
     public void RefreshStories()
     {
-        if (isLoadingStories)
+        if (isDestroyed || isLoadingStories)
         {
-            Debug.Log("⚠️ Stories are already loading, please wait...");
+            Debug.Log("⚠️ Cannot refresh - component destroyed or loading");
             return;
         }
 
@@ -779,30 +825,25 @@ public class StudentClassroomManager : MonoBehaviour
 
     private void RefreshLeaderboard()
     {
-        if (leaderboardComponent != null)
-        {
-            leaderboardComponent.RefreshLeaderboard();
-        }
-    }
+        if (isDestroyed || leaderboardComponent == null) return;
 
+        leaderboardComponent.RefreshLeaderboard();
+    }
 
     public void OnStoryPublished(PublishedStory newStory)
     {
-        if (currentClass != null && newStory != null)
-        {
-            availableStories.Add(newStory);
-            CreateStoryItem(newStory);
-            HideNoStoriesMessage();
-        }
+        if (isDestroyed || currentClass == null || newStory == null) return;
+
+        availableStories.Add(newStory);
+        CreateStoryItem(newStory);
+        HideNoStoriesMessage();
     }
 
-    // Add this method to StudentClassroomManager.cs
     public void ClearStoryCache()
     {
         if (currentClass == null || string.IsNullOrEmpty(currentClass.classCode))
             return;
 
-        // Clear all cached stories for this class
         var storiesToClear = availableStories.Where(s => s.classCode == currentClass.classCode).ToList();
 
         foreach (var story in storiesToClear)
@@ -816,8 +857,6 @@ public class StudentClassroomManager : MonoBehaviour
         }
 
         StudentPrefs.Save();
-
-        // Reload stories
         LoadPublishedStories();
 
         Debug.Log("✅ Story cache cleared and refreshed");
@@ -829,6 +868,8 @@ public class StudentClassroomManager : MonoBehaviour
 
         FirebaseManager.Instance.GetUserData(userData =>
         {
+            if (isDestroyed || this == null) return;
+
             if (userData == null)
             {
                 Debug.LogError("❌ STEP 1: GetUserData returned NULL");
@@ -839,6 +880,8 @@ public class StudentClassroomManager : MonoBehaviour
 
             FirebaseManager.Instance.GetStudentByUserId(userData.userId, studentData =>
             {
+                if (isDestroyed || this == null) return;
+
                 if (studentData == null)
                 {
                     Debug.LogError("❌ STEP 2: GetStudentByUserId returned NULL");
@@ -850,4 +893,10 @@ public class StudentClassroomManager : MonoBehaviour
         });
     }
 
+    private void OnDestroy()
+    {
+        // ✅ Mark as destroyed
+        isDestroyed = true;
+        Debug.Log("🔴 StudentClassroomManager destroyed");
+    }
 }

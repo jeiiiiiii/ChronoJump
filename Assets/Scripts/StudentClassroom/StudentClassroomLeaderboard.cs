@@ -20,22 +20,29 @@ public class StudentClassroomLeaderboard : MonoBehaviour
     private bool isInitialized = false;
     private StudentClassData currentClass;
     private GameObject loadingSpinnerInstance;
+    private bool isDestroyed = false; // ✅ ADD DESTRUCTION FLAG
 
     private void OnEnable()
     {
-        // Subscribe to class data loaded event
+        isDestroyed = false; // ✅ Reset flag
         ClassInfo.OnClassDataLoaded += OnClassDataLoaded;
     }
 
     private void OnDisable()
     {
-        // Unsubscribe from event
+        isDestroyed = true; // ✅ Set flag when disabling
         ClassInfo.OnClassDataLoaded -= OnClassDataLoaded;
     }
 
     private void Start()
     {
-        // Check if ClassInfo already has data loaded
+        // ✅ Validate UI references
+        if (!ValidateUIReferences())
+        {
+            Debug.LogError("❌ StudentClassroomLeaderboard: Critical UI references missing!");
+            return;
+        }
+
         if (classInfoComponent != null && classInfoComponent.IsDataLoaded())
         {
             InitializeLeaderboard();
@@ -47,11 +54,44 @@ public class StudentClassroomLeaderboard : MonoBehaviour
         }
     }
 
+    // ✅ NEW: Validate all critical UI references
+    private bool ValidateUIReferences()
+    {
+        bool isValid = true;
+
+        if (leaderboardContainer == null)
+        {
+            Debug.LogError("❌ Leaderboard Container is not assigned!");
+            isValid = false;
+        }
+        else if (leaderboardContainer.gameObject.scene.name == null)
+        {
+            Debug.LogError("❌ Leaderboard Container is a PREFAB, not a scene object! Please assign from scene hierarchy.");
+            isValid = false;
+        }
+
+        if (leaderboardRowPrefab == null)
+        {
+            Debug.LogError("❌ Leaderboard Row Prefab is not assigned!");
+            isValid = false;
+        }
+
+        if (classInfoComponent == null)
+        {
+            Debug.LogError("❌ ClassInfo component is not assigned!");
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
     private void OnClassDataLoaded(StudentClassData classData)
     {
+        // ✅ Check if destroyed
+        if (isDestroyed || this == null) return;
+
         Debug.Log($"📢 Student Leaderboard received class data: {classData?.classCode ?? "NULL"}");
         
-        // Prevent duplicate initialization
         if (isInitialized)
         {
             Debug.Log("⚠️ Leaderboard already initialized, skipping duplicate event");
@@ -63,6 +103,9 @@ public class StudentClassroomLeaderboard : MonoBehaviour
 
     private void InitializeLeaderboard()
     {
+        // ✅ Check if destroyed
+        if (isDestroyed || this == null) return;
+
         if (isInitialized)
         {
             Debug.Log("⚠️ Leaderboard already initialized, skipping");
@@ -77,7 +120,7 @@ public class StudentClassroomLeaderboard : MonoBehaviour
             {
                 Debug.Log($"📊 Loading leaderboard for class: {currentClass.classCode}");
                              
-                isInitialized = true; // Mark as initialized BEFORE loading
+                isInitialized = true;
                 LoadLeaderboard();
             }
             else
@@ -94,6 +137,9 @@ public class StudentClassroomLeaderboard : MonoBehaviour
 
     private void LoadLeaderboard()
     {
+        // ✅ Check if destroyed
+        if (isDestroyed || this == null) return;
+
         if (isLoadingLeaderboard)
         {
             Debug.Log("⚠️ Leaderboard already loading...");
@@ -115,6 +161,13 @@ public class StudentClassroomLeaderboard : MonoBehaviour
 
         FirebaseManager.Instance.GetStudentLeaderboard(currentClass.classCode, leaderboardData =>
         {
+            // ✅ Critical: Check if destroyed in callback
+            if (isDestroyed || this == null)
+            {
+                Debug.Log("⚠️ Leaderboard destroyed during data fetch, aborting display");
+                return;
+            }
+
             isLoadingLeaderboard = false;
             ClearLoadingState();
 
@@ -125,7 +178,6 @@ public class StudentClassroomLeaderboard : MonoBehaviour
                 return;
             }
 
-            // Filter out removed students and sort by score
             var activeStudents = leaderboardData
                 .Where(s => s != null && !s.isRemoved)
                 .OrderByDescending(s => s.overallScore)
@@ -146,23 +198,31 @@ public class StudentClassroomLeaderboard : MonoBehaviour
 
     private void DisplayLeaderboard(List<LeaderboardStudentModel> students)
     {
+        // ✅ Check if destroyed
+        if (isDestroyed || this == null) return;
+
         ClearLeaderboard();
 
         for (int i = 0; i < students.Count; i++)
         {
+            // ✅ Check if destroyed during loop
+            if (isDestroyed || this == null) break;
+            
             CreateLeaderboardRow(students[i], i + 1);
         }
     }
 
     private void CreateLeaderboardRow(LeaderboardStudentModel student, int ranking)
     {
-        if (leaderboardRowPrefab == null || leaderboardContainer == null)
+        // ✅ Enhanced validation
+        if (isDestroyed || leaderboardRowPrefab == null || leaderboardContainer == null)
         {
-            Debug.LogError("❌ Leaderboard prefab or container not assigned");
+            if (!isDestroyed)
+                Debug.LogError("❌ Leaderboard prefab or container not assigned");
             return;
         }
 
-        // Validate container is a scene object
+        // ✅ Validate container is a scene object
         if (leaderboardContainer.gameObject.scene.name == null)
         {
             Debug.LogError("❌ Cannot create row - container is a PREFAB, not a scene object!");
@@ -186,10 +246,13 @@ public class StudentClassroomLeaderboard : MonoBehaviour
 
     private void ShowLoadingState()
     {
+        // ✅ Check if destroyed
+        if (isDestroyed || leaderboardContainer == null) return;
+
         HideEmptyMessage();
 
-        // Validate container is a scene object, not a prefab
-        if (leaderboardContainer != null && leaderboardContainer.gameObject.scene.name == null)
+        // ✅ Validate container is a scene object
+        if (leaderboardContainer.gameObject.scene.name == null)
         {
             Debug.LogError("❌ Leaderboard Container is a PREFAB, not a scene object! Please assign a GameObject from the scene hierarchy.");
             ShowEmptyMessage("Configuration error - check console");
@@ -223,6 +286,9 @@ public class StudentClassroomLeaderboard : MonoBehaviour
 
     private void ClearLoadingState()
     {
+        // ✅ Check if destroyed
+        if (isDestroyed) return;
+
         if (loadingSpinnerInstance != null)
         {
             loadingSpinnerInstance.SetActive(false);
@@ -231,13 +297,10 @@ public class StudentClassroomLeaderboard : MonoBehaviour
 
     private void ClearLeaderboard()
     {
-        if (leaderboardContainer == null)
-        {
-            Debug.LogError("❌ Leaderboard Container is not assigned!");
-            return;
-        }
+        // ✅ Check if destroyed
+        if (isDestroyed || leaderboardContainer == null) return;
 
-        // Validate container is a scene object, not a prefab
+        // ✅ Validate container is a scene object
         if (leaderboardContainer.gameObject.scene.name == null)
         {
             Debug.LogError("❌ Leaderboard Container is a PREFAB! Assign a scene GameObject instead.");
@@ -246,6 +309,9 @@ public class StudentClassroomLeaderboard : MonoBehaviour
 
         foreach (Transform child in leaderboardContainer)
         {
+            // ✅ Skip if destroyed during iteration
+            if (isDestroyed || this == null) break;
+
             if (child.gameObject != loadingSpinnerInstance)
             {
                 if (Application.isPlaying)
@@ -258,23 +324,30 @@ public class StudentClassroomLeaderboard : MonoBehaviour
 
     private void ShowEmptyMessage(string message)
     {
-        if (emptyMessage != null)
-        {
-            emptyMessage.text = message;
-            emptyMessage.gameObject.SetActive(true);
-        }
+        // ✅ Check if destroyed
+        if (isDestroyed || emptyMessage == null) return;
+
+        emptyMessage.text = message;
+        emptyMessage.gameObject.SetActive(true);
     }
 
     private void HideEmptyMessage()
     {
-        if (emptyMessage != null)
-        {
-            emptyMessage.gameObject.SetActive(false);
-        }
+        // ✅ Check if destroyed
+        if (isDestroyed || emptyMessage == null) return;
+
+        emptyMessage.gameObject.SetActive(false);
     }
 
     public void RefreshLeaderboard()
     {
+        // ✅ Check if destroyed
+        if (isDestroyed || this == null)
+        {
+            Debug.Log("⚠️ Cannot refresh - component destroyed");
+            return;
+        }
+
         if (isLoadingLeaderboard)
         {
             Debug.Log("⚠️ Leaderboard already loading, please wait...");
@@ -288,16 +361,22 @@ public class StudentClassroomLeaderboard : MonoBehaviour
             currentClass = classInfoComponent.GetCurrentClassData();
         }
 
-        // Reset initialization flag to allow reload
         isInitialized = false;
         InitializeLeaderboard();
     }
 
     private void OnDestroy()
     {
+        // ✅ Mark as destroyed
+        isDestroyed = true;
+
+        // ✅ Clean up loading spinner
         if (loadingSpinnerInstance != null)
         {
             Destroy(loadingSpinnerInstance);
+            loadingSpinnerInstance = null;
         }
+
+        Debug.Log("🔴 StudentClassroomLeaderboard destroyed");
     }
 }

@@ -9,10 +9,10 @@ using Firebase.Firestore;
 public class StudentSelfOverviewManager : MonoBehaviour
 {
     [Header("UI References")]
-    public GameObject overviewPanel; // The main overview panel to show/hide
-    public Button closeButton; // Button to go back
-    public Button studentNameButton; // The button on the main page that opens this
-    public Button editNameButton; // NEW: Button to edit student name
+    public GameObject overviewPanel;
+    public Button closeButton;
+    public Button studentNameButton;
+    public Button editNameButton;
 
     [Header("Student Info")]
     public TextMeshProUGUI studentNameText;
@@ -27,6 +27,7 @@ public class StudentSelfOverviewManager : MonoBehaviour
     public Button huangHeButton;
     public Button ehiptoButton;
     public Button publishedStoriesButton;
+    public Button refreshButton; // ✅ NEW: Refresh button
 
     [Header("Content Section")]
     public GameObject contentSection;
@@ -34,7 +35,7 @@ public class StudentSelfOverviewManager : MonoBehaviour
     public TextMeshProUGUI chapterNameText;
 
     [Header("Story Prefabs")]
-    public GameObject storyPrefab; // Use StudentStoryView prefab
+    public GameObject storyPrefab;
     public Transform storiesContent;
 
     [Header("Loading")]
@@ -53,35 +54,34 @@ public class StudentSelfOverviewManager : MonoBehaviour
 
     // Cache
     private StudentOverviewData _cachedOverviewData;
-    private string _currentStudentUserId; // NEW: Store current user ID
+    private string _currentStudentUserId;
 
-    // Add this property to fix the currentClass error
     private StudentClassData currentClass => _currentClass;
 
     private void OnEnable()
-{
-    StudentClassroomManager.OnStudentDataChanged += OnStudentDataChanged;
-    LoadStudentInfoImmediately();
-}
-
-private void OnDisable()
-{
-    StudentClassroomManager.OnStudentDataChanged -= OnStudentDataChanged;
-}
-
-private void OnStudentDataChanged(string name, StudentClassData classData)
-{
-    if (studentNameText != null) 
-        studentNameText.text = name;
-    
-    if (studentSectionText != null && classData != null) 
     {
-        if (!string.IsNullOrEmpty(classData.classLevel))
-            studentSectionText.text = $"{classData.classLevel} - {classData.className}";
-        else
-            studentSectionText.text = classData.className;
+        StudentClassroomManager.OnStudentDataChanged += OnStudentDataChanged;
+        LoadStudentInfoImmediately();
     }
-}
+
+    private void OnDisable()
+    {
+        StudentClassroomManager.OnStudentDataChanged -= OnStudentDataChanged;
+    }
+
+    private void OnStudentDataChanged(string name, StudentClassData classData)
+    {
+        if (studentNameText != null) 
+            studentNameText.text = name;
+        
+        if (studentSectionText != null && classData != null) 
+        {
+            if (!string.IsNullOrEmpty(classData.classLevel))
+                studentSectionText.text = $"{classData.classLevel} - {classData.className}";
+            else
+                studentSectionText.text = classData.className;
+        }
+    }
 
     private void LoadStudentInfoImmediately()
     {
@@ -99,24 +99,23 @@ private void OnStudentDataChanged(string name, StudentClassData classData)
         }
     }
 
-
-
     private void Awake()
     {
-        // Hide the overview panel initially
         if (overviewPanel != null)
             overviewPanel.SetActive(false);
 
-        // Setup button listeners
         if (studentNameButton != null)
             studentNameButton.onClick.AddListener(ShowOverview);
 
         if (closeButton != null)
             closeButton.onClick.AddListener(HideOverview);
 
-        // NEW: Setup edit name button
         if (editNameButton != null)
             editNameButton.onClick.AddListener(OnEditNameClicked);
+
+        // ✅ NEW: Setup refresh button
+        if (refreshButton != null)
+            refreshButton.onClick.AddListener(OnRefreshButtonClicked);
 
         SetupFilterButtons();
     }
@@ -129,9 +128,12 @@ private void OnStudentDataChanged(string name, StudentClassData classData)
         if (closeButton != null)
             closeButton.onClick.RemoveAllListeners();
 
-        // NEW: Remove edit button listener
         if (editNameButton != null)
             editNameButton.onClick.RemoveAllListeners();
+
+        // ✅ NEW: Remove refresh button listener
+        if (refreshButton != null)
+            refreshButton.onClick.RemoveAllListeners();
 
         RemoveFilterButtonListeners();
     }
@@ -154,17 +156,14 @@ private void OnStudentDataChanged(string name, StudentClassData classData)
             return;
         }
 
-        // Show the panel
         if (overviewPanel != null)
             overviewPanel.SetActive(true);
 
         _isPageActive = true;
         _currentFilter = "Mesopotamia";
 
-        // Update student info
         UpdateStudentInfo();
 
-        // Load data
         if (_cachedOverviewData != null)
         {
             Debug.Log("📦 Using cached overview data");
@@ -199,10 +198,8 @@ private void OnStudentDataChanged(string name, StudentClassData classData)
             return;
         }
 
-        // Set immediate placeholder values using cached class data
         studentNameText.text = "Loading...";
 
-        // IMMEDIATELY set class section from cached ClassInfo data
         if (studentSectionText != null)
         {
             string formattedClassName = GetFormattedClassNameFromClassInfo();
@@ -211,11 +208,8 @@ private void OnStudentDataChanged(string name, StudentClassData classData)
         }
 
         Debug.Log("🎯 UpdateStudentInfo() called");
-
-        // Load student name from Firebase and store user ID
         LoadStudentNameFromFirebase();
     }
-
 
     private string GetFormattedClassNameFromClassInfo()
     {
@@ -225,27 +219,22 @@ private void OnStudentDataChanged(string name, StudentClassData classData)
         string className = _currentClass.className;
         string classCode = _currentClass.classCode;
 
-        // If className is already in "Grade - Section" format, extract just the section
         if (!string.IsNullOrEmpty(className) && className.Contains(" - "))
         {
             var parts = className.Split(new[] { " - " }, StringSplitOptions.None);
             if (parts.Length >= 2)
             {
-                return $"8 - {parts[1].Trim()}"; // Always format as "8 - {sectionName}"
+                return $"8 - {parts[1].Trim()}";
             }
         }
 
-        // If we only have a raw class code or name, use it as the section name
         if (!string.IsNullOrEmpty(className))
         {
             return $"8 - {className}";
         }
 
-        // Last resort
         return $"8 - {classCode}";
     }
-    
-
 
     private void LoadStudentNameFromFirebase()
     {
@@ -257,7 +246,6 @@ private void OnStudentDataChanged(string name, StudentClassData classData)
                 return;
             }
 
-            // Store the current user ID
             _currentStudentUserId = userData.userId;
 
             FirebaseManager.Instance.GetStudentByUserId(userData.userId, studentData =>
@@ -273,9 +261,6 @@ private void OnStudentDataChanged(string name, StudentClassData classData)
         });
     }
 
-
-
-    // Keep your existing SetStudentName method
     private void SetStudentName(string name)
     {
         if (studentNameText != null)
@@ -284,7 +269,6 @@ private void OnStudentDataChanged(string name, StudentClassData classData)
             Debug.Log($"✅ Student name set to: {name}");
         }
     }
-
 
     private void SetupFilterButtons()
     {
@@ -352,7 +336,6 @@ private void OnStudentDataChanged(string name, StudentClassData classData)
 
         if (!_isPageActive) return;
 
-        // Show chapter labels
         if (contentSection != null)
             contentSection.SetActive(true);
 
@@ -365,7 +348,6 @@ private void OnStudentDataChanged(string name, StudentClassData classData)
             chapterNameText.text = formattedName;
         }
 
-        // Check if data exists
         if (_overviewData == null || !_overviewData.chapters.ContainsKey(chapterName))
         {
             ShowEmptyState($"No data available for {chapterName}");
@@ -394,7 +376,6 @@ private void OnStudentDataChanged(string name, StudentClassData classData)
         HideChapterLabels();
         ShowLoading(true);
 
-        // Get current student data
         FirebaseManager.Instance.GetUserData(userData =>
         {
             if (!_isPageActive || userData == null)
@@ -403,7 +384,6 @@ private void OnStudentDataChanged(string name, StudentClassData classData)
                 return;
             }
 
-            // Get student data to access studId
             FirebaseManager.Instance.GetStudentByUserId(userData.userId, studentData =>
             {
                 if (!_isPageActive)
@@ -446,7 +426,6 @@ private void OnStudentDataChanged(string name, StudentClassData classData)
                             quizAttempts = new List<QuizAttempt>()
                         };
 
-                        // Use studId from studentData or fall back to userId
                         string studentStudId = studentData?.studId ?? userData.userId;
 
                         FirebaseManager.Instance.GetPublishedStoryQuizAttempts(storyId, studentStudId, attempts =>
@@ -483,7 +462,6 @@ private void OnStudentDataChanged(string name, StudentClassData classData)
         });
     }
 
-
     private void LoadStudentOverviewData()
     {
         if (!_isPageActive) return;
@@ -499,7 +477,6 @@ private void OnStudentDataChanged(string name, StudentClassData classData)
                 return;
             }
 
-            // Get student data from students collection to access studName and studId
             FirebaseManager.Instance.GetStudentByUserId(userData.userId, studentData =>
             {
                 if (!_isPageActive) return;
@@ -507,20 +484,17 @@ private void OnStudentDataChanged(string name, StudentClassData classData)
                 _overviewData = new StudentOverviewData
                 {
                     studentId = userData.userId,
-                    // Use studName from studentData
                     studentName = studentData?.studName ?? userData.displayName ?? "Student",
                     classCode = _currentClass.classCode,
                     lastUpdated = DateTime.Now,
                     chapters = new Dictionary<string, ChapterOverview>()
                 };
 
-                // Use studId from studentData or fall back to userId
                 string studentStudId = studentData?.studId ?? userData.userId;
                 LoadAllChapters(studentStudId);
             });
         });
     }
-
 
     private void LoadAllChapters(string studentStudId)
     {
@@ -797,7 +771,59 @@ private void OnStudentDataChanged(string name, StudentClassData classData)
         Debug.Log("🗑️ Cache cleared");
     }
 
-    // NEW: Handle edit name button click
+    // ✅ NEW: Refresh button handler
+    public void OnRefreshButtonClicked()
+    {
+        Debug.Log($"🔄 Refresh button clicked - Current filter: {_currentFilter}");
+        
+        if (!_isPageActive)
+        {
+            Debug.LogWarning("⚠️ Page not active, cannot refresh");
+            return;
+        }
+        
+        if (_currentClass == null)
+        {
+            Debug.LogWarning("⚠️ No class loaded, cannot refresh");
+            return;
+        }
+        
+        // Disable refresh button during refresh to prevent spam
+        if (refreshButton != null)
+        {
+            refreshButton.interactable = false;
+        }
+        
+        // Clear the cached data
+        ClearCache();
+        Debug.Log("🗑️ Cleared cached overview data");
+        
+        // Stop any ongoing operations
+        StopAllCoroutines();
+        _isLoading = false;
+        
+        // Clear current content
+        ClearContent();
+        ShowLoading(true);
+        
+        // Reload the data
+        LoadStudentOverviewData();
+        
+        // Re-enable refresh button after a short delay
+        StartCoroutine(ReEnableRefreshButton());
+    }
+
+    // ✅ NEW: Coroutine to re-enable refresh button
+    private System.Collections.IEnumerator ReEnableRefreshButton()
+    {
+        yield return new WaitForSeconds(1f);
+        
+        if (refreshButton != null)
+        {
+            refreshButton.interactable = true;
+        }
+    }
+
     private void OnEditNameClicked()
     {
         if (editNameDialog == null)
@@ -830,18 +856,15 @@ private void OnStudentDataChanged(string name, StudentClassData classData)
             return;
         }
 
-        // Update in Firebase
         FirebaseManager.Instance.UpdateStudentName(_currentStudentUserId, newName, success =>
         {
             if (success)
             {
                 Debug.Log("✅ Name updated successfully in Firebase");
 
-                // Update UI immediately in overview
                 if (studentNameText != null)
                     studentNameText.text = newName;
 
-                // Update the button on main page if it exists
                 if (studentNameButton != null)
                 {
                     var buttonText = studentNameButton.GetComponentInChildren<TextMeshProUGUI>();
@@ -849,16 +872,11 @@ private void OnStudentDataChanged(string name, StudentClassData classData)
                         buttonText.text = newName;
                 }
 
-                // NEW: Trigger the static event
                 StudentClassroomManager.OnStudentNameChanged?.Invoke(newName);
 
-                // Clear cache to force reload with new name
                 ClearCache();
-
-                // Refresh the leaderboard to show updated name
                 RefreshLeaderboard();
 
-                // Notify dialog of success
                 if (editNameDialog != null)
                     editNameDialog.OnSaveComplete(true);
             }
@@ -866,18 +884,14 @@ private void OnStudentDataChanged(string name, StudentClassData classData)
             {
                 Debug.LogError("❌ Failed to update name in Firebase");
 
-                // Notify dialog of failure
                 if (editNameDialog != null)
                     editNameDialog.OnSaveComplete(false, "Failed to save name. Please try again.");
             }
         });
     }
 
-
-    // Helper method to refresh leaderboard
     private void RefreshLeaderboard()
     {
-        // Find the StudentClassroomLeaderboard component in the scene
         var leaderboard = FindFirstObjectByType<StudentClassroomLeaderboard>();
         if (leaderboard != null)
         {
