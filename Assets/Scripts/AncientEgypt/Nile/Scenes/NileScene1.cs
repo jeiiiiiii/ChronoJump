@@ -44,6 +44,7 @@ public class NileScene1 : MonoBehaviour
     public Sprite ChronoCheerful;
     public Animator chronoAnimator;
     public Animator playerAnimator;
+    public Animator NPCFulldrawnAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -256,6 +257,8 @@ public class NileScene1 : MonoBehaviour
                 break;
             case 4:
                 ImhotepFulldrawnSprite.enabled = true;
+                if (NPCFulldrawnAnimator != null)
+                    NPCFulldrawnAnimator.Play("Imhotep_FullDrawn", 0, 0f);
                 if (chronoAnimator != null)
                     chronoAnimator.Play("Chrono_Cheerful", 0, 0f);
                 if (playerAnimator != null)

@@ -632,6 +632,7 @@ GameObject:
   - component: {fileID: 385422579}
   - component: {fileID: 385422581}
   - component: {fileID: 385422580}
+  - component: {fileID: 385422582}
   m_Layer: 5
   m_Name: MertiFD
   m_TagString: Untagged
@@ -721,6 +722,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 385422578}
   m_CullTransparentMesh: 1
+--- !u!95 &385422582
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 385422578}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 997fd02375b0ad545a03a2b662e32104, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &407054476
 GameObject:
   m_ObjectHideFlags: 0
@@ -2576,6 +2599,7 @@ MonoBehaviour:
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   chronoAnimator: {fileID: 1317386108}
   playerAnimator: {fileID: 477065906}
+  NPCFulldrawnAnimator: {fileID: 385422582}
   audioSource: {fileID: 1652331086}
   dialogueClips:
   - {fileID: 8300000, guid: 3f9a6d745baf0d8459c194e185987a0e, type: 3}

@@ -2258,6 +2258,7 @@ GameObject:
   - component: {fileID: 1375228171}
   - component: {fileID: 1375228170}
   - component: {fileID: 1375228168}
+  - component: {fileID: 1375228173}
   m_Layer: 5
   m_Name: DayuFD
   m_TagString: Untagged
@@ -2377,6 +2378,28 @@ RectTransform:
   m_AnchoredPosition: {x: -34, y: -83}
   m_SizeDelta: {x: 1019.1, y: 961.26}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!95 &1375228173
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1375228167}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 8438c8b6e6937c34eaee525c48e34f5f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1417533024
 GameObject:
   m_ObjectHideFlags: 0
@@ -2450,6 +2473,7 @@ MonoBehaviour:
   ChronoCheerful: {fileID: -6563817684089387956, guid: 8609898f81a07f949bc2af292e5799f5, type: 3}
   chronoAnimator: {fileID: 1052601368}
   playerAnimator: {fileID: 363254930}
+  NPCFulldrawnAnimator: {fileID: 0}
   audioSource: {fileID: 559845528}
   dialogueClips:
   - {fileID: 8300000, guid: e2c929b6bc1f9994f9d246d159428a08, type: 3}

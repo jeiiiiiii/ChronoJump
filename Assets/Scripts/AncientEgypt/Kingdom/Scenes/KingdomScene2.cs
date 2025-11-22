@@ -43,6 +43,7 @@ public class KingdomScene2 : MonoBehaviour
     public Sprite ChronoSad;
     public Animator chronoAnimator;
     public Animator playerAnimator;
+    public Animator NPCFulldrawnAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -252,6 +253,8 @@ public class KingdomScene2 : MonoBehaviour
                 break;
             case 5:
                 MentuhotepFulldrawnSprite.enabled = true;
+                if (NPCFulldrawnAnimator != null)
+                    NPCFulldrawnAnimator.Play("Mentuhotep_FullDrawn", 0, 0f);
                 if (chronoAnimator != null)
                     chronoAnimator.Play("Chrono_Cheerful", 0, 0f);
                 if (playerAnimator != null)

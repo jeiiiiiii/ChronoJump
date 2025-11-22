@@ -632,6 +632,7 @@ GameObject:
   - component: {fileID: 385422579}
   - component: {fileID: 385422581}
   - component: {fileID: 385422580}
+  - component: {fileID: 385422582}
   m_Layer: 5
   m_Name: MentuhotepFD
   m_TagString: Untagged
@@ -655,7 +656,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 21, y: -63}
+  m_AnchoredPosition: {x: 21, y: -99}
   m_SizeDelta: {x: 1019.1, y: 961.26}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &385422580
@@ -721,6 +722,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 385422578}
   m_CullTransparentMesh: 1
+--- !u!95 &385422582
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 385422578}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 213d1053aecaee84b81f288c03e72ac4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &407054476
 GameObject:
   m_ObjectHideFlags: 0
@@ -2226,6 +2249,7 @@ MonoBehaviour:
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
   chronoAnimator: {fileID: 1317386108}
   playerAnimator: {fileID: 477065906}
+  NPCFulldrawnAnimator: {fileID: 385422582}
   audioSource: {fileID: 1652331086}
   dialogueClips:
   - {fileID: 8300000, guid: 53e4ff5f04604c244a701d34237bd559, type: 3}

@@ -44,6 +44,7 @@ public class SiningScene1 : MonoBehaviour
     public Sprite ChronoCheerful;
     public Animator chronoAnimator;
     public Animator playerAnimator;
+    public Animator NPCFulldrawnAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -257,6 +258,8 @@ public class SiningScene1 : MonoBehaviour
                 break;
             case 4:
                 SindhuFulldrawnSprite.enabled = true;
+                if (NPCFulldrawnAnimator != null)
+                    NPCFulldrawnAnimator.Play("Sindhu_FullDrawn", 0, 0f);
                 if (chronoAnimator != null)
                     chronoAnimator.Play("Chrono_Cheerful", 0, 0f);
                 if (playerAnimator != null)

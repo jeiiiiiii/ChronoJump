@@ -42,6 +42,7 @@ public class HuangHeScene2 : MonoBehaviour
     public Sprite ChronoSmile;
     public Animator chronoAnimator;
     public Animator playerAnimator;
+    public Animator NPCFulldrawnAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -226,6 +227,8 @@ public class HuangHeScene2 : MonoBehaviour
                 break;
             case 1:
                 QiFulldrawnSprite.enabled = true;
+                if (NPCFulldrawnAnimator != null)
+                    NPCFulldrawnAnimator.Play("Qi_FullDrawn", 0, 0f);
                 if (chronoAnimator != null)
                     chronoAnimator.Play("Chrono_Cheerful", 0, 0f);
                 if (playerAnimator != null)

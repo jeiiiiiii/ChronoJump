@@ -40,6 +40,7 @@ public class KingdomScene3 : MonoBehaviour
     public Sprite ChronoSad;
     public Animator chronoAnimator;
     public Animator playerAnimator;
+    public Animator NPCFulldrawnAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -248,6 +249,8 @@ public class KingdomScene3 : MonoBehaviour
                 break;
             case 5:
                 AhmosecharacterRenderer.enabled = true;
+                if (NPCFulldrawnAnimator != null)
+                    NPCFulldrawnAnimator.Play("Ahmose_FullDrawn", 0, 0f);
                 if (chronoAnimator != null)
                     chronoAnimator.Play("Chrono_Cheerful", 0, 0f);
                 if (playerAnimator != null)
