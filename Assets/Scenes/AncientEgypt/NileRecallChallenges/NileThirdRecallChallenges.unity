@@ -945,6 +945,8 @@ MonoBehaviour:
   ArtifactImageButton: {fileID: 101757750}
   ArtifactUseButton: {fileID: 869400932}
   ArtifactButton: {fileID: 869400932}
+  chronoAnimator: {fileID: 355097134}
+  playerAnimator: {fileID: 81652818}
   audioSource: {fileID: 1246413602}
   dialogueClips:
   - {fileID: 8300000, guid: 37f6ca96517b0154d83342f5128edd2a, type: 3}

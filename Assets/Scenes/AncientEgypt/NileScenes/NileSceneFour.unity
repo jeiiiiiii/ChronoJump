@@ -2332,8 +2332,15 @@ MonoBehaviour:
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
   MertitWorried: {fileID: 3308754523399262558, guid: 119332c468143c944964ddd190c9c2f4, type: 3}
   ImhotepStern: {fileID: -4842621436805953405, guid: 2c6fdac0584dae546ac11b537309b961, type: 3}
+  chronoAnimator: {fileID: 1052601368}
+  playerAnimator: {fileID: 363254930}
   audioSource: {fileID: 599946919}
-  dialogueClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 6b8f5537dd340a14591e4716d3b10aa2, type: 3}
+  - {fileID: 8300000, guid: e80c4707222d5df4fabba5735525e17b, type: 3}
+  - {fileID: 8300000, guid: ffa5bead10e114e478de97742a4d6442, type: 3}
+  - {fileID: 8300000, guid: f949a79d3987d9b48b4d285608fc0a08, type: 3}
+  - {fileID: 8300000, guid: 113a6230643c6f84c97badbe4ab5d6f8, type: 3}
 --- !u!1001 &1598657690
 PrefabInstance:
   m_ObjectHideFlags: 0
