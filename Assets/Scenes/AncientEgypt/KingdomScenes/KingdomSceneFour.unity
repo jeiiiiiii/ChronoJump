@@ -2333,6 +2333,8 @@ MonoBehaviour:
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
   AhmoseDetermined: {fileID: -4316112825199775776, guid: 9d1e9899ae7488f4cbd0c98227d7c4be, type: 3}
   AhmoseFierce: {fileID: 8065478591464320819, guid: 14f6b0e62b7d8de439e529f506edfe65, type: 3}
+  chronoAnimator: {fileID: 1052601368}
+  playerAnimator: {fileID: 363254930}
   audioSource: {fileID: 599946919}
   dialogueClips:
   - {fileID: 8300000, guid: e95d8a751e60e9c42a764f5b208d9da3, type: 3}

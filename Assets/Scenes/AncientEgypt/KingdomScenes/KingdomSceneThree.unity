@@ -3046,6 +3046,8 @@ MonoBehaviour:
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
+  chronoAnimator: {fileID: 808504574}
+  playerAnimator: {fileID: 305678653}
   audioSource: {fileID: 588842804}
   dialogueClips:
   - {fileID: 8300000, guid: 6e0f3170fea5ed74dacfb30db786d8f3, type: 3}
