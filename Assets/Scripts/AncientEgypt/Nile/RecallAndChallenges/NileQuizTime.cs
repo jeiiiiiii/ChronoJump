@@ -331,7 +331,7 @@ public class QuizTimeManagerNile : MonoBehaviour
         // Saving to firebase
         bool passed = GameState.score >= 8; 
         GameProgressManager.Instance.RecordQuizAttempt(
-            "CH001_ST002",
+            "CH004_ST009",
             GameState.score,
             quizQuestions.Length,
             passed
