@@ -275,7 +275,7 @@ public class NileSecondRecallChallenges : MonoBehaviour
                         // Overwrite all existing saves to the next scene to prevent going back
                         if (SaveLoadManager.Instance != null)
                         {
-                            SaveLoadManager.Instance.OverwriteAllSavesAfterChallenge("NileSceneTwo", 0);
+                            SaveLoadManager.Instance.OverwriteAllSavesAfterChallenge("NileSceneThree", 0);
                         }
                     }
 

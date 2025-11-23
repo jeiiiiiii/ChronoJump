@@ -28,6 +28,7 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
     public DialogueLine[] dialogueLines;
     private Answer[] answers;
     private bool hasAnswered = false;
+    private bool challengeCompleted = false; // NEW: Track if challenge was completed
 
     public Image[] heartImages;
     private bool isShowingDisyertoDialogue = false;
@@ -199,63 +200,74 @@ public class SumerianSecondRecallChallenges : MonoBehaviour
 
         // 🔹 (the rest of ShowDialogue stays the same below...)
         
-    if (dialogueLines == TigrisAndEuphrates)
-        {
-            switch (currentDialogueIndex)
+        if (dialogueLines == TigrisAndEuphrates)
             {
-                case 0:
-                    if (chronoAnimator != null)
-                        chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
-                    if (playerAnimator != null)
-                        playerAnimator.Play("Player_Talking", 0, 0f);
-                    foreach (Button btn in answerButtons)
-                    {
-                        btn.interactable = false;
-                    }
-                    break;
-                case 1:
-                    if (chronoAnimator != null)
-                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
-                    if (playerAnimator != null)
-                        playerAnimator.Play("Player_Smiling", 0, 0f);
-                    break;
-                case 2:
-                    if (chronoAnimator != null)
-                        chronoAnimator.Play("Zul_Talking", 0, 0f);
-                    if (playerAnimator != null)
-                        playerAnimator.Play("Player_Eager", 0, 0f);
-                    break;
-                case 3:
-                    foreach (Button btn in answerButtons)
-                    {
-                        btn.gameObject.SetActive(false);
-                    }
+                switch (currentDialogueIndex)
+                {
+                    case 0:
+                        if (chronoAnimator != null)
+                            chronoAnimator.Play("Chrono_Smiling (Idle)", 0, 0f);
+                        if (playerAnimator != null)
+                            playerAnimator.Play("Player_Talking", 0, 0f);
                     
-                    foreach (Image heart in heartImages)
-                    {
-                        heart.gameObject.SetActive(false);
-                    }
+                        // NEW: Mark challenge as completed and overwrite saves
+                        if (!challengeCompleted)
+                        {
+                            challengeCompleted = true;
+                            // Overwrite all existing saves to the next scene to prevent going back
+                            if (SaveLoadManager.Instance != null)
+                            {
+                                SaveLoadManager.Instance.OverwriteAllSavesAfterChallenge("SumerianSceneFour", 0);
+                            }
+                        }
+                        foreach (Button btn in answerButtons)
+                        {
+                            btn.interactable = false;
+                        }
+                        break;
+                    case 1:
+                        if (chronoAnimator != null)
+                            chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                        if (playerAnimator != null)
+                            playerAnimator.Play("Player_Smiling", 0, 0f);
+                        break;
+                    case 2:
+                        if (chronoAnimator != null)
+                            chronoAnimator.Play("Zul_Talking", 0, 0f);
+                        if (playerAnimator != null)
+                            playerAnimator.Play("Player_Eager", 0, 0f);
+                        break;
+                    case 3:
+                        foreach (Button btn in answerButtons)
+                        {
+                            btn.gameObject.SetActive(false);
+                        }
+                        
+                        foreach (Image heart in heartImages)
+                        {
+                            heart.gameObject.SetActive(false);
+                        }
 
-                    BlurBG.gameObject.SetActive(false);
-                    if (chronoAnimator != null)
-                        chronoAnimator.Play("Chrono_Talking", 0, 0f);
-                    if (playerAnimator != null)
-                        playerAnimator.Play("Player_Curious", 0, 0f);
-                    break;
-                case 4:
-                    if (chronoAnimator != null)
-                        chronoAnimator.Play("Chrono_Thinking", 0, 0f);
-                    if (playerAnimator != null)
-                        playerAnimator.Play("Player_Talking", 0, 0f);
-                    break;
-                case 5:
-                    if (chronoAnimator != null)
-                        chronoAnimator.Play("Zul_Talking", 0, 0f);
-                    if (playerAnimator != null)
-                        playerAnimator.Play("Player_Reflective", 0, 0f);
-                    break;
+                        BlurBG.gameObject.SetActive(false);
+                        if (chronoAnimator != null)
+                            chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                        if (playerAnimator != null)
+                            playerAnimator.Play("Player_Curious", 0, 0f);
+                        break;
+                    case 4:
+                        if (chronoAnimator != null)
+                            chronoAnimator.Play("Chrono_Thinking", 0, 0f);
+                        if (playerAnimator != null)
+                            playerAnimator.Play("Player_Talking", 0, 0f);
+                        break;
+                    case 5:
+                        if (chronoAnimator != null)
+                            chronoAnimator.Play("Zul_Talking", 0, 0f);
+                        if (playerAnimator != null)
+                            playerAnimator.Play("Player_Reflective", 0, 0f);
+                        break;
+                }
             }
-        }
         else if (dialogueLines == Disyerto)
         {
             switch (currentDialogueIndex)

@@ -245,7 +245,7 @@ public class ShangSecondRecallChallenges : MonoBehaviour
                         // Overwrite all existing saves to the next scene to prevent going back
                         if (SaveLoadManager.Instance != null)
                         {
-                            SaveLoadManager.Instance.OverwriteAllSavesAfterChallenge("ShangSceneTwo", 0);
+                            SaveLoadManager.Instance.OverwriteAllSavesAfterChallenge("ShangSceneThree", 0);
                         }
                     }
 

@@ -254,7 +254,7 @@ public class HarappaThirdRecallChallenges : MonoBehaviour
                         // Overwrite all existing saves to the next scene to prevent going back
                         if (SaveLoadManager.Instance != null)
                         {
-                            SaveLoadManager.Instance.OverwriteAllSavesAfterChallenge("HarappaSceneTwo", 0);
+                            SaveLoadManager.Instance.OverwriteAllSavesAfterChallenge("HarappaSceneFive", 0);
                         }
                     }
 

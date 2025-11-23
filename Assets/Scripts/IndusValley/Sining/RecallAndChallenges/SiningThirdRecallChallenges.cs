@@ -254,7 +254,7 @@ public class SiningThirdRecallChallenges : MonoBehaviour
                         // Overwrite all existing saves to the next scene to prevent going back
                         if (SaveLoadManager.Instance != null)
                         {
-                            SaveLoadManager.Instance.OverwriteAllSavesAfterChallenge("SiningSceneTwo", 0);
+                            SaveLoadManager.Instance.OverwriteAllSavesAfterChallenge("SiningSceneFive", 0);
                         }
                     }
 

@@ -265,7 +265,7 @@ public class KingdomThirdRecallChallenges : MonoBehaviour
                         // Overwrite all existing saves to the next scene to prevent going back
                         if (SaveLoadManager.Instance != null)
                         {
-                            SaveLoadManager.Instance.OverwriteAllSavesAfterChallenge("KingdomSceneTwo", 0);
+                            SaveLoadManager.Instance.OverwriteAllSavesAfterChallenge("KingdomSceneFive", 0);
                         }
                     }
 
