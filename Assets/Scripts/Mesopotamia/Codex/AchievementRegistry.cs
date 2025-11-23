@@ -51,18 +51,18 @@ public static class AchievementRegistry
             Type = "artifact"
         });
         Register(new AchievementModel {
-            Id = "AR002", Name = "Sword", Title = "Sword of Kings",
-            Description = "Obtain the Sword artifact",
+            Id = "AR002", Name = "Clay", Title = "Clay Seal of Mohenjo-daro",
+            Description = "Obtain the Clay Seal of Mohenjo-daro",
             Type = "artifact"
         });
         Register(new AchievementModel {
-            Id = "AR003", Name = "Stone", Title = "Stone of Wisdom",
-            Description = "Uncover the Stone artifact",
+            Id = "AR003", Name = "Jar", Title = "Jar of Yellow Silt",
+            Description = "Uncover the Jar of Yellow Silt",
             Type = "artifact"
         });
         Register(new AchievementModel {
-            Id = "AR004", Name = "Belt", Title = "Belt of Power",
-            Description = "Equip the Belt artifact",
+            Id = "AR004", Name = "Papyrus", Title = "Papyrus of the Nile",
+            Description = "Equip the Papyrus of the Nile",
             Type = "artifact"
         });
     }

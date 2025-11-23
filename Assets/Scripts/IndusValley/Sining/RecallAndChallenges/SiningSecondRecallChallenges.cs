@@ -60,7 +60,7 @@ public class SiningSecondRecallChallenges : MonoBehaviour
 
     void Start()
     {
-        if (PlayerAchievementManager.IsAchievementUnlocked("Tablet"))
+        if (PlayerAchievementManager.IsAchievementUnlocked("Clay"))
         {
             if (ArtifactImageButton != null)
             {
@@ -82,7 +82,7 @@ public class SiningSecondRecallChallenges : MonoBehaviour
             {
                 ArtifactImageButton.gameObject.SetActive(false);
             }
-            Debug.Log("Achievement 'Tablet' is not unlocked yet. Button functionality disabled.");
+            Debug.Log("Achievement 'Clay' is not unlocked yet. Button functionality disabled.");
         }
         
         nextButton.gameObject.SetActive(false);
@@ -103,50 +103,19 @@ public class SiningSecondRecallChallenges : MonoBehaviour
 
         ShowDialogue();
     }
-    public void UseArtifactButton()
+        public void UseArtifactButton()
     {
-        if (StudentPrefs.GetInt("UseSiningArtifactUsed", 0) == 0)
+        ArtifactButton.onClick.AddListener(() =>
         {
             StudentPrefs.SetInt("UseSiningArtifactUsed", 1);
             StudentPrefs.Save();
 
-            dialogueLines = new DialogueLine[]
-            {
-                new DialogueLine
-                {
-                    characterName = "Hint",
-                    line = "Ang sagot ay isang hari na nagsimula sa Akkad at naging kauna-unahang emperor sa kasaysayan. Ang kanyang pangalan ay nagsisimula sa letrang 'S'."
-                },
-            };
+            answerButtons[1].interactable = false;
 
-            currentDialogueIndex = 0;
-            ShowDialogue();
-            nextButton.gameObject.SetActive(true);
-            nextButton.onClick.RemoveAllListeners();
-            nextButton.onClick.AddListener(() =>
-            {
-                dialogueLines = new DialogueLine[]
-                {
-                    new DialogueLine
-                    {
-                        characterName = "CHRONO",
-                        line = "  Ano ang ipinagmamalaki ng Indus Valley sa kanilang craft at sining?"
-                    },
-                };
-                
-                currentDialogueIndex = 0;
-                ShowDialogue();
-            });
-
-            ArtifactUseButton.gameObject.SetActive(false);
+            ArtifactButton.gameObject.SetActive(false);
             ArtifactImageButton.gameObject.SetActive(false);
-            
-            Debug.Log("Artifact hint used!");
-        }
-        else
-        {
-            ArtifactUseButton.gameObject.SetActive(false);
-        }
+
+        });
     }
 
     private DialogueLine[] CarnelianLines = new DialogueLine[]

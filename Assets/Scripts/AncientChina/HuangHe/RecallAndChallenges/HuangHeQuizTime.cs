@@ -351,8 +351,6 @@ public class QuizTimeManagerHuangHe : MonoBehaviour
             nextButton.onClick.RemoveAllListeners();
             nextButton.onClick.AddListener(() =>
             {
-                SceneManager.LoadScene("AkkadianArtifactScene");
-                PlayerAchievementManager.UnlockAchievement("Sword");
                 UpdateSaveAfterQuizCompletion();
             });
         }

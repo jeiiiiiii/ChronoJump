@@ -67,7 +67,7 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
 
     void Start()
     {
-        if (PlayerAchievementManager.IsAchievementUnlocked("Stone"))
+        if (PlayerAchievementManager.IsAchievementUnlocked("Tablet"))
         {
             if (ArtifactImageButton != null)
             {
@@ -89,7 +89,7 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
             {
                 ArtifactImageButton.gameObject.SetActive(false);
             }
-            Debug.Log("Achievement 'Stone' is not unlocked yet. Button functionality disabled.");
+            Debug.Log("Achievement 'Tablet' is not unlocked yet. Button functionality disabled.");
         }
 
         AchievementUnlockedRenderer.SetActive(false);
@@ -511,18 +511,48 @@ public class AssyrianFirstRecallChallenges : MonoBehaviour
 
     public void UseArtifactButton()
     {
-        ArtifactButton.onClick.AddListener(() =>
+        if (StudentPrefs.GetInt("UseAssyrianArtifactUsed", 0) == 0)
         {
             StudentPrefs.SetInt("UseAssyrianArtifactUsed", 1);
             StudentPrefs.Save();
-            
-            GameState.hearts++;
-            UpdateHeartsUI();
 
-            ArtifactButton.gameObject.SetActive(false);
+            dialogueLines = new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    characterName = "Hint",
+                    line = " Ito ay paglalakbay o ekpedisyon"
+                },
+            };
+
+            currentDialogueIndex = 0;
+            ShowDialogue();
+            nextButton.gameObject.SetActive(true);
+            nextButton.onClick.RemoveAllListeners();
+            nextButton.onClick.AddListener(() =>
+            {
+                dialogueLines = new DialogueLine[]
+                {
+                    new DialogueLine
+                    {
+                        characterName = "CHRONO",
+                        line = " Ano ang pangunahing paraan na ginamit ni Tiglath-Pileser I upang mapalawak ang imperyong Assyrian?"
+                    },
+                };
+                
+                currentDialogueIndex = 0;
+                ShowDialogue();
+            });
+
+            ArtifactUseButton.gameObject.SetActive(false);
             ArtifactImageButton.gameObject.SetActive(false);
-
-        });
+            
+            Debug.Log("Artifact hint used!");
+        }
+        else
+        {
+            ArtifactUseButton.gameObject.SetActive(false);
+        }
     }
     void LoadGameOverScene()
     {

@@ -66,7 +66,7 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
 
     void Start()
     {
-        if (PlayerAchievementManager.IsAchievementUnlocked("Stone"))
+        if (PlayerAchievementManager.IsAchievementUnlocked("Tablet"))
         {
             if (ArtifactImageButton != null)
             {
@@ -88,7 +88,7 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
             {
                 ArtifactImageButton.gameObject.SetActive(false);
             }
-            Debug.Log("Achievement 'Stone' is not unlocked yet. Button functionality disabled.");
+            Debug.Log("Achievement 'Tablet' is not unlocked yet. Button functionality disabled.");
         }
 
         nextButton.gameObject.SetActive(false);
@@ -541,18 +541,48 @@ public class AssyrianThirdRecallChallenges : MonoBehaviour
     }
     public void UseArtifactButton()
     {
-        ArtifactButton.onClick.AddListener(() =>
+        if (StudentPrefs.GetInt("UseAssyrianArtifactUsed", 0) == 0)
         {
             StudentPrefs.SetInt("UseAssyrianArtifactUsed", 1);
             StudentPrefs.Save();
-            
-            GameState.hearts++;
-            UpdateHeartsUI();
 
-            ArtifactButton.gameObject.SetActive(false);
+            dialogueLines = new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    characterName = "Hint",
+                    line = " Ang mga letra ay nagsisimula sa C, M, at P."
+                },
+            };
+
+            currentDialogueIndex = 0;
+            ShowDialogue();
+            nextButton.gameObject.SetActive(true);
+            nextButton.onClick.RemoveAllListeners();
+            nextButton.onClick.AddListener(() =>
+            {
+                dialogueLines = new DialogueLine[]
+                {
+                    new DialogueLine
+                    {
+                        characterName = "CHRONO",
+                        line = " Sino-sino ang nagtulungan upang pabagsakin ang Assyria?"
+                    },
+                };
+                
+                currentDialogueIndex = 0;
+                ShowDialogue();
+            });
+
+            ArtifactUseButton.gameObject.SetActive(false);
             ArtifactImageButton.gameObject.SetActive(false);
-
-        });
+            
+            Debug.Log("Artifact hint used!");
+        }
+        else
+        {
+            ArtifactUseButton.gameObject.SetActive(false);
+        }
     }
 
 

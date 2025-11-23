@@ -60,7 +60,7 @@ public class ShangSecondRecallChallenges : MonoBehaviour
 
     void Start()
     {
-        if (PlayerAchievementManager.IsAchievementUnlocked("Tablet"))
+        if (PlayerAchievementManager.IsAchievementUnlocked("Jar"))
         {
             if (ArtifactImageButton != null)
             {
@@ -82,7 +82,7 @@ public class ShangSecondRecallChallenges : MonoBehaviour
             {
                 ArtifactImageButton.gameObject.SetActive(false);
             }
-            Debug.Log("Achievement 'Tablet' is not unlocked yet. Button functionality disabled.");
+            Debug.Log("Achievement 'Jar' is not unlocked yet. Button functionality disabled.");
         }
         
         nextButton.gameObject.SetActive(false);
@@ -103,50 +103,20 @@ public class ShangSecondRecallChallenges : MonoBehaviour
 
         ShowDialogue();
     }
-    public void UseArtifactButton()
+        public void UseArtifactButton()
     {
-        if (StudentPrefs.GetInt("UseShangArtifactUsed", 0) == 0)
+        ArtifactButton.onClick.AddListener(() =>
         {
             StudentPrefs.SetInt("UseShangArtifactUsed", 1);
             StudentPrefs.Save();
-
-            dialogueLines = new DialogueLine[]
-            {
-                new DialogueLine
-                {
-                    characterName = "Hint",
-                    line = "Ang sagot ay isang bones na nagsimula sa Akkad at naging kauna-unahang emperor sa kasaysayan. Ang kanyang pangalan ay nagsisimula sa letrang 'S'."
-                },
-            };
-
-            currentDialogueIndex = 0;
-            ShowDialogue();
-            nextButton.gameObject.SetActive(true);
-            nextButton.onClick.RemoveAllListeners();
-            nextButton.onClick.AddListener(() =>
-            {
-                dialogueLines = new DialogueLine[]
-                {
-                    new DialogueLine
-                    {
-                        characterName = "CHRONO",
-                        line = "   Sino si Fu Hao at bakit siya mahalaga sa Dinastiyang Shang?"
-                    },
-                };
-                
-                currentDialogueIndex = 0;
-                ShowDialogue();
-            });
-
-            ArtifactUseButton.gameObject.SetActive(false);
-            ArtifactImageButton.gameObject.SetActive(false);
             
-            Debug.Log("Artifact hint used!");
-        }
-        else
-        {
-            ArtifactUseButton.gameObject.SetActive(false);
-        }
+            GameState.hearts++;
+            UpdateHeartsUI();
+
+            ArtifactButton.gameObject.SetActive(false);
+            ArtifactImageButton.gameObject.SetActive(false);
+
+        });
     }
 
     private DialogueLine[] AsawaLines = new DialogueLine[]

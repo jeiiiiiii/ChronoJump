@@ -348,8 +348,6 @@ public class QuizTimeManagerBabylonian : MonoBehaviour
             nextButton.onClick.RemoveAllListeners();
             nextButton.onClick.AddListener(() =>
             {
-                SceneManager.LoadScene("BabylonianArtifactScene");
-                PlayerAchievementManager.UnlockAchievement("Stone");
                 UpdateSaveAfterQuizCompletion();
             });
         }

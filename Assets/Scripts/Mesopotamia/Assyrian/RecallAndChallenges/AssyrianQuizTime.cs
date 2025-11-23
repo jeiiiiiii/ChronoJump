@@ -350,8 +350,9 @@ public class QuizTimeManagerAssyrian : MonoBehaviour
             nextButton.onClick.RemoveAllListeners();
             nextButton.onClick.AddListener(() =>
             {
-                SceneManager.LoadScene("AssyrianArtifactScene");
-                PlayerAchievementManager.UnlockAchievement("Belt");
+                SceneManager.LoadScene("ClayArtifactScene");
+                PlayerAchievementManager.UnlockAchievement("Clay");
+                //dito ka dagdag josh
             });
         }
     }
