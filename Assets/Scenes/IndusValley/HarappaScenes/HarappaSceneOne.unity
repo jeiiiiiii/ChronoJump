@@ -531,6 +531,7 @@ GameObject:
   - component: {fileID: 359210584}
   - component: {fileID: 359210583}
   - component: {fileID: 359210585}
+  - component: {fileID: 359210586}
   m_Layer: 5
   m_Name: DakoFD
   m_TagString: Untagged
@@ -650,6 +651,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &359210586
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 359210581}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 82778b2adf76fb74e8692efdbd0327d6, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &363254925
 GameObject:
   m_ObjectHideFlags: 0
@@ -790,9 +813,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 363254925}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8caaee389459bfe4590249ae52de09c9, type: 2}
+  m_Controller: {fileID: 9100000, guid: 6c51ae8d776efbc459058baf4c738eab, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1864,7 +1887,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -771, y: -372}
+  m_AnchoredPosition: {x: -762, y: -372}
   m_SizeDelta: {x: 326.93, y: 345.09}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1052601365
@@ -1968,9 +1991,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1052601363}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ab20c78ec453f2948accdfc35c50cf39, type: 2}
+  m_Controller: {fileID: 9100000, guid: 52774ec9f094d0a4fba392fe39266efc, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2476,8 +2499,21 @@ MonoBehaviour:
   ChronocharacterRenderer: {fileID: 1052601367}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
+  chronoAnimator: {fileID: 1052601368}
+  playerAnimator: {fileID: 363254931}
+  NPCFulldrawnAnimator: {fileID: 359210586}
   audioSource: {fileID: 559845528}
-  dialogueClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 08f9bc7f9dc96a54b944530da2f39af8, type: 3}
+  - {fileID: 8300000, guid: c50bddbc6f1460444b6dad886b83ac81, type: 3}
+  - {fileID: 8300000, guid: 8ba3e4b5d4f39e949a64418bec0bb5e8, type: 3}
+  - {fileID: 8300000, guid: 55cadc743b5212d47a5e0ab5a174c13d, type: 3}
+  - {fileID: 8300000, guid: 3eb8c60f1bed039469b26973f03d4bb3, type: 3}
+  - {fileID: 8300000, guid: d45ee7ec6d6d14c438d553c4e186125e, type: 3}
+  - {fileID: 8300000, guid: 64a5a6aa97610154cbcea7c0b1a37bed, type: 3}
+  - {fileID: 8300000, guid: 15c1372c73752d341a3d05b805d81f77, type: 3}
+  - {fileID: 8300000, guid: 62ae0cc1ca9e3d0478146564ac83ad35, type: 3}
+  - {fileID: 8300000, guid: 8f55deaed1542f943ac230bc68fe6f09, type: 3}
 --- !u!1 &1550358816
 GameObject:
   m_ObjectHideFlags: 0

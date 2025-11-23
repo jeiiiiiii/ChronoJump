@@ -392,9 +392,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 81652813}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e462af6ae014e634696afa7b69079215, type: 2}
+  m_Controller: {fileID: 9100000, guid: f6f1be0619747c447a3726ca2e132463, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -926,9 +926,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 355097129}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 7271919c9de3a994fb4d5976a5b06deb, type: 2}
+  m_Controller: {fileID: 9100000, guid: 02e68563bfa27084e839dec62128dbd5, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2993,11 +2993,24 @@ MonoBehaviour:
   ArtifactImageButton: {fileID: 822885669}
   ArtifactUseButton: {fileID: 317194327}
   ArtifactButton: {fileID: 317194327}
-  audioSource: {fileID: 186972926}
-  dialogueClips: []
-  ParaClips: []
-  sportsClips: []
-  tubigClips: []
+  chronoAnimator: {fileID: 355097134}
+  playerAnimator: {fileID: 81652818}
+  audioSource: {fileID: 568145474}
+  dialogueClips:
+  - {fileID: 8300000, guid: 25d32afc717e81243b71ffea467f3afe, type: 3}
+  ParaClips:
+  - {fileID: 8300000, guid: 91c8d04bf5115ee4dbff41d5344baa18, type: 3}
+  - {fileID: 8300000, guid: 06bf8631b82d82e469225291d6d3f421, type: 3}
+  - {fileID: 8300000, guid: f15a1299567f03241abe2a25a26d29ec, type: 3}
+  - {fileID: 8300000, guid: 3d29ba97abca2a74f817aa1fd44e8fa2, type: 3}
+  sportsClips:
+  - {fileID: 8300000, guid: bd854ecc1f333f44699e6d5266f750b5, type: 3}
+  - {fileID: 8300000, guid: a2f1473785afa1341a7740382af9efcb, type: 3}
+  - {fileID: 8300000, guid: a7edfc0c0eb94ca4bb5862c957f943c0, type: 3}
+  tubigClips:
+  - {fileID: 8300000, guid: d9d6fff631e78634e8d8a158e0993c9a, type: 3}
+  - {fileID: 8300000, guid: dea91c9f1a9c1dc4abf9728d1dd6f5dc, type: 3}
+  - {fileID: 8300000, guid: a7edfc0c0eb94ca4bb5862c957f943c0, type: 3}
 --- !u!1 &1261902334
 GameObject:
   m_ObjectHideFlags: 0

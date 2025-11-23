@@ -507,9 +507,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 305678648}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 6601cb4754f7a3e4aa63fa23b15fdf1d, type: 2}
+  m_Controller: {fileID: 9100000, guid: 32b103bab5f07034babe5db0ee9ff674, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1831,8 +1831,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SumerianScene3, Assembly-CSharp
+      - m_Target: {fileID: 1999673390}
+        m_TargetAssemblyTypeName: KingdomScene3, Assembly-CSharp
         m_MethodName: Home
         m_Mode: 1
         m_Arguments:
@@ -2021,9 +2021,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 808504569}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 874a4cacbdfe7e54a89b35b9f3b8dcfc, type: 2}
+  m_Controller: {fileID: 9100000, guid: a360b6dea2e52ae4b9f4c5532b12841e, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2174,6 +2174,7 @@ GameObject:
   - component: {fileID: 906367088}
   - component: {fileID: 906367087}
   - component: {fileID: 906367085}
+  - component: {fileID: 906367089}
   m_Layer: 5
   m_Name: AhmoseFD
   m_TagString: Untagged
@@ -2260,9 +2261,31 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -38, y: -72.72}
+  m_AnchoredPosition: {x: -38, y: -101}
   m_SizeDelta: {x: 1019.1, y: 961.26}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!95 &906367089
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 906367084}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0845d3d0309fd7b45afb370286654cf8, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1170712473
 GameObject:
   m_ObjectHideFlags: 0
@@ -2928,8 +2951,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AssyrianScene3, Assembly-CSharp
+      - m_Target: {fileID: 1999673390}
+        m_TargetAssemblyTypeName: KingdomScene3, Assembly-CSharp
         m_MethodName: GoToSettings
         m_Mode: 1
         m_Arguments:
@@ -3046,8 +3069,20 @@ MonoBehaviour:
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
+  chronoAnimator: {fileID: 808504574}
+  playerAnimator: {fileID: 305678653}
+  NPCFulldrawnAnimator: {fileID: 906367089}
   audioSource: {fileID: 588842804}
-  dialogueClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 6e0f3170fea5ed74dacfb30db786d8f3, type: 3}
+  - {fileID: 8300000, guid: 13ddb31e53ee10245ba761d8dbc1b701, type: 3}
+  - {fileID: 8300000, guid: 3006b7adc671c394ba191f45a75bb8df, type: 3}
+  - {fileID: 8300000, guid: 52e077685b43d2543a30f7ea59753ac0, type: 3}
+  - {fileID: 8300000, guid: 8033547f113badc4b9e3903e7c0b1127, type: 3}
+  - {fileID: 8300000, guid: 5cfcb7b05fd8e1c468d94a9806caff4b, type: 3}
+  - {fileID: 8300000, guid: d7f46f6f45833af419167ca38ebe00dd, type: 3}
+  - {fileID: 8300000, guid: 36bc503dba2ba394bbd92e548c83f80b, type: 3}
+  - {fileID: 8300000, guid: ce384eaa3468e5c45a0df058126353df, type: 3}
 --- !u!1 &2049937663
 GameObject:
   m_ObjectHideFlags: 0

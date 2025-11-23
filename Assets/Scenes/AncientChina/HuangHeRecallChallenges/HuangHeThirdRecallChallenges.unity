@@ -265,6 +265,7 @@ GameObject:
   - component: {fileID: 81652817}
   - component: {fileID: 81652816}
   - component: {fileID: 81652815}
+  - component: {fileID: 81652818}
   m_Layer: 5
   m_Name: PlayerIm
   m_TagString: Untagged
@@ -384,6 +385,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 81652813}
   m_CullTransparentMesh: 1
+--- !u!95 &81652818
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 81652813}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7a02913d9be54be4f8027e1d318d8f4c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &93818498
 GameObject:
   m_ObjectHideFlags: 0
@@ -705,6 +728,7 @@ GameObject:
   - component: {fileID: 355097133}
   - component: {fileID: 355097132}
   - component: {fileID: 355097131}
+  - component: {fileID: 355097134}
   m_Layer: 5
   m_Name: ChronoIM
   m_TagString: Untagged
@@ -824,6 +848,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 355097129}
   m_CullTransparentMesh: 1
+--- !u!95 &355097134
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 355097129}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b421d2874e8e8434aa28c549bf65aa8b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &389675048
 GameObject:
   m_ObjectHideFlags: 0
@@ -899,11 +945,26 @@ MonoBehaviour:
   ArtifactImageButton: {fileID: 101757750}
   ArtifactUseButton: {fileID: 869400932}
   ArtifactButton: {fileID: 869400932}
+  chronoAnimator: {fileID: 355097134}
+  playerAnimator: {fileID: 81652818}
   audioSource: {fileID: 1246413602}
-  dialogueClips: []
-  HimalayasClips: []
-  AlpsClips: []
-  SaharaClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: e7128baedb85e2d4999d53b8899060a3, type: 3}
+  HimalayasClips:
+  - {fileID: 8300000, guid: 6273d0b4778902847bceb6ae1327c784, type: 3}
+  - {fileID: 8300000, guid: 50f53e0ef5dfe3a4aa95e5e502e05980, type: 3}
+  - {fileID: 8300000, guid: b8a6378102453004ba0bff398119acc4, type: 3}
+  - {fileID: 8300000, guid: bd64e374828f11d4289996c49f4c2bc2, type: 3}
+  - {fileID: 8300000, guid: 89046238ea456b547bce186f80d8eb29, type: 3}
+  - {fileID: 8300000, guid: 5a97aeee839981240a12b67ad32bfe2d, type: 3}
+  AlpsClips:
+  - {fileID: 8300000, guid: 16ee598968816d047b2187966794a830, type: 3}
+  - {fileID: 8300000, guid: 80d3fa814e1d8f94a83fe0d817e65174, type: 3}
+  - {fileID: 8300000, guid: 84315f8b09b85ee489173739a299044f, type: 3}
+  SaharaClips:
+  - {fileID: 8300000, guid: d8f7f86f295fa9e4ba0502370a728708, type: 3}
+  - {fileID: 8300000, guid: 8cdb23faa085c5d469ce7a62a6dca3ac, type: 3}
+  - {fileID: 8300000, guid: 84315f8b09b85ee489173739a299044f, type: 3}
 --- !u!1 &406098304
 GameObject:
   m_ObjectHideFlags: 0

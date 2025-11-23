@@ -632,6 +632,7 @@ GameObject:
   - component: {fileID: 385422579}
   - component: {fileID: 385422581}
   - component: {fileID: 385422580}
+  - component: {fileID: 385422582}
   m_Layer: 5
   m_Name: FuhaoFD
   m_TagString: Untagged
@@ -721,6 +722,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 385422578}
   m_CullTransparentMesh: 1
+--- !u!95 &385422582
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 385422578}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b08fbc467032d5143a9e22d14840858b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &407054476
 GameObject:
   m_ObjectHideFlags: 0
@@ -1487,9 +1510,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 477065901}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ae6faf8cb6f17ef4c821ed61189c566e, type: 2}
+  m_Controller: {fileID: 9100000, guid: 66776b651117f9e4784292f1fb4866af, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2457,8 +2480,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AssyrianScene2, Assembly-CSharp
+      - m_Target: {fileID: 1277758996}
+        m_TargetAssemblyTypeName: ShangScene2, Assembly-CSharp
         m_MethodName: GoToSettings
         m_Mode: 1
         m_Arguments:
@@ -2574,8 +2597,19 @@ MonoBehaviour:
   ChronocharacterRenderer: {fileID: 1317386105}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
+  chronoAnimator: {fileID: 1317386108}
+  playerAnimator: {fileID: 477065906}
+  NPCFulldrawnAnimator: {fileID: 385422582}
   audioSource: {fileID: 1652331086}
-  dialogueClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 5cb6be67f0d18244e81be9353ee3e070, type: 3}
+  - {fileID: 8300000, guid: dbef638ba89e8ca43861cccd3a7684d3, type: 3}
+  - {fileID: 8300000, guid: 77fa24a60ae3bcc48958729a3f92c31a, type: 3}
+  - {fileID: 8300000, guid: 783ff4f387031344dacb21bd78f463df, type: 3}
+  - {fileID: 8300000, guid: bd70ecbab323db54ea777392e6a3e097, type: 3}
+  - {fileID: 8300000, guid: e9e0d58116abf9a4096cb5aa0204b2e3, type: 3}
+  - {fileID: 8300000, guid: 5452317ef364e8843b2b3b7bad99845e, type: 3}
+  - {fileID: 8300000, guid: 814aec07affb33649bd807c194e53114, type: 3}
 --- !u!1 &1317386103
 GameObject:
   m_ObjectHideFlags: 0
@@ -2716,9 +2750,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1317386103}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 7703396119542d84a8fde9ea44b97974, type: 2}
+  m_Controller: {fileID: 9100000, guid: c0d277b1a21bf8a4c8ec4e11c3eddb7c, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -3800,8 +3834,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SumerianScene2, Assembly-CSharp
+      - m_Target: {fileID: 1277758996}
+        m_TargetAssemblyTypeName: ShangScene2, Assembly-CSharp
         m_MethodName: Home
         m_Mode: 1
         m_Arguments:

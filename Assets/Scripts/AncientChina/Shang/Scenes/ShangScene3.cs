@@ -27,6 +27,7 @@ public class ShangScene3 : MonoBehaviour
     public DialogueLine[] dialogueLines;
 
     public SpriteRenderer PlayercharacterRenderer;
+    public SpriteRenderer PriestFulldrawnSprite;
     public Sprite PlayerCurious;
     public Sprite PlayerSmile;
     public Sprite PlayerReflective;
@@ -34,10 +35,14 @@ public class ShangScene3 : MonoBehaviour
     public Sprite WudingStern;
     public Sprite PriestCalm;
     public Sprite PriestMysterious;
+    public Sprite PriestFocused;
+    public Sprite PriestSomber;
     public SpriteRenderer ChronocharacterRenderer;
     public Sprite ChronoThinking;
     public Sprite ChronoSmile;
     public Sprite ChronoSad;
+    public Animator chronoAnimator;
+    public Animator playerAnimator;
     public AudioSource audioSource;
     public AudioClip[] dialogueClips;
 
@@ -202,6 +207,8 @@ public class ShangScene3 : MonoBehaviour
 
     void ShowDialogue()
     {
+        PriestFulldrawnSprite.enabled = false;
+        
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
@@ -214,40 +221,59 @@ public class ShangScene3 : MonoBehaviour
         switch (currentDialogueIndex)
         {
             case 0:
-                PlayercharacterRenderer.sprite = PlayerSmile;
-                ChronocharacterRenderer.sprite = ChronoThinking;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Reflective", 0, 0f);
                 break;
             case 1:
-                PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = WudingStern;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Wu Ding_Stern", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Reflective", 0, 0f);
                 break;
             case 2:
-                PlayercharacterRenderer.sprite = PlayerThinking;
-                ChronocharacterRenderer.sprite = PriestCalm;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Thinking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Curious", 0, 0f);
+                PriestFulldrawnSprite.enabled = true;
                 break;
             case 3:
-                PlayercharacterRenderer.sprite = PlayerSmile;
-                ChronocharacterRenderer.sprite = PriestMysterious;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Priest_Mysterious", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Eager", 0, 0f);
                 break;
             case 4:
-                PlayercharacterRenderer.sprite = PlayerCurious;
-                ChronocharacterRenderer.sprite = ChronoThinking;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Priest_Idle", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 break;
             case 5:
-                PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = WudingStern;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Wu Ding_Stern", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Embarassed", 0, 0f);
                 break;
             case 6:
-                PlayercharacterRenderer.sprite = PlayerSmile;
-                ChronocharacterRenderer.sprite = ChronoSad;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Embarassed", 0, 0f);
                 break;
             case 7:
-                PlayercharacterRenderer.sprite = PlayerReflective;
-                ChronocharacterRenderer.sprite = PlayerThinking;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Sad", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Talking", 0, 0f);
                 break;
             case 8:
-                PlayercharacterRenderer.sprite = PlayerThinking;
-                ChronocharacterRenderer.sprite = ChronoSmile;
+                if (chronoAnimator != null)
+                    chronoAnimator.Play("Chrono_Talking", 0, 0f);
+                if (playerAnimator != null)
+                    playerAnimator.Play("Player_Reflective", 0, 0f);
                 break;
         }
 

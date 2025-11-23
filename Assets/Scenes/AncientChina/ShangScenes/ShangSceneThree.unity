@@ -257,6 +257,137 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 127905286}
   m_CullTransparentMesh: 1
+--- !u!1 &215272155
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 215272156}
+  - component: {fileID: 215272159}
+  - component: {fileID: 215272158}
+  - component: {fileID: 215272157}
+  m_Layer: 5
+  m_Name: PriestFD
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &215272156
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 215272155}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.1005199, y: 1.1005199, z: 1.1005199}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 359024529}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -17, y: -115.71999}
+  m_SizeDelta: {x: 1019.1, y: 961.26}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!212 &215272157
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 215272155}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: -2022608575
+  m_SortingLayer: 2
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 755620140656967605, guid: 925e1a1a6f8a49944bccf9cea9d3a4ef, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 2.64, y: 5.63}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!114 &215272158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 215272155}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 3242924702839892273, guid: 05a9a7b822b6ffd428ad3c04e0898a48, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &215272159
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 215272155}
+  m_CullTransparentMesh: 1
 --- !u!1001 &242300925
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -507,9 +638,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 305678648}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 6601cb4754f7a3e4aa63fa23b15fdf1d, type: 2}
+  m_Controller: {fileID: 9100000, guid: ef8570c87a01cb149bc9f9807299be41, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -825,6 +956,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1170712474}
+  - {fileID: 215272156}
   - {fileID: 808504570}
   - {fileID: 305678649}
   - {fileID: 2049937664}
@@ -1830,8 +1962,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SumerianScene3, Assembly-CSharp
+      - m_Target: {fileID: 1999673390}
+        m_TargetAssemblyTypeName: ShangScene3, Assembly-CSharp
         m_MethodName: Home
         m_Mode: 1
         m_Arguments:
@@ -2020,9 +2152,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 808504569}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 874a4cacbdfe7e54a89b35b9f3b8dcfc, type: 2}
+  m_Controller: {fileID: 9100000, guid: 9de0a15af20f9fc4e9f12c2b3c220641, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2827,8 +2959,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AssyrianScene3, Assembly-CSharp
+      - m_Target: {fileID: 1999673390}
+        m_TargetAssemblyTypeName: ShangScene3, Assembly-CSharp
         m_MethodName: GoToSettings
         m_Mode: 1
         m_Arguments:
@@ -2934,19 +3066,33 @@ MonoBehaviour:
   currentDialogueIndex: 0
   dialogueLines: []
   PlayercharacterRenderer: {fileID: 305678650}
+  PriestFulldrawnSprite: {fileID: 215272157}
   PlayerCurious: {fileID: 1425434424722430075, guid: 5c1923377ae91324084f960706141b9f, type: 3}
   PlayerSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}
   PlayerReflective: {fileID: -6828170361931683543, guid: 41872a0e55450ef43b535aba6363171a, type: 3}
   PlayerThinking: {fileID: 5428063399545322546, guid: c517d75299d0ddb4cb6eed3374b7a5b3, type: 3}
   WudingStern: {fileID: -4842621436805953405, guid: ab4295dda4b581740b8922b027adb002, type: 3}
-  PriestCalm: {fileID: -5080951992958775113, guid: 09ad065bbf6693d498222345b3d7d37a, type: 3}
-  PriestMysterious: {fileID: 5102750413458871501, guid: 1be4a23385082f44ab269541e02277ed, type: 3}
+  PriestCalm: {fileID: -5080951992958775113, guid: 52505660f521bf245a11c82fc95a1e20, type: 3}
+  PriestMysterious: {fileID: 5102750413458871501, guid: c63edc42e7ac70f4c813c99cfb744943, type: 3}
+  PriestFocused: {fileID: -1526211931710647386, guid: ae98b422b38c2e6428fc0e4f03e3e5d5, type: 3}
+  PriestSomber: {fileID: 1851208726622695707, guid: 218a0cc781ea7b24e9bebbff84653a86, type: 3}
   ChronocharacterRenderer: {fileID: 808504571}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
+  chronoAnimator: {fileID: 808504574}
+  playerAnimator: {fileID: 305678653}
   audioSource: {fileID: 588842804}
-  dialogueClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: eddee991c333bae4b813315c6fe9cebb, type: 3}
+  - {fileID: 8300000, guid: c247878046ece884daf8a2aa435f4b9a, type: 3}
+  - {fileID: 8300000, guid: a31e85fe444d5f745a209974590cb028, type: 3}
+  - {fileID: 8300000, guid: 214389c1a201adc49977bf4fe868591b, type: 3}
+  - {fileID: 8300000, guid: 7e45966ac73b33648bbd57193c652c90, type: 3}
+  - {fileID: 8300000, guid: c64915abf657acf46b9503de32e29e26, type: 3}
+  - {fileID: 8300000, guid: b9efc0636e0765a4484256bb22002810, type: 3}
+  - {fileID: 8300000, guid: 4d53dd1793cf70c439a5b77fabddadbc, type: 3}
+  - {fileID: 8300000, guid: 5db93cd6d2b5d6a4fa7edc7d69c6271c, type: 3}
 --- !u!1 &2049937663
 GameObject:
   m_ObjectHideFlags: 0

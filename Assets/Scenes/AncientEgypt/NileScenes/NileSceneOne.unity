@@ -659,9 +659,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 363254925}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8caaee389459bfe4590249ae52de09c9, type: 2}
+  m_Controller: {fileID: 9100000, guid: 624ac0b1aca85cc408f02ee6f18a4323, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1837,9 +1837,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1052601363}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ab20c78ec453f2948accdfc35c50cf39, type: 2}
+  m_Controller: {fileID: 9100000, guid: e4a1e5f14babf5341a8b58b5bb45446d, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2289,6 +2289,7 @@ GameObject:
   - component: {fileID: 1375228171}
   - component: {fileID: 1375228170}
   - component: {fileID: 1375228168}
+  - component: {fileID: 1375228173}
   m_Layer: 5
   m_Name: ImhotepFD
   m_TagString: Untagged
@@ -2408,6 +2409,28 @@ RectTransform:
   m_AnchoredPosition: {x: -34, y: -141}
   m_SizeDelta: {x: 1019.1, y: 961.26}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!95 &1375228173
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1375228167}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 14193cb00b5b01f4aa6bb4ef01e7226d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1417533024
 GameObject:
   m_ObjectHideFlags: 0
@@ -2478,8 +2501,21 @@ MonoBehaviour:
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
   ChronoCheerful: {fileID: -6563817684089387956, guid: 8609898f81a07f949bc2af292e5799f5, type: 3}
+  chronoAnimator: {fileID: 1052601368}
+  playerAnimator: {fileID: 363254931}
+  NPCFulldrawnAnimator: {fileID: 1375228173}
   audioSource: {fileID: 559845528}
-  dialogueClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 8692e7ab8ffa1134fb90bbfb364022fc, type: 3}
+  - {fileID: 8300000, guid: 864110769e38caa438ca387f47e34b38, type: 3}
+  - {fileID: 8300000, guid: 27b0b5242a7c9054caea1ad29f69aec2, type: 3}
+  - {fileID: 8300000, guid: ea3b078ca4dd4cc4ab600b6c82d7ff4f, type: 3}
+  - {fileID: 8300000, guid: 2fdf6d000eb11c146b977bd5e079a4e7, type: 3}
+  - {fileID: 8300000, guid: 45dfbb09643f1a24c83913c2dc11cdc6, type: 3}
+  - {fileID: 8300000, guid: aec58e5b0e426ab4e9ca1a0e572c1d60, type: 3}
+  - {fileID: 8300000, guid: c76ec3ede1337b44d8fe9318e31ee60f, type: 3}
+  - {fileID: 8300000, guid: f15a2c73b6a39134d87a1ada92bd2722, type: 3}
+  - {fileID: 8300000, guid: f963ed1ee2cb8644aadf66ed6645cf2a, type: 3}
 --- !u!1 &1550358816
 GameObject:
   m_ObjectHideFlags: 0

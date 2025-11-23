@@ -531,6 +531,7 @@ GameObject:
   - component: {fileID: 359210584}
   - component: {fileID: 359210583}
   - component: {fileID: 359210585}
+  - component: {fileID: 359210586}
   m_Layer: 5
   m_Name: KhufuFD
   m_TagString: Untagged
@@ -650,6 +651,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &359210586
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 359210581}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b9856c4da7bf03d449f42b9362d4d1bc, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &363254925
 GameObject:
   m_ObjectHideFlags: 0
@@ -790,9 +813,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 363254925}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8caaee389459bfe4590249ae52de09c9, type: 2}
+  m_Controller: {fileID: 9100000, guid: 84e015e5fb18eaa47922430e5833e69e, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1213,8 +1236,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AssyrianScene1, Assembly-CSharp
+      - m_Target: {fileID: 1417533026}
+        m_TargetAssemblyTypeName: KingdomScene1, Assembly-CSharp
         m_MethodName: SaveAndLoad
         m_Mode: 1
         m_Arguments:
@@ -1968,9 +1991,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1052601363}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ab20c78ec453f2948accdfc35c50cf39, type: 2}
+  m_Controller: {fileID: 9100000, guid: 8ec6e69a15fb36e4b927ade62af1c23b, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2476,8 +2499,21 @@ MonoBehaviour:
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   ChronoCheerful: {fileID: -6563817684089387956, guid: 8609898f81a07f949bc2af292e5799f5, type: 3}
+  chronoAnimator: {fileID: 1052601368}
+  playerAnimator: {fileID: 363254931}
+  NPCFulldrawnAnimator: {fileID: 0}
   audioSource: {fileID: 559845528}
-  dialogueClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 359f41770fcf90d49a31878906f3c273, type: 3}
+  - {fileID: 8300000, guid: 5dcd3e542afbe534798ea20f81857f21, type: 3}
+  - {fileID: 8300000, guid: 21b553568c881ae4e934776459216ff0, type: 3}
+  - {fileID: 8300000, guid: 40a23199617606f4b865a5d9b15e697f, type: 3}
+  - {fileID: 8300000, guid: a0482bc18b825d04bacf635df6c1394e, type: 3}
+  - {fileID: 8300000, guid: 1720b8e0cc7cf234182f76432f07929f, type: 3}
+  - {fileID: 8300000, guid: c2856be5ed388ce47b1713a0bfb2ef2a, type: 3}
+  - {fileID: 8300000, guid: 7fd56907e9540a84ba66677cf847bc8f, type: 3}
+  - {fileID: 8300000, guid: a92322482edd3ad4f88280fe8eb56d9e, type: 3}
+  - {fileID: 8300000, guid: 2cee967855c7aae498624f2648d8eeca, type: 3}
 --- !u!1 &1550358816
 GameObject:
   m_ObjectHideFlags: 0
@@ -2749,8 +2785,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AssyrianScene1, Assembly-CSharp
+      - m_Target: {fileID: 1417533026}
+        m_TargetAssemblyTypeName: KingdomScene1, Assembly-CSharp
         m_MethodName: GoToSettings
         m_Mode: 1
         m_Arguments:
@@ -3021,8 +3057,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SumerianScene1, Assembly-CSharp
+      - m_Target: {fileID: 1417533026}
+        m_TargetAssemblyTypeName: KingdomScene1, Assembly-CSharp
         m_MethodName: Home
         m_Mode: 1
         m_Arguments:

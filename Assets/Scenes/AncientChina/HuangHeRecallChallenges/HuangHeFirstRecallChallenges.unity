@@ -392,9 +392,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 81652813}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e462af6ae014e634696afa7b69079215, type: 2}
+  m_Controller: {fileID: 9100000, guid: 666d0f03eb016904989ea1134f6dd0d1, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -926,9 +926,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 355097129}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 7271919c9de3a994fb4d5976a5b06deb, type: 2}
+  m_Controller: {fileID: 9100000, guid: 27209a24317ce164ea30bf162dcd7528, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2993,11 +2993,24 @@ MonoBehaviour:
   ArtifactImageButton: {fileID: 822885669}
   ArtifactUseButton: {fileID: 317194327}
   ArtifactButton: {fileID: 317194327}
+  chronoAnimator: {fileID: 355097134}
+  playerAnimator: {fileID: 81652818}
   audioSource: {fileID: 568145474}
-  dialogueClips: []
-  DahilClips: []
-  nitoClips: []
-  isdaClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: b853cc47e48ead247864fdd3692a63bb, type: 3}
+  DahilClips:
+  - {fileID: 8300000, guid: e589f28636731384abc9d215fad9f56e, type: 3}
+  - {fileID: 8300000, guid: c03003daec609ba4e9e256122cab7771, type: 3}
+  - {fileID: 8300000, guid: 00d8fc70904baa24b81543544d0f4416, type: 3}
+  - {fileID: 8300000, guid: 46969d5fc8757ca4ea3f68c1f753db4e, type: 3}
+  nitoClips:
+  - {fileID: 8300000, guid: 93d793d9d1660ff4194b7e11ff6e7411, type: 3}
+  - {fileID: 8300000, guid: a1ff6655732abae47af60178c47fe420, type: 3}
+  - {fileID: 8300000, guid: b3b39fed99adfd84c8c3cbf9cd96a712, type: 3}
+  isdaClips:
+  - {fileID: 8300000, guid: 8257bd2233f1a3d4191e170955a398d8, type: 3}
+  - {fileID: 8300000, guid: cb98570cc2902e441b008775a379d579, type: 3}
+  - {fileID: 8300000, guid: b3b39fed99adfd84c8c3cbf9cd96a712, type: 3}
 --- !u!1 &1261902334
 GameObject:
   m_ObjectHideFlags: 0

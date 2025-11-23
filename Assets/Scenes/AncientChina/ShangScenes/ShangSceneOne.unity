@@ -531,6 +531,7 @@ GameObject:
   - component: {fileID: 359210584}
   - component: {fileID: 359210583}
   - component: {fileID: 359210585}
+  - component: {fileID: 359210586}
   m_Layer: 5
   m_Name: WuDingFD
   m_TagString: Untagged
@@ -650,6 +651,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &359210586
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 359210581}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a8bf2c57f0cb79547a1a9867a6d27427, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &363254925
 GameObject:
   m_ObjectHideFlags: 0
@@ -790,9 +813,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 363254925}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8caaee389459bfe4590249ae52de09c9, type: 2}
+  m_Controller: {fileID: 9100000, guid: 1e9ca0db77a987347b87ce95871ec88c, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1968,9 +1991,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1052601363}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ab20c78ec453f2948accdfc35c50cf39, type: 2}
+  m_Controller: {fileID: 9100000, guid: 0ab8ad9a4dc04e943a5bfb26f119125c, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2476,8 +2499,21 @@ MonoBehaviour:
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   ChronoCheerful: {fileID: -6563817684089387956, guid: 8609898f81a07f949bc2af292e5799f5, type: 3}
+  chronoAnimator: {fileID: 1052601368}
+  playerAnimator: {fileID: 363254931}
+  NPCFulldrawnAnimator: {fileID: 359210586}
   audioSource: {fileID: 559845528}
-  dialogueClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 44da77296b532ec458b211bbcbbda05e, type: 3}
+  - {fileID: 8300000, guid: 4096ad539687c5f47aa085b693b3f02a, type: 3}
+  - {fileID: 8300000, guid: 8b56557b8711f4041837cc5d2aac6f86, type: 3}
+  - {fileID: 8300000, guid: 0387d6c06d8896840a6dfe2cedebf301, type: 3}
+  - {fileID: 8300000, guid: 0b02f20187292c646b4d8971ebd86b24, type: 3}
+  - {fileID: 8300000, guid: 96b69af7ffdb95b479c3bcee9c1af312, type: 3}
+  - {fileID: 8300000, guid: 74aff4b12ae7873419eb38e0f77b5e3c, type: 3}
+  - {fileID: 8300000, guid: acdabb6e56a8a9f43a2e68ba9a908476, type: 3}
+  - {fileID: 8300000, guid: db100c411572a294abb54bbd04b66725, type: 3}
+  - {fileID: 8300000, guid: b92d86a86d56bfe469398de14eedb05c, type: 3}
 --- !u!1 &1550358816
 GameObject:
   m_ObjectHideFlags: 0
@@ -2749,8 +2785,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AssyrianScene1, Assembly-CSharp
+      - m_Target: {fileID: 1417533029}
+        m_TargetAssemblyTypeName: ShangScene1, Assembly-CSharp
         m_MethodName: GoToSettings
         m_Mode: 1
         m_Arguments:
@@ -3021,8 +3057,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SumerianScene1, Assembly-CSharp
+      - m_Target: {fileID: 1417533029}
+        m_TargetAssemblyTypeName: ShangScene1, Assembly-CSharp
         m_MethodName: Home
         m_Mode: 1
         m_Arguments:

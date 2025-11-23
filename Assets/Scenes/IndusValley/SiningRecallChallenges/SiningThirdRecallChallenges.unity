@@ -265,6 +265,7 @@ GameObject:
   - component: {fileID: 81652817}
   - component: {fileID: 81652816}
   - component: {fileID: 81652815}
+  - component: {fileID: 81652818}
   m_Layer: 5
   m_Name: PlayerIm
   m_TagString: Untagged
@@ -288,7 +289,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 786, y: -334.31}
+  m_AnchoredPosition: {x: 782, y: -334.31}
   m_SizeDelta: {x: 335.81, y: 403.34}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &81652815
@@ -384,6 +385,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 81652813}
   m_CullTransparentMesh: 1
+--- !u!95 &81652818
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 81652813}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1aacfca278745d64c8a22b0b6022ad36, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &93818498
 GameObject:
   m_ObjectHideFlags: 0
@@ -705,6 +728,7 @@ GameObject:
   - component: {fileID: 355097133}
   - component: {fileID: 355097132}
   - component: {fileID: 355097131}
+  - component: {fileID: 355097134}
   m_Layer: 5
   m_Name: ChronoIM
   m_TagString: Untagged
@@ -824,6 +848,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 355097129}
   m_CullTransparentMesh: 1
+--- !u!95 &355097134
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 355097129}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1ca10f5ed9b43b44188a8b1e290b1710, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &389675048
 GameObject:
   m_ObjectHideFlags: 0
@@ -899,11 +945,26 @@ MonoBehaviour:
   ArtifactImageButton: {fileID: 101757750}
   ArtifactUseButton: {fileID: 869400932}
   ArtifactButton: {fileID: 869400932}
+  chronoAnimator: {fileID: 355097134}
+  playerAnimator: {fileID: 81652818}
   audioSource: {fileID: 1246413602}
-  dialogueClips: []
-  NawalaClips: []
-  imperyoClips: []
-  resourcesClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 89458efbaebdefd40aaf11f1e8dbb304, type: 3}
+  NawalaClips:
+  - {fileID: 8300000, guid: ec9cba1b35b69d248b81a8d6abea2c3e, type: 3}
+  - {fileID: 8300000, guid: e98a172b9c167274e84d6ab75be5da9c, type: 3}
+  - {fileID: 8300000, guid: bf2e36c980787ce4bac78846f25b88ab, type: 3}
+  - {fileID: 8300000, guid: 628c09a710128b94fa2fe6c273297772, type: 3}
+  - {fileID: 8300000, guid: 21b189d5524e59149a1ea1d8dc15b189, type: 3}
+  - {fileID: 8300000, guid: 073f2ea056b11e14cbd68ee9395c1bd7, type: 3}
+  imperyoClips:
+  - {fileID: 8300000, guid: 7e3ee3235021a3645a04a3ac44a50cef, type: 3}
+  - {fileID: 8300000, guid: b0b4cb2069554b140abd2bc92c84fe9a, type: 3}
+  - {fileID: 8300000, guid: 60fb467e668dd5e4fb412e611654b140, type: 3}
+  resourcesClips:
+  - {fileID: 8300000, guid: a911b2925bc93624d8a8de3f2a7b0295, type: 3}
+  - {fileID: 8300000, guid: 32c18ad14a61d824bbc50937b84d4354, type: 3}
+  - {fileID: 8300000, guid: 60fb467e668dd5e4fb412e611654b140, type: 3}
 --- !u!1 &406098304
 GameObject:
   m_ObjectHideFlags: 0

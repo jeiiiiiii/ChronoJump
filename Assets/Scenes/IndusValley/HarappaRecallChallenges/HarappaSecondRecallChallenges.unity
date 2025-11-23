@@ -265,6 +265,7 @@ GameObject:
   - component: {fileID: 81652817}
   - component: {fileID: 81652816}
   - component: {fileID: 81652815}
+  - component: {fileID: 81652818}
   m_Layer: 5
   m_Name: PlayerIm
   m_TagString: Untagged
@@ -384,6 +385,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 81652813}
   m_CullTransparentMesh: 1
+--- !u!95 &81652818
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 81652813}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0fbfb91da16e8554784f42b63d2ef11d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &206160652
 GameObject:
   m_ObjectHideFlags: 0
@@ -604,6 +627,7 @@ GameObject:
   - component: {fileID: 355097133}
   - component: {fileID: 355097132}
   - component: {fileID: 355097131}
+  - component: {fileID: 355097134}
   m_Layer: 5
   m_Name: ChronoIM
   m_TagString: Untagged
@@ -723,6 +747,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 355097129}
   m_CullTransparentMesh: 1
+--- !u!95 &355097134
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 355097129}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4ac5756b9d3bee3408d58b1a35b2d4a9, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &415228588
 GameObject:
   m_ObjectHideFlags: 0
@@ -2212,6 +2258,8 @@ MonoBehaviour:
   dialogueText: {fileID: 1131181977}
   currentDialogueIndex: 0
   dialogueLines: []
+  chronoAnimator: {fileID: 355097134}
+  playerAnimator: {fileID: 81652818}
   heartImages:
   - {fileID: 508173604}
   - {fileID: 1490102247}
@@ -2221,10 +2269,21 @@ MonoBehaviour:
   ArtifactUseButton: {fileID: 1594683679}
   ArtifactButton: {fileID: 1594683679}
   audioSource: {fileID: 1278491037}
-  dialogueClips: []
-  WalangClips: []
-  tabletsClips: []
-  taoClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: ad113b1926c72c049835d3e67bddefdf, type: 3}
+  WalangClips:
+  - {fileID: 8300000, guid: f2430a9968bf7b34f8b9bd18f1c6fe5a, type: 3}
+  - {fileID: 8300000, guid: 582418297f4d52a40bc996711ae32b7f, type: 3}
+  - {fileID: 8300000, guid: 1d92cad414505d14c9dffb1b05a74b7f, type: 3}
+  - {fileID: 8300000, guid: f76da41bd5800734dbff3c4bcc00cc06, type: 3}
+  tabletsClips:
+  - {fileID: 8300000, guid: aa57e883cc0e3154aa865538c2595057, type: 3}
+  - {fileID: 8300000, guid: b0630e94de12cfc4f8e3a1409ef5db77, type: 3}
+  - {fileID: 8300000, guid: 7e1687877858178428fe9b743527455c, type: 3}
+  taoClips:
+  - {fileID: 8300000, guid: 6dac1550e34de4a4b8fa7a7b04e3dcac, type: 3}
+  - {fileID: 8300000, guid: 995571d63c5525345b41bc80abcfe376, type: 3}
+  - {fileID: 8300000, guid: 7e1687877858178428fe9b743527455c, type: 3}
 --- !u!1 &1278491035
 GameObject:
   m_ObjectHideFlags: 0

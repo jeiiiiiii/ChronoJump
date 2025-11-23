@@ -656,7 +656,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 21, y: -63}
+  m_AnchoredPosition: {x: 21, y: -99}
   m_SizeDelta: {x: 1019.1, y: 961.26}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &385422580
@@ -732,7 +732,7 @@ Animator:
   m_GameObject: {fileID: 385422578}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 7cb4021060129674187d769d7ac122b1, type: 2}
+  m_Controller: {fileID: 9100000, guid: 213d1053aecaee84b81f288c03e72ac4, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1158,9 +1158,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 477065901}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ae6faf8cb6f17ef4c821ed61189c566e, type: 2}
+  m_Controller: {fileID: 9100000, guid: 0272d401b72c60d47944fc26340f348d, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2128,8 +2128,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AssyrianScene2, Assembly-CSharp
+      - m_Target: {fileID: 1277758996}
+        m_TargetAssemblyTypeName: KingdomScene2, Assembly-CSharp
         m_MethodName: GoToSettings
         m_Mode: 1
         m_Arguments:
@@ -2241,13 +2241,25 @@ MonoBehaviour:
   PlayerEager: {fileID: 5428063399545322546, guid: c517d75299d0ddb4cb6eed3374b7a5b3, type: 3}
   PlayerEmabarrassed: {fileID: 21300000, guid: f1f43dbd9447c5f468698952cbd6a509, type: 3}
   MentuhotepWise: {fileID: -1385612247081616407, guid: 31d6d5637bec296489caaa221996236b, type: 3}
-  KhufoCommanding: {fileID: 6793313338321924247, guid: ccfdb8170b4c3db4f86df4d0c94b0758, type: 3}
+  KhufuCommanding: {fileID: 6793313338321924247, guid: ccfdb8170b4c3db4f86df4d0c94b0758, type: 3}
+  KhufuProud: {fileID: -5094780453514364954, guid: f01d6a4f13263784a8ac5b960c5a0647, type: 3}
   ChronocharacterRenderer: {fileID: 1317386105}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
-  ChronoSmile: {fileID: 353009555548729383, guid: dac589584284efa42ba48e8eb511af4c, type: 3}
+  ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
+  chronoAnimator: {fileID: 1317386108}
+  playerAnimator: {fileID: 477065906}
+  NPCFulldrawnAnimator: {fileID: 385422582}
   audioSource: {fileID: 1652331086}
-  dialogueClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 53e4ff5f04604c244a701d34237bd559, type: 3}
+  - {fileID: 8300000, guid: 189c293896f5e8146abccf2cdcf97c60, type: 3}
+  - {fileID: 8300000, guid: fe37f7939e1be054cba14ba3f864585c, type: 3}
+  - {fileID: 8300000, guid: 0abf345ac3e1b95469243d1975afea6e, type: 3}
+  - {fileID: 8300000, guid: 064751fb43cdea44cb9424deeb8e22c2, type: 3}
+  - {fileID: 8300000, guid: e69d90fbdec41b843a0778d975d15c5a, type: 3}
+  - {fileID: 8300000, guid: e87dac2d06f5a7b4097aebc77d48b3ec, type: 3}
+  - {fileID: 8300000, guid: 90b79d0218acff747836b2936417c911, type: 3}
 --- !u!1 &1317386103
 GameObject:
   m_ObjectHideFlags: 0
@@ -2388,9 +2400,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1317386103}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 7703396119542d84a8fde9ea44b97974, type: 2}
+  m_Controller: {fileID: 9100000, guid: 273209b11aba4664dbf7df3e53764c34, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -3296,8 +3308,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SumerianScene2, Assembly-CSharp
+      - m_Target: {fileID: 1277758996}
+        m_TargetAssemblyTypeName: KingdomScene2, Assembly-CSharp
         m_MethodName: Home
         m_Mode: 1
         m_Arguments:

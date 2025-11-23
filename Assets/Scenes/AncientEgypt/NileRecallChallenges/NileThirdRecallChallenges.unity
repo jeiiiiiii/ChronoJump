@@ -265,6 +265,7 @@ GameObject:
   - component: {fileID: 81652817}
   - component: {fileID: 81652816}
   - component: {fileID: 81652815}
+  - component: {fileID: 81652818}
   m_Layer: 5
   m_Name: PlayerIm
   m_TagString: Untagged
@@ -384,6 +385,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 81652813}
   m_CullTransparentMesh: 1
+--- !u!95 &81652818
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 81652813}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 23748276d464a05459a9f5525f15ca52, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &93818498
 GameObject:
   m_ObjectHideFlags: 0
@@ -705,6 +728,7 @@ GameObject:
   - component: {fileID: 355097133}
   - component: {fileID: 355097132}
   - component: {fileID: 355097131}
+  - component: {fileID: 355097134}
   m_Layer: 5
   m_Name: ChronoIM
   m_TagString: Untagged
@@ -824,6 +848,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 355097129}
   m_CullTransparentMesh: 1
+--- !u!95 &355097134
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 355097129}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 69e54606b739b8d459380a08d45608f8, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &389675048
 GameObject:
   m_ObjectHideFlags: 0
@@ -899,11 +945,26 @@ MonoBehaviour:
   ArtifactImageButton: {fileID: 101757750}
   ArtifactUseButton: {fileID: 869400932}
   ArtifactButton: {fileID: 869400932}
+  chronoAnimator: {fileID: 355097134}
+  playerAnimator: {fileID: 81652818}
   audioSource: {fileID: 1246413602}
-  dialogueClips: []
-  CompleteClips: []
-  powerClips: []
-  resourcesClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 37f6ca96517b0154d83342f5128edd2a, type: 3}
+  CompleteClips:
+  - {fileID: 8300000, guid: fd1b34c4a50712846b898f7c9d7e0347, type: 3}
+  - {fileID: 8300000, guid: 552302c583f8d8744b520ac39da670b2, type: 3}
+  - {fileID: 8300000, guid: 516abaa3fb411cf4595f0de95598ea36, type: 3}
+  - {fileID: 8300000, guid: 6d5135e1ca6bb4d4d98812acbd5eea76, type: 3}
+  - {fileID: 8300000, guid: 8de23d9fdd830e2418fa37857147a8a1, type: 3}
+  - {fileID: 8300000, guid: 1f5abc6973dcb7e409f2c92c363cc267, type: 3}
+  powerClips:
+  - {fileID: 8300000, guid: 9343bfa35a04b3b40a070eb4ae083bdc, type: 3}
+  - {fileID: 8300000, guid: 2a3c9d30653b89d49900fbbfd27797aa, type: 3}
+  - {fileID: 8300000, guid: bb4bcfc3ab4ca0049bcff5f3de044e8e, type: 3}
+  resourcesClips:
+  - {fileID: 8300000, guid: 6deb3c908ad261f4cbd21f14b5ff4fcb, type: 3}
+  - {fileID: 8300000, guid: f38dab61ecfe25b4db0fbfaa22d43b95, type: 3}
+  - {fileID: 8300000, guid: bb4bcfc3ab4ca0049bcff5f3de044e8e, type: 3}
 --- !u!1 &406098304
 GameObject:
   m_ObjectHideFlags: 0

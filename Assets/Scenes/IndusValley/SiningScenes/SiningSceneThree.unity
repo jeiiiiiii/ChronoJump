@@ -507,9 +507,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 305678648}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 6601cb4754f7a3e4aa63fa23b15fdf1d, type: 2}
+  m_Controller: {fileID: 9100000, guid: 69c4f0666146a7a4888620e177b682cc, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1830,8 +1830,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SumerianScene3, Assembly-CSharp
+      - m_Target: {fileID: 1999673392}
+        m_TargetAssemblyTypeName: SiningScene3, Assembly-CSharp
         m_MethodName: Home
         m_Mode: 1
         m_Arguments:
@@ -1916,7 +1916,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -755, y: -374}
+  m_AnchoredPosition: {x: -751, y: -374}
   m_SizeDelta: {x: 326.93, y: 345.09}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &808504571
@@ -2020,9 +2020,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 808504569}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 874a4cacbdfe7e54a89b35b9f3b8dcfc, type: 2}
+  m_Controller: {fileID: 9100000, guid: 4e6b1a3f61d4d474e87296136c6b054e, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2827,8 +2827,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AssyrianScene3, Assembly-CSharp
+      - m_Target: {fileID: 1999673392}
+        m_TargetAssemblyTypeName: SiningScene3, Assembly-CSharp
         m_MethodName: GoToSettings
         m_Mode: 1
         m_Arguments:
@@ -2945,8 +2945,20 @@ MonoBehaviour:
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
+  chronoAnimator: {fileID: 808504574}
+  playerAnimator: {fileID: 305678653}
   audioSource: {fileID: 588842804}
-  dialogueClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 82f7e5e93591c484289356b0626e1ec5, type: 3}
+  - {fileID: 8300000, guid: 3ba0303ca2592d4408a79702dd541386, type: 3}
+  - {fileID: 8300000, guid: 75dc7b17b148c124db3f03ab6985e5e0, type: 3}
+  - {fileID: 8300000, guid: 13123a934e0501b46bf33eaadd8a3b76, type: 3}
+  - {fileID: 8300000, guid: 32f9e26d7dda7d348b32c30dda420771, type: 3}
+  - {fileID: 8300000, guid: cbe9ab10e0bff514faad6a99b7756e15, type: 3}
+  - {fileID: 8300000, guid: a4e60a0b98ba5424b8a98fe636d0229c, type: 3}
+  - {fileID: 8300000, guid: 81fa5bf6db0e28241b25b766ed5466c0, type: 3}
+  - {fileID: 8300000, guid: c21d6dbaabf6fb046bb3cbaf1ae751bb, type: 3}
+  - {fileID: 8300000, guid: d66c3ed1d53f61d498fd95ad3bf6ea94, type: 3}
 --- !u!1 &2049937663
 GameObject:
   m_ObjectHideFlags: 0

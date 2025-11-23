@@ -507,9 +507,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 305678648}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 6601cb4754f7a3e4aa63fa23b15fdf1d, type: 2}
+  m_Controller: {fileID: 9100000, guid: a0c869724da7355479de7ea04d97a8ca, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1830,8 +1830,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SumerianScene3, Assembly-CSharp
+      - m_Target: {fileID: 1999673391}
+        m_TargetAssemblyTypeName: HarappaScene3, Assembly-CSharp
         m_MethodName: Home
         m_Mode: 1
         m_Arguments:
@@ -2020,9 +2020,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 808504569}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 874a4cacbdfe7e54a89b35b9f3b8dcfc, type: 2}
+  m_Controller: {fileID: 9100000, guid: 9dd6145a7749f7f47a1ffa81b3d5351b, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2827,8 +2827,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AssyrianScene3, Assembly-CSharp
+      - m_Target: {fileID: 1999673391}
+        m_TargetAssemblyTypeName: HarappaScene3, Assembly-CSharp
         m_MethodName: GoToSettings
         m_Mode: 1
         m_Arguments:
@@ -2942,8 +2942,19 @@ MonoBehaviour:
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
   ChronoSad: {fileID: 7636310247706719174, guid: 3564f33c97676044d8972311b4565d60, type: 3}
+  chronoAnimator: {fileID: 808504574}
+  playerAnimator: {fileID: 305678653}
   audioSource: {fileID: 588842804}
-  dialogueClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: 0b080b04091351c4989cd781c861d3b0, type: 3}
+  - {fileID: 8300000, guid: e641b12e7b468cb4a8ccb5655b23ecd9, type: 3}
+  - {fileID: 8300000, guid: 0b9ce2eedaa052b48bdc5624d35254e8, type: 3}
+  - {fileID: 8300000, guid: 3127860df2dc062448ccf033a5e3ffea, type: 3}
+  - {fileID: 8300000, guid: 622381a89faf1cb4c9ef75c3cdf04a92, type: 3}
+  - {fileID: 8300000, guid: 484bffab7d905244e8f1ef7af3f04958, type: 3}
+  - {fileID: 8300000, guid: 7e3d615ba30f0a448b0395106ac3ad45, type: 3}
+  - {fileID: 8300000, guid: 5038989180b3e75419f48c4ad470846f, type: 3}
+  - {fileID: 8300000, guid: 9d68a9d6d0637d341a6ef1aed0d5479c, type: 3}
 --- !u!1 &2049937663
 GameObject:
   m_ObjectHideFlags: 0
