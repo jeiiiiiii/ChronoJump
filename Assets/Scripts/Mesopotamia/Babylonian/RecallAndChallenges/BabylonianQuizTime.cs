@@ -21,6 +21,14 @@ public class QuizTimeManagerBabylonian : MonoBehaviour
         public Answer[] answers;
     }
 
+    [System.Serializable]
+    public struct WrongAnswerInfo
+    {
+        public string questionText;
+        public string correctAnswerText;
+        public int questionNumber;
+    }
+
     public Question[] quizQuestions;
     private int currentQuestionIndex = 0;
 
@@ -35,7 +43,7 @@ public class QuizTimeManagerBabylonian : MonoBehaviour
     private bool timerRunning = false;
     public AudioSource finishAudioSource;
 
-    private List<int> wrongAnswers = new List<int>();
+    private List<WrongAnswerInfo> wrongAnswers = new List<WrongAnswerInfo>();
 
     public TMP_Text resultTextUI;
     public TMP_Text ScoreTextUI;
@@ -169,8 +177,8 @@ public class QuizTimeManagerBabylonian : MonoBehaviour
                 }
             }
         };
-        ShowQuestion();
         ShuffleQuestionsAndAnswers();
+        ShowQuestion();
 
     }
 
@@ -223,13 +231,33 @@ public class QuizTimeManagerBabylonian : MonoBehaviour
 
     void ConfirmAnswer()
     {
+        // 🔧 FIX: Store question details when answer is wrong
+        var currentQuestion = quizQuestions[currentQuestionIndex];
+        
         if (selectedAnswer.isCorrect)
         {
             GameState.score++;
         }
         else
         {
-            wrongAnswers.Add(currentQuestionIndex);
+            // Find the correct answer
+            string correctAnswer = "";
+            foreach (var a in currentQuestion.answers)
+            {
+                if (a.isCorrect)
+                {
+                    correctAnswer = a.text;
+                    break;
+                }
+            }
+
+            // Store wrong answer info
+            wrongAnswers.Add(new WrongAnswerInfo
+            {
+                questionText = currentQuestion.questionLine.question,
+                correctAnswerText = correctAnswer,
+                questionNumber = currentQuestionIndex + 1
+            });
         }
 
         timerRunning = false;
@@ -297,22 +325,14 @@ public class QuizTimeManagerBabylonian : MonoBehaviour
             finishAudioSource.Play();
 
         string ScoreText = $"Tapos na ang pagsusulit! \nScore: {GameState.score}/{quizQuestions.Length}\n\n";
+        // NEW:
         if (wrongAnswers.Count > 0)
         {
-            resultText += "Ang mga numero kung saan ka mali\n";
-            foreach (int idx in wrongAnswers)
+            resultText += "Ang mga tanong kung saan ka mali:\n\n";
+            foreach (var wrongInfo in wrongAnswers)
             {
-                var q = quizQuestions[idx];
-                string correct = "";
-                foreach (var a in q.answers)
-                {
-                    if (a.isCorrect)
-                    {
-                        correct = a.text;
-                        break;
-                    }
-                }
-                resultText += $"{idx + 1}. Tamang sagot: {correct}\n";
+                resultText += $"{wrongInfo.questionNumber}. ";
+                resultText += $"Tamang sagot: {wrongInfo.correctAnswerText}\n";
             }
         }
         else
@@ -348,6 +368,7 @@ public class QuizTimeManagerBabylonian : MonoBehaviour
             nextButton.onClick.RemoveAllListeners();
             nextButton.onClick.AddListener(() =>
             {
+                SceneManager.LoadScene("CoordinateSelect");
                 UpdateSaveAfterQuizCompletion();
             });
         }
@@ -380,6 +401,26 @@ public class QuizTimeManagerBabylonian : MonoBehaviour
 
         foreach (Button btn in answerButtons)
             btn.interactable = false;
+            
+
+        // 🔧 FIX: Record timeout as wrong answer
+        var currentQuestion = quizQuestions[currentQuestionIndex];
+        string correctAnswer = "";
+        foreach (var a in currentQuestion.answers)
+        {
+            if (a.isCorrect)
+            {
+                correctAnswer = a.text;
+                break;
+            }
+        }
+
+        wrongAnswers.Add(new WrongAnswerInfo
+        {
+            questionText = currentQuestion.questionLine.question,
+            correctAnswerText = correctAnswer,
+            questionNumber = currentQuestionIndex + 1
+        });
 
         nextButton.gameObject.SetActive(true);
         nextButton.onClick.RemoveAllListeners();
@@ -412,30 +453,45 @@ private void UpdateSaveAfterQuizCompletion()
     }
 }
 
-// Helper method to determine the next civilization's first scene
-private string GetNextCivilizationScene()
-{
-    string currentScene = SceneManager.GetActiveScene().name;
-    
-    switch (currentScene)
+    // Helper method to determine the next civilization's first scene
+    private string GetNextCivilizationScene()
     {
-        case "SumerianQuizTime":
-            return "AkkadianSceneOne"; // Progress to Akkadian
+        string currentScene = SceneManager.GetActiveScene().name;
         
-        case "AkkadianQuizTime":
-            return "BabylonianSceneOne"; // Progress to Babylonian
+        switch (currentScene)
+        {
+            case "SumerianQuizTime":
+                return "AkkadianSceneOne"; // Progress to Akkadian
+            
+            case "AkkadianQuizTime":
+                return "BabylonianSceneOne"; // Progress to Babylonian
+            
+            case "BabylonianQuizTime":
+                return "AssyrianSceneOne"; // Progress to Assyrian
+            
+            case "AssyrianQuizTime":
+                return "HarappaSceneOne"; // Progress to Harappa
+            
+            case "HarappaQuizTime":
+                return "SiningSceneOne"; // Progress to Sining
+            
+            case "SiningQuizTime":
+                return "HuangHeSceneOne"; // Progress to HuangHe
+            
+            case "HuangHeQuizTime":
+                return "ShangSceneOne"; // Progress to Shang
+            
+            case "ShangQuizTime":
+                return "NileSceneOne"; // Progress to Nile
+            
+            case "NileQuizTime":
+                return "KingdomSceneOne"; // Progress to Kingdom
         
-        case "BabylonianQuizTime":
-            return "AssyrianSceneOne"; // Progress to Assyrian
-        
-        //case "AssyrianQuizTime":
-        //    return "FinalReview"; // Progress to next
-        
-        default:
-            Debug.LogWarning($"Unknown quiz scene: {currentScene}, defaulting to TitleScreen");
-            return "TitleScreen";
+            default:
+                Debug.LogWarning($"Unknown quiz scene: {currentScene}, defaulting to TitleScreen");
+                return "TitleScreen";
+        }
     }
-}
 
     // Helper method to check if a save is from the current chapter
     private bool IsCurrentChapterSave(string sceneName)
@@ -457,6 +513,30 @@ private string GetNextCivilizationScene()
         else if (currentQuizScene.Contains("Assyrian"))
         {
             return sceneName.Contains("Assyrian");
+        }
+        else if (currentQuizScene.Contains("Harappa"))
+        {
+            return sceneName.Contains("Harappa");
+        }
+        else if (currentQuizScene.Contains("Sining"))
+        {
+            return sceneName.Contains("Sining");
+        }
+        else if (currentQuizScene.Contains("HuangHe"))
+        {
+            return sceneName.Contains("HuangHe");
+        }
+        else if (currentQuizScene.Contains("Shang"))
+        {
+            return sceneName.Contains("Shang");
+        }
+        else if (currentQuizScene.Contains("Nile"))
+        {
+            return sceneName.Contains("Nile");
+        }
+        else if (currentQuizScene.Contains("Kingdom"))
+        {
+            return sceneName.Contains("Kingdom");
         }
 
         return false;
