@@ -351,8 +351,8 @@ public class QuizTimeManagerSining : MonoBehaviour
             nextButton.onClick.RemoveAllListeners();
             nextButton.onClick.AddListener(() =>
             {
-                SceneManager.LoadScene("AkkadianArtifactScene");
-                PlayerAchievementManager.UnlockAchievement("Sword");
+                SceneManager.LoadScene("JarArtifactScene");
+                PlayerAchievementManager.UnlockAchievement("Jar");
                 UpdateSaveAfterQuizCompletion();
             });
         }

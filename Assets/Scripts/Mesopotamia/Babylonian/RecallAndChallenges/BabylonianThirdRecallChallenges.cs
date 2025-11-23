@@ -63,7 +63,7 @@ public class BabylonianThirdRecallChallenges : MonoBehaviour
 
     void Start()
     {
-        if (PlayerAchievementManager.IsAchievementUnlocked("Sword"))
+        if (PlayerAchievementManager.IsAchievementUnlocked("Tablet"))
         {
             if (ArtifactImageButton != null)
             {
@@ -85,7 +85,7 @@ public class BabylonianThirdRecallChallenges : MonoBehaviour
             {
                 ArtifactImageButton.gameObject.SetActive(false);
             }
-            Debug.Log("Achievement 'Sword' is not unlocked yet. Button functionality disabled.");
+            Debug.Log("Achievement 'Tablet' is not unlocked yet. Button functionality disabled.");
         }
 
         nextButton.gameObject.SetActive(false);
@@ -498,20 +498,50 @@ public class BabylonianThirdRecallChallenges : MonoBehaviour
         }
     }
 
-    public void UseArtifactButton()
+public void UseArtifactButton()
     {
-        ArtifactButton.onClick.AddListener(() =>
+        if (StudentPrefs.GetInt("UseBabylonianArtifactUsed", 0) == 0)
         {
-            // Make sure this key matches exactly
-            StudentPrefs.SetInt("UsePowerArtifactUsed", 1);
+            StudentPrefs.SetInt("UseBabylonianArtifactUsed", 1);
             StudentPrefs.Save();
 
-            answerButtons[2].interactable = false;
+            dialogueLines = new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    characterName = "Hint",
+                    line = "Ito ay isang librong epiko."
+                },
+            };
 
-            ArtifactButton.gameObject.SetActive(false);
+            currentDialogueIndex = 0;
+            ShowDialogue();
+            nextButton.gameObject.SetActive(true);
+            nextButton.onClick.RemoveAllListeners();
+            nextButton.onClick.AddListener(() =>
+            {
+                dialogueLines = new DialogueLine[]
+                {
+                    new DialogueLine
+                    {
+                        characterName = "CHRONO",
+                        line = " Alin sa mga sumusunod ang kilalang akdang pampanitikan mula sa panahong Uruk?"
+                    },
+                };
+                
+                currentDialogueIndex = 0;
+                ShowDialogue();
+            });
+
+            ArtifactUseButton.gameObject.SetActive(false);
             ArtifactImageButton.gameObject.SetActive(false);
-
-        });
+            
+            Debug.Log("Artifact hint used!");
+        }
+        else
+        {
+            ArtifactUseButton.gameObject.SetActive(false);
+        }
     }
 
     void LoadGameOverScene()

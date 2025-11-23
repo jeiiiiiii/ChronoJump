@@ -108,7 +108,7 @@ public class AkkadianThirdRecallChallenges : MonoBehaviour
 
         ShowDialogue();
     }
-public void UseArtifactButton()
+    public void UseArtifactButton()
     {
         if (StudentPrefs.GetInt("UseAkkadianArtifactUsed", 0) == 0)
         {

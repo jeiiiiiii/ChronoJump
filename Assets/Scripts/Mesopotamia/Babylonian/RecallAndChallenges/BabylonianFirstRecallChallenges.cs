@@ -63,7 +63,7 @@ public class BabylonianFirstRecallChallenges : MonoBehaviour
 
     void Start()
     {
-        if (PlayerAchievementManager.IsAchievementUnlocked("Sword"))
+        if (PlayerAchievementManager.IsAchievementUnlocked("Tablet"))
         {
             if (ArtifactImageButton != null)
             {
@@ -85,7 +85,7 @@ public class BabylonianFirstRecallChallenges : MonoBehaviour
             {
                 ArtifactImageButton.gameObject.SetActive(false);
             }
-            Debug.Log("Achievement 'Sword' is not unlocked yet. Button functionality disabled.");
+            Debug.Log("Achievement 'Tablet' is not unlocked yet. Button functionality disabled.");
         }
         
 
@@ -504,17 +504,48 @@ public class BabylonianFirstRecallChallenges : MonoBehaviour
 
     public void UseArtifactButton()
     {
-        ArtifactButton.onClick.AddListener(() =>
+        if (StudentPrefs.GetInt("UseBabylonianArtifactUsed", 0) == 0)
         {
             StudentPrefs.SetInt("UseBabylonianArtifactUsed", 1);
             StudentPrefs.Save();
 
-            answerButtons[0].interactable = false;
+            dialogueLines = new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    characterName = "Hint",
+                    line = "Ang sagot ay isang lalaki na nagsisimula sa letrang 'H'."
+                },
+            };
 
-            ArtifactButton.gameObject.SetActive(false);
+            currentDialogueIndex = 0;
+            ShowDialogue();
+            nextButton.gameObject.SetActive(true);
+            nextButton.onClick.RemoveAllListeners();
+            nextButton.onClick.AddListener(() =>
+            {
+                dialogueLines = new DialogueLine[]
+                {
+                    new DialogueLine
+                    {
+                        characterName = "CHRONO",
+                        line = " Sino ang tinaguriang pinakadakilang hari ng Babylonia?"
+                    },
+                };
+                
+                currentDialogueIndex = 0;
+                ShowDialogue();
+            });
+
+            ArtifactUseButton.gameObject.SetActive(false);
             ArtifactImageButton.gameObject.SetActive(false);
-
-        });
+            
+            Debug.Log("Artifact hint used!");
+        }
+        else
+        {
+            ArtifactUseButton.gameObject.SetActive(false);
+        }
     }
 
     void LoadGameOverScene()

@@ -35,10 +35,33 @@ public class CoordinateSelect : MonoBehaviour
     {
         SceneManager.LoadScene("CodexScene");
     }
-
     public void LoadAchievementScene()
     {
         SceneManager.LoadScene("AchievementsScene");
+    }
+    public void ChinaCodexScene()
+    {
+        SceneManager.LoadScene("ChinaCodexScene");
+    }
+    public void ChinaAchievementScene()
+    {
+        SceneManager.LoadScene("ChinaAchievementsScene");
+    }
+    public void IndusCodexScene()
+    {
+        SceneManager.LoadScene("IndusCodexScene");
+    }
+    public void IndusAchievementScene()
+    {
+        SceneManager.LoadScene("IndusAchievementsScene");
+    }
+    public void EgyptCodexScene()
+    {
+        SceneManager.LoadScene("EgyptCodexScene");
+    }
+    public void EgyptAchievementScene()
+    {
+        SceneManager.LoadScene("EgyptAchievementsScene");
     }
     #endregion
 

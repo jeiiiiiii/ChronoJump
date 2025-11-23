@@ -351,8 +351,8 @@ public class QuizTimeManagerShang : MonoBehaviour
             nextButton.onClick.RemoveAllListeners();
             nextButton.onClick.AddListener(() =>
             {
-                SceneManager.LoadScene("AkkadianArtifactScene");
-                PlayerAchievementManager.UnlockAchievement("Sword");
+                SceneManager.LoadScene("PapyrusArtifactScene");
+                PlayerAchievementManager.UnlockAchievement("Papyrus");
                 UpdateSaveAfterQuizCompletion();
             });
         }

@@ -352,7 +352,6 @@ public class QuizTimeManagerKingdom : MonoBehaviour
             nextButton.onClick.AddListener(() =>
             {
                 SceneManager.LoadScene("AkkadianArtifactScene");
-                PlayerAchievementManager.UnlockAchievement("Sword");
                 UpdateSaveAfterQuizCompletion();
             });
         }

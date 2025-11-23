@@ -61,5 +61,47 @@ public class ArtifactButtonChecker : MonoBehaviour
                 gameObject.SetActive(false);
             }
         }
+        else if (currentScene.Contains("Harappa"))
+        {
+            if (StudentPrefs.GetInt("UseHarappaArtifactUsed", 0) == 1)
+            {
+                gameObject.SetActive(false);
+            }
+        }
+        else if (currentScene.Contains("Sining"))
+        {
+            if (StudentPrefs.GetInt("UseSiningArtifactUsed", 0) == 1)
+            {
+                gameObject.SetActive(false);
+            }
+        }
+        else if (currentScene.Contains("Kingdom"))
+        {
+            if (StudentPrefs.GetInt("UseKingdomArtifactUsed", 0) == 1)
+            {
+                gameObject.SetActive(false);
+            }
+        }
+        else if (currentScene.Contains("Nile"))
+        {
+            if (StudentPrefs.GetInt("UseNileArtifactUsed", 0) == 1)
+            {
+                gameObject.SetActive(false);
+            }
+        }
+        else if (currentScene.Contains("HuangHe"))
+        {
+            if (StudentPrefs.GetInt("UseHuangHeArtifactUsed", 0) == 1)
+            {
+                gameObject.SetActive(false);
+            }
+        }
+        else if (currentScene.Contains("Shang"))
+        {
+            if (StudentPrefs.GetInt("UseShangArtifactUsed", 0) == 1)
+            {
+                gameObject.SetActive(false);
+            }
+        }
     }
 }

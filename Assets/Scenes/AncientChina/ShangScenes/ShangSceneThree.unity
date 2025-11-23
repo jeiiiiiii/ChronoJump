@@ -2939,8 +2939,8 @@ MonoBehaviour:
   PlayerReflective: {fileID: -6828170361931683543, guid: 41872a0e55450ef43b535aba6363171a, type: 3}
   PlayerThinking: {fileID: 5428063399545322546, guid: c517d75299d0ddb4cb6eed3374b7a5b3, type: 3}
   WudingStern: {fileID: -4842621436805953405, guid: ab4295dda4b581740b8922b027adb002, type: 3}
-  PriestCalm: {fileID: 0}
-  PriestMysterious: {fileID: 0}
+  PriestCalm: {fileID: -5080951992958775113, guid: 09ad065bbf6693d498222345b3d7d37a, type: 3}
+  PriestMysterious: {fileID: 5102750413458871501, guid: 1be4a23385082f44ab269541e02277ed, type: 3}
   ChronocharacterRenderer: {fileID: 808504571}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}

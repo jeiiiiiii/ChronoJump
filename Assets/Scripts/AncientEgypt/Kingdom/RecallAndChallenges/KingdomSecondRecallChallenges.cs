@@ -57,10 +57,11 @@ public class KingdomSecondRecallChallenges : MonoBehaviour
     public AudioClip[] NagingClips;
     public AudioClip[] authoritarianClips;
     public AudioClip[] roleClips;
+    private bool artifactPowerActivated = false;
 
     void Start()
     {
-        if (PlayerAchievementManager.IsAchievementUnlocked("Tablet"))
+        if (PlayerAchievementManager.IsAchievementUnlocked("Papyrus"))
         {
             if (ArtifactImageButton != null)
             {
@@ -82,7 +83,7 @@ public class KingdomSecondRecallChallenges : MonoBehaviour
             {
                 ArtifactImageButton.gameObject.SetActive(false);
             }
-            Debug.Log("Achievement 'Tablet' is not unlocked yet. Button functionality disabled.");
+            Debug.Log("Achievement 'Papyrus' is not unlocked yet. Button functionality disabled.");
         }
         
         nextButton.gameObject.SetActive(false);
@@ -105,48 +106,27 @@ public class KingdomSecondRecallChallenges : MonoBehaviour
     }
     public void UseArtifactButton()
     {
-        if (StudentPrefs.GetInt("UseKingdomArtifactUsed", 0) == 0)
+        ArtifactButton.onClick.AddListener(() =>
         {
-            StudentPrefs.SetInt("UseKingdomArtifactUsed", 1);
-            StudentPrefs.Save();
-
-            dialogueLines = new DialogueLine[]
-            {
-                new DialogueLine
-                {
-                    characterName = "Hint",
-                    line = "Ang sagot ay isang authoritarian na nagsimula sa Akkad at naging kauna-unahang emperor sa kasaysayan. Ang kanyang pangalan ay nagsisimula sa letrang 'S'."
-                },
-            };
-
-            currentDialogueIndex = 0;
-            ShowDialogue();
-            nextButton.gameObject.SetActive(true);
-            nextButton.onClick.RemoveAllListeners();
-            nextButton.onClick.AddListener(() =>
-            {
-                dialogueLines = new DialogueLine[]
-                {
-                    new DialogueLine
-                    {
-                        characterName = "CHRONO",
-                        line = "   Sino si Fu Hao at bakit siya mahalaga sa Dinastiyang Kingdom?"
-                    },
-                };
-                
-                currentDialogueIndex = 0;
-                ShowDialogue();
-            });
-
-            ArtifactUseButton.gameObject.SetActive(false);
-            ArtifactImageButton.gameObject.SetActive(false);
+            artifactPowerActivated = true;
             
-            Debug.Log("Artifact hint used!");
-        }
-        else
-        {
-            ArtifactUseButton.gameObject.SetActive(false);
-        }
+            ArtifactButton.interactable = false;
+            ArtifactImageButton.interactable = false;
+
+        });
+    }
+
+    void ConsumeArtifactPower()
+    {
+        StudentPrefs.SetInt("UsePowerArtifactUsed", 1);
+        StudentPrefs.Save();
+        
+        ArtifactButton.gameObject.SetActive(false);
+        ArtifactImageButton.gameObject.SetActive(false);
+        
+        artifactPowerActivated = false;
+        
+        Debug.Log("Artifact power consumed! Protected from heart loss.");
     }
 
     private DialogueLine[] NagingLines = new DialogueLine[]
@@ -471,8 +451,15 @@ public class KingdomSecondRecallChallenges : MonoBehaviour
         }
         else
         {
-            GameState.hearts--;
-            UpdateHeartsUI();
+            if (artifactPowerActivated)
+                {
+                    ConsumeArtifactPower();
+                }
+            else
+                {
+                    GameState.hearts--;
+                    UpdateHeartsUI();
+                }
 
             if (GameState.hearts <= 0)
             {
