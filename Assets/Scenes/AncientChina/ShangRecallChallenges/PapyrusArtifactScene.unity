@@ -421,8 +421,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 6, y: 121}
-  m_SizeDelta: {x: 270.02, y: 112.69}
+  m_AnchoredPosition: {x: 15, y: 123}
+  m_SizeDelta: {x: 288.33, y: 177.35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &651263088
 CanvasRenderer:
@@ -452,7 +452,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6287779986095161699, guid: 765c4405312c4ee49a5a63c3444dd50e, type: 3}
+  m_Sprite: {fileID: -5174634990874348381, guid: 4d8d85267a803d149b9b798c61996c1f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1054,7 +1054,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1240278856}
-        m_TargetAssemblyTypeName: SumerianArtifactScene, Assembly-CSharp
+        m_TargetAssemblyTypeName: ChinaArtifactScene, Assembly-CSharp
         m_MethodName: Back
         m_Mode: 1
         m_Arguments:
@@ -1148,7 +1148,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1240278854}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 794e6b1c91b32d44cb4c57dcce3e3023, type: 3}
+  m_Script: {fileID: 11500000, guid: 8ff6599a635ad59458178a3683517d08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1343013594
@@ -1210,7 +1210,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Tiglath's War Belt
+  m_text: Papyrus of the Nile
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ebc45d8cfd92bda418afe0359bd24d34, type: 2}
   m_sharedMaterial: {fileID: -697335396114948115, guid: ebc45d8cfd92bda418afe0359bd24d34, type: 2}
@@ -1661,8 +1661,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u201CSinturong isinusuot ng mga heneral ng Assyrian bilang simbolo ng
-    lakas militar.\u201D"
+  m_text: "\u201CPapel mula sa reeds ng Nile. Kung wala ito, walang kasaysayan. Walang
+    alaala ng nakaraan.\u201D"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e2ff374cafe100449aa9df7f4f74c41f, type: 2}
   m_sharedMaterial: {fileID: -351998005199142813, guid: e2ff374cafe100449aa9df7f4f74c41f, type: 2}

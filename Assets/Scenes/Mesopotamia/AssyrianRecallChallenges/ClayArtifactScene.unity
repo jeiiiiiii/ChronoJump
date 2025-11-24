@@ -396,7 +396,7 @@ GameObject:
   m_Component:
   - component: {fileID: 651263086}
   - component: {fileID: 651263088}
-  - component: {fileID: 651263089}
+  - component: {fileID: 651263087}
   m_Layer: 5
   m_Name: ArtifactImage
   m_TagString: Untagged
@@ -421,18 +421,10 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 6, y: 121}
-  m_SizeDelta: {x: 270.02, y: 112.69}
+  m_AnchoredPosition: {x: 11, y: 142}
+  m_SizeDelta: {x: 244.64, y: 206.58}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &651263088
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 651263085}
-  m_CullTransparentMesh: 1
---- !u!114 &651263089
+--- !u!114 &651263087
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -452,7 +444,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6287779986095161699, guid: 765c4405312c4ee49a5a63c3444dd50e, type: 3}
+  m_Sprite: {fileID: -3475888734645125247, guid: 506c1921bc649c24c99c95370aa8f8e3, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -462,6 +454,14 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!222 &651263088
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 651263085}
+  m_CullTransparentMesh: 1
 --- !u!1 &688752682
 GameObject:
   m_ObjectHideFlags: 0
@@ -511,7 +511,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: bb5bfe78f9909aa44bd6f3bb200bd15c, type: 3}
   m_Resource: {fileID: 8300000, guid: bb5bfe78f9909aa44bd6f3bb200bd15c, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.2
+  m_Volume: 0.1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -868,8 +868,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -212, y: -201}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 145, y: -230}
+  m_SizeDelta: {x: 703.79, y: 110.07}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1029724847
 MonoBehaviour:
@@ -891,7 +891,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Artifact Power: Prevents Player from losing hearts at a recall challenge'
+  m_text: 'Artifact Power: Removes 1 wrong answer from the choices'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e2ff374cafe100449aa9df7f4f74c41f, type: 2}
   m_sharedMaterial: {fileID: -351998005199142813, guid: e2ff374cafe100449aa9df7f4f74c41f, type: 2}
@@ -956,7 +956,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -545.5632, w: 0}
+  m_margin: {x: 0, y: 0, z: 0.85338575, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1006,7 +1006,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1, y: -355}
+  m_AnchoredPosition: {x: 44, y: -355}
   m_SizeDelta: {x: 713.18, y: 116.28}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1142314923
@@ -1187,7 +1187,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -59, y: -147}
+  m_AnchoredPosition: {x: -113, y: -147}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1343013596
@@ -1210,7 +1210,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Tiglath's War Belt
+  m_text: Clay Seal of Mohenjo-daro
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ebc45d8cfd92bda418afe0359bd24d34, type: 2}
   m_sharedMaterial: {fileID: -697335396114948115, guid: ebc45d8cfd92bda418afe0359bd24d34, type: 2}
@@ -1275,7 +1275,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -157.32507, w: 0}
+  m_margin: {x: 0, y: 0, z: -301.36533, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1638,8 +1638,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -175, y: -56}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 157, y: -89.91}
+  m_SizeDelta: {x: 748.35, y: 117.82}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1609927105
 MonoBehaviour:
@@ -1661,8 +1661,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u201CSinturong isinusuot ng mga heneral ng Assyrian bilang simbolo ng
-    lakas militar.\u201D"
+  m_text: "\u201CIsang tatak ng luwad na may ukit ng mga simbolong hindi pa nababasa.
+    Bulong ng nawalang wika.\u201D"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e2ff374cafe100449aa9df7f4f74c41f, type: 2}
   m_sharedMaterial: {fileID: -351998005199142813, guid: e2ff374cafe100449aa9df7f4f74c41f, type: 2}
@@ -1727,7 +1727,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -469.4381, w: 0}
+  m_margin: {x: 0, y: 0, z: 3.166817, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

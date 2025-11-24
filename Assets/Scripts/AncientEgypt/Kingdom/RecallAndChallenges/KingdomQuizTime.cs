@@ -370,7 +370,8 @@ public class QuizTimeManagerKingdom : MonoBehaviour
             nextButton.onClick.RemoveAllListeners();
             nextButton.onClick.AddListener(() =>
             {
-                SceneManager.LoadScene("ChapterSelect");
+                SceneManager.LoadScene("CongratsScene");
+                UpdateSaveAfterQuizCompletion();
             });
         }
     }

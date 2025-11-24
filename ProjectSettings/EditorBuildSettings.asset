@@ -194,10 +194,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Mesopotamia/SumerianRecallChallenges/SumerianArtifactScene.unity
     guid: 3cf6039d7c3ff60488024c94b71b1d2d
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/AkkadianArtifactScene.unity
     guid: 90f3e9210b4993c45a78bc4ddfa9398c
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Mesopotamia/BabylonianRecallChallenges/BabylonianArtifactScene.unity
     guid: 8257af7ecfc431f4b972999a5b014484
   - enabled: 1
@@ -320,7 +320,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Mesopotamia/AkkadianScene/AkkadianSceneFive.unity
     guid: c1dd9a5abdfbddc40be9a4fc56cb77ee
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Mesopotamia/AssyrianRecallChallenges/AssyrianArtifactScene.unity
     guid: 0c0a4531ec2c33643891140d571d623e
   - enabled: 1
@@ -365,7 +365,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/Questions/CreateNewAddQuizScene.unity
     guid: d249c26fd57abc94c94ad7cc8bff7e31
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/AkkadianArtifactScene.unity
     guid: 90f3e9210b4993c45a78bc4ddfa9398c
   - enabled: 1
@@ -531,7 +531,7 @@ EditorBuildSettings:
     path: Assets/Scenes/AncientChina/ShangRecallChallenges/ShangFirstRecallChallenges.unity
     guid: 40dad004b1522e64f898482581d7175b
   - enabled: 1
-    path: Assets/Scenes/AncientChina/ShangRecallChallenges/ShangArtifactScene.unity
+    path: Assets/Scenes/AncientChina/ShangRecallChallenges/PapyrusArtifactScene.unity
     guid: f2db58070d629754fa9027fe55688801
   - enabled: 1
     path: Assets/Scenes/AncientChina/HuangHeScenes/HuangHeSceneTwo.unity
@@ -618,7 +618,7 @@ EditorBuildSettings:
     path: Assets/Scenes/AncientEgypt/KingdomRecallChallenges/KingdomFirstRecallChallenges.unity
     guid: 6871720e03dcd5d4aa63fb38e0835ddd
   - enabled: 1
-    path: Assets/Scenes/AncientEgypt/KingdomRecallChallenges/KingdomArtifactScene.unity
+    path: Assets/Scenes/AncientEgypt/KingdomRecallChallenges/CongratsScene.unity
     guid: 37a71ce4a3cb1954e806ea1dd59749c7
   - enabled: 1
     path: Assets/Scenes/AncientEgypt/KingdomScenes/KingdomSceneTwo.unity

@@ -421,8 +421,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 6, y: 121}
-  m_SizeDelta: {x: 270.02, y: 112.69}
+  m_AnchoredPosition: {x: 7.27, y: 124}
+  m_SizeDelta: {x: 272.57, y: 177.35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &651263088
 CanvasRenderer:
@@ -452,7 +452,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6287779986095161699, guid: 765c4405312c4ee49a5a63c3444dd50e, type: 3}
+  m_Sprite: {fileID: 6809787181894543026, guid: 17a51c85678f1d94eac3c9508df902c7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -891,7 +891,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Artifact Power: Prevents Player from losing hearts at a recall challenge'
+  m_text: 'Artifact Power: Regenerates 1 Heart'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e2ff374cafe100449aa9df7f4f74c41f, type: 2}
   m_sharedMaterial: {fileID: -351998005199142813, guid: e2ff374cafe100449aa9df7f4f74c41f, type: 2}
@@ -1006,7 +1006,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1, y: -355}
+  m_AnchoredPosition: {x: 16, y: -355}
   m_SizeDelta: {x: 713.18, y: 116.28}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1142314923
@@ -1054,7 +1054,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1240278856}
-        m_TargetAssemblyTypeName: SumerianArtifactScene, Assembly-CSharp
+        m_TargetAssemblyTypeName: IndusArtifactScene, Assembly-CSharp
         m_MethodName: Back
         m_Mode: 1
         m_Arguments:
@@ -1148,7 +1148,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1240278854}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 794e6b1c91b32d44cb4c57dcce3e3023, type: 3}
+  m_Script: {fileID: 11500000, guid: fcec5ed60cb57cc45910365f588ee68c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1343013594
@@ -1187,7 +1187,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -59, y: -147}
+  m_AnchoredPosition: {x: -49, y: -147}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1343013596
@@ -1210,7 +1210,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Tiglath's War Belt
+  m_text: Jar of Yellow Silt
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ebc45d8cfd92bda418afe0359bd24d34, type: 2}
   m_sharedMaterial: {fileID: -697335396114948115, guid: ebc45d8cfd92bda418afe0359bd24d34, type: 2}
@@ -1275,7 +1275,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -157.32507, w: 0}
+  m_margin: {x: 0, y: 0, z: -126.77536, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1638,8 +1638,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -175, y: -56}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 59, y: -103.5}
+  m_SizeDelta: {x: 714.25, y: 145}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1609927105
 MonoBehaviour:
@@ -1661,8 +1661,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u201CSinturong isinusuot ng mga heneral ng Assyrian bilang simbolo ng
-    lakas militar.\u201D"
+  m_text: "\u201CDilaw na lupa mula sa ilog ng luha at pag-asa. Ang loess na nagpapatabang
+    ng lupa, at sumasakal sa buhay.\u201D"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e2ff374cafe100449aa9df7f4f74c41f, type: 2}
   m_sharedMaterial: {fileID: -351998005199142813, guid: e2ff374cafe100449aa9df7f4f74c41f, type: 2}
@@ -1727,7 +1727,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -469.4381, w: 0}
+  m_margin: {x: 0, y: 0, z: -1.0083083, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
