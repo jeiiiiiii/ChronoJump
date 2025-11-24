@@ -371,7 +371,7 @@ public class ElevenLabsTTSManager : MonoBehaviour
         string teacherId = GetCurrentTeacherId();
         int storyIndex = GetCurrentStoryIndex();
 
-        Debug.Log($"🎙️ Starting TTS generation for {total} dialogues (Teacher: {teacherId}, Story: {storyIndex})");
+        Debug.Log($"Starting TTS generation for {total} dialogues (Teacher: {teacherId}, Story: {storyIndex})");
 
         for (int i = 0; i < dialogues.Count; i++)
         {
@@ -379,15 +379,31 @@ public class ElevenLabsTTSManager : MonoBehaviour
             var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
 
             Debug.Log($"Processing dialogue {i + 1}/{total}: '{dialogue.characterName}' (Voice: {voice.voiceName})");
+            Debug.Log($"  hasAudio: {dialogue.hasAudio}");
+            Debug.Log($"  audioFilePath: {dialogue.audioFilePath}");
 
-            string existingAudio = FindExistingAudioFile(dialogue, i);
-            if (!string.IsNullOrEmpty(existingAudio))
+            // CRITICAL FIX: Check hasAudio flag FIRST, not file existence
+            // This respects when audio has been intentionally invalidated by edits
+            if (dialogue.hasAudio && !string.IsNullOrEmpty(dialogue.audioFilePath))
             {
-                dialogue.audioFilePath = existingAudio;
-                dialogue.hasAudio = true;
-                completed++;
-                onProgress?.Invoke(completed, total, $"Skipped: {dialogue.characterName} ({voice.voiceName})");
-                continue;
+                // Verify the file actually exists
+                string fullPath = Path.Combine(Application.persistentDataPath, dialogue.audioFilePath);
+                if (File.Exists(fullPath))
+                {
+                    Debug.Log($"  Audio valid, skipping generation");
+                    completed++;
+                    onProgress?.Invoke(completed, total, $"Skipped: {dialogue.characterName} ({voice.voiceName})");
+                    continue;
+                }
+                else
+                {
+                    // File marked as having audio but doesn't exist - regenerate
+                    Debug.LogWarning($"  Audio file missing, will regenerate");
+                }
+            }
+            else
+            {
+                Debug.Log($"  No valid audio, generating...");
             }
 
             bool success = false;
@@ -414,36 +430,8 @@ public class ElevenLabsTTSManager : MonoBehaviour
         }
 
         bool allSuccess = (failed == 0 && completed == total);
-        Debug.Log($"🎬 TTS Complete: {completed}/{total} succeeded, {failed} failed");
+        Debug.Log($"TTS Complete: {completed}/{total} succeeded, {failed} failed");
         onComplete?.Invoke(allSuccess);
-    }
-
-    private string FindExistingAudioFile(DialogueLine dialogue, int dialogueIndex)
-    {
-        try
-        {
-            string audioDir = GetAudioSaveDirectory();
-            if (!Directory.Exists(audioDir)) return null;
-
-            string sanitizedName = SanitizeFileName(dialogue.characterName);
-            var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
-            string sanitizedVoice = SanitizeFileName(voice.voiceName);
-
-            string searchPattern = $"dialogue_{dialogueIndex}_{sanitizedName}_{sanitizedVoice}.mp3";
-            string exactPath = Path.Combine(audioDir, searchPattern);
-
-            if (File.Exists(exactPath))
-            {
-                return exactPath;
-            }
-
-            return null;
-        }
-        catch (Exception ex)
-        {
-            Debug.LogWarning($"Error finding existing audio: {ex.Message}");
-            return null;
-        }
     }
 
     public string FindStudentAudioFile(string teacherId, int storyIndex, int dialogueIndex, string characterName, string voiceId)

@@ -453,19 +453,23 @@ public static class DialogueStorage
         if (index >= 0 && index < dialogues.Count)
         {
             string existingVoiceId = dialogues[index].selectedVoiceId;
+            
+            // FIXED: Only check if dialogue TEXT changed (not name)
+            // Name changes shouldn't invalidate audio since the spoken content is the same
             bool dialogueTextChanged = dialogues[index].dialogueText != newText;
-            bool characterNameChanged = dialogues[index].characterName != newName;
 
             dialogues[index].characterName = newName;
             dialogues[index].dialogueText = newText;
             dialogues[index].selectedVoiceId = existingVoiceId;
 
-            if (dialogueTextChanged || characterNameChanged)
+            // FIXED: Only invalidate audio if the actual spoken text changed
+            if (dialogueTextChanged)
             {
                 dialogues[index].hasAudio = false;
                 dialogues[index].audioFilePath = "";
                 dialogues[index].audioFileName = "";
-                Debug.Log($"🔇 Invalidated audio for dialogue {index} (text or name changed)");
+                dialogues[index].audioStoragePath = "";
+                Debug.Log($"Invalidated audio for dialogue {index} (dialogue text changed)");
             }
 
             if (!string.IsNullOrEmpty(existingVoiceId))
@@ -474,11 +478,16 @@ public static class DialogueStorage
             }
 
             var voice = VoiceLibrary.GetVoiceById(existingVoiceId);
-            Debug.Log($"✅ DialogueStorage: Edited dialogue {index} - {newName}: {newText}");
+            Debug.Log($"DialogueStorage: Edited dialogue {index} - {newName}: {newText}");
+            Debug.Log($"   Voice preserved: {voice.voiceName}");
+            Debug.Log($"   Text changed: {dialogueTextChanged}");
+            Debug.Log($"   hasAudio: {dialogues[index].hasAudio}");
+            Debug.Log($"   audioFilePath: {dialogues[index].audioFilePath}");
 
             SaveCurrentStory();
         }
     }
+
 
     public static void UpdateDialogueVoice(int index, string newVoiceId)
     {
