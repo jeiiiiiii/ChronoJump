@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,74 +10,121 @@ public class BackgroundSetter : MonoBehaviour
     {
         string userRole = PlayerPrefs.GetString("UserRole", "student");
 
-        // ✅ FIX: Student mode uses StudentPrefs, Teacher mode uses StoryManager
+        // ✅ FIX: Use coroutines for both student and teacher modes
         if (userRole.ToLower() == "student")
         {
-            LoadStudentStoryBackground();
+            StartCoroutine(LoadStudentStoryBackground());
         }
         else
         {
-            LoadTeacherStoryBackground();
+            StartCoroutine(LoadTeacherStoryBackground());
         }
     }
 
-    private void LoadStudentStoryBackground()
+    private IEnumerator LoadStudentStoryBackground()
     {
         // Load from StudentPrefs for student mode
         string storyJson = StudentPrefs.GetString("CurrentStoryData", "");
-        if (!string.IsNullOrEmpty(storyJson))
+        if (string.IsNullOrEmpty(storyJson))
         {
-            try
-            {
-                StoryData studentStory = JsonUtility.FromJson<StoryData>(storyJson);
-                if (studentStory != null && !string.IsNullOrEmpty(studentStory.backgroundPath))
-                {
-                    Texture2D savedBackground = ImageStorage.LoadImage(studentStory.backgroundPath);
-                    if (savedBackground != null)
-                    {
-                        ApplyTexture(savedBackground);
-                        Debug.Log($"📖 Loaded STUDENT background for story '{studentStory.storyTitle}'");
-                        return;
-                    }
-                }
-            }
-            catch (System.Exception ex)
-            {
-                Debug.LogError($"❌ Error loading student story background: {ex.Message}");
-            }
+            ApplyFallbackBackground();
+            yield break;
         }
 
-        // Fallback for student mode
-        if (ImageStorage.UploadedTexture != null)
+        StoryData studentStory = null;
+
+        // ✅ FIX: Move try-catch outside of yield statements
+        try
         {
-            ApplyTexture(ImageStorage.UploadedTexture);
-            Debug.Log("🖼 Applied temporary uploaded background for student");
+            studentStory = JsonUtility.FromJson<StoryData>(storyJson);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Error loading student story background: {ex.Message}");
+            ApplyFallbackBackground();
+            yield break;
+        }
+
+        if (studentStory == null || string.IsNullOrEmpty(studentStory.backgroundPath))
+        {
+            ApplyFallbackBackground();
+            yield break;
+        }
+
+        // ✅ Handle S3 URLs with async loading
+        if (ImageStorage.IsS3Url(studentStory.backgroundPath))
+        {
+            Debug.Log($"🌐 Student background is S3 URL, downloading: {studentStory.backgroundPath}");
+
+            var downloadTask = ImageStorage.LoadImageAsync(studentStory.backgroundPath);
+            yield return new WaitUntil(() => downloadTask.IsCompleted);
+
+            if (downloadTask.Result != null)
+            {
+                ApplyTexture(downloadTask.Result);
+                Debug.Log($"✅ Loaded STUDENT background from S3: {studentStory.storyTitle}");
+            }
+            else
+            {
+                Debug.LogError($"❌ Failed to download STUDENT background from S3");
+                ApplyFallbackBackground();
+            }
         }
         else
         {
-            Debug.LogWarning("⚠️ No background found for student story");
-        }
-    }
-
-    private void LoadTeacherStoryBackground()
-    {
-        StoryData CurrentStory = StoryManager.Instance?.currentStory;
-
-        if (CurrentStory == null)
-        {
-            Debug.LogWarning("⚠ No current story found in StoryManager.");
-            return;
-        }
-
-        // 1. If story already has a saved background path → load from disk
-        if (!string.IsNullOrEmpty(CurrentStory.backgroundPath))
-        {
-            Texture2D savedBackground = ImageStorage.LoadImage(CurrentStory.backgroundPath);
+            // Handle local files
+            Texture2D savedBackground = ImageStorage.LoadImage(studentStory.backgroundPath);
             if (savedBackground != null)
             {
                 ApplyTexture(savedBackground);
-                Debug.Log($"📖 Loaded TEACHER background for story '{CurrentStory.storyTitle}' from: {CurrentStory.backgroundPath}");
-                return;
+                Debug.Log($"📖 Loaded STUDENT background for story '{studentStory.storyTitle}'");
+            }
+            else
+            {
+                Debug.LogWarning($"❌ STUDENT background not found locally: {studentStory.backgroundPath}");
+                ApplyFallbackBackground();
+            }
+        }
+    }
+
+    private IEnumerator LoadTeacherStoryBackground()
+    {
+        StoryData currentStory = StoryManager.Instance?.currentStory;
+
+        if (currentStory == null)
+        {
+            Debug.LogWarning("⚠ No current story found in StoryManager.");
+            ApplyFallbackBackground();
+            yield break;
+        }
+
+        // 1. If story already has a saved background path → load from disk
+        if (!string.IsNullOrEmpty(currentStory.backgroundPath))
+        {
+            // ✅ Handle S3 URLs for teachers too
+            if (ImageStorage.IsS3Url(currentStory.backgroundPath))
+            {
+                Debug.Log($"🌐 Teacher background is S3 URL: {currentStory.backgroundPath}");
+
+                var downloadTask = ImageStorage.LoadImageAsync(currentStory.backgroundPath);
+                yield return new WaitUntil(() => downloadTask.IsCompleted);
+
+                if (downloadTask.Result != null)
+                {
+                    ApplyTexture(downloadTask.Result);
+                    Debug.Log($"✅ Loaded TEACHER background from S3: {currentStory.storyTitle}");
+                    yield break;
+                }
+            }
+            else
+            {
+                Texture2D savedBackground = ImageStorage.LoadImage(currentStory.backgroundPath);
+                if (savedBackground != null)
+                {
+                    ApplyTexture(savedBackground);
+                    Debug.Log($"📖 Loaded TEACHER background for story '{currentStory.storyTitle}' from: {currentStory.backgroundPath}");
+                    yield break;
+                }
             }
         }
 
@@ -84,12 +132,37 @@ public class BackgroundSetter : MonoBehaviour
         if (ImageStorage.UploadedTexture != null)
         {
             ApplyTexture(ImageStorage.UploadedTexture);
-            Debug.Log($"🖼 Applied temporary uploaded background for story '{CurrentStory.storyTitle}'");
+            Debug.Log($"🖼 Applied temporary uploaded background for story '{currentStory.storyTitle}'");
+        }
+        else
+        {
+            ApplyFallbackBackground();
+        }
+    }
+
+    private void ApplyFallbackBackground()
+    {
+        // Fallback for both student and teacher modes
+        if (ImageStorage.UploadedTexture != null)
+        {
+            ApplyTexture(ImageStorage.UploadedTexture);
+            Debug.Log("🖼 Applied temporary uploaded background");
+        }
+        else
+        {
+            Debug.LogWarning("⚠️ No background found, using default");
+            // You could set a default background texture here if needed
         }
     }
 
     private void ApplyTexture(Texture2D tex)
     {
+        if (tex == null)
+        {
+            Debug.LogWarning("⚠️ Attempted to apply null texture");
+            return;
+        }
+
         backgroundImage.texture = tex;
 
         AspectRatioFitter fitter = backgroundImage.GetComponent<AspectRatioFitter>();
@@ -97,5 +170,7 @@ public class BackgroundSetter : MonoBehaviour
         {
             fitter.aspectRatio = (float)tex.width / tex.height;
         }
+
+        backgroundImage.gameObject.SetActive(true);
     }
 }

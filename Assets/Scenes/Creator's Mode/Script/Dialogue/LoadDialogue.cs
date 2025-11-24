@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using UnityEngine.Networking;
 using System.Linq;
+using System.IO;
+using System;
 
 public class DialoguePlayer : MonoBehaviour
 {
@@ -18,9 +20,9 @@ public class DialoguePlayer : MonoBehaviour
 
     [Header("Audio Settings")]
     public AudioSource audioSource;
-    public Button skipAudioButton; // Optional: skip to next dialogue while audio is playing
-    public GameObject audioPlayingIndicator; // Optional: visual indicator
-    
+    public Button skipAudioButton;
+    public GameObject audioPlayingIndicator;
+
     private int currentIndex = 0;
     private List<DialogueLine> dialogues;
     private StoryData currentStory;
@@ -31,48 +33,40 @@ public class DialoguePlayer : MonoBehaviour
         Debug.Log("🎬 DialoguePlayer Started");
         Debug.Log($"📊 Data source: {DialogueStorage.GetDataSourceInfo()}");
 
-        // Setup audio source
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
 
-        // ✅ Load story data first
         LoadStoryData();
-
-        // ✅ Get the dialogues (they should already have voice IDs from Firebase)
         dialogues = DialogueStorage.GetAllDialogues();
 
         if (dialogues.Count > 0)
         {
-            // ✅ CRITICAL FIX: Check if voices are already loaded from Firebase
             bool hasVoicesFromFirebase = dialogues.All(d =>
                 !string.IsNullOrEmpty(d.selectedVoiceId) ||
-                string.IsNullOrEmpty(d.selectedVoiceId) // Empty is valid = "No Voice"
+                string.IsNullOrEmpty(d.selectedVoiceId)
             );
 
             if (hasVoicesFromFirebase)
             {
                 Debug.Log("✅ Voices already loaded from Firebase - skipping TeacherPrefs load");
-
-                // Just verify and log
                 for (int i = 0; i < dialogues.Count; i++)
                 {
                     var dialogue = dialogues[i];
                     if (string.IsNullOrEmpty(dialogue.selectedVoiceId))
                     {
-                        Debug.Log($"🔇 Dialogue {i} '{dialogue.characterName}' - No voice selected (will skip TTS)");
+                        Debug.Log($"🔇 Dialogue {i} '{dialogue.characterName}' - No voice selected");
                     }
                     else
                     {
                         var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
-                        Debug.Log($"🎤 Dialogue {i}: '{dialogue.characterName}' → {voice.voiceName} (ID: {dialogue.selectedVoiceId})");
+                        Debug.Log($"🎤 Dialogue {i}: '{dialogue.characterName}' → {voice.voiceName}");
                     }
                 }
             }
             else
             {
-                // Only load from TeacherPrefs if voices are missing
                 Debug.Log("🎤 Loading voice assignments from persistent storage...");
                 DialogueStorage.LoadAllVoices();
             }
@@ -87,7 +81,6 @@ public class DialoguePlayer : MonoBehaviour
             return;
         }
 
-        // Setup buttons
         nextButton.onClick.AddListener(NextDialogue);
         backButton.onClick.AddListener(PreviousDialogue);
 
@@ -106,187 +99,308 @@ public class DialoguePlayer : MonoBehaviour
         LoadQuizQuestions();
     }
 
-
-    // LoadDialogue.cs - FIXED ShowDialogue method
-    // Replace your existing ShowDialogue method with this:
-
     void ShowDialogue(int index)
     {
         if (dialogues == null || index >= dialogues.Count) return;
 
         var dialogue = dialogues[index];
-        Debug.Log($"💬 Showing dialogue {index + 1}/{dialogues.Count}: {dialogue.characterName} - {dialogue.dialogueText}");
+        Debug.Log($"💬 Showing dialogue {index + 1}/{dialogues.Count}: {dialogue.characterName}");
 
         dialogueText.text = $"{dialogue.characterName}: {dialogue.dialogueText}";
-        UpdateCharacterImages(dialogue.characterName);
 
-        // ✅ CRITICAL FIX: Find the audio file using the correct voice
-        var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
-        Debug.Log($"🔍 Looking for audio - Character: '{dialogue.characterName}', Voice: {voice.voiceName}, Index: {index}");
+        StartCoroutine(LoadAudioForDialogue(dialogue, index));
+    }
 
-        // Try to find existing audio file
-        string audioPath = FindAudioFile(dialogue, index);
-
-        if (!string.IsNullOrEmpty(audioPath) && System.IO.File.Exists(audioPath))
+    // ✅ FIXED: Properly handle S3 URLs with sanitized filenames
+    IEnumerator LoadAudioForDialogue(DialogueLine dialogue, int dialogueIndex)
+    {
+        if (string.IsNullOrEmpty(dialogue.selectedVoiceId) || VoiceLibrary.IsNoVoice(dialogue.selectedVoiceId))
         {
-            dialogue.audioFilePath = audioPath;
-            dialogue.hasAudio = true;
-            Debug.Log($"✅ Found audio file: {audioPath}");
+            Debug.Log($"🔇 Dialogue {dialogueIndex}: '{dialogue.characterName}' - No voice, skipping");
+            yield break;
+        }
 
-            // Play the audio
+        var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
+        Debug.Log($"🔍 Looking for audio: '{dialogue.characterName}' - {voice.voiceName}");
+
+        // ========== STEP 1: CHECK LOCAL CACHE ==========
+        string localPath = FindLocalAudioFile(dialogue, dialogueIndex);
+
+        if (!string.IsNullOrEmpty(localPath) && File.Exists(localPath))
+        {
+            Debug.Log($"✅ Found local audio: {Path.GetFileName(localPath)}");
+            dialogue.audioFilePath = localPath;
+            dialogue.hasAudio = true;
+
             StartCoroutine(PlayDialogueAudio(dialogue));
+            yield break;
+        }
+
+        // ========== STEP 2: TRY TO DOWNLOAD FROM S3 ==========
+        if (!string.IsNullOrEmpty(dialogue.audioStoragePath))
+        {
+            // ✅ FIX: Sanitize the S3 URL to ensure spaces are replaced with underscores
+            string sanitizedS3Url = SanitizeS3Url(dialogue.audioStoragePath);
+
+            Debug.Log($"☁️ Local not found, downloading from S3");
+            Debug.Log($"   Original URL: {dialogue.audioStoragePath}");
+            Debug.Log($"   Sanitized URL: {sanitizedS3Url}");
+
+            if (S3StorageService.Instance == null || !S3StorageService.Instance.IsReady)
+            {
+                Debug.LogWarning($"⚠️ S3 service not available");
+                yield break;
+            }
+
+            if (audioPlayingIndicator != null)
+            {
+                audioPlayingIndicator.SetActive(true);
+            }
+
+            // ✅ Use the sanitized URL for download
+            var downloadTask = S3StorageService.Instance.DownloadVoiceAudio(sanitizedS3Url);
+
+            while (!downloadTask.IsCompleted)
+            {
+                yield return null;
+            }
+
+            byte[] audioData = downloadTask.Result;
+
+            if (audioData != null && audioData.Length > 0)
+            {
+                Debug.Log($"✅ Downloaded {audioData.Length} bytes from S3");
+
+                // ========== STEP 3: SAVE TO LOCAL CACHE ==========
+                string cachedPath = SaveAudioToLocalCache(audioData, dialogue, dialogueIndex);
+
+                if (!string.IsNullOrEmpty(cachedPath))
+                {
+                    Debug.Log($"💾 Cached audio: {cachedPath}");
+                    dialogue.audioFilePath = cachedPath;
+                    dialogue.hasAudio = true;
+
+                    if (audioPlayingIndicator != null)
+                    {
+                        audioPlayingIndicator.SetActive(false);
+                    }
+
+                    StartCoroutine(PlayDialogueAudio(dialogue));
+                }
+            }
+            else
+            {
+                Debug.LogError($"❌ Failed to download from S3 - received empty data");
+                if (audioPlayingIndicator != null)
+                {
+                    audioPlayingIndicator.SetActive(false);
+                }
+            }
         }
         else
         {
-            Debug.LogWarning($"⚠️ No audio found for dialogue: {dialogue.characterName}");
-            Debug.LogWarning($"   Expected voice: {voice.voiceName} (ID: {dialogue.selectedVoiceId})");
-            Debug.LogWarning($"   Searched path pattern: dialogue_{index}_{SanitizeFileName(dialogue.characterName)}_{voice.voiceName}_*.mp3");
+            Debug.LogWarning($"⚠️ No audio available for '{dialogue.characterName}'");
+            Debug.LogWarning($"   No local file and no S3 URL");
         }
     }
 
-
-    // ✅ NEW: Find audio file for a specific dialogue
-    string FindAudioFile(DialogueLine dialogue, int dialogueIndex)
+    // ✅ NEW: Sanitize S3 URL to replace spaces with underscores
+    string SanitizeS3Url(string s3Url)
     {
-        // ✅ FIXED: If no voice is selected, don't look for audio files
-        if (string.IsNullOrEmpty(dialogue.selectedVoiceId) || VoiceLibrary.IsNoVoice(dialogue.selectedVoiceId))
-        {
-            Debug.Log($"🔇 Dialogue {dialogueIndex}: '{dialogue.characterName}' - No voice selected, skipping audio search");
-            return null;
-        }
-        
+        if (string.IsNullOrEmpty(s3Url)) return s3Url;
+
+        // Get the last part of the URL (the filename)
+        int lastSlashIndex = s3Url.LastIndexOf('/');
+        if (lastSlashIndex == -1) return s3Url;
+
+        string baseUrl = s3Url.Substring(0, lastSlashIndex + 1);
+        string fileName = s3Url.Substring(lastSlashIndex + 1);
+
+        // Replace spaces with underscores in the filename
+        string sanitizedFileName = fileName.Replace(" ", "_");
+
+        // URL encode the filename to handle other special characters
+        sanitizedFileName = UnityWebRequest.EscapeURL(sanitizedFileName)
+            .Replace("%2F", "/")  // Don't encode forward slashes
+            .Replace("%3A", ":");  // Don't encode colons
+
+        return baseUrl + sanitizedFileName;
+    }
+
+    string SaveAudioToLocalCache(byte[] audioData, DialogueLine dialogue, int dialogueIndex)
+    {
         try
         {
-            // Get the audio directory
             string teacherId = GetTeacherId();
             int storyIndex = GetStoryIndex();
-            string audioDir = System.IO.Path.Combine(
+            string audioDir = Path.Combine(
                 Application.persistentDataPath,
                 teacherId,
                 $"story_{storyIndex}",
                 "audio"
             );
 
-            if (!System.IO.Directory.Exists(audioDir))
+            if (!Directory.Exists(audioDir))
             {
-                Debug.LogWarning($"⚠️ Audio directory not found: {audioDir}");
+                Directory.CreateDirectory(audioDir);
+            }
+
+            // ✅ Use sanitized filename that matches what was uploaded
+            string sanitizedName = SanitizeFileName(dialogue.characterName);
+            var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
+            string sanitizedVoiceName = SanitizeFileName(voice.voiceName);
+
+            string fileName = $"dialogue_{dialogueIndex}_{sanitizedName}_{sanitizedVoiceName}.mp3";
+            string filePath = Path.Combine(audioDir, fileName);
+
+            File.WriteAllBytes(filePath, audioData);
+
+            Debug.Log($"💾 Saved to cache: {fileName}");
+            return filePath;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"❌ Failed to cache audio: {ex.Message}");
+            return null;
+        }
+    }
+
+    string FindLocalAudioFile(DialogueLine dialogue, int dialogueIndex)
+    {
+        try
+        {
+            string teacherId = GetTeacherId();
+            int storyIndex = GetStoryIndex();
+            string audioDir = Path.Combine(
+                Application.persistentDataPath,
+                teacherId,
+                $"story_{storyIndex}",
+                "audio"
+            );
+
+            if (!Directory.Exists(audioDir))
+            {
                 return null;
             }
 
             string sanitizedName = SanitizeFileName(dialogue.characterName);
             var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
+            string sanitizedVoiceName = SanitizeFileName(voice.voiceName);
 
-            // Look for files matching the pattern: dialogue_{index}_{character}_{voice}_*.mp3
-            string searchPattern = $"dialogue_{dialogueIndex}_{sanitizedName}_{voice.voiceName}_*.mp3";
-            Debug.Log($"🔍 Searching in: {audioDir}");
-            Debug.Log($"🔍 Pattern: {searchPattern}");
+            // ✅ Try exact match with sanitized names
+            string exactPattern = $"dialogue_{dialogueIndex}_{sanitizedName}_{sanitizedVoiceName}.mp3";
+            string exactPath = Path.Combine(audioDir, exactPattern);
 
-            string[] files = System.IO.Directory.GetFiles(audioDir, searchPattern);
+            if (File.Exists(exactPath))
+            {
+                Debug.Log($"✅ Found exact match: {exactPattern}");
+                return exactPath;
+            }
+
+            // Fallback: Search with wildcards
+            string[] files = Directory.GetFiles(audioDir, $"dialogue_{dialogueIndex}_*.mp3");
 
             if (files.Length > 0)
             {
-                // Return the most recent file
-                System.Array.Sort(files);
+                Array.Sort(files);
                 string latestFile = files[files.Length - 1];
-                Debug.Log($"✅ Found {files.Length} matching file(s), using: {System.IO.Path.GetFileName(latestFile)}");
+                Debug.Log($"✅ Found fallback: {Path.GetFileName(latestFile)}");
                 return latestFile;
             }
 
-            // ✅ FALLBACK 1: Try searching for any file with this character name and dialogue index
-            string fallbackPattern = $"dialogue_{dialogueIndex}_{sanitizedName}_*.mp3";
-            Debug.Log($"🔍 Trying fallback pattern: {fallbackPattern}");
-
-            files = System.IO.Directory.GetFiles(audioDir, fallbackPattern);
-            if (files.Length > 0)
-            {
-                System.Array.Sort(files);
-                string latestFile = files[files.Length - 1];
-                Debug.LogWarning($"⚠️ Using fallback audio (voice mismatch): {System.IO.Path.GetFileName(latestFile)}");
-                return latestFile;
-            }
-
-            // ✅ FALLBACK 2: Try any file with this dialogue index
-            string indexPattern = $"dialogue_{dialogueIndex}_*.mp3";
-            Debug.Log($"🔍 Trying index-only pattern: {indexPattern}");
-
-            files = System.IO.Directory.GetFiles(audioDir, indexPattern);
-            if (files.Length > 0)
-            {
-                System.Array.Sort(files);
-                string latestFile = files[files.Length - 1];
-                Debug.LogWarning($"⚠️ Using index-only fallback: {System.IO.Path.GetFileName(latestFile)}");
-                return latestFile;
-            }
-
-            Debug.LogWarning($"❌ No audio file found for any pattern in: {audioDir}");
             return null;
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
-            Debug.LogError($"❌ Error finding audio file: {ex.Message}");
+            Debug.LogError($"❌ Error finding audio: {ex.Message}");
             return null;
         }
     }
 
-
-string SanitizeFileName(string fileName)
-{
-    foreach (char c in System.IO.Path.GetInvalidFileNameChars())
+    string SanitizeFileName(string fileName)
     {
-        fileName = fileName.Replace(c, '_');
-    }
-    return fileName;
-}
-
-string GetTeacherId()
-{
-    // Check current user role
-    string userRole = PlayerPrefs.GetString("UserRole", "student");
-    
-    if (userRole.ToLower() == "student")
-    {
-        // For students, extract from story data
-        string storyJson = StudentPrefs.GetString("CurrentStoryData", "");
-        if (!string.IsNullOrEmpty(storyJson))
+        foreach (char c in Path.GetInvalidFileNameChars())
         {
-            try
+            fileName = fileName.Replace(c, '_');
+        }
+
+        // Replace spaces and special characters
+        fileName = fileName.Replace(' ', '_');
+        fileName = fileName.Replace('#', '_');
+        fileName = fileName.Replace('%', '_');
+        fileName = fileName.Replace('&', '_');
+
+        return fileName;
+    }
+
+    string GetTeacherId()
+    {
+        string userRole = PlayerPrefs.GetString("UserRole", "student");
+
+        if (userRole.ToLower() == "student")
+        {
+            string storyJson = StudentPrefs.GetString("CurrentStoryData", "");
+            if (!string.IsNullOrEmpty(storyJson))
             {
-                var studentStory = JsonUtility.FromJson<StoryData>(storyJson);
-                if (!string.IsNullOrEmpty(studentStory.backgroundPath))
+                try
                 {
-                    string[] pathParts = studentStory.backgroundPath.Split(System.IO.Path.DirectorySeparatorChar);
-                    if (pathParts.Length > 0)
+                    var studentStory = JsonUtility.FromJson<StoryData>(storyJson);
+                    if (!string.IsNullOrEmpty(studentStory.backgroundPath))
                     {
-                        return pathParts[0]; // First part is teacher ID
+                        // ✅ Check if it's an S3 URL
+                        if (studentStory.backgroundPath.StartsWith("http"))
+                        {
+                            // Extract teacher ID from S3 URL
+                            // URL format: https://jei-cj.s3.ap-southeast-1.amazonaws.com/images/TEACHER_ID/story_X/...
+                            string[] urlParts = studentStory.backgroundPath.Split('/');
+
+                            // Find "images" in the URL, teacher ID is right after it
+                            for (int i = 0; i < urlParts.Length - 1; i++)
+                            {
+                                if (urlParts[i] == "images")
+                                {
+                                    string teacherId = urlParts[i + 1];
+                                    Debug.Log($"✅ Extracted teacher ID from S3 URL: {teacherId}");
+                                    return teacherId;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // Local path format: TEACHER_ID/story_X/...
+                            string[] pathParts = studentStory.backgroundPath.Split(new char[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
+                            if (pathParts.Length > 0)
+                            {
+                                Debug.Log($"✅ Extracted teacher ID from local path: {pathParts[0]}");
+                                return pathParts[0];
+                            }
+                        }
                     }
                 }
-            }
-            catch (System.Exception ex)
-            {
-                Debug.LogWarning($"Could not extract teacher ID: {ex.Message}");
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"Could not extract teacher ID: {ex.Message}");
+                }
             }
         }
+
+        if (StoryManager.Instance != null && StoryManager.Instance.IsCurrentUserTeacher())
+        {
+            return StoryManager.Instance.GetCurrentTeacherId();
+        }
+
+        return TeacherPrefs.GetString("CurrentTeachId", "default");
     }
-    
-    // For teachers or fallback
-    if (StoryManager.Instance != null && StoryManager.Instance.IsCurrentUserTeacher())
-    {
-        return StoryManager.Instance.GetCurrentTeacherId();
-    }
-    
-    return TeacherPrefs.GetString("CurrentTeachId", "default");
-}
+
 
     int GetStoryIndex()
     {
-        // Try from current story
         var story = StoryManager.Instance?.GetCurrentStory();
         if (story != null && story.storyIndex >= 0)
         {
             return story.storyIndex;
         }
 
-        // ✅ CRITICAL FIX: For students, extract from story data
         string storyJson = StudentPrefs.GetString("CurrentStoryData", "");
         if (!string.IsNullOrEmpty(storyJson))
         {
@@ -294,11 +408,9 @@ string GetTeacherId()
             {
                 var studentStory = JsonUtility.FromJson<StoryData>(storyJson);
 
-                // ✅ FIX: If storyIndex is -1, extract from path
                 if (studentStory.storyIndex < 0 && !string.IsNullOrEmpty(studentStory.backgroundPath))
                 {
-                    // Extract from path: "3U2VTjs7ng/story_0/background.png"
-                    string[] pathParts = studentStory.backgroundPath.Split(new char[] { '/', '\\' }, System.StringSplitOptions.RemoveEmptyEntries);
+                    string[] pathParts = studentStory.backgroundPath.Split(new char[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
                     if (pathParts.Length > 1 && pathParts[1].StartsWith("story_"))
                     {
                         string indexStr = pathParts[1].Replace("story_", "");
@@ -310,13 +422,12 @@ string GetTeacherId()
                     }
                 }
 
-                // Return the stored index if valid
                 if (studentStory.storyIndex >= 0)
                 {
                     return studentStory.storyIndex;
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 Debug.LogWarning($"Could not extract story index: {ex.Message}");
             }
@@ -328,19 +439,17 @@ string GetTeacherId()
     IEnumerator PlayDialogueAudio(DialogueLine dialogue)
     {
         isPlayingAudio = true;
-        
-        // Show audio playing indicator
+
         if (skipAudioButton != null)
             skipAudioButton.gameObject.SetActive(true);
         if (audioPlayingIndicator != null)
             audioPlayingIndicator.SetActive(true);
 
-        // Disable next/back buttons while audio plays (optional)
         nextButton.interactable = false;
         backButton.interactable = false;
 
         string url = "file://" + dialogue.audioFilePath;
-        
+
         using (UnityWebRequest request = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.MPEG))
         {
             yield return request.SendWebRequest();
@@ -353,7 +462,6 @@ string GetTeacherId()
 
                 Debug.Log($"🔊 Playing audio for: {dialogue.characterName}");
 
-                // Wait for audio to finish or be skipped
                 while (audioSource.isPlaying && isPlayingAudio)
                 {
                     yield return null;
@@ -367,10 +475,9 @@ string GetTeacherId()
             }
         }
 
-        // Re-enable buttons
         nextButton.interactable = true;
         backButton.interactable = true;
-        
+
         if (skipAudioButton != null)
             skipAudioButton.gameObject.SetActive(false);
         if (audioPlayingIndicator != null)
@@ -391,7 +498,6 @@ string GetTeacherId()
 
     void NextDialogue()
     {
-        // Stop current audio if playing
         if (isPlayingAudio)
         {
             SkipAudio();
@@ -407,13 +513,12 @@ string GetTeacherId()
             dialogueText.text = "Tapos na ang iyong paglalakbay! Maghanda para sa pagsusulit.";
             nextButton.onClick.RemoveAllListeners();
             nextButton.onClick.AddListener(QuizTime);
-            Debug.Log("🏁 All dialogues completed, ready for quiz");
+            Debug.Log("🎓 All dialogues completed, ready for quiz");
         }
     }
 
     public void PreviousDialogue()
     {
-        // Stop current audio if playing
         if (isPlayingAudio)
         {
             SkipAudio();
@@ -432,7 +537,6 @@ string GetTeacherId()
         SceneManager.LoadScene("QuizTime");
     }
 
-    // Keep all your existing methods below
     private void LoadStoryData()
     {
         string storyJson = StudentPrefs.GetString("CurrentStoryData", "");
@@ -446,7 +550,7 @@ string GetTeacherId()
                     Debug.Log($"✅ Loaded story: {currentStory.storyTitle}");
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 Debug.LogError($"❌ Error loading story data: {ex.Message}");
             }
@@ -500,23 +604,45 @@ string GetTeacherId()
     {
         Debug.Log($"🖼️ Attempting to load background: {imagePath}");
 
+        if (ImageStorage.IsS3Url(imagePath))
+        {
+            Debug.Log($"🌐 Background is S3 URL, downloading: {imagePath}");
+            SetDownloadPlaceholder(backgroundImage, "Background");
+
+            var downloadTask = ImageStorage.LoadImageAsync(imagePath);
+            yield return new WaitUntil(() => downloadTask.IsCompleted);
+
+            if (downloadTask.Result != null)
+            {
+                ApplyBackgroundTexture(downloadTask.Result);
+                Debug.Log($"✅ Successfully loaded background from S3");
+                yield break;
+            }
+            else
+            {
+                Debug.LogError($"❌ Failed to download background from S3");
+                SetDefaultBackground();
+                yield break;
+            }
+        }
+
         Texture2D localTexture = ImageStorage.LoadImage(imagePath);
         if (localTexture != null)
         {
-            Debug.Log($"✅ Loaded background from local storage: {imagePath}");
+            Debug.Log($"✅ Loaded background from local storage");
             ApplyBackgroundTexture(localTexture);
             yield break;
         }
 
         if (IsFirebaseStoragePath(imagePath))
         {
-            Debug.Log($"🌐 Background is a Firebase Storage path, will download: {imagePath}");
+            Debug.Log($"🌐 Background is a Firebase Storage path");
             SetDownloadPlaceholder(backgroundImage, "Background");
             yield return StartCoroutine(DownloadImageFromFirebase(imagePath, backgroundImage, true));
         }
         else
         {
-            Debug.Log($"⚠️ Background path not found locally and not a Firebase URL: {imagePath}");
+            Debug.Log($"⚠️ Background path not found locally");
             SetDefaultBackground();
         }
     }
@@ -525,23 +651,45 @@ string GetTeacherId()
     {
         Debug.Log($"👤 Attempting to load character {characterNumber}: {imagePath}");
 
+        if (ImageStorage.IsS3Url(imagePath))
+        {
+            Debug.Log($"🌐 Character {characterNumber} is S3 URL, downloading");
+            SetDownloadPlaceholder(characterImage, $"Character {characterNumber}");
+
+            var downloadTask = ImageStorage.LoadImageAsync(imagePath);
+            yield return new WaitUntil(() => downloadTask.IsCompleted);
+
+            if (downloadTask.Result != null)
+            {
+                ApplyCharacterTexture(characterImage, downloadTask.Result);
+                Debug.Log($"✅ Successfully loaded character {characterNumber} from S3");
+                yield break;
+            }
+            else
+            {
+                Debug.LogError($"❌ Failed to download character {characterNumber} from S3");
+                characterImage.gameObject.SetActive(false);
+                yield break;
+            }
+        }
+
         Texture2D localTexture = ImageStorage.LoadImage(imagePath);
         if (localTexture != null)
         {
-            Debug.Log($"✅ Loaded character {characterNumber} from local storage: {imagePath}");
+            Debug.Log($"✅ Loaded character {characterNumber} from local storage");
             ApplyCharacterTexture(characterImage, localTexture);
             yield break;
         }
 
         if (IsFirebaseStoragePath(imagePath))
         {
-            Debug.Log($"🌐 Character {characterNumber} is a Firebase Storage path, will download: {imagePath}");
+            Debug.Log($"🌐 Character {characterNumber} is a Firebase Storage path");
             SetDownloadPlaceholder(characterImage, $"Character {characterNumber}");
             yield return StartCoroutine(DownloadImageFromFirebase(imagePath, characterImage, false));
         }
         else
         {
-            Debug.Log($"⚠️ Character {characterNumber} path not found locally: {imagePath}");
+            Debug.Log($"⚠️ Character {characterNumber} path not found locally");
             characterImage.gameObject.SetActive(false);
         }
     }
@@ -568,7 +716,7 @@ string GetTeacherId()
             ApplyCharacterTexture(targetImage, placeholderTexture);
         }
 
-        Debug.Log($"📥 Download placeholder set for: {firebasePath}");
+        Debug.Log($"🔥 Download placeholder set for: {firebasePath}");
     }
 
     private Texture2D CreatePlaceholderTexture(string message)
@@ -645,11 +793,11 @@ string GetTeacherId()
                 if (studentStory != null && studentStory.quizQuestions != null)
                 {
                     AddQuiz.quizQuestions = studentStory.quizQuestions;
-                    Debug.Log($"✅ Loaded {studentStory.quizQuestions.Count} questions from StudentPrefs for quiz");
+                    Debug.Log($"✅ Loaded {studentStory.quizQuestions.Count} questions from StudentPrefs");
                     return;
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 Debug.LogError($"❌ Error loading quiz questions: {ex.Message}");
             }
@@ -666,21 +814,12 @@ string GetTeacherId()
             if (story != null)
             {
                 AddQuiz.quizQuestions = story.quizQuestions;
-                Debug.Log($"✅ Loaded {story.quizQuestions?.Count ?? 0} questions from StoryManager for quiz");
+                Debug.Log($"✅ Loaded {story.quizQuestions?.Count ?? 0} questions from StoryManager");
             }
             else
             {
-                Debug.LogWarning("⚠️ No quiz questions available for quiz scene");
+                Debug.LogWarning("⚠️ No quiz questions available");
             }
-        }
-    }
-
-    void UpdateCharacterImages(string characterName)
-    {
-        // Simple character visibility logic - enhance based on your needs
-        if (character1Image != null && character1Image.gameObject.activeInHierarchy)
-        {
-            // You could add logic here to highlight the speaking character
         }
     }
 }

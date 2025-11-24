@@ -1,4 +1,4 @@
-// DialogueStorage.cs - COMPLETE FIXED VERSION
+// DialogueStorage.cs - FIXED VERSION with sanitization safety check
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -7,10 +7,8 @@ public static class DialogueStorage
 {
     private static List<DialogueLine> fallbackDialogues = new List<DialogueLine>();
 
-    // Convenience: get dialogues for the current story
     private static List<DialogueLine> GetStoryDialogues()
     {
-        // First try: Get from StoryManager (for teacher/creator mode)
         var story = StoryManager.Instance?.GetCurrentStory();
         if (story != null)
         {
@@ -20,7 +18,6 @@ public static class DialogueStorage
             return story.dialogues;
         }
 
-        // Second try: Get from StudentPrefs (for student mode)
         string storyJson = StudentPrefs.GetString("CurrentStoryData", "");
         if (!string.IsNullOrEmpty(storyJson))
         {
@@ -39,7 +36,6 @@ public static class DialogueStorage
             }
         }
 
-        // Third try: Use fallback storage
         Debug.Log("⚠️ DialogueStorage: No story manager or student data, using fallback storage");
         return fallbackDialogues;
     }
@@ -48,19 +44,15 @@ public static class DialogueStorage
     {
         if (dialogues == null) return;
 
-        // Try to set in StoryManager first
         var story = StoryManager.Instance?.GetCurrentStory();
         if (story != null)
         {
             story.dialogues = dialogues;
             Debug.Log($"✅ DialogueStorage: Set {dialogues.Count} dialogues in StoryManager");
-
-            // ✅ Save story after setting dialogues
             SaveCurrentStory();
             return;
         }
 
-        // Fallback: use local storage
         fallbackDialogues = dialogues;
         Debug.Log($"✅ DialogueStorage: Set {dialogues.Count} dialogues in fallback storage");
     }
@@ -70,7 +62,6 @@ public static class DialogueStorage
         var dialogues = GetStoryDialogues();
         if (dialogues == null) return;
 
-        // Try to pick up the voice the user selected on the AddDialogue panel
         string voiceId = VoiceLibrary.GetDefaultVoice().voiceId;
         var addDialoguePanel = Object.FindFirstObjectByType<AddDialogue>(FindObjectsInactive.Include);
         if (addDialoguePanel != null)
@@ -81,13 +72,11 @@ public static class DialogueStorage
         var newDialogue = new DialogueLine(name, text, voiceId);
         dialogues.Add(newDialogue);
 
-        // Save voice selection persistently
         VoiceStorageManager.SaveVoiceSelection($"Dialogue_{dialogues.Count - 1}", voiceId);
 
         var voice = VoiceLibrary.GetVoiceById(voiceId);
         Debug.Log($"✅ DialogueStorage: Added dialogue - {name}: {text} (Voice: {voice.voiceName})");
 
-        // ✅ CRITICAL: Save story after adding
         SaveCurrentStory();
     }
 
@@ -105,7 +94,6 @@ public static class DialogueStorage
         bool needsLoadingFromStorage = false;
         int voicesAlreadySet = 0;
 
-        // ✅ CRITICAL FIX: Check if voices are ALREADY in the dialogue data (from Firebase)
         for (int i = 0; i < dialogues.Count; i++)
         {
             if (!string.IsNullOrEmpty(dialogues[i].selectedVoiceId))
@@ -121,19 +109,16 @@ public static class DialogueStorage
             }
         }
 
-        // ✅ ONLY load from TeacherPrefs if voices are missing
         if (needsLoadingFromStorage)
         {
             Debug.Log($"🔄 Loading missing voices from TeacherPrefs ({voicesAlreadySet}/{dialogues.Count} already set from Firebase)...");
-            VoiceStorageManager.LoadAllDialogueVoices(dialogues, false); // false = don't overwrite existing
+            VoiceStorageManager.LoadAllDialogueVoices(dialogues, false);
         }
         else
         {
             Debug.Log($"✅ All {dialogues.Count} dialogues have voices from Firebase - skipping TeacherPrefs load");
         }
     }
-
-
 
     public static void ClearDialogues()
     {
@@ -142,8 +127,6 @@ public static class DialogueStorage
 
         dialogues.Clear();
         Debug.Log("✅ DialogueStorage: Cleared all dialogues");
-
-        // ✅ Save after clearing
         SaveCurrentStory();
     }
 
@@ -156,22 +139,16 @@ public static class DialogueStorage
         {
             var dialogue = dialogues[index];
 
-            // ✅ NEW: Delete corresponding audio files before removing dialogue
             DeleteDialogueAudioFiles(index, dialogue);
 
             dialogues.RemoveAt(index);
             Debug.Log($"✅ DialogueStorage: Deleted dialogue {index} - {dialogue.characterName}: {dialogue.dialogueText}");
 
-            // ✅ CRITICAL FIX: Re-index all subsequent voice storage keys
             ReindexVoiceStorageAfterDeletion(index);
-
-            // ✅ Save story after deletion
             SaveCurrentStory();
         }
     }
 
-
-    // ✅ NEW: Delete audio files for a specific dialogue
     private static void DeleteDialogueAudioFiles(int dialogueIndex, DialogueLine dialogue)
     {
         try
@@ -195,13 +172,12 @@ public static class DialogueStorage
             string sanitizedName = SanitizeFileName(dialogue.characterName);
             var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
 
-            // Delete all possible audio file patterns for this dialogue
             string[] patterns = {
-            $"dialogue_{dialogueIndex}_{sanitizedName}_{voice.voiceName}.mp3",           // Exact match
-            $"dialogue_{dialogueIndex}_{sanitizedName}_{voice.voiceName}_*.mp3",         // Timestamped versions
-            $"dialogue_{dialogueIndex}_{sanitizedName}_*.mp3",                           // Voice mismatch fallback
-            $"dialogue_{dialogueIndex}_*.mp3"                                            // Index-only fallback
-        };
+                $"dialogue_{dialogueIndex}_{sanitizedName}_{voice.voiceName}.mp3",
+                $"dialogue_{dialogueIndex}_{sanitizedName}_{voice.voiceName}_*.mp3",
+                $"dialogue_{dialogueIndex}_{sanitizedName}_*.mp3",
+                $"dialogue_{dialogueIndex}_*.mp3"
+            };
 
             int deletedCount = 0;
             foreach (string pattern in patterns)
@@ -233,18 +209,24 @@ public static class DialogueStorage
         }
     }
 
-
-    // ✅ Helper method to sanitize file names (add this if not exists)
     private static string SanitizeFileName(string fileName)
     {
+        if (string.IsNullOrEmpty(fileName))
+            return fileName;
+
         foreach (char c in Path.GetInvalidFileNameChars())
         {
             fileName = fileName.Replace(c, '_');
         }
+
+        fileName = fileName.Replace(' ', '_');
+        fileName = fileName.Replace('#', '_');
+        fileName = fileName.Replace('%', '_');
+        fileName = fileName.Replace('&', '_');
+
         return fileName;
     }
 
-    // ✅ Helper method to get current teacher ID (add this if not exists)
     private static string GetCurrentTeacherId()
     {
         if (StoryManager.Instance != null && StoryManager.Instance.IsCurrentUserTeacher())
@@ -254,20 +236,16 @@ public static class DialogueStorage
         return TeacherPrefs.GetString("CurrentTeachId", "default");
     }
 
-        // ✅ Helper method to get current story index (add this if not exists)
-        private static int GetCurrentStoryIndex()
+    private static int GetCurrentStoryIndex()
+    {
+        var story = StoryManager.Instance?.GetCurrentStory();
+        if (story != null)
         {
-            var story = StoryManager.Instance?.GetCurrentStory();
-            if (story != null)
-            {
-                return story.storyIndex;
-            }
-            return 0;
+            return story.storyIndex;
         }
+        return 0;
+    }
 
-
-
-    // ✅ NEW: Re-index voice storage after deletion
     private static void ReindexVoiceStorageAfterDeletion(int deletedIndex)
     {
         var dialogues = GetStoryDialogues();
@@ -275,7 +253,6 @@ public static class DialogueStorage
 
         string storyId = GetCurrentStoryId();
 
-        // For all dialogues after the deleted one, shift their voice storage down by one
         for (int i = deletedIndex; i < dialogues.Count; i++)
         {
             string oldKey = $"{storyId}_Dialogue_{i + 1}_VoiceId";
@@ -285,27 +262,22 @@ public static class DialogueStorage
 
             if (!string.IsNullOrEmpty(voiceId))
             {
-                // Move the voice from old position to new position
                 TeacherPrefs.SetString(newKey, voiceId);
                 TeacherPrefs.DeleteKey(oldKey);
                 Debug.Log($"🔄 Re-indexed voice: {oldKey} → {newKey} ({voiceId})");
             }
             else
             {
-                // Clear the new position if no voice exists
                 TeacherPrefs.DeleteKey(newKey);
             }
         }
 
-        // Delete the last key (which is now empty)
         string lastKey = $"{storyId}_Dialogue_{dialogues.Count}_VoiceId";
         TeacherPrefs.DeleteKey(lastKey);
 
         TeacherPrefs.Save();
     }
 
-
-    // ✅ NEW: Helper method to get current story ID (extracted from existing code)
     private static string GetCurrentStoryId()
     {
         var story = StoryManager.Instance?.GetCurrentStory();
@@ -343,7 +315,6 @@ public static class DialogueStorage
         return "CurrentStory";
     }
 
-
     public static List<DialogueLine> GetAllDialogues()
     {
         var dialogues = GetStoryDialogues();
@@ -369,7 +340,6 @@ public static class DialogueStorage
         return "FallbackStorage";
     }
 
-    // ✅ CRITICAL: Save the current story
     private static void SaveCurrentStory()
     {
         var story = StoryManager.Instance?.GetCurrentStory();
@@ -379,12 +349,10 @@ public static class DialogueStorage
             return;
         }
 
-        // Call StoryManager's save method
         if (StoryManager.Instance != null)
         {
             try
             {
-                // Try SaveStories method first
                 var saveMethod = StoryManager.Instance.GetType().GetMethod("SaveStories");
                 if (saveMethod != null)
                 {
@@ -403,24 +371,79 @@ public static class DialogueStorage
         }
     }
 
-    public static void UpdateDialogueAudioInfo(int index, string relativePath, string fileName)
+    // ✅ CRITICAL FIX: Sanitize all inputs before saving
+    public static void UpdateDialogueAudioInfo(int index, string relativePath, string fileName, string s3Url)
     {
         var dialogues = GetStoryDialogues();
         if (dialogues == null) return;
 
         if (index >= 0 && index < dialogues.Count)
         {
-            dialogues[index].audioFilePath = relativePath;
-            dialogues[index].audioFileName = fileName;
-            dialogues[index].hasAudio = !string.IsNullOrEmpty(relativePath);
+            // ✅ SAFETY CHECK: Sanitize the filename if it contains spaces
+            string sanitizedFileName = fileName;
+            if (!string.IsNullOrEmpty(fileName) && fileName.Contains(" "))
+            {
+                Debug.LogWarning($"⚠️ Sanitizing filename with spaces: {fileName}");
+                sanitizedFileName = SanitizeFileName(fileName);
+                Debug.Log($"   → Sanitized to: {sanitizedFileName}");
+            }
 
-            Debug.Log($"💾 Updated audio info for dialogue {index}: {fileName}");
+            // ✅ SAFETY CHECK: Sanitize the relative path if it contains spaces
+            string sanitizedRelativePath = relativePath;
+            if (!string.IsNullOrEmpty(relativePath) && relativePath.Contains(" "))
+            {
+                Debug.LogWarning($"⚠️ Sanitizing relative path with spaces: {relativePath}");
+                // Split path, sanitize filename only, keep directory structure
+                string[] pathParts = relativePath.Split('/', '\\');
+                for (int i = 0; i < pathParts.Length; i++)
+                {
+                    if (pathParts[i].Contains(" ") && pathParts[i].Contains(".mp3"))
+                    {
+                        pathParts[i] = SanitizeFileName(pathParts[i]);
+                    }
+                }
+                sanitizedRelativePath = string.Join("/", pathParts);
+                Debug.Log($"   → Sanitized to: {sanitizedRelativePath}");
+            }
 
-            // ✅ CRITICAL: Save story to persist audio information
+            // ✅ Update dialogue with sanitized values
+            dialogues[index].audioFilePath = sanitizedRelativePath;
+            dialogues[index].audioFileName = sanitizedFileName;
+            dialogues[index].audioStoragePath = s3Url ?? "";
+            dialogues[index].hasAudio = !string.IsNullOrEmpty(sanitizedRelativePath);
+
+            // Calculate file size if local file exists
+            if (!string.IsNullOrEmpty(sanitizedRelativePath))
+            {
+                string absolutePath = Path.Combine(Application.persistentDataPath, sanitizedRelativePath);
+                if (File.Exists(absolutePath))
+                {
+                    var fileInfo = new FileInfo(absolutePath);
+                    dialogues[index].audioFileSize = fileInfo.Length;
+                }
+            }
+
+            Debug.Log($"💾 Updated audio info for dialogue {index}:");
+            Debug.Log($"   fileName: {sanitizedFileName}");
+            Debug.Log($"   relativePath: {sanitizedRelativePath}");
+            Debug.Log($"   s3Url: {s3Url ?? "none"}");
+
+            // ✅ Verify no spaces remain
+            bool hasSpaces = sanitizedFileName?.Contains(" ") == true ||
+                           sanitizedRelativePath?.Contains(" ") == true;
+
+            if (hasSpaces)
+            {
+                Debug.LogError($"❌ CRITICAL: Spaces still present after sanitization!");
+            }
+            else
+            {
+                Debug.Log($"✅ Verified: No spaces in saved audio info");
+            }
+
             SaveCurrentStory();
         }
     }
-
 
     public static void EditDialogue(int index, string newName, string newText)
     {
@@ -429,41 +452,41 @@ public static class DialogueStorage
 
         if (index >= 0 && index < dialogues.Count)
         {
-            // ✅ PRESERVE voice selection
             string existingVoiceId = dialogues[index].selectedVoiceId;
-
-            // ✅ NEW: Check if dialogue text actually changed
+            
+            // FIXED: Only check if dialogue TEXT changed (not name)
+            // Name changes shouldn't invalidate audio since the spoken content is the same
             bool dialogueTextChanged = dialogues[index].dialogueText != newText;
-            bool characterNameChanged = dialogues[index].characterName != newName;
 
             dialogues[index].characterName = newName;
             dialogues[index].dialogueText = newText;
             dialogues[index].selectedVoiceId = existingVoiceId;
 
-            // ✅ FIXED: Always invalidate audio if dialogue text changed
-            // (because the audio content is now outdated)
-            if (dialogueTextChanged || characterNameChanged)
-            {   
+            // FIXED: Only invalidate audio if the actual spoken text changed
+            if (dialogueTextChanged)
+            {
                 dialogues[index].hasAudio = false;
                 dialogues[index].audioFilePath = "";
                 dialogues[index].audioFileName = "";
-                Debug.Log($"🔇 Invalidated audio for dialogue {index} (text or name changed)");
+                dialogues[index].audioStoragePath = "";
+                Debug.Log($"Invalidated audio for dialogue {index} (dialogue text changed)");
             }
 
-            // Save the voice ID again to ensure persistence
             if (!string.IsNullOrEmpty(existingVoiceId))
             {
                 VoiceStorageManager.SaveVoiceSelection($"Dialogue_{index}", existingVoiceId);
             }
 
             var voice = VoiceLibrary.GetVoiceById(existingVoiceId);
-            Debug.Log($"✅ DialogueStorage: Edited dialogue {index} - {newName}: {newText} (Voice: {voice.voiceName}, Audio Invalidated: {dialogueTextChanged || characterNameChanged})");
+            Debug.Log($"DialogueStorage: Edited dialogue {index} - {newName}: {newText}");
+            Debug.Log($"   Voice preserved: {voice.voiceName}");
+            Debug.Log($"   Text changed: {dialogueTextChanged}");
+            Debug.Log($"   hasAudio: {dialogues[index].hasAudio}");
+            Debug.Log($"   audioFilePath: {dialogues[index].audioFilePath}");
 
-            // ✅ Save story after editing
             SaveCurrentStory();
         }
     }
-
 
 
     public static void UpdateDialogueVoice(int index, string newVoiceId)
@@ -476,33 +499,26 @@ public static class DialogueStorage
             string oldVoiceId = dialogues[index].selectedVoiceId;
             dialogues[index].selectedVoiceId = newVoiceId;
 
-            // ✅ CRITICAL FIX: Always invalidate audio when voice changes
             if (oldVoiceId != newVoiceId)
             {
                 dialogues[index].hasAudio = false;
                 dialogues[index].audioFilePath = "";
                 dialogues[index].audioFileName = "";
 
-                // ✅ NEW: Delete old audio files when voice changes
                 DeleteDialogueAudioFiles(index, dialogues[index]);
 
-                Debug.Log($"🔇 Invalidated audio for dialogue {index} (voice changed from {oldVoiceId} to {newVoiceId})");
+                Debug.Log($"🔇 Invalidated audio for dialogue {index} (voice changed)");
             }
 
-            // Save to persistent storage
             VoiceStorageManager.SaveVoiceSelection($"Dialogue_{index}", newVoiceId);
 
             var voice = VoiceLibrary.GetVoiceById(newVoiceId);
             Debug.Log($"🎤 Updated dialogue {index} voice to: {voice.voiceName}");
 
-            // ✅ Save story after updating voice
             SaveCurrentStory();
         }
     }
 
-
-
-    // ✅ Debug method
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
     public static void DebugVoiceStorage()
     {
@@ -533,7 +549,6 @@ public static class DialogueStorage
         Debug.Log("=== END DEBUG ===");
     }
 
-    // ✅ NEW: Debug method to check voice storage alignment
     public static void DebugVoiceStorageAlignment()
     {
         var dialogues = GetAllDialogues();
@@ -567,4 +582,9 @@ public static class DialogueStorage
         Debug.Log("=== END ALIGNMENT CHECK ===");
     }
 
+    // Backward compatibility - keeping the old 3-parameter version
+    public static void UpdateDialogueAudioInfo(int index, string relativePath, string fileName)
+    {
+        UpdateDialogueAudioInfo(index, relativePath, fileName, null);
+    }
 }

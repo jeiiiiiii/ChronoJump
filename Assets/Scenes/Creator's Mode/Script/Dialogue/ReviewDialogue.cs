@@ -139,21 +139,20 @@ public class ReviewDialogueManager : MonoBehaviour
                 return;
             }
 
-            // ✅ Get the original dialogue to compare changes
-            var originalDialogue = DialogueStorage.GetAllDialogues()[index];
-            bool textChanged = originalDialogue.dialogueText != textInputField.text.Trim();
-            bool nameChanged = originalDialogue.characterName != nameInputField.text.Trim();
+            // Get original values BEFORE any modifications
+            var dialogues = DialogueStorage.GetAllDialogues();
+            var originalDialogue = dialogues[index];
+            bool voiceChanged = originalDialogue.selectedVoiceId != currentEditingVoiceId;
 
-            // ✅ UPDATED: Update voice if changed
-            if (!string.IsNullOrEmpty(currentEditingVoiceId) || VoiceLibrary.IsNoVoice(currentEditingVoiceId))
+            // Update voice if changed (this will invalidate audio)
+            if (voiceChanged)
             {
                 DialogueStorage.UpdateDialogueVoice(index, currentEditingVoiceId);
+                Debug.Log($"Voice changed for dialogue {index}");
             }
 
-            // Edit dialogue - this will handle audio invalidation
-            DialogueStorage.EditDialogue(index, nameInputField.text, textInputField.text);
-
-            Debug.Log($"✏️ Edited dialogue {index}: TextChanged={textChanged}, NameChanged={nameChanged}");
+            // Edit dialogue (this will invalidate audio if text changed)
+            DialogueStorage.EditDialogue(index, nameInputField.text.Trim(), textInputField.text.Trim());
 
             editPopup.SetActive(false);
             currentEditingIndex = -1;

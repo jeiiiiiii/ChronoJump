@@ -28,6 +28,9 @@ public class QuizTimeManager : MonoBehaviour
     private float currentTime;
     private bool isQuizActive = true;
 
+    // ✅ NEW: Flag to prevent multiple saves
+    private bool isSavingQuizAttempt = false;
+
     // Quiz attempt data
     private string currentStoryId;
     private string studentStudId; // Changed from studentId to studentStudId
@@ -271,27 +274,51 @@ public class QuizTimeManager : MonoBehaviour
         resultText.text = result;
         timerText.gameObject.SetActive(false);
 
+        // ✅ Disable next button before saving
+        nextButton.interactable = false;
+
         // Save quiz attempt to Firebase (will be skipped for teachers)
         await SaveQuizAttempt();
 
+        // ✅ Re-enable next button after saving completes
         nextButton.onClick.RemoveAllListeners();
         nextButton.interactable = true;
-        nextButton.onClick.AddListener(() =>
+        nextButton.onClick.AddListener(GoToNextScene);
+    }
+
+    // ✅ NEW: Separate method for scene transition with protection
+    private void GoToNextScene()
+    {
+        // ✅ Prevent multiple clicks
+        if (isSavingQuizAttempt)
         {
-            // Check if user is a teacher or student and load appropriate scene
-            if (IsTeacher())
-            {
-                SceneManager.LoadScene("Creator'sModeScene");
-            }
-            else
-            {
-                SceneManager.LoadScene("Classroom");
-            }
-        });
+            Debug.Log("⚠️ Still saving quiz attempt, please wait...");
+            return;
+        }
+
+        // ✅ Disable button immediately
+        nextButton.interactable = false;
+
+        // Check if user is a teacher or student and load appropriate scene
+        if (IsTeacher())
+        {
+            SceneManager.LoadScene("Creator'sModeScene");
+        }
+        else
+        {
+            SceneManager.LoadScene("Classroom");
+        }
     }
 
     private async Task SaveQuizAttempt()
     {
+        // ✅ Check if already saving
+        if (isSavingQuizAttempt)
+        {
+            Debug.Log("⚠️ SaveQuizAttempt already in progress, skipping...");
+            return;
+        }
+
         // ✅ Skip saving if teacher is logged in
         if (IsTeacher())
         {
@@ -308,9 +335,16 @@ public class QuizTimeManager : MonoBehaviour
 
         try
         {
+            // ✅ Set flag to prevent multiple saves
+            isSavingQuizAttempt = true;
+
+            // ✅ Update result text to show saving status
+            resultText.text += "\n\n💾 Saving quiz result...";
+
             if (FirebaseManager.Instance?.DB == null)
             {
                 Debug.LogError("Firebase not available to save quiz attempt");
+                resultText.text += "\n❌ Failed to save (no connection)";
                 return;
             }
 
@@ -347,10 +381,21 @@ public class QuizTimeManager : MonoBehaviour
 
             Debug.Log($"✅ Quiz attempt saved: StudentStudId: {studentStudId}, Attempt #{attemptNumber}, Score: {score}/{questions.Length}, Passed: {isPassed}");
 
+            // ✅ Update result text to show success
+            resultText.text = resultText.text.Replace("💾 Saving quiz result...", "✅ Quiz result saved!");
+
         }
         catch (Exception ex)
         {
             Debug.LogError($"❌ Failed to save quiz attempt: {ex.Message}");
+
+            // ✅ Update result text to show error
+            resultText.text = resultText.text.Replace("💾 Saving quiz result...", "❌ Failed to save quiz result");
+        }
+        finally
+        {
+            // ✅ Always reset the flag when done
+            isSavingQuizAttempt = false;
         }
     }
 

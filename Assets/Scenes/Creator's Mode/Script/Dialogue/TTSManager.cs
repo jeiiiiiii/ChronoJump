@@ -34,7 +34,6 @@ public class ElevenLabsTTSManager : MonoBehaviour
         string teacherId = GetCurrentTeacherId();
         int storyIndex = GetCurrentStoryIndex();
 
-        // Follow the same pattern as ImageStorage: teacherid/story_{index}/audio/
         string relativeDir = Path.Combine(teacherId, $"story_{storyIndex}", "audio");
         string absolutePath = Path.Combine(Application.persistentDataPath, relativeDir);
 
@@ -51,32 +50,29 @@ public class ElevenLabsTTSManager : MonoBehaviour
         string teacherId = GetCurrentTeacherId();
         int storyIndex = GetCurrentStoryIndex();
 
-        // Return relative path: teacherid/story_{index}/audio/filename.mp3
-        return Path.Combine(teacherId, $"story_{storyIndex}", "audio", fileName);
+        // ✅ FIX: Use forward slashes for consistency (works on all platforms)
+        return $"{teacherId}/story_{storyIndex}/audio/{fileName}";
     }
 
     private string GetCurrentTeacherId()
     {
-        // Use the same logic as ImageStorage
         if (StoryManager.Instance != null && StoryManager.Instance.IsCurrentUserTeacher())
         {
             return StoryManager.Instance.GetCurrentTeacherId();
         }
 
-        // For students, try to extract from story data
         string studentStoryJson = StudentPrefs.GetString("CurrentStoryData", "");
         if (!string.IsNullOrEmpty(studentStoryJson))
         {
             try
             {
                 var studentStory = JsonUtility.FromJson<StoryData>(studentStoryJson);
-                // Extract teacher ID from the path if available
                 if (!string.IsNullOrEmpty(studentStory.backgroundPath))
                 {
                     string[] pathParts = studentStory.backgroundPath.Split(Path.DirectorySeparatorChar);
                     if (pathParts.Length > 0)
                     {
-                        return pathParts[0]; // First part is teacher ID
+                        return pathParts[0];
                     }
                 }
             }
@@ -97,7 +93,6 @@ public class ElevenLabsTTSManager : MonoBehaviour
             return story.storyIndex;
         }
 
-        // For students, try to extract from story data path
         string studentStoryJson = StudentPrefs.GetString("CurrentStoryData", "");
         if (!string.IsNullOrEmpty(studentStoryJson))
         {
@@ -141,14 +136,14 @@ public class ElevenLabsTTSManager : MonoBehaviour
     {
         if (string.IsNullOrEmpty(dialogue.selectedVoiceId) || VoiceLibrary.IsNoVoice(dialogue.selectedVoiceId))
         {
-            Debug.Log($"🔇 Skipping TTS for '{dialogue.characterName}' - No voice selected (intentional)");
+            Debug.Log($"🔇 Skipping TTS for '{dialogue.characterName}' - No voice selected");
             dialogue.hasAudio = false;
             dialogue.audioFilePath = "";
+            dialogue.audioStoragePath = "";
             onComplete?.Invoke(true, "No Voice Selected - Skipped");
             yield break;
         }
 
-        // ✅ CRITICAL FIX: Get dialogue index BEFORE any file operations
         int dialogueIndex = GetDialogueIndex(dialogue);
         if (dialogueIndex < 0)
         {
@@ -157,23 +152,20 @@ public class ElevenLabsTTSManager : MonoBehaviour
             yield break;
         }
 
-        // ✅ NEW: Delete ALL existing audio files for this dialogue index first
         DeleteAllAudioFilesForDialogue(dialogueIndex, dialogue.characterName);
 
-        // Rest of your existing GenerateTTS code...
         if (string.IsNullOrEmpty(apiKey) || apiKey == "YOUR_API_KEY_HERE")
         {
-            Debug.LogError("ElevenLabs API Key not set or invalid!");
+            Debug.LogError("ElevenLabs API Key not set!");
             onComplete?.Invoke(false, "API Key not configured");
             yield break;
         }
 
-        // Use the dialogue's selected voice ID
         string voiceId = dialogue.selectedVoiceId;
         var voice = VoiceLibrary.GetVoiceById(voiceId);
         string url = apiUrl + voiceId;
 
-        Debug.Log($"🎤 Generating TTS for '{dialogue.characterName}' using voice: {voice.voiceName} (Index: {dialogueIndex})");
+        Debug.Log($"🎤 Generating TTS: '{dialogue.characterName}' - {voice.voiceName} (Index: {dialogueIndex})");
 
         string jsonPayload = $@"{{
         ""text"": ""{EscapeJson(dialogue.dialogueText)}"",
@@ -199,33 +191,111 @@ public class ElevenLabsTTSManager : MonoBehaviour
             {
                 string teacherId = GetCurrentTeacherId();
                 int storyIndex = GetCurrentStoryIndex();
-                string sanitizedName = SanitizeFileName(dialogue.characterName);
 
-                // ✅ FIXED: Use the dialogueIndex variable that's already declared above
-                // Remove this line: int dialogueIndex = GetDialogueIndex(dialogue);
+                // ✅ KEY FIX: Sanitize EVERYTHING before creating filenames
+                string sanitizedCharName = SanitizeFileName(dialogue.characterName);
+                string sanitizedVoiceName = SanitizeFileName(voice.voiceName);
 
-                // ✅ NEW: Delete existing audio files for this dialogue index first
-                DeleteExistingAudioFiles(dialogueIndex, sanitizedName, voice.voiceName);
+                // ✅ This filename is now GUARANTEED to have no spaces
+                string sanitizedFileName = $"dialogue_{dialogueIndex}_{sanitizedCharName}_{sanitizedVoiceName}.mp3";
 
-                // ✅ FIXED: Create filename WITHOUT timestamp: dialogue_{index}_{character}_{voice}.mp3
-                string fileName = $"dialogue_{dialogueIndex}_{sanitizedName}_{voice.voiceName}.mp3";
+                Debug.Log($"📝 Sanitized filename: {sanitizedFileName}");
+                Debug.Log($"   Character: '{dialogue.characterName}' → '{sanitizedCharName}'");
+                Debug.Log($"   Voice: '{voice.voiceName}' → '{sanitizedVoiceName}'");
 
+                // ========== STEP 1: SAVE LOCALLY ==========
                 string audioDir = GetAudioSaveDirectory();
-                string absolutePath = Path.Combine(audioDir, fileName);
-                string relativePath = GetAudioRelativePath(fileName);
+                string absolutePath = Path.Combine(audioDir, sanitizedFileName);
+                string relativePath = GetAudioRelativePath(sanitizedFileName);
 
                 File.WriteAllBytes(absolutePath, request.downloadHandler.data);
+                Debug.Log($"💾 Audio saved locally: {relativePath}");
 
-                // ✅ UPDATED: Store relative path and additional audio info
-                dialogue.audioFilePath = relativePath; // Store RELATIVE path for cross-device
-                dialogue.audioFileName = fileName;     // Store filename separately
+                // ========== STEP 2: UPLOAD TO S3 (Async) ==========
+                string s3Url = null;
+                bool uploadSuccess = false;
+
+                if (S3StorageService.Instance != null && S3StorageService.Instance.IsReady)
+                {
+                    Debug.Log($"☁️ Uploading audio to S3...");
+
+                    // ✅ FIX: Pass sanitized filename to S3 (without .mp3 extension)
+                    string s3BaseFileName = $"{dialogueIndex}_{sanitizedCharName}_{sanitizedVoiceName}";
+
+                    var uploadTask = S3StorageService.Instance.UploadVoiceAudio(
+                        request.downloadHandler.data,
+                        teacherId,
+                        storyIndex,
+                        s3BaseFileName
+                    );
+
+                    while (!uploadTask.IsCompleted)
+                    {
+                        yield return null;
+                    }
+
+                    s3Url = uploadTask.Result;
+
+                    if (!string.IsNullOrEmpty(s3Url))
+                    {
+                        uploadSuccess = true;
+                        Debug.Log($"✅ Audio uploaded to S3: {s3Url}");
+
+                        // ✅ VERIFY: Check that S3 URL has no spaces
+                        if (s3Url.Contains(" "))
+                        {
+                            Debug.LogError($"❌ CRITICAL: S3 URL still contains spaces!");
+                            Debug.LogError($"   This means S3StorageService.UploadVoiceAudio needs fixing!");
+                        }
+                        else
+                        {
+                            Debug.Log($"✅ S3 URL verified: no spaces detected");
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"⚠️ S3 upload failed, using local only");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"⚠️ S3 not available, using local storage only");
+                }
+
+                // ========== STEP 3: UPDATE DIALOGUE - USE SANITIZED VALUES ==========
+                // ✅ CRITICAL FIX: Use sanitized filename for ALL fields
+                dialogue.audioFilePath = relativePath;              // Already uses sanitizedFileName
+                dialogue.audioFileName = sanitizedFileName;         // ✅ Now sanitized
+                dialogue.audioStoragePath = s3Url ?? "";           // S3 should already be sanitized
+                dialogue.audioFileSize = request.downloadHandler.data.Length;
                 dialogue.hasAudio = true;
                 dialogue.needsAudioRegeneration = false;
 
-                // ✅ NEW: Update audio info in storage to persist it
-                DialogueStorage.UpdateDialogueAudioInfo(dialogueIndex, relativePath, fileName);
+                // ✅ Persist to storage with sanitized values
+                DialogueStorage.UpdateDialogueAudioInfo(dialogueIndex, relativePath, sanitizedFileName, s3Url);
 
-                Debug.Log($"✅ TTS generated: '{dialogue.characterName}' → {relativePath}");
+                // ✅ VERIFICATION LOG
+                Debug.Log($"📋 Dialogue updated with:");
+                Debug.Log($"   audioFileName: {dialogue.audioFileName}");
+                Debug.Log($"   audioFilePath: {dialogue.audioFilePath}");
+                Debug.Log($"   audioStoragePath: {dialogue.audioStoragePath}");
+
+                // Check for spaces
+                bool hasSpaces = dialogue.audioFileName.Contains(" ") ||
+                                dialogue.audioFilePath.Contains(" ") ||
+                                (dialogue.audioStoragePath?.Contains(" ") ?? false);
+
+                if (hasSpaces)
+                {
+                    Debug.LogError($"❌ WARNING: Dialogue fields still contain spaces!");
+                }
+                else
+                {
+                    Debug.Log($"✅ All dialogue fields verified: no spaces");
+                }
+
+                string cloudStatus = uploadSuccess ? $"Cloud: {s3Url}" : "Local only";
+                Debug.Log($"✅ TTS complete: '{dialogue.characterName}' → {cloudStatus}");
 
                 onComplete?.Invoke(true, relativePath);
             }
@@ -237,8 +307,6 @@ public class ElevenLabsTTSManager : MonoBehaviour
         }
     }
 
-
-    // ✅ NEW: Comprehensive method to delete ALL audio files for a specific dialogue index
     private void DeleteAllAudioFilesForDialogue(int dialogueIndex, string characterName)
     {
         try
@@ -248,11 +316,10 @@ public class ElevenLabsTTSManager : MonoBehaviour
 
             string sanitizedName = SanitizeFileName(characterName);
 
-            // Delete ALL possible audio file patterns for this dialogue index
             string[] patterns = {
-            $"dialogue_{dialogueIndex}_{sanitizedName}_*.mp3",  // All voices for this character
-            $"dialogue_{dialogueIndex}_*.mp3"                   // Any file with this index
-        };
+                $"dialogue_{dialogueIndex}_{sanitizedName}_*.mp3",
+                $"dialogue_{dialogueIndex}_*.mp3"
+            };
 
             int deletedCount = 0;
             foreach (string pattern in patterns)
@@ -264,7 +331,7 @@ public class ElevenLabsTTSManager : MonoBehaviour
                     {
                         File.Delete(file);
                         deletedCount++;
-                        Debug.Log($"🗑️ Deleted audio file during voice change: {Path.GetFileName(file)}");
+                        Debug.Log($"🗑️ Deleted audio file: {Path.GetFileName(file)}");
                     }
                     catch (System.Exception ex)
                     {
@@ -275,60 +342,14 @@ public class ElevenLabsTTSManager : MonoBehaviour
 
             if (deletedCount > 0)
             {
-                Debug.Log($"✅ Deleted {deletedCount} audio files for dialogue {dialogueIndex} during voice change");
+                Debug.Log($"✅ Deleted {deletedCount} audio files for dialogue {dialogueIndex}");
             }
         }
         catch (System.Exception ex)
         {
-            Debug.LogError($"❌ Error deleting audio files during voice change: {ex.Message}");
+            Debug.LogError($"❌ Error deleting audio files: {ex.Message}");
         }
     }
-
-
-    // ✅ NEW: Delete existing audio files for a dialogue to prevent duplicates
-    private void DeleteExistingAudioFiles(int dialogueIndex, string characterName, string voiceName)
-    {
-        try
-        {
-            string audioDir = GetAudioSaveDirectory();
-            if (!Directory.Exists(audioDir)) return;
-
-            string sanitizedName = SanitizeFileName(characterName);
-
-            // Pattern 1: Exact match (without timestamp)
-            string exactPattern = $"dialogue_{dialogueIndex}_{sanitizedName}_{voiceName}.mp3";
-
-            // Pattern 2: Old pattern with timestamps
-            string timestampPattern = $"dialogue_{dialogueIndex}_{sanitizedName}_{voiceName}_*.mp3";
-
-            // Delete exact match files
-            string[] exactFiles = Directory.GetFiles(audioDir, exactPattern);
-            foreach (string file in exactFiles)
-            {
-                File.Delete(file);
-                Debug.Log($"🗑️ Deleted existing audio: {Path.GetFileName(file)}");
-            }
-
-            // Delete timestamped files
-            string[] timestampFiles = Directory.GetFiles(audioDir, timestampPattern);
-            foreach (string file in timestampFiles)
-            {
-                File.Delete(file);
-                Debug.Log($"🗑️ Deleted old timestamped audio: {Path.GetFileName(file)}");
-            }
-
-            if (exactFiles.Length > 0 || timestampFiles.Length > 0)
-            {
-                Debug.Log($"✅ Cleared {exactFiles.Length + timestampFiles.Length} existing audio files for dialogue {dialogueIndex}");
-            }
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogWarning($"⚠️ Error deleting existing audio files: {ex.Message}");
-        }
-    }
-
-
 
     private int GetDialogueIndex(DialogueLine targetDialogue)
     {
@@ -350,7 +371,7 @@ public class ElevenLabsTTSManager : MonoBehaviour
         string teacherId = GetCurrentTeacherId();
         int storyIndex = GetCurrentStoryIndex();
 
-        Debug.Log($"🎙️ Starting TTS generation for {total} dialogues (Teacher: {teacherId}, Story: {storyIndex})");
+        Debug.Log($"Starting TTS generation for {total} dialogues (Teacher: {teacherId}, Story: {storyIndex})");
 
         for (int i = 0; i < dialogues.Count; i++)
         {
@@ -358,16 +379,31 @@ public class ElevenLabsTTSManager : MonoBehaviour
             var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
 
             Debug.Log($"Processing dialogue {i + 1}/{total}: '{dialogue.characterName}' (Voice: {voice.voiceName})");
+            Debug.Log($"  hasAudio: {dialogue.hasAudio}");
+            Debug.Log($"  audioFilePath: {dialogue.audioFilePath}");
 
-            // Check if audio already exists for this dialogue
-            string existingAudio = FindExistingAudioFile(dialogue, i);
-            if (!string.IsNullOrEmpty(existingAudio))
+            // CRITICAL FIX: Check hasAudio flag FIRST, not file existence
+            // This respects when audio has been intentionally invalidated by edits
+            if (dialogue.hasAudio && !string.IsNullOrEmpty(dialogue.audioFilePath))
             {
-                dialogue.audioFilePath = existingAudio;
-                dialogue.hasAudio = true;
-                completed++;
-                onProgress?.Invoke(completed, total, $"Skipped: {dialogue.characterName} ({voice.voiceName})");
-                continue;
+                // Verify the file actually exists
+                string fullPath = Path.Combine(Application.persistentDataPath, dialogue.audioFilePath);
+                if (File.Exists(fullPath))
+                {
+                    Debug.Log($"  Audio valid, skipping generation");
+                    completed++;
+                    onProgress?.Invoke(completed, total, $"Skipped: {dialogue.characterName} ({voice.voiceName})");
+                    continue;
+                }
+                else
+                {
+                    // File marked as having audio but doesn't exist - regenerate
+                    Debug.LogWarning($"  Audio file missing, will regenerate");
+                }
+            }
+            else
+            {
+                Debug.Log($"  No valid audio, generating...");
             }
 
             bool success = false;
@@ -394,46 +430,14 @@ public class ElevenLabsTTSManager : MonoBehaviour
         }
 
         bool allSuccess = (failed == 0 && completed == total);
-        Debug.Log($"🎬 TTS Complete: {completed}/{total} succeeded, {failed} failed");
+        Debug.Log($"TTS Complete: {completed}/{total} succeeded, {failed} failed");
         onComplete?.Invoke(allSuccess);
     }
 
-    private string FindExistingAudioFile(DialogueLine dialogue, int dialogueIndex)
-    {
-        try
-        {
-            string audioDir = GetAudioSaveDirectory();
-            if (!Directory.Exists(audioDir)) return null;
-
-            string sanitizedName = SanitizeFileName(dialogue.characterName);
-            var voice = VoiceLibrary.GetVoiceById(dialogue.selectedVoiceId);
-
-            // Look for files matching the pattern: dialogue_{index}_{character}_{voice}_*.mp3
-            string searchPattern = $"dialogue_{dialogueIndex}_{sanitizedName}_{voice.voiceName}_*.mp3";
-            string[] files = Directory.GetFiles(audioDir, searchPattern);
-
-            if (files.Length > 0)
-            {
-                // Return the most recent file
-                Array.Sort(files);
-                return files[files.Length - 1];
-            }
-
-            return null;
-        }
-        catch (Exception ex)
-        {
-            Debug.LogWarning($"Error finding existing audio: {ex.Message}");
-            return null;
-        }
-    }
-
-    // Method for students to find audio files
     public string FindStudentAudioFile(string teacherId, int storyIndex, int dialogueIndex, string characterName, string voiceId)
     {
         try
         {
-            // Build the audio directory path following the same pattern
             string relativeDir = Path.Combine(teacherId, $"story_{storyIndex}", "audio");
             string audioDir = Path.Combine(Application.persistentDataPath, relativeDir);
 
@@ -445,21 +449,18 @@ public class ElevenLabsTTSManager : MonoBehaviour
 
             string sanitizedName = SanitizeFileName(characterName);
             var voice = VoiceLibrary.GetVoiceById(voiceId);
+            string sanitizedVoice = SanitizeFileName(voice.voiceName);
 
-            // Look for files matching the pattern
-            string searchPattern = $"dialogue_{dialogueIndex}_{sanitizedName}_{voice.voiceName}_*.mp3";
-            string[] files = Directory.GetFiles(audioDir, searchPattern);
+            string searchPattern = $"dialogue_{dialogueIndex}_{sanitizedName}_{sanitizedVoice}.mp3";
+            string exactPath = Path.Combine(audioDir, searchPattern);
 
-            if (files.Length > 0)
+            if (File.Exists(exactPath))
             {
-                // Return the most recent file
-                Array.Sort(files);
-                string latestFile = files[files.Length - 1];
-                Debug.Log($"✅ Found student audio: {latestFile}");
-                return latestFile;
+                Debug.Log($"✅ Found student audio: {exactPath}");
+                return exactPath;
             }
 
-            Debug.LogWarning($"No audio file found for pattern: {searchPattern}");
+            Debug.LogWarning($"No audio file found for: {searchPattern}");
             return null;
         }
         catch (Exception ex)
@@ -469,20 +470,16 @@ public class ElevenLabsTTSManager : MonoBehaviour
         }
     }
 
-    // Update DialoguePlayer to use this method for students
     public string GetAudioFilePathForDialogue(DialogueLine dialogue, int dialogueIndex)
     {
-        // If we're in teacher mode or the path already exists, use it directly
         if (!string.IsNullOrEmpty(dialogue.audioFilePath) && File.Exists(dialogue.audioFilePath))
         {
             return dialogue.audioFilePath;
         }
 
-        // For students, we need to find the audio file
         string userRole = PlayerPrefs.GetString("UserRole", "student");
         if (userRole.ToLower() == "student")
         {
-            // Extract teacher ID and story index from the story data
             string storyJson = StudentPrefs.GetString("CurrentStoryData", "");
             if (!string.IsNullOrEmpty(storyJson))
             {
@@ -512,12 +509,42 @@ public class ElevenLabsTTSManager : MonoBehaviour
         return dialogue.audioFilePath;
     }
 
+    // ✅ COMPREHENSIVE: Sanitize all problematic characters
     private string SanitizeFileName(string fileName)
     {
+        if (string.IsNullOrEmpty(fileName))
+            return fileName;
+
+        // Remove invalid file system characters
         foreach (char c in Path.GetInvalidFileNameChars())
         {
             fileName = fileName.Replace(c, '_');
         }
+
+        // Replace spaces and problematic URL/S3 characters
+        fileName = fileName.Replace(' ', '_');
+        fileName = fileName.Replace('#', '_');
+        fileName = fileName.Replace('%', '_');
+        fileName = fileName.Replace('&', '_');
+        fileName = fileName.Replace('{', '_');
+        fileName = fileName.Replace('}', '_');
+        fileName = fileName.Replace('\\', '_');
+        fileName = fileName.Replace('<', '_');
+        fileName = fileName.Replace('>', '_');
+        fileName = fileName.Replace('*', '_');
+        fileName = fileName.Replace('?', '_');
+        fileName = fileName.Replace('/', '_');
+        fileName = fileName.Replace('$', '_');
+        fileName = fileName.Replace('!', '_');
+        fileName = fileName.Replace('\'', '_');
+        fileName = fileName.Replace('"', '_');
+        fileName = fileName.Replace(':', '_');
+        fileName = fileName.Replace('@', '_');
+        fileName = fileName.Replace('+', '_');
+        fileName = fileName.Replace('`', '_');
+        fileName = fileName.Replace('|', '_');
+        fileName = fileName.Replace('=', '_');
+
         return fileName;
     }
 
@@ -549,11 +576,459 @@ public class ElevenLabsTTSManager : MonoBehaviour
                 FileInfo info = new FileInfo(file);
                 Debug.Log($"   🔊 {Path.GetFileName(file)} ({info.Length / 1024} KB)");
             }
-            Debug.Log($"📊 Total audio files: {files.Length}");
+            Debug.Log($"🔊 Total audio files: {files.Length}");
         }
         else
         {
             Debug.Log("   No audio directory found");
         }
     }
+
+    [ContextMenu("Debug Audio Storage")]
+    public void DebugAudioStorage()
+    {
+        var dialogues = DialogueStorage.GetAllDialogues();
+        Debug.Log($"🔊 === AUDIO STORAGE DEBUG ===");
+
+        for (int i = 0; i < dialogues.Count; i++)
+        {
+            var d = dialogues[i];
+            Debug.Log($"Dialogue {i}: '{d.characterName}'");
+            Debug.Log($"  Has Audio: {d.hasAudio}");
+            Debug.Log($"  audioFileName: {d.audioFileName}");
+            Debug.Log($"  audioFilePath: {d.audioFilePath}");
+            Debug.Log($"  audioStoragePath: {d.audioStoragePath}");
+            Debug.Log($"  File Size: {d.audioFileSize} bytes");
+
+            // Check for spaces
+            bool hasSpaces = d.audioFileName?.Contains(" ") == true ||
+                           d.audioFilePath?.Contains(" ") == true ||
+                           d.audioStoragePath?.Contains(" ") == true;
+
+            if (hasSpaces)
+            {
+                Debug.LogWarning($"  ⚠️ WARNING: Contains spaces!");
+            }
+
+            if (!string.IsNullOrEmpty(d.audioFilePath))
+            {
+                bool localExists = File.Exists(Path.Combine(Application.persistentDataPath, d.audioFilePath));
+                Debug.Log($"  Local Exists: {localExists}");
+            }
+        }
+    }
+
+    // Add this to your ElevenLabsTTSManager class or create a new script
+
+[ContextMenu("Validate All Voices")]
+public void ValidateAllVoices()
+{
+    if (string.IsNullOrEmpty(apiKey) || apiKey == "YOUR_API_KEY_HERE")
+    {
+        Debug.LogError("❌ API Key not set! Cannot validate voices.");
+        return;
+    }
+    
+    StartCoroutine(SafeValidateAllVoicesCoroutine());
+}
+
+private IEnumerator SafeValidateAllVoicesCoroutine()
+{
+    Debug.Log("🔍 === VOICE VALIDATION STARTED (SAFE MODE) ===");
+    Debug.Log($"Testing API Key: {apiKey.Substring(0, Math.Min(15, apiKey.Length))}...");
+    
+    List<VoiceProfile> voices = null;
+    
+    // Try to get voices without yield
+    bool voiceLoadSuccess = false;
+    try
+    {
+        voices = VoiceLibrary.GetAvailableVoices();
+        voiceLoadSuccess = true;
+    }
+    catch (Exception ex)
+    {
+        Debug.LogError($"❌ Could not get voice library: {ex.Message}");
+        Debug.LogError("Make sure VoiceLibrary class exists and GetAvailableVoices() method is accessible.");
+    }
+    
+    if (!voiceLoadSuccess || voices == null || voices.Count == 0)
+    {
+        Debug.LogWarning("⚠️ No voices found in VoiceLibrary");
+        yield break;
+    }
+    
+    int totalVoices = voices.Count;
+    int workingVoices = 0;
+    int failedVoices = 0;
+    
+    List<string> workingList = new List<string>();
+    List<string> failedList = new List<string>();
+    
+    for (int i = 0; i < voices.Count; i++)
+    {
+        VoiceProfile voice = voices[i];
+        
+        if (voice == null)
+        {
+            Debug.LogWarning($"⚠️ Voice at index {i} is null, skipping...");
+            continue;
+        }
+        
+        Debug.Log($"\n📋 Testing {i + 1}/{totalVoices}: {voice.voiceName ?? "Unknown"} (ID: {voice.voiceId ?? "Unknown"})");
+        
+        bool isWorking = false;
+        string errorMessage = "";
+        bool callbackCompleted = false;
+        
+        // Call the safe test coroutine
+        yield return SafeTestSingleVoice(voice.voiceId, voice.voiceName, (success, error) =>
+        {
+            isWorking = success;
+            errorMessage = error;
+            callbackCompleted = true;
+        });
+        
+        // Wait for callback with timeout
+        float timeout = 15f;
+        float elapsed = 0f;
+        while (!callbackCompleted && elapsed < timeout)
+        {
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        
+        if (!callbackCompleted)
+        {
+            Debug.LogWarning($"   ⏱️ TIMEOUT: {voice.voiceName} took too long to respond");
+            failedVoices++;
+            failedList.Add($"{voice.voiceName} ({voice.voiceId}) - Request Timeout");
+        }
+        else if (isWorking)
+        {
+            workingVoices++;
+            workingList.Add($"{voice.voiceName} ({voice.voiceId})");
+            Debug.Log($"   ✅ WORKING: {voice.voiceName}");
+        }
+        else
+        {
+            failedVoices++;
+            failedList.Add($"{voice.voiceName} ({voice.voiceId}) - {errorMessage}");
+            Debug.LogWarning($"   ❌ FAILED: {voice.voiceName} - {errorMessage}");
+        }
+        
+        // Small delay to avoid rate limiting
+        yield return new WaitForSeconds(0.5f);
+    }
+    
+    // Final Report
+    Debug.Log("\n" + "=".PadRight(60, '='));
+    Debug.Log("📊 === VOICE VALIDATION COMPLETE ===");
+    Debug.Log("=".PadRight(60, '='));
+    Debug.Log($"Total Voices: {totalVoices}");
+    Debug.Log($"✅ Working: {workingVoices}");
+    Debug.Log($"❌ Failed: {failedVoices}");
+    
+    if (workingList.Count > 0)
+    {
+        Debug.Log("\n✅ WORKING VOICES:");
+        foreach (var voice in workingList)
+        {
+            Debug.Log($"   • {voice}");
+        }
+    }
+    
+    if (failedList.Count > 0)
+    {
+        Debug.Log("\n❌ FAILED VOICES:");
+        foreach (var voice in failedList)
+        {
+            Debug.Log($"   • {voice}");
+        }
+    }
+    
+    Debug.Log("\n" + "=".PadRight(60, '='));
+    
+    // Provide recommendations
+    if (failedVoices == totalVoices)
+    {
+        Debug.LogError("⚠️ ALL VOICES FAILED!");
+        Debug.LogError("Possible issues:");
+        Debug.LogError("   1. API key is invalid or expired");
+        Debug.LogError("   2. API key lacks 'Voice Generation' or 'Voices' permissions");
+        Debug.LogError("   3. Voices are in a different workspace");
+        Debug.LogError("   4. Network connectivity issues");
+    }
+    else if (failedVoices > 0)
+    {
+        Debug.LogWarning("⚠️ SOME VOICES FAILED!");
+        Debug.LogWarning("These voices may not exist in your workspace or you lack permission to use them.");
+        Debug.LogWarning("Consider removing failed voices from VoiceLibrary or creating them in your workspace.");
+    }
+    else
+    {
+        Debug.Log("🎉 ALL VOICES ARE WORKING! Your setup is perfect!");
+    }
+}
+
+private IEnumerator SafeTestSingleVoice(string voiceId, string voiceName, Action<bool, string> onComplete)
+{
+    // Validate inputs first (no yield needed)
+    if (string.IsNullOrEmpty(voiceId))
+    {
+        if (onComplete != null)
+        {
+            onComplete(false, "Voice ID is null or empty");
+        }
+        yield break;
+    }
+    
+    UnityWebRequest request = null;
+    bool requestCreated = false;
+    
+    // Create request without try-catch
+    string testText = "Test";
+    string url = apiUrl + voiceId;
+    
+    string jsonPayload = $@"{{
+        ""text"": ""{testText}"",
+        ""model_id"": ""eleven_turbo_v2_5"",
+        ""voice_settings"": {{
+            ""stability"": 0.5,
+            ""similarity_boost"": 0.75
+        }}
+    }}";
+    
+    byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonPayload);
+    
+    request = new UnityWebRequest(url, "POST");
+    request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+    request.downloadHandler = new DownloadHandlerBuffer();
+    request.SetRequestHeader("Content-Type", "application/json");
+    request.SetRequestHeader("xi-api-key", apiKey.Trim());
+    request.timeout = 10;
+    requestCreated = true;
+    
+    // Send request (yield allowed here, no catch)
+    yield return request.SendWebRequest();
+    
+    // Process response without try-catch around yield
+    bool success = false;
+    string errorMsg = "";
+    
+    if (request.result == UnityWebRequest.Result.Success)
+    {
+        success = true;
+    }
+    else
+    {
+        errorMsg = $"HTTP {request.responseCode}: {request.error}";
+        
+        // Try to get more detailed error from response
+        if (!string.IsNullOrEmpty(request.downloadHandler.text))
+        {
+            string errorJson = request.downloadHandler.text;
+            if (errorJson.Contains("detail") || errorJson.Contains("message"))
+            {
+                int maxLength = Math.Min(200, errorJson.Length);
+                errorMsg += $" | {errorJson.Substring(0, maxLength)}";
+            }
+        }
+    }
+    
+    // Cleanup
+    if (requestCreated && request != null)
+    {
+        request.Dispose();
+    }
+    
+    // Call callback
+    if (onComplete != null)
+    {
+        onComplete(success, errorMsg);
+    }
+}
+
+[ContextMenu("Check API Permissions")]
+public void CheckAPIPermissions()
+{
+    if (string.IsNullOrEmpty(apiKey) || apiKey == "YOUR_API_KEY_HERE")
+    {
+        Debug.LogError("❌ API Key not set! Cannot check permissions.");
+        return;
+    }
+    
+    StartCoroutine(SafeCheckAPIPermissionsCoroutine());
+}
+
+private IEnumerator SafeCheckAPIPermissionsCoroutine()
+{
+    Debug.Log("🔑 === CHECKING API KEY PERMISSIONS (SAFE MODE) ===");
+    
+    // Test 1: Get available voices
+    string voicesUrl = "https://api.elevenlabs.io/v1/voices";
+    UnityWebRequest voicesRequest = UnityWebRequest.Get(voicesUrl);
+    voicesRequest.SetRequestHeader("xi-api-key", apiKey.Trim());
+    voicesRequest.timeout = 10;
+    
+    yield return voicesRequest.SendWebRequest();
+    
+    if (voicesRequest.result == UnityWebRequest.Result.Success)
+    {
+        Debug.Log("✅ Can access Voices endpoint");
+        
+        string response = voicesRequest.downloadHandler.text;
+        int voiceCount = response.Split(new[] { "voice_id" }, StringSplitOptions.None).Length - 1;
+        Debug.Log($"   Found {voiceCount} voices in your workspace");
+    }
+    else
+    {
+        Debug.LogError($"❌ Cannot access Voices endpoint: {voicesRequest.error}");
+        Debug.LogError("   Your API key may not have 'Voices' permission enabled");
+    }
+    
+    voicesRequest.Dispose();
+    
+    yield return new WaitForSeconds(0.5f);
+    
+    // Test 2: Get user info
+    string userUrl = "https://api.elevenlabs.io/v1/user";
+    UnityWebRequest userRequest = UnityWebRequest.Get(userUrl);
+    userRequest.SetRequestHeader("xi-api-key", apiKey.Trim());
+    userRequest.timeout = 10;
+    
+    yield return userRequest.SendWebRequest();
+    
+    if (userRequest.result == UnityWebRequest.Result.Success)
+    {
+        Debug.Log("✅ Can access User endpoint");
+        string response = userRequest.downloadHandler.text;
+        int maxLength = Math.Min(200, response.Length);
+        Debug.Log($"   Response preview: {response.Substring(0, maxLength)}...");
+    }
+    else
+    {
+        Debug.LogError($"❌ Cannot access User endpoint: {userRequest.error}");
+    }
+    
+    userRequest.Dispose();
+    
+    Debug.Log("\n=== PERMISSION CHECK COMPLETE ===");
+}
+
+[ContextMenu("Quick Voice Test")]
+public void QuickVoiceTest()
+{
+    if (string.IsNullOrEmpty(apiKey) || apiKey == "YOUR_API_KEY_HERE")
+    {
+        Debug.LogError("❌ API Key not set!");
+        return;
+    }
+    
+    StartCoroutine(QuickVoiceTestCoroutine());
+}
+
+    private IEnumerator QuickVoiceTestCoroutine()
+    {
+        Debug.Log("⚡ === QUICK VOICE TEST ===");
+        Debug.Log("Testing with a known public voice...");
+
+        // Test with Rachel (a public ElevenLabs voice)
+        string testVoiceId = "21m00Tcm4TlvDq8ikWAM";
+        string testVoiceName = "Rachel (Public Test Voice)";
+
+        bool success = false;
+        string error = "";
+
+        yield return SafeTestSingleVoice(testVoiceId, testVoiceName, (s, e) =>
+        {
+            success = s;
+            error = e;
+        });
+
+        if (success)
+        {
+            Debug.Log("✅ API KEY IS WORKING! Your custom voices may be in a different workspace.");
+        }
+        else
+        {
+            Debug.LogError($"❌ API KEY TEST FAILED: {error}");
+            Debug.LogError("Your API key may be invalid or lack permissions.");
+        }
+    }
+
+    [ContextMenu("Check Account Status")]
+    public void CheckAccountStatus()
+    {
+        if (string.IsNullOrEmpty(apiKey) || apiKey == "YOUR_API_KEY_HERE")
+        {
+            Debug.LogError("❌ API Key not set!");
+            return;
+        }
+
+        StartCoroutine(CheckAccountStatusCoroutine());
+    }
+
+
+    private IEnumerator CheckAccountStatusCoroutine()
+    {
+        Debug.Log("🔍 === CHECKING ACCOUNT STATUS ===");
+
+        // Test with a simple voice generation request
+        string testVoiceId = "21m00Tcm4TlvDq8ikWAM"; // Rachel - public voice
+        string url = apiUrl + testVoiceId;
+
+        string jsonPayload = @"{
+        ""text"": ""Hello, this is a test."",
+        ""model_id"": ""eleven_turbo_v2_5"",
+        ""voice_settings"": {
+            ""stability"": 0.5,
+            ""similarity_boost"": 0.75
+        }
+    }";
+
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonPayload);
+
+        using (UnityWebRequest request = new UnityWebRequest(url, "POST"))
+        {
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+            request.SetRequestHeader("xi-api-key", apiKey.Trim());
+            request.timeout = 15;
+
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                Debug.Log("✅ Account is ACTIVE - Voice generation working!");
+            }
+            else
+            {
+                Debug.LogError($"❌ Account Issue: {request.error}");
+
+                if (!string.IsNullOrEmpty(request.downloadHandler.text))
+                {
+                    string response = request.downloadHandler.text;
+                    Debug.LogError($"Full Response: {response}");
+
+                    if (response.Contains("unusual_activity"))
+                    {
+                        Debug.LogError("🚨 ACCOUNT FLAGGED FOR UNUSUAL ACTIVITY");
+                        Debug.LogError("Solutions:");
+                        Debug.LogError("1. Wait 24-48 hours for automatic reset");
+                        Debug.LogError("2. Disable any VPN/Proxy");
+                        Debug.LogError("3. Use a different network");
+                        Debug.LogError("4. Upgrade to paid plan");
+                        Debug.LogError("5. Contact support@elevenlabs.io");
+                    }
+                    else if (response.Contains("character_limit"))
+                    {
+                        Debug.LogError("📊 Character limit exceeded - wait for reset or upgrade");
+                    }
+                }
+            }
+        }
+    }
+
 }
