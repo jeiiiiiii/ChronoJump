@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d95d37e00f7ab1d47852694de6ed5c53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  credentialsAsset: {fileID: 11400000, guid: 76479c49dd6483841831bcca62af5270, type: 2}
+  credentialsAsset: {fileID: 11400000, guid: 30ffca0da58a24e49b18c7d4c454d3d6, type: 2}
 --- !u!4 &139916104
 Transform:
   m_ObjectHideFlags: 0

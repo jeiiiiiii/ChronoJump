@@ -31,8 +31,18 @@ public class ImageUploader : MonoBehaviour
     private bool _isSavingCloud = false;
     private bool _hasLocalSaveFailed = false;
     private bool _hasCloudSaveFailed = false;
+    private bool isLoadingExistingImages = false;
 
-    // Call this when starting any upload
+    // ✅ PUBLIC PROPERTY - This is what AddFrame.cs and AddCharacter.cs will check
+    public bool IsLoading => _isSavingLocal || _isSavingCloud || isLoadingExistingImages || isUploading;
+
+    private void Start()
+    {
+        LoadExistingImages();
+    }
+
+    // ========== LOADING STATE MANAGEMENT ==========
+    
     private void StartUploadProcess()
     {
         _isSavingLocal = true;
@@ -42,7 +52,6 @@ public class ImageUploader : MonoBehaviour
         UpdateNextButtonState();
     }
 
-    // Call this when local save completes
     private void CompleteLocalSave(bool success)
     {
         _isSavingLocal = false;
@@ -50,7 +59,6 @@ public class ImageUploader : MonoBehaviour
         UpdateNextButtonState();
     }
 
-    // Call this when cloud save completes
     private void CompleteCloudSave(bool success)
     {
         _isSavingCloud = false;
@@ -62,79 +70,115 @@ public class ImageUploader : MonoBehaviour
     {
         if (nextButton == null) return;
 
-        bool canProceed = !_isSavingLocal && !_isSavingCloud && !_hasLocalSaveFailed;
+        bool canProceed = !_isSavingLocal && !_isSavingCloud && !_hasLocalSaveFailed && !isLoadingExistingImages && !isUploading;
 
         nextButton.interactable = canProceed;
 
-        // Show/hide loading spinner
         if (loadingSpinner != null)
         {
-            loadingSpinner.SetActive(_isSavingLocal || _isSavingCloud);
+            loadingSpinner.SetActive(_isSavingLocal || _isSavingCloud || isLoadingExistingImages);
         }
 
-        Debug.Log($"🔄 Next Button State: Local={_isSavingLocal}, Cloud={_isSavingCloud}, CanProceed={canProceed}");
+        Debug.Log($"🔄 Next Button State: Local={_isSavingLocal}, Cloud={_isSavingCloud}, LoadingExisting={isLoadingExistingImages}, CanProceed={canProceed}");
     }
 
-    private void Start()
-    {
-        LoadExistingImages();
-    }
-
+    // ========== LOAD EXISTING IMAGES (FROM S3 OR LOCAL) ==========
+    
     /// <summary>
     /// Load existing images - prefers local cache, downloads from S3 only if needed
+    /// ✅ THIS IS THE KEY METHOD THAT FETCHES FROM S3
     /// </summary>
     private async void LoadExistingImages()
     {
+        isLoadingExistingImages = true; // ✅ Mark as loading - disables Next button
+        UpdateNextButtonState();
+
         var story = StoryManager.Instance?.currentStory;
-        if (story == null) return;
-
-        // ✅ Load background - check local cache first
-        if (!string.IsNullOrEmpty(story.backgroundPath))
+        if (story == null)
         {
-            Texture2D tex = await LoadImageWithCache(story.backgroundPath, story.storyIndex, ImageStorage.IMAGE_TYPE_BACKGROUND);
-            if (tex != null)
-            {
-                previewBackground.texture = tex;
-                FixAspectRatio(previewBackground, tex);
-            }
+            isLoadingExistingImages = false;
+            UpdateNextButtonState();
+            return;
         }
 
-        // ✅ Load character 1 - check local cache first
-        if (!string.IsNullOrEmpty(story.character1Path))
+        try
         {
-            Texture2D tex1 = await LoadImageWithCache(story.character1Path, story.storyIndex, ImageStorage.IMAGE_TYPE_CHARACTER1);
-            if (tex1 != null)
-            {
-                previewImage1.texture = tex1;
-                FixAspectRatio(previewImage1, tex1);
-            }
-        }
+            Debug.Log("⏳ Starting to load existing images...");
 
-        // ✅ Load character 2 - check local cache first
-        if (!string.IsNullOrEmpty(story.character2Path))
-        {
-            Texture2D tex2 = await LoadImageWithCache(story.character2Path, story.storyIndex, ImageStorage.IMAGE_TYPE_CHARACTER2);
-            if (tex2 != null)
+            // ✅ Load background from S3 or local cache
+            if (!string.IsNullOrEmpty(story.backgroundPath))
             {
-                previewImage2.texture = tex2;
-                FixAspectRatio(previewImage2, tex2);
+                Debug.Log($"⏳ Loading background: {story.backgroundPath}");
+                UpdateStatus("Loading background...");
+                Texture2D tex = await LoadImageWithCache(story.backgroundPath, story.storyIndex, ImageStorage.IMAGE_TYPE_BACKGROUND);
+                if (tex != null)
+                {
+                    previewBackground.texture = tex;
+                    FixAspectRatio(previewBackground, tex);
+                    lastUploadedBackground = tex;
+                    Debug.Log("✅ Background loaded successfully");
+                }
+                else
+                {
+                    Debug.LogWarning("⚠️ Failed to load background");
+                }
             }
+
+            // ✅ Load character 1 from S3 or local cache
+            if (!string.IsNullOrEmpty(story.character1Path))
+            {
+                Debug.Log($"⏳ Loading character 1: {story.character1Path}");
+                UpdateStatus("Loading character 1...");
+                Texture2D tex1 = await LoadImageWithCache(story.character1Path, story.storyIndex, ImageStorage.IMAGE_TYPE_CHARACTER1);
+                if (tex1 != null)
+                {
+                    previewImage1.texture = tex1;
+                    FixAspectRatio(previewImage1, tex1);
+                    lastUploadedTexture1 = tex1;
+                    Debug.Log("✅ Character 1 loaded successfully");
+                }
+                else
+                {
+                    Debug.LogWarning("⚠️ Failed to load character 1");
+                }
+            }
+
+            // ✅ Load character 2 from S3 or local cache
+            if (!string.IsNullOrEmpty(story.character2Path))
+            {
+                Debug.Log($"⏳ Loading character 2: {story.character2Path}");
+                UpdateStatus("Loading character 2...");
+                Texture2D tex2 = await LoadImageWithCache(story.character2Path, story.storyIndex, ImageStorage.IMAGE_TYPE_CHARACTER2);
+                if (tex2 != null)
+                {
+                    previewImage2.texture = tex2;
+                    FixAspectRatio(previewImage2, tex2);
+                    lastUploadedTexture2 = tex2;
+                    Debug.Log("✅ Character 2 loaded successfully");
+                }
+                else
+                {
+                    Debug.LogWarning("⚠️ Failed to load character 2");
+                }
+            }
+
+            Debug.Log("✅ All existing images loaded");
+            UpdateStatus("");
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"❌ Error loading existing images: {ex.Message}");
+            UpdateStatus("");
+        }
+        finally
+        {
+            isLoadingExistingImages = false; // ✅ Mark as done - re-enables Next button
+            UpdateNextButtonState();
         }
     }
 
     /// <summary>
-    /// Check if a path is an S3 URL
-    /// </summary>
-    private bool IsS3Url(string path)
-    {
-        return !string.IsNullOrEmpty(path) &&
-               (path.StartsWith("https://") || path.StartsWith("http://")) &&
-               path.Contains("s3") &&
-               path.Contains("amazonaws.com");
-    }
-
-    /// <summary>
-    /// Load image with smart caching - prefers local files, downloads from S3 only if missing
+    /// Load image with smart caching - checks local first, then downloads from S3 if needed
     /// </summary>
     private async Task<Texture2D> LoadImageWithCache(string path, int storyIndex, string imageType)
     {
@@ -154,36 +198,40 @@ public class ImageUploader : MonoBehaviour
 
         // It's an S3 URL - use async loading which handles caching automatically
         Debug.Log($"⬇️ Loading from S3 (with auto-cache): {path}");
-        UpdateStatus("Loading image...");
 
         Texture2D downloadedTex = await ImageStorage.LoadImageAsync(path);
         if (downloadedTex != null)
         {
             Debug.Log($"✅ Loaded from S3: {path}");
-            UpdateStatus("");
             return downloadedTex;
         }
 
         Debug.LogError($"❌ Failed to load from S3: {path}");
-        UpdateStatus("Load failed");
         return null;
     }
 
-    // Upload for first character slot
+    private bool IsS3Url(string path)
+    {
+        return !string.IsNullOrEmpty(path) &&
+               (path.StartsWith("https://") || path.StartsWith("http://")) &&
+               path.Contains("s3") &&
+               path.Contains("amazonaws.com");
+    }
+
+    // ========== UPLOAD METHODS ==========
+    
     public void UploadImage1()
     {
         if (!isUploading)
             _ = UploadAndSetImageAsync(1, previewImage1);
     }
 
-    // Upload for second character slot
     public void UploadImage2()
     {
         if (!isUploading)
             _ = UploadAndSetImageAsync(2, previewImage2);
     }
 
-    // Upload for background slot
     public void UploadBackground()
     {
         if (!isUploading)
@@ -192,12 +240,11 @@ public class ImageUploader : MonoBehaviour
 
     private async Task UploadAndSetImageAsync(int slot, RawImage targetPreview)
     {
-        // ✅ Start the upload process - disable next button
-        StartUploadProcess();
+        StartUploadProcess(); // ✅ Disable next button during upload
 
         try
         {
-            // ✅ Check if StoryManager is ready
+            // Check if required services are ready
             if (StoryManager.Instance == null)
             {
                 Debug.LogError("❌ Cannot upload image - StoryManager is not initialized yet");
@@ -207,7 +254,6 @@ public class ImageUploader : MonoBehaviour
                 return;
             }
 
-            // ✅ Check if ValidationManager is ready
             if (ValidationManager.Instance == null)
             {
                 Debug.LogError("❌ ValidationManager not found");
@@ -217,7 +263,6 @@ public class ImageUploader : MonoBehaviour
                 return;
             }
 
-            // ✅ Check if S3 service is ready
             if (S3StorageService.Instance == null || !S3StorageService.Instance.IsReady)
             {
                 Debug.LogError("❌ S3 service not initialized");
@@ -227,6 +272,7 @@ public class ImageUploader : MonoBehaviour
                 return;
             }
 
+            // Open file browser
             var extensions = new[] {
                 new ExtensionFilter("Image files", "jpg", "jpeg", "png", "bmp")
             };
@@ -243,11 +289,11 @@ public class ImageUploader : MonoBehaviour
 
             isUploading = true;
             UpdateStatus("Loading image...");
+            UpdateNextButtonState();
 
-            // ========== FILE VALIDATION ==========
             string selectedPath = paths[0];
 
-            // 1. Check if file exists
+            // Validate file exists
             if (!File.Exists(selectedPath))
             {
                 Debug.LogError($"❌ File not found: {selectedPath}");
@@ -261,10 +307,11 @@ public class ImageUploader : MonoBehaviour
                 CompleteLocalSave(false);
                 CompleteCloudSave(false);
                 isUploading = false;
+                UpdateNextButtonState();
                 return;
             }
 
-            // 2. Validate file format using ValidationManager
+            // Validate file format
             var formatValidation = ValidateFileFormat(selectedPath);
             if (!formatValidation.isValid)
             {
@@ -279,10 +326,11 @@ public class ImageUploader : MonoBehaviour
                 CompleteLocalSave(false);
                 CompleteCloudSave(false);
                 isUploading = false;
+                UpdateNextButtonState();
                 return;
             }
 
-            // 3. Validate file size using ValidationManager
+            // Validate file size
             var sizeValidation = ValidateFileSize(selectedPath);
             if (!sizeValidation.isValid)
             {
@@ -297,10 +345,11 @@ public class ImageUploader : MonoBehaviour
                 CompleteLocalSave(false);
                 CompleteCloudSave(false);
                 isUploading = false;
+                UpdateNextButtonState();
                 return;
             }
 
-            // ✅ SAFE IMAGE LOADING WITH PROPER ERROR HANDLING
+            // Load image with error handling
             Texture2D tex = null;
             bool loadingFailed = false;
             string errorTitle = "";
@@ -308,7 +357,6 @@ public class ImageUploader : MonoBehaviour
 
             try
             {
-                // Load image from file with additional safety checks
                 byte[] fileData = File.ReadAllBytes(selectedPath);
 
                 if (fileData == null || fileData.Length == 0)
@@ -321,9 +369,8 @@ public class ImageUploader : MonoBehaviour
                 else
                 {
                     tex = new Texture2D(2, 2);
-
-                    // Try to load the image data with additional validation
                     bool loadSuccess = false;
+                    
                     try
                     {
                         loadSuccess = tex.LoadImage(fileData);
@@ -340,9 +387,6 @@ public class ImageUploader : MonoBehaviour
                         loadingFailed = true;
                         errorTitle = "Invalid Image File";
                         errorMessage = "The selected file appears to be corrupted or is not a valid image.\n\nPlease select a different file.";
-
-                        // DON'T destroy the texture here - just null it out
-                        // Destroying it immediately might cause issues with Unity's internal state
                         tex = null;
                     }
                     else
@@ -357,42 +401,33 @@ public class ImageUploader : MonoBehaviour
                 loadingFailed = true;
                 errorTitle = "File Read Error";
                 errorMessage = "Could not read the selected file.\n\nPlease select a different file.";
-
-                // Just null it out - don't destroy
                 tex = null;
             }
 
-            // Handle any loading failures
             if (loadingFailed)
             {
-                Debug.Log("🛑 ABOUT TO CLEANUP - Before UpdateStatus");
                 UpdateStatus("");
-                Debug.Log("🛑 ABOUT TO CLEANUP - After UpdateStatus, before CompleteLocalSave");
                 CompleteLocalSave(false);
-                Debug.Log("🛑 ABOUT TO CLEANUP - After CompleteLocalSave, before CompleteCloudSave");
                 CompleteCloudSave(false);
-                Debug.Log("🛑 ABOUT TO CLEANUP - After CompleteCloudSave, before isUploading");
                 isUploading = false;
-                Debug.Log("🛑 ABOUT TO SHOW WARNING");
+                UpdateNextButtonState();
 
-                // Show warning LAST, after everything is cleaned up
                 if (ValidationManager.Instance != null)
                 {
                     ValidationManager.Instance.ShowWarning(errorTitle, errorMessage, null, null);
                 }
-                Debug.Log("🛑 AFTER SHOWING WARNING - ABOUT TO RETURN");
                 return;
             }
 
-            // Final safety check - this should never trigger if loadingFailed works correctly
             if (tex == null || tex.width <= 0 || tex.height <= 0)
             {
-                Debug.LogError("❌ CRITICAL: Texture is invalid but loadingFailed was not set!");
-                tex = null; // Just null it, don't destroy
+                Debug.LogError("❌ CRITICAL: Texture is invalid!");
+                tex = null;
                 UpdateStatus("");
                 CompleteLocalSave(false);
                 CompleteCloudSave(false);
                 isUploading = false;
+                UpdateNextButtonState();
 
                 if (ValidationManager.Instance != null)
                 {
@@ -406,7 +441,7 @@ public class ImageUploader : MonoBehaviour
                 return;
             }
 
-            // Clean up old texture if exists
+            // Clean up old texture
             try
             {
                 if (slot == 1 && lastUploadedTexture1 != null)
@@ -419,13 +454,11 @@ public class ImageUploader : MonoBehaviour
             catch (System.Exception destroyEx)
             {
                 Debug.LogWarning($"⚠️ Error cleaning up old textures: {destroyEx.Message}");
-                // Continue anyway - this is not critical
             }
 
             // Show preview immediately
             targetPreview.texture = tex;
 
-            // Store texture reference
             if (slot == 1)
                 lastUploadedTexture1 = tex;
             else if (slot == 2)
@@ -435,7 +468,6 @@ public class ImageUploader : MonoBehaviour
 
             FixAspectRatio(targetPreview, tex);
 
-            // Get story info
             var story = StoryManager.Instance.currentStory;
             if (story == null)
             {
@@ -445,13 +477,14 @@ public class ImageUploader : MonoBehaviour
                 CompleteLocalSave(false);
                 CompleteCloudSave(false);
                 isUploading = false;
+                UpdateNextButtonState();
                 return;
             }
 
             string teacherId = StoryManager.Instance.GetCurrentTeacherId();
             int storyIndex = story.storyIndex;
 
-            // ========== SAVE LOCALLY FIRST ==========
+            // Save locally first
             UpdateStatus("Saving locally...");
             string localPath = null;
 
@@ -462,7 +495,6 @@ public class ImageUploader : MonoBehaviour
                     slot == 2 ? ImageStorage.IMAGE_TYPE_CHARACTER2 :
                     ImageStorage.IMAGE_TYPE_BACKGROUND);
 
-                // ✅ Local save completed
                 CompleteLocalSave(true);
                 Debug.Log("✅ Local save completed");
             }
@@ -480,10 +512,11 @@ public class ImageUploader : MonoBehaviour
                 CompleteLocalSave(false);
                 CompleteCloudSave(false);
                 isUploading = false;
+                UpdateNextButtonState();
                 return;
             }
 
-            // ========== UPLOAD TO S3 ==========
+            // Upload to S3
             UpdateStatus("Uploading to cloud...");
             string s3Url = null;
 
@@ -493,32 +526,24 @@ public class ImageUploader : MonoBehaviour
                 {
                     s3Url = await S3StorageService.Instance.UploadCharacter1Image(tex, teacherId, storyIndex);
                     if (!string.IsNullOrEmpty(s3Url))
-                    {
-                        story.character1Path = s3Url; // Store S3 URL as primary
-                    }
+                        story.character1Path = s3Url;
                 }
                 else if (slot == 2)
                 {
                     s3Url = await S3StorageService.Instance.UploadCharacter2Image(tex, teacherId, storyIndex);
                     if (!string.IsNullOrEmpty(s3Url))
-                    {
-                        story.character2Path = s3Url; // Store S3 URL as primary
-                    }
+                        story.character2Path = s3Url;
                 }
                 else if (slot == 3)
                 {
                     s3Url = await S3StorageService.Instance.UploadBackgroundImage(tex, teacherId, storyIndex);
                     if (!string.IsNullOrEmpty(s3Url))
-                    {
-                        story.backgroundPath = s3Url; // Store S3 URL as primary
-                    }
+                        story.backgroundPath = s3Url;
                 }
 
                 if (!string.IsNullOrEmpty(s3Url))
                 {
-                    // Save to local storage as backup
                     StoryManager.Instance.SaveStories();
-
                     CompleteCloudSave(true);
                     UpdateStatus("✅ Upload successful!");
                     Debug.Log($"✅ Image uploaded to S3: {s3Url}");
@@ -526,7 +551,7 @@ public class ImageUploader : MonoBehaviour
                 }
                 else
                 {
-                    // If S3 upload fails, fall back to local path
+                    // Fallback to local path
                     if (slot == 1) story.character1Path = localPath;
                     else if (slot == 2) story.character2Path = localPath;
                     else if (slot == 3) story.backgroundPath = localPath;
@@ -541,7 +566,7 @@ public class ImageUploader : MonoBehaviour
             {
                 Debug.LogError($"❌ S3 upload error: {uploadEx.Message}");
 
-                // Fall back to local path on upload failure
+                // Fallback to local path
                 if (slot == 1) story.character1Path = localPath;
                 else if (slot == 2) story.character2Path = localPath;
                 else if (slot == 3) story.backgroundPath = localPath;
@@ -552,7 +577,6 @@ public class ImageUploader : MonoBehaviour
                 Debug.LogWarning($"⚠️ S3 upload failed, using local path: {localPath}");
             }
 
-            // Clear status after 3 seconds
             await Task.Delay(3000);
             UpdateStatus("");
         }
@@ -560,12 +584,9 @@ public class ImageUploader : MonoBehaviour
         {
             Debug.LogError($"❌ Upload process error: {ex.Message}");
             UpdateStatus("");
-
-            // ✅ Mark both saves as failed
             CompleteLocalSave(false);
             CompleteCloudSave(false);
 
-            // Show user-friendly error message
             if (ValidationManager.Instance != null)
             {
                 ValidationManager.Instance.ShowWarning(
@@ -579,12 +600,12 @@ public class ImageUploader : MonoBehaviour
         finally
         {
             isUploading = false;
+            UpdateNextButtonState();
         }
     }
 
-    /// <summary>
-    /// Validate file format
-    /// </summary>
+    // ========== VALIDATION HELPERS ==========
+    
     private ValidationResult ValidateFileFormat(string filePath)
     {
         string extension = Path.GetExtension(filePath).ToLower();
@@ -600,9 +621,6 @@ public class ImageUploader : MonoBehaviour
         return new ValidationResult { isValid = true };
     }
 
-    /// <summary>
-    /// Validate file size
-    /// </summary>
     private ValidationResult ValidateFileSize(string filePath)
     {
         try
@@ -630,39 +648,31 @@ public class ImageUploader : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Save texture locally and return the relative path
-    /// </summary>
+    // ========== HELPER METHODS ==========
+    
     private string SaveTextureLocally(Texture2D texture, int storyIndex, string imageType)
     {
         string teachId = StoryManager.Instance.GetCurrentTeacherId();
         if (string.IsNullOrEmpty(teachId)) teachId = "default";
         string safeTeachId = teachId.Replace("/", "_").Replace("\\", "_");
 
-        // Create relative path structure: teacherId/story_{index}/{imageType}.png
         string relativeDir = Path.Combine(safeTeachId, $"story_{storyIndex}");
         string relativePath = Path.Combine(relativeDir, $"{imageType}.png");
 
-        // Convert to absolute path for saving
         string absolutePath = Path.Combine(Application.persistentDataPath, relativePath);
 
-        // Ensure directory exists
         string absoluteDir = Path.GetDirectoryName(absolutePath);
         if (!Directory.Exists(absoluteDir))
         {
             Directory.CreateDirectory(absoluteDir);
         }
 
-        // Save the file
         File.WriteAllBytes(absolutePath, texture.EncodeToPNG());
 
         Debug.Log($"✅ Saved locally: {relativePath}");
         return relativePath;
     }
 
-    /// <summary>
-    /// Fix aspect ratio for image display
-    /// </summary>
     private void FixAspectRatio(RawImage image, Texture2D texture)
     {
         if (image == null || texture == null) return;
@@ -674,9 +684,6 @@ public class ImageUploader : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Update status text
-    /// </summary>
     private void UpdateStatus(string message)
     {
         if (uploadStatusText != null)
@@ -686,3 +693,6 @@ public class ImageUploader : MonoBehaviour
         Debug.Log($"📊 Upload Status: {message}");
     }
 }
+
+// Note: ValidationResult is already defined in ValidationManager.cs
+// No need to define it again here
