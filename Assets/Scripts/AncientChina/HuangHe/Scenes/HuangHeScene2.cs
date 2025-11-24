@@ -28,8 +28,7 @@ public class HuangHeScene2 : MonoBehaviour
 
     public SpriteRenderer PlayercharacterRenderer;
     public SpriteRenderer QiFulldrawnSprite;
-
-    // public GameObject AchievementUnlockedRenderer;
+    public GameObject AchievementUnlockedRenderer;
     public Sprite PlayerReflective;
     public Sprite PlayerCurious;
     public Sprite PlayerEager;
@@ -202,7 +201,7 @@ public class HuangHeScene2 : MonoBehaviour
 
     void ShowDialogue()
     {
-        // AchievementUnlockedRenderer.SetActive(false);
+        AchievementUnlockedRenderer.SetActive(false);
         QiFulldrawnSprite.enabled = false;
 
         DialogueLine line = dialogueLines[currentDialogueIndex];
@@ -246,8 +245,10 @@ public class HuangHeScene2 : MonoBehaviour
                 ChronocharacterRenderer.sprite = DayuWise;
                 break;
             case 7:
+                PlayerAchievementManager.UnlockAchievement("Fortress");
                 PlayercharacterRenderer.sprite = PlayerSmile;
                 ChronocharacterRenderer.sprite = ChronoThinking;
+                AchievementUnlockedRenderer.SetActive(true);
                 break;
         }
 

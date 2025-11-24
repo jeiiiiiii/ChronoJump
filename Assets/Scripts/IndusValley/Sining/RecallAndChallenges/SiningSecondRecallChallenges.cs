@@ -15,6 +15,7 @@ public class SiningSecondRecallChallenges : MonoBehaviour
 
     public SpriteRenderer PlayercharacterRenderer;
     public SpriteRenderer ChronocharacterRenderer;
+    public GameObject AchievementUnlockedRenderer;
     public Sprite PlayerReflective;
     public Sprite PlayerEager;
     public Sprite PlayerSmile;
@@ -206,6 +207,7 @@ public class SiningSecondRecallChallenges : MonoBehaviour
 
     void ShowDialogue()
     {
+        AchievementUnlockedRenderer.SetActive(false);
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
@@ -235,8 +237,10 @@ public class SiningSecondRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
+                    PlayerAchievementManager.UnlockAchievement("Craftsman");
                     PlayercharacterRenderer.sprite = PlayerEager;
                     ChronocharacterRenderer.sprite = ChronoSmile;
+                    AchievementUnlockedRenderer.SetActive(true);
 
                     if (!challengeCompleted)
                     {
@@ -256,6 +260,8 @@ public class SiningSecondRecallChallenges : MonoBehaviour
                 case 1:
                     PlayercharacterRenderer.sprite = PlayerSmile;
                     ChronocharacterRenderer.sprite = ChronoCheerful;
+                    AchievementUnlockedRenderer.SetActive(false);
+                    
                     break;
                 case 2:
                     foreach (Button btn in answerButtons)

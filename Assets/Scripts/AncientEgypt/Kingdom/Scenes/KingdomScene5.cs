@@ -26,6 +26,7 @@ public class KingdomScene5 : MonoBehaviour
     public DialogueLine[] dialogueLines;
 
     public SpriteRenderer PlayercharacterRenderer;
+    public GameObject AchievementUnlockedRenderer;
     public Sprite PlayerReflective;
     public Sprite PlayerSmile;
     public SpriteRenderer ChronocharacterRenderer;
@@ -152,6 +153,7 @@ public class KingdomScene5 : MonoBehaviour
 
     void ShowDialogue()
     {
+        AchievementUnlockedRenderer.SetActive(false);
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
@@ -172,8 +174,10 @@ public class KingdomScene5 : MonoBehaviour
                 ChronocharacterRenderer.sprite = ChronoSmile;
                 break;
             case 2:
+                PlayerAchievementManager.UnlockAchievement("Civilizations");
                 PlayercharacterRenderer.sprite = PlayerSmile;
                 ChronocharacterRenderer.sprite = ChronoSmile;
+                AchievementUnlockedRenderer.SetActive(true);
                 break;
         }
     }

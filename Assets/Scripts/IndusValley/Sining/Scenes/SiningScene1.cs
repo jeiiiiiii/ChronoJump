@@ -29,7 +29,6 @@ public class SiningScene1 : MonoBehaviour
     public SpriteRenderer PlayercharacterRenderer;
     public SpriteRenderer SindhuFulldrawnSprite;
 
-    // public GameObject AchievementUnlockedRenderer;
     public Sprite PlayerReflective;
     public Sprite PlayerCurious;
     public Sprite PlayerEager;

@@ -27,6 +27,7 @@ public class NileScene3 : MonoBehaviour
     public DialogueLine[] dialogueLines;
 
     public SpriteRenderer PlayercharacterRenderer;
+    public GameObject AchievementUnlockedRenderer;
     public Sprite PlayerCurious;
     public Sprite PlayerSmile;
     public Sprite PlayerReflective;
@@ -207,6 +208,7 @@ public class NileScene3 : MonoBehaviour
 
     void ShowDialogue()
     {
+        AchievementUnlockedRenderer.SetActive(false);
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
@@ -255,8 +257,10 @@ public class NileScene3 : MonoBehaviour
                 ChronocharacterRenderer.sprite = ImhotepProud;
                 break;
             case 9:
+                PlayerAchievementManager.UnlockAchievement("Scholar");
                 PlayercharacterRenderer.sprite = PlayerReflective;
                 ChronocharacterRenderer.sprite = ChronoSad;
+                AchievementUnlockedRenderer.SetActive(true);
                 break;
         }
 

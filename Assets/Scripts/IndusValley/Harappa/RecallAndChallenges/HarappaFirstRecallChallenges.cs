@@ -15,6 +15,7 @@ public class HarappaFirstRecallChallenges : MonoBehaviour
 
     public SpriteRenderer PlayercharacterRenderer;
     public SpriteRenderer ChronocharacterRenderer;
+    public GameObject AchievementUnlockedRenderer;
     public Sprite PlayerReflective;
     public Sprite PlayerEager;
     public Sprite PlayerEmabarrassed;
@@ -203,6 +204,7 @@ public class HarappaFirstRecallChallenges : MonoBehaviour
 
     void ShowDialogue()
     {
+        AchievementUnlockedRenderer.SetActive(false);
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
@@ -232,8 +234,10 @@ public class HarappaFirstRecallChallenges : MonoBehaviour
             switch (currentDialogueIndex)
             {
                 case 0:
+                    PlayerAchievementManager.UnlockAchievement("Grid");
                     PlayercharacterRenderer.sprite = PlayerEager;
                     ChronocharacterRenderer.sprite = ChronoThinking;
+                    AchievementUnlockedRenderer.SetActive(true);
 
                     if (!challengeCompleted)
                     {
@@ -253,6 +257,7 @@ public class HarappaFirstRecallChallenges : MonoBehaviour
                 case 1:
                     PlayercharacterRenderer.sprite = PlayerReflective;
                     ChronocharacterRenderer.sprite = ChronoSmile;
+                    AchievementUnlockedRenderer.SetActive(false);
                     break;
                 case 2:
                     foreach (Button btn in answerButtons)

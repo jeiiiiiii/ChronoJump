@@ -15,6 +15,7 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
 
     public SpriteRenderer PlayercharacterRenderer;
     public SpriteRenderer ChronocharacterRenderer;
+    public GameObject AchievementUnlockedRenderer;
     public Sprite PlayerReflective;
     public Sprite PlayerEager;
     public Sprite PlayerSmile;
@@ -217,6 +218,7 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
 
     void ShowDialogue()
     {
+        AchievementUnlockedRenderer.SetActive(false);
         DialogueLine line = dialogueLines[currentDialogueIndex];
         dialogueText.text = $"<b>{line.characterName}</b>: {line.line}";
 
@@ -290,8 +292,10 @@ public class HuangHeThirdRecallChallenges : MonoBehaviour
                     PlayercharacterRenderer.sprite = PlayerEager;
                     break;
                 case 5:
+                    PlayerAchievementManager.UnlockAchievement("River");
                     PlayercharacterRenderer.sprite = PlayerEager;
                     ChronocharacterRenderer.sprite = ChronoSmile;
+                    AchievementUnlockedRenderer.SetActive(true);
                     break;
 
             }
