@@ -6,6 +6,6 @@ public class SumerianArtifactScene : MonoBehaviour
 {
     public void Back()
     {
-        SceneManager.LoadScene("CoordinateSelect");
+        SceneManager.LoadScene("ChapterSelect");
     }
 }

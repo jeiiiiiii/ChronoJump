@@ -6,6 +6,6 @@ public class IndusArtifactScene : MonoBehaviour
 {
     public void Back()
     {
-        SceneManager.LoadScene("IndusCoordinateSelect");
+        SceneManager.LoadScene("ChapterSelect");
     }
 }

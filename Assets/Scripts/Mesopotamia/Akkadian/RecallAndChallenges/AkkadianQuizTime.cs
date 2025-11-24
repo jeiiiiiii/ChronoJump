@@ -351,7 +351,6 @@ public class QuizTimeManagerAkkadian : MonoBehaviour
             nextButton.onClick.RemoveAllListeners();
             nextButton.onClick.AddListener(() =>
             {
-                SceneManager.LoadScene("AkkadianArtifactScene");
                 UpdateSaveAfterQuizCompletion();
             });
         }
