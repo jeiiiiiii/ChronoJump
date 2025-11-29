@@ -43,6 +43,39 @@ public static class AchievementRegistry
             Description = "Visit Ashurbanipal's library",
             Type = "achievement"
         });
+        //Indus Achievements
+        Register(new AchievementModel {
+            Id = "AC008", Name = "Grid", Title = "Grid Master",
+            Description = "Correctly answer your first recall challenge in the Indus chapter",
+            Type = "achievement"
+        });
+        Register(new AchievementModel {
+            Id = "AC009", Name = "Craftsman", Title = "Master Craftsman",
+            Description = "Learned how to craft, Correctly answer for the Recall Challenge",
+            Type = "achievement"
+        });
+        // China Achievements
+        Register(new AchievementModel {
+            Id = "AC010", Name = "Fortress", Title = "Fortress of Nature",
+            Description = "Flood Control of the ancient times? Learn about Natural Barriers",
+            Type = "achievement"
+        });
+        Register(new AchievementModel {
+            Id = "AC011", Name = "River", Title = "River of Sorrow and Hope",
+            Description = "Finish the all the Recall Challenges of the Yellow River",
+            Type = "achievement"
+        });
+        // Egypt Achievements
+        Register(new AchievementModel {
+            Id = "AC012", Name = "Scholar", Title = "Papyrus Scholar",
+            Description = "Finish the 3rd Scene of the “Ilog Nile” Story",
+            Type = "achievement"
+        });
+        Register(new AchievementModel {
+            Id = "AC013", Name = "Civilizations", Title = "River Civilizations Master",
+            Description = "Finished all the Chapters and Stories! Congratulations!",
+            Type = "achievement"
+        });
 
         // --- Artifacts ---
         Register(new AchievementModel {

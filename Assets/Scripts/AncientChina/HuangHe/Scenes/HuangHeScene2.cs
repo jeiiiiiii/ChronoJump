@@ -28,8 +28,7 @@ public class HuangHeScene2 : MonoBehaviour
 
     public SpriteRenderer PlayercharacterRenderer;
     public SpriteRenderer QiFulldrawnSprite;
-
-    // public GameObject AchievementUnlockedRenderer;
+    public GameObject AchievementUnlockedRenderer;
     public Sprite PlayerReflective;
     public Sprite PlayerCurious;
     public Sprite PlayerEager;
@@ -205,7 +204,7 @@ public class HuangHeScene2 : MonoBehaviour
 
     void ShowDialogue()
     {
-        // AchievementUnlockedRenderer.SetActive(false);
+        AchievementUnlockedRenderer.SetActive(false);
         QiFulldrawnSprite.enabled = false;
 
         DialogueLine line = dialogueLines[currentDialogueIndex];
@@ -269,6 +268,8 @@ public class HuangHeScene2 : MonoBehaviour
                     chronoAnimator.Play("Chrono_Talking", 0, 0f);
                 if (playerAnimator != null)
                     playerAnimator.Play("Player_Eager", 0, 0f);
+                PlayerAchievementManager.UnlockAchievement("Fortress");
+                AchievementUnlockedRenderer.SetActive(true);
                 break;
         }
 

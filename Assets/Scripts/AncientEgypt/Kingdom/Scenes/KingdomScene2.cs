@@ -28,8 +28,6 @@ public class KingdomScene2 : MonoBehaviour
 
     public SpriteRenderer PlayercharacterRenderer;
     public SpriteRenderer MentuhotepFulldrawnSprite;
-
-    // public GameObject AchievementUnlockedRenderer;
     public Sprite PlayerReflective;
     public Sprite PlayerCurious;
     public Sprite PlayerEager;
