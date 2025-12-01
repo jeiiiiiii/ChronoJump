@@ -632,6 +632,7 @@ GameObject:
   - component: {fileID: 385422579}
   - component: {fileID: 385422581}
   - component: {fileID: 385422580}
+  - component: {fileID: 385422582}
   m_Layer: 5
   m_Name: NPCIM
   m_TagString: Untagged
@@ -721,6 +722,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 385422578}
   m_CullTransparentMesh: 1
+--- !u!95 &385422582
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 385422578}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 8291f6ce97bacb84dba170ce46cea612, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &407054476
 GameObject:
   m_ObjectHideFlags: 0
@@ -1135,9 +1158,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 477065901}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ae6faf8cb6f17ef4c821ed61189c566e, type: 2}
+  m_Controller: {fileID: 9100000, guid: 49e7a9be28c99f74f93ce2ae299480e8, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1916,8 +1939,19 @@ MonoBehaviour:
   ChronocharacterRenderer: {fileID: 1317386105}
   ChronoThinking: {fileID: 21300000, guid: 2fd4102bb47d70e48bd2b730d3a08bcb, type: 3}
   ChronoSmile: {fileID: 3941010767246976658, guid: d5d784ab0f5db2e43a4fe1597858ab54, type: 3}
+  chronoAnimator: {fileID: 1317386108}
+  playerAnimator: {fileID: 477065906}
+  NPCFulldrawnAnimator: {fileID: 385422582}
   audioSource: {fileID: 1652331086}
-  dialogueClips: []
+  dialogueClips:
+  - {fileID: 8300000, guid: f42ce5d4dcb9c744f822afd2448885ca, type: 3}
+  - {fileID: 8300000, guid: 5aa163795ebb5154c996e562cc0958de, type: 3}
+  - {fileID: 8300000, guid: 047b5ca3bc35e6e4bb4dd292b6034904, type: 3}
+  - {fileID: 8300000, guid: 9d174788e32ac0a48976ccf04ba15bc4, type: 3}
+  - {fileID: 8300000, guid: f5abc4aa77a5bc24988091d01ceb5405, type: 3}
+  - {fileID: 8300000, guid: 50d5cb68a69c9664ea35afc7c61dc322, type: 3}
+  - {fileID: 8300000, guid: a456b00ed2ab64f45893673b50606460, type: 3}
+  - {fileID: 8300000, guid: f9e9125ed078a8249ac4f5b2aa7ef6fd, type: 3}
 --- !u!1 &1317386103
 GameObject:
   m_ObjectHideFlags: 0
@@ -2058,9 +2092,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1317386103}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 7703396119542d84a8fde9ea44b97974, type: 2}
+  m_Controller: {fileID: 9100000, guid: 34ef5e96952a7584091ec58960c219a3, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
