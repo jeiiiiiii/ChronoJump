@@ -310,7 +310,7 @@ public class QuizTimeManagerAssyrian : MonoBehaviour
 
     void ShowQuizResult()
     {
-        PlayerProgressManager.UnlockCivilization("Indus");
+        PlayerProgressManager.UnlockCivilization("Harappa");
 
         timerText.color = Color.white;
         timerText.gameObject.SetActive(false);
