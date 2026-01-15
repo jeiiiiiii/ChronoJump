@@ -1,0 +1,1157 @@
+fileFormatVersion: 2
+guid: f3b4b9e16137ee6418bd8924587c6395
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1102810838986557773
+    second: Cunieform_0
+  - first:
+      213: 857774853769032567
+    second: Cunieform_1
+  - first:
+      213: 6839406162842623050
+    second: Cunieform_2
+  - first:
+      213: 3150282694487587632
+    second: Cunieform_3
+  - first:
+      213: 2367546932537373668
+    second: Cunieform_4
+  - first:
+      213: -7916904038649676549
+    second: Cunieform_5
+  - first:
+      213: -3452732981151843687
+    second: Cunieform_6
+  - first:
+      213: 6654471997220939477
+    second: Cunieform_7
+  - first:
+      213: -6338579596319490225
+    second: Cunieform_8
+  - first:
+      213: 3951744967464513911
+    second: Cunieform_9
+  - first:
+      213: -4148092235982294721
+    second: Cunieform_10
+  - first:
+      213: -1663318256092812581
+    second: Cunieform_11
+  - first:
+      213: -5161135308478734819
+    second: Cunieform_12
+  - first:
+      213: 6887743941140814527
+    second: Cunieform_13
+  - first:
+      213: 4386576982289784328
+    second: Cunieform_14
+  - first:
+      213: 7500268132687740704
+    second: Cunieform_15
+  - first:
+      213: 4424648451929812300
+    second: Cunieform_16
+  - first:
+      213: -4935752117667694989
+    second: Cunieform_17
+  - first:
+      213: 4012358153873628450
+    second: Cunieform_18
+  - first:
+      213: 8889158198865975137
+    second: Cunieform_19
+  - first:
+      213: -4192332170622103169
+    second: Cunieform_20
+  - first:
+      213: 9000041597719671472
+    second: Cunieform_21
+  - first:
+      213: 1431202784001809024
+    second: Cunieform_22
+  - first:
+      213: 7411372955735385334
+    second: Cunieform_23
+  - first:
+      213: 1031663474903747156
+    second: Cunieform_24
+  - first:
+      213: -8985974966662149275
+    second: Cunieform_25
+  - first:
+      213: 1089720855845137273
+    second: Cunieform_26
+  - first:
+      213: 7649461776685326640
+    second: Cunieform_27
+  - first:
+      213: 8707611055716696610
+    second: Cunieform_28
+  - first:
+      213: 878366643773309439
+    second: Cunieform_29
+  - first:
+      213: 1511081166703305516
+    second: Cunieform_30
+  - first:
+      213: -2723803557994283982
+    second: Cunieform_31
+  - first:
+      213: -3207991626856511354
+    second: Cunieform_32
+  - first:
+      213: 3311348211105784140
+    second: Cunieform_33
+  - first:
+      213: -5501336340457165942
+    second: Cunieform_34
+  - first:
+      213: -4620836266761284981
+    second: Cunieform_35
+  - first:
+      213: -1964651061123910324
+    second: Cunieform_36
+  - first:
+      213: 3417895247788863376
+    second: Cunieform_37
+  - first:
+      213: -8056944174102648592
+    second: Cunieform_38
+  - first:
+      213: -7663565272103858299
+    second: Cunieform_39
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 1
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Cunieform_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 5120
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b671c7826702b0f0800000000000000
+      internalID: -1102810838986557773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_1
+      rect:
+        serializedVersion: 2
+        x: 2042
+        y: 5120
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7737a205fad67eb00800000000000000
+      internalID: 857774853769032567
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_2
+      rect:
+        serializedVersion: 2
+        x: 4084
+        y: 5120
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4c1ada1ba37aee50800000000000000
+      internalID: 6839406162842623050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_3
+      rect:
+        serializedVersion: 2
+        x: 6126
+        y: 5120
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03b3ef27b6d08bb20800000000000000
+      internalID: 3150282694487587632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_4
+      rect:
+        serializedVersion: 2
+        x: 8168
+        y: 5120
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e3b4fe24673bd020800000000000000
+      internalID: 2367546932537373668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_5
+      rect:
+        serializedVersion: 2
+        x: 10210
+        y: 5120
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bfc3e6fe8b1812290800000000000000
+      internalID: -7916904038649676549
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_6
+      rect:
+        serializedVersion: 2
+        x: 12252
+        y: 5120
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99a3b22a5ad6510d0800000000000000
+      internalID: -3452732981151843687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_7
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 4096
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d6632a460f695c50800000000000000
+      internalID: 6654471997220939477
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_8
+      rect:
+        serializedVersion: 2
+        x: 2042
+        y: 4096
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4f76dcb077d808a0800000000000000
+      internalID: -6338579596319490225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_9
+      rect:
+        serializedVersion: 2
+        x: 4084
+        y: 4096
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 771f8a45c1b67d630800000000000000
+      internalID: 3951744967464513911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_10
+      rect:
+        serializedVersion: 2
+        x: 6126
+        y: 4096
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3138b2c6140f66c0800000000000000
+      internalID: -4148092235982294721
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_11
+      rect:
+        serializedVersion: 2
+        x: 8168
+        y: 4096
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bda6a25dbd4bae8e0800000000000000
+      internalID: -1663318256092812581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_12
+      rect:
+        serializedVersion: 2
+        x: 10210
+        y: 4096
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1e166428c6ff58b0800000000000000
+      internalID: -5161135308478734819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_13
+      rect:
+        serializedVersion: 2
+        x: 12252
+        y: 4096
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fba1c832f9e269f50800000000000000
+      internalID: 6887743941140814527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_14
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3072
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80e9949368040ec30800000000000000
+      internalID: 4386576982289784328
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_15
+      rect:
+        serializedVersion: 2
+        x: 2042
+        y: 3072
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02ff809e02e461860800000000000000
+      internalID: 7500268132687740704
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_16
+      rect:
+        serializedVersion: 2
+        x: 4084
+        y: 3072
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c4d22410352876d30800000000000000
+      internalID: 4424648451929812300
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_17
+      rect:
+        serializedVersion: 2
+        x: 6126
+        y: 3072
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 376f807899fa08bb0800000000000000
+      internalID: -4935752117667694989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_18
+      rect:
+        serializedVersion: 2
+        x: 8168
+        y: 3072
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22d97498b72cea730800000000000000
+      internalID: 4012358153873628450
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_19
+      rect:
+        serializedVersion: 2
+        x: 10210
+        y: 3072
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16758abf842ac5b70800000000000000
+      internalID: 8889158198865975137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_20
+      rect:
+        serializedVersion: 2
+        x: 12252
+        y: 3072
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7190ad4a18d1d5c0800000000000000
+      internalID: -4192332170622103169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_21
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2048
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b2f1db162296ec70800000000000000
+      internalID: 9000041597719671472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_22
+      rect:
+        serializedVersion: 2
+        x: 2042
+        y: 2048
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08a5af56957acd310800000000000000
+      internalID: 1431202784001809024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_23
+      rect:
+        serializedVersion: 2
+        x: 4084
+        y: 2048
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f46b84af6c7ad660800000000000000
+      internalID: 7411372955735385334
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_24
+      rect:
+        serializedVersion: 2
+        x: 6126
+        y: 2048
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45a0265e674315e00800000000000000
+      internalID: 1031663474903747156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_25
+      rect:
+        serializedVersion: 2
+        x: 8168
+        y: 2048
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56bcc87a0676b4380800000000000000
+      internalID: -8985974966662149275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_26
+      rect:
+        serializedVersion: 2
+        x: 10210
+        y: 2048
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97bebf448577f1f00800000000000000
+      internalID: 1089720855845137273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_27
+      rect:
+        serializedVersion: 2
+        x: 12252
+        y: 2048
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 031e14215f8582a60800000000000000
+      internalID: 7649461776685326640
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_28
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1024
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 222024ace16a7d870800000000000000
+      internalID: 8707611055716696610
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_29
+      rect:
+        serializedVersion: 2
+        x: 2042
+        y: 1024
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff109a80fc5903c00800000000000000
+      internalID: 878366643773309439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_30
+      rect:
+        serializedVersion: 2
+        x: 4084
+        y: 1024
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c232228a05078f410800000000000000
+      internalID: 1511081166703305516
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_31
+      rect:
+        serializedVersion: 2
+        x: 6126
+        y: 1024
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 23c3ec7681b133ad0800000000000000
+      internalID: -2723803557994283982
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_32
+      rect:
+        serializedVersion: 2
+        x: 8168
+        y: 1024
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6884aceac9cea73d0800000000000000
+      internalID: -3207991626856511354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_33
+      rect:
+        serializedVersion: 2
+        x: 10210
+        y: 1024
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c41e59a57a544fd20800000000000000
+      internalID: 3311348211105784140
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_34
+      rect:
+        serializedVersion: 2
+        x: 12252
+        y: 1024
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8b6a15eeb357a3b0800000000000000
+      internalID: -5501336340457165942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_35
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b82937ac5ed7fdfb0800000000000000
+      internalID: -4620836266761284981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_36
+      rect:
+        serializedVersion: 2
+        x: 2042
+        y: 0
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c457d12e4482cb4e0800000000000000
+      internalID: -1964651061123910324
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_37
+      rect:
+        serializedVersion: 2
+        x: 4084
+        y: 0
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 09f63fb7e9dce6f20800000000000000
+      internalID: 3417895247788863376
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_38
+      rect:
+        serializedVersion: 2
+        x: 6126
+        y: 0
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f8657f06fbff2090800000000000000
+      internalID: -8056944174102648592
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cunieform_39
+      rect:
+        serializedVersion: 2
+        x: 8168
+        y: 0
+        width: 2042
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 58fca330dfb85a590800000000000000
+      internalID: -7663565272103858299
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 64e42f6f7a3d11d4986993efe1d7fe3e
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Cunieform_0: -1102810838986557773
+      Cunieform_1: 857774853769032567
+      Cunieform_10: -4148092235982294721
+      Cunieform_11: -1663318256092812581
+      Cunieform_12: -5161135308478734819
+      Cunieform_13: 6887743941140814527
+      Cunieform_14: 4386576982289784328
+      Cunieform_15: 7500268132687740704
+      Cunieform_16: 4424648451929812300
+      Cunieform_17: -4935752117667694989
+      Cunieform_18: 4012358153873628450
+      Cunieform_19: 8889158198865975137
+      Cunieform_2: 6839406162842623050
+      Cunieform_20: -4192332170622103169
+      Cunieform_21: 9000041597719671472
+      Cunieform_22: 1431202784001809024
+      Cunieform_23: 7411372955735385334
+      Cunieform_24: 1031663474903747156
+      Cunieform_25: -8985974966662149275
+      Cunieform_26: 1089720855845137273
+      Cunieform_27: 7649461776685326640
+      Cunieform_28: 8707611055716696610
+      Cunieform_29: 878366643773309439
+      Cunieform_3: 3150282694487587632
+      Cunieform_30: 1511081166703305516
+      Cunieform_31: -2723803557994283982
+      Cunieform_32: -3207991626856511354
+      Cunieform_33: 3311348211105784140
+      Cunieform_34: -5501336340457165942
+      Cunieform_35: -4620836266761284981
+      Cunieform_36: -1964651061123910324
+      Cunieform_37: 3417895247788863376
+      Cunieform_38: -8056944174102648592
+      Cunieform_39: -7663565272103858299
+      Cunieform_4: 2367546932537373668
+      Cunieform_5: -7916904038649676549
+      Cunieform_6: -3452732981151843687
+      Cunieform_7: 6654471997220939477
+      Cunieform_8: -6338579596319490225
+      Cunieform_9: 3951744967464513911
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

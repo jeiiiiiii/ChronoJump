@@ -1,0 +1,723 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/LandingPage.unity
+    guid: 54b375d6184bdc244ab1f8c8753353ea
+  - enabled: 1
+    path: Assets/Scenes/Login.unity
+    guid: 7116ad32dc2216a43b4b4a7234f27775
+  - enabled: 1
+    path: Assets/Scenes/Register.unity
+    guid: 5eb4a7e54fb391c469b09261f829bf5b
+  - enabled: 1
+    path: Assets/Scenes/TitleScreen.unity
+    guid: 6c4d358ed1cf4984982211abad124d23
+  - enabled: 1
+    path: Assets/Scenes/LoadingScene.unity
+    guid: ed70993a1b3c67c46b05bceab2b36239
+  - enabled: 1
+    path: Assets/Scenes/StoryPublish.unity
+    guid: c7f510c1cbb1ba64cae7434bab2eebc9
+  - enabled: 1
+    path: Assets/Scenes/Classroom.unity
+    guid: 1fc3594edf3202e45a340f20020f76c2
+  - enabled: 1
+    path: Assets/Scenes/SaveAndLoadScene.unity
+    guid: 607dca98a2814e14496abbec404c1cf0
+  - enabled: 1
+    path: Assets/Scenes/TeacherDashboard.unity
+    guid: d95f7f5b706b40b4298c59133fd9d860
+  - enabled: 1
+    path: Assets/Scenes/ChapterSelect.unity
+    guid: 7bdfaea50b88af94583a088591e57bbe
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/CoordinateSelect.unity
+    guid: a5430632016fe0a47ba3d39ccfb9222e
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianScene/SumerianSceneOne.unity
+    guid: 1a5fe0d85161a2b4c9b5852afbffc0a2
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianScene/SumerianSceneTwo.unity
+    guid: 919d2295bbcb2764a9d5ab618096e18b
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianScene/SumerianSceneThree.unity
+    guid: 74f4379392fd0744fb6355dd286791b1
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianScene/SumerianSceneFour.unity
+    guid: cf634cae625df1040bb8c1c01727e851
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianScene/SumerianSceneFive.unity
+    guid: a26ea92d3fd183440855cafefccf4d16
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianScene/SumerianSceneSix.unity
+    guid: 669351d5463c0f54a933ea4fb23bff55
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianScene/SumerianSceneSeven.unity
+    guid: 76360d8ff1699724795482e39031cd4a
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianRecallChallenges/SumerianFirstRecallChallenges.unity
+    guid: 12e3036037018b04fa1cd2b550e177c7
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianRecallChallenges/SumerianSecondRecallChallenges.unity
+    guid: fe2c1de1f292ddf48859f994070e5c0a
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianRecallChallenges/SumerianThirdRecallChallenges.unity
+    guid: 1ccc39015d5f5a74191f8f2d7e235b65
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianRecallChallenges/SumerianFourthRecallChallenges.unity
+    guid: 5dee1d30258ecec41bb377e8a0c89e99
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianRecallChallenges/SumerianFifthRecallChallenges.unity
+    guid: 9862e847036f4104b9d94dcb55ea1b66
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianRecallChallenges/SumerianQuizTime.unity
+    guid: 59647bd4818d2d542b100df324ac682a
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianRecallChallenges/GameOver.unity
+    guid: 760369228f53575459d0452a6732a383
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianScene/AkkadianSceneOne.unity
+    guid: 4be67aabe31b2664fb0782cd07af4cc9
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianScene/AkkadianSceneTwo.unity
+    guid: 5f864e962a794e8499f4bdbb2ba5e980
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianScene/AkkadianSceneThree.unity
+    guid: cbaa7fcce7a7130469530c75613c53d5
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianScene/AkkadianSceneFour.unity
+    guid: c2e721a0a4fd00846ae1ddedae0a12e7
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianScene/AkkadianSceneFive.unity
+    guid: c1dd9a5abdfbddc40be9a4fc56cb77ee
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianScene/AkkadianSceneSix.unity
+    guid: 2156b44048ca71c40a86e0b7ec00e126
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/AkkadianFirstRecallChallenges.unity
+    guid: ce5563544c14c0e47b8e329786a18af0
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/AkkadianSecondRecallChallenges.unity
+    guid: c1c9a555624d3ec468afbd6d8fb3a92f
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/AkkadianThirdRecallChallenges.unity
+    guid: 806a1fcd2b4be7742ab17ae5b7a8f6c9
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/AkkadianQuizTime.unity
+    guid: 95bbf2f1d0e14434fb06b6160bb136ca
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/AkkadianGameOver.unity
+    guid: b02e92e7886af404d8805f10d1b9858a
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianScene/BabylonianSceneOne.unity
+    guid: a5444a08e2bd18245a19d9af7bcf6fd5
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianScene/BabylonianSceneTwo.unity
+    guid: 6b0ac7e8b92de264fb8dbb31aa32bff3
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianScene/BabylonianSceneThree.unity
+    guid: d957368c044dee34ea48fbb39fd406f3
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianScene/BabylonianSceneFour.unity
+    guid: 4309676146b890f40a61f5891f424e2e
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianScene/BabylonianSceneFive.unity
+    guid: a4a2e53de349f924daaf560c6276aecc
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianScene/BabylonianSceneSix.unity
+    guid: 76ad2397d8a2ade43a21cd697f9f5aef
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianScene/BabylonianSceneSeven.unity
+    guid: bd6a741a973591c4e8774bffb8ca4702
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianRecallChallenges/BabylonianFirstRecallChallenges.unity
+    guid: 20fb8261b17bada4fb0ee5baefe9485e
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianRecallChallenges/BabylonianSecondRecallChallenges.unity
+    guid: 3642dd4a9889cc443ad49a09addafebd
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianRecallChallenges/BabylonianThirdRecallChallenges.unity
+    guid: 1b4657b7d82117b438b0bfc41748314f
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianRecallChallenges/BabylonianFourthRecallChallenges.unity
+    guid: 0ba9b83e0e6fd524191aadc62c742598
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianRecallChallenges/BabylonianQuizTime.unity
+    guid: 16b4624754796754299fdbb376da2767
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianRecallChallenges/BabylonianGameOver.unity
+    guid: 908e0cd058698214781d14e611f015cf
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AssyrianScene/AssyrianSceneOne.unity
+    guid: 9f75e3bb1e9867f40a940e1a8c28c121
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AssyrianScene/AssyrianSceneTwo.unity
+    guid: 0bc2aa0374b916c4c9296407501a654b
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AssyrianScene/AssyrianSceneThree.unity
+    guid: c4b07b3331bd3af43b6fa7a42a8a6da5
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AssyrianScene/AssyrianSceneFour.unity
+    guid: 98c1e9a6cd586924495413446df528ae
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AssyrianScene/AssyrianSceneFive.unity
+    guid: a583864e11434a94f9930070cac46fa8
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AssyrianRecallChallenges/AssyrianFirstRecallChallenges.unity
+    guid: 0770be74248a07f449747cbd1e6d95c9
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AssyrianRecallChallenges/AssyrianSecondRecallChallenges.unity
+    guid: 983c2ea89f1032c489a296836b8254c0
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AssyrianRecallChallenges/AssyrianThirdRecallChallenges.unity
+    guid: ab4ac6301ae373a439408e5225f7bec3
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AssyrianRecallChallenges/AssyrianQuizTime.unity
+    guid: f14ca075008136d4a9b630095bc47f66
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AssyrianRecallChallenges/AssyrianGameOver.unity
+    guid: 2d63f6f95e20d654584e04ea002527e9
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/CodexScene/Mesopotamia/CodexScene.unity
+    guid: 87fa683d5bf0f1d40a4c54835ce63f15
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/CodexScene/Mesopotamia/AchievementsScene.unity
+    guid: d23ef5932a4552e4ca7777bb6c706dd2
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/CodexScene/Mesopotamia/ArtifactsScene.unity
+    guid: 4f94fd0465587754f8ef3581a4868aad
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianRecallChallenges/SumerianArtifactScene.unity
+    guid: 3cf6039d7c3ff60488024c94b71b1d2d
+  - enabled: 0
+    path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/AkkadianArtifactScene.unity
+    guid: 90f3e9210b4993c45a78bc4ddfa9398c
+  - enabled: 0
+    path: Assets/Scenes/Mesopotamia/BabylonianRecallChallenges/BabylonianArtifactScene.unity
+    guid: 8257af7ecfc431f4b972999a5b014484
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/CodexScene/Mesopotamia/StoriesScene/AkkadianStoryScene.unity
+    guid: 5f053dcb781ccc149bf3c17501a37511
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/CodexScene/Mesopotamia/StoriesScene/AssyrianStoryScene.unity
+    guid: 3ffdb00005248584ead933c59d0259e2
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianRecallChallenges/GameOver.unity
+    guid: 760369228f53575459d0452a6732a383
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianRecallChallenges/SumerianArtifactScene.unity
+    guid: 3cf6039d7c3ff60488024c94b71b1d2d
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianRecallChallenges/SumerianFifthRecallChallenges.unity
+    guid: 9862e847036f4104b9d94dcb55ea1b66
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianRecallChallenges/SumerianFirstRecallChallenges.unity
+    guid: 12e3036037018b04fa1cd2b550e177c7
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianRecallChallenges/SumerianFourthRecallChallenges.unity
+    guid: 5dee1d30258ecec41bb377e8a0c89e99
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianRecallChallenges/SumerianQuizTime.unity
+    guid: 59647bd4818d2d542b100df324ac682a
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianRecallChallenges/SumerianSecondRecallChallenges.unity
+    guid: fe2c1de1f292ddf48859f994070e5c0a
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/SumerianRecallChallenges/SumerianThirdRecallChallenges.unity
+    guid: 1ccc39015d5f5a74191f8f2d7e235b65
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/CodexScene/Mesopotamia/StoriesScene/BabylonianStoryScene.unity
+    guid: 47e16255ce1fa8d419cd7981bbc165a7
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/CodexScene/Mesopotamia/StoriesScene/StoryCoordinate.unity
+    guid: af42862d66878ec4c99e734386ee4f4f
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/CodexScene/Mesopotamia/StoriesScene/SumerianStoryScene.unity
+    guid: be21233b96b2d3c418566fbfe7fecc34
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianRecallChallenges/BabylonianFirstRecallChallenges.unity
+    guid: 20fb8261b17bada4fb0ee5baefe9485e
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianScene/BabylonianSceneFive.unity
+    guid: a4a2e53de349f924daaf560c6276aecc
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianScene/BabylonianSceneFour.unity
+    guid: 4309676146b890f40a61f5891f424e2e
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/CodexScene/Mesopotamia/CharacterScene/AkkadianCharacterScene.unity
+    guid: a85574e4a03d94f4ea2b202f988c8140
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/CodexScene/Mesopotamia/CharacterScene/AssyrianCharacterScene.unity
+    guid: 71c6b51b38ba3bc4e8804e5f531d4bb7
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/CodexScene/Mesopotamia/CharacterScene/BabylonianCharacterScene.unity
+    guid: 713b354c040361a48b6c537c7defe985
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/CodexScene/Mesopotamia/CharacterScene/CharacterCoordinate.unity
+    guid: 4a65395df4a0e0645bf372db824be6dd
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/CodexScene/Mesopotamia/CharacterScene/SumerianCharacterScene.unity
+    guid: 2bc15af6565e7f048978bd57411a886f
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianScene/BabylonianSceneOne.unity
+    guid: a5444a08e2bd18245a19d9af7bcf6fd5
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianScene/BabylonianSceneSeven.unity
+    guid: bd6a741a973591c4e8774bffb8ca4702
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/CodexScene/Mesopotamia/AchievementsScene.unity
+    guid: d23ef5932a4552e4ca7777bb6c706dd2
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/CodexScene/Mesopotamia/ArtifactsScene.unity
+    guid: 4f94fd0465587754f8ef3581a4868aad
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/CodexScene/Mesopotamia/CodexScene.unity
+    guid: 87fa683d5bf0f1d40a4c54835ce63f15
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianScene/BabylonianSceneSix.unity
+    guid: 76ad2397d8a2ade43a21cd697f9f5aef
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianScene/BabylonianSceneThree.unity
+    guid: d957368c044dee34ea48fbb39fd406f3
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianScene/BabylonianSceneTwo.unity
+    guid: 6b0ac7e8b92de264fb8dbb31aa32bff3
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianRecallChallenges/BabylonianFourthRecallChallenges.unity
+    guid: 0ba9b83e0e6fd524191aadc62c742598
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianRecallChallenges/BabylonianQuizTime.unity
+    guid: 16b4624754796754299fdbb376da2767
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianRecallChallenges/BabylonianSecondRecallChallenges.unity
+    guid: 3642dd4a9889cc443ad49a09addafebd
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianRecallChallenges/BabylonianThirdRecallChallenges.unity
+    guid: 1b4657b7d82117b438b0bfc41748314f
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/BabylonianRecallChallenges/BabylonianGameOver.unity
+    guid: 908e0cd058698214781d14e611f015cf
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AssyrianScene/AssyrianSceneFive.unity
+    guid: a583864e11434a94f9930070cac46fa8
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AssyrianScene/AssyrianSceneFour.unity
+    guid: 98c1e9a6cd586924495413446df528ae
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AssyrianScene/AssyrianSceneOne.unity
+    guid: 9f75e3bb1e9867f40a940e1a8c28c121
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AssyrianScene/AssyrianSceneThree.unity
+    guid: c4b07b3331bd3af43b6fa7a42a8a6da5
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AssyrianScene/AssyrianSceneTwo.unity
+    guid: 0bc2aa0374b916c4c9296407501a654b
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianScene/AkkadianSceneFive.unity
+    guid: c1dd9a5abdfbddc40be9a4fc56cb77ee
+  - enabled: 0
+    path: Assets/Scenes/Mesopotamia/AssyrianRecallChallenges/AssyrianArtifactScene.unity
+    guid: 0c0a4531ec2c33643891140d571d623e
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AssyrianRecallChallenges/AssyrianFirstRecallChallenges.unity
+    guid: 0770be74248a07f449747cbd1e6d95c9
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AssyrianRecallChallenges/AssyrianQuizTime.unity
+    guid: f14ca075008136d4a9b630095bc47f66
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AssyrianRecallChallenges/AssyrianSecondRecallChallenges.unity
+    guid: 983c2ea89f1032c489a296836b8254c0
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AssyrianRecallChallenges/AssyrianThirdRecallChallenges.unity
+    guid: ab4ac6301ae373a439408e5225f7bec3
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AssyrianRecallChallenges/AssyrianGameOver.unity
+    guid: 2d63f6f95e20d654584e04ea002527e9
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianScene/AkkadianSceneFour.unity
+    guid: c2e721a0a4fd00846ae1ddedae0a12e7
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianScene/AkkadianSceneOne.unity
+    guid: 4be67aabe31b2664fb0782cd07af4cc9
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianScene/AkkadianSceneSix.unity
+    guid: 2156b44048ca71c40a86e0b7ec00e126
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianScene/AkkadianSceneThree.unity
+    guid: cbaa7fcce7a7130469530c75613c53d5
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianScene/AkkadianSceneTwo.unity
+    guid: 5f864e962a794e8499f4bdbb2ba5e980
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/CreateNewAddCharacterScene.unity
+    guid: 357e741c5be7fdd4992a931ca068ff51
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/Dialogue/CreateNewAddDialogueScene.unity
+    guid: d4a43289e8ff212419e9af3cce6d066b
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/CreateNewAddFrameScene.unity
+    guid: 8b608b7bc0a09a044bc5bc95e1997de3
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/Questions/CreateNewAddQuizScene.unity
+    guid: d249c26fd57abc94c94ad7cc8bff7e31
+  - enabled: 0
+    path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/AkkadianArtifactScene.unity
+    guid: 90f3e9210b4993c45a78bc4ddfa9398c
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/AkkadianFirstRecallChallenges.unity
+    guid: ce5563544c14c0e47b8e329786a18af0
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/AkkadianQuizTime.unity
+    guid: 95bbf2f1d0e14434fb06b6160bb136ca
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/AkkadianSecondRecallChallenges.unity
+    guid: c1c9a555624d3ec468afbd6d8fb3a92f
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/AkkadianThirdRecallChallenges.unity
+    guid: 806a1fcd2b4be7742ab17ae5b7a8f6c9
+  - enabled: 1
+    path: Assets/Scenes/Mesopotamia/AkkadianRecallChallenges/AkkadianGameOver.unity
+    guid: b02e92e7886af404d8805f10d1b9858a
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/CreateNewAddTitleScene.unity
+    guid: 7f357b201a4dfa24dbdd9e68cbffe6e9
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/GameScene.unity
+    guid: ad8951210a6100042aef4b88de4fc246
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/QuizTime.unity
+    guid: fcced35b482819647bb29852002f9885
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/Questions/ReviewQuestionsScene.unity
+    guid: ffb8c2f88cde7974187a1123f090124e
+  - enabled: 1
+    path: Assets/Scenes/Settings.unity
+    guid: d39246d7dbe0e5946a2c8c617a39f9a3
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/ViewCreatedScenes/ViewCreatedStoriesScene.unity
+    guid: 28ea9fc97491f0343a9f499e08cd8e06
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/Creator'sModeScene.unity
+    guid: e1c9d2e7ebd8d3b4ab7b9142c1e9efdc
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/CreateNewAddTitleScene.unity
+    guid: 7f357b201a4dfa24dbdd9e68cbffe6e9
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/CreateNewAddCharacterScene.unity
+    guid: 357e741c5be7fdd4992a931ca068ff51
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/CreateNewAddFrameScene.unity
+    guid: 8b608b7bc0a09a044bc5bc95e1997de3
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/Questions/CreateNewAddQuizScene.unity
+    guid: d249c26fd57abc94c94ad7cc8bff7e31
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/Questions/ReviewQuestionsScene.unity
+    guid: ffb8c2f88cde7974187a1123f090124e
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/QuizTime.unity
+    guid: fcced35b482819647bb29852002f9885
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/GameScene.unity
+    guid: ad8951210a6100042aef4b88de4fc246
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/Dialogue/CreateNewAddDialogueScene.unity
+    guid: d4a43289e8ff212419e9af3cce6d066b
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/ViewCreatedScenes/ViewCreatedStoriesScene.unity
+    guid: 28ea9fc97491f0343a9f499e08cd8e06
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/Dialogue/ReviewDialogueScene.unity
+    guid: d0a15b20c276fef4db939e0d5beb7599
+  - enabled: 1
+    path: Assets/Scenes/ChatbotMod/Chatbot.unity
+    guid: abd3d7bd037682e4ebab915300f5bf39
+  - enabled: 1
+    path: Assets/Scenes/Creator's Mode/Scenes/CreateScenes/PreviewScene.unity
+    guid: 090cdce395843d24f9e5e7f35f21c9e1
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/IndusCoordinateSelect.unity
+    guid: 36cd2e98f9d9688469fdce22cdb68676
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/HarappaScenes/HarappaSceneOne.unity
+    guid: f47bc4fc88cfb784ea5068b25550adb7
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/HarappaRecallChallenges/HarappaFirstRecallChallenges.unity
+    guid: 6aff7a15edc4641489dde8cbf9599cc7
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/HarappaScenes/HarappaSceneTwo.unity
+    guid: 9a0fdffac44ec4e4d8974492fa8e991a
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/HarappaRecallChallenges/HarappaSecondRecallChallenges.unity
+    guid: a5ab7c8ae4f606141ae279728b39ee73
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/HarappaScenes/HarappaSceneThree.unity
+    guid: 6c42f7ec7514a91459ac86d6dab90a92
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/HarappaScenes/HarappaSceneFour.unity
+    guid: e8705a3f57ed052479779682b246a63e
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/HarappaRecallChallenges/HarappaThirdRecallChallenges.unity
+    guid: fdb9dc6e2b7494f4ca5eb81a67b21596
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/HarappaScenes/HarappaSceneFive.unity
+    guid: 12c19f2eaba3f88419a10e5f0983fdb8
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/HarappaRecallChallenges/HarappaQuizTime.unity
+    guid: adf95d7ef32e96248a0989ec92cb4d18
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/SiningScenes/SiningSceneOne.unity
+    guid: f29bbe8c1a28af0498e4529189f89926
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/SiningRecallChallenges/SiningFirstRecallChallenges.unity
+    guid: ba4814f1509e726479abba49e142735b
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/SiningScenes/SiningSceneTwo.unity
+    guid: 9948d423b872cf14da814dc5f2414c5c
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/SiningRecallChallenges/SiningSecondRecallChallenges.unity
+    guid: 3b56a63900ad1474196666a799b8d80c
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/SiningScenes/SiningSceneThree.unity
+    guid: 2305d2e79c89a0b4b9a409ecb8d1060c
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/SiningScenes/SiningSceneFour.unity
+    guid: 32872bf65c3e9ad48aa28813cfbccf94
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/SiningScenes/SiningSceneFive.unity
+    guid: 5f42db22628e3b047b406e92e256caeb
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/SiningRecallChallenges/SiningQuizTime.unity
+    guid: 9dc38fb480a88544c8b09aeb71fa3749
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/SiningRecallChallenges/SiningThirdRecallChallenges.unity
+    guid: c441b76df2b2cd04fa21113ce1098723
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/HuangHeCoordinateSelect.unity
+    guid: 5f3792199b97c0f43b52e7a94b78f63d
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/ShangScenes/ShangSceneTwo.unity
+    guid: 8ac5093bd9b9ec6408cafb077002aefd
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/ShangScenes/ShangSceneThree.unity
+    guid: 70a99f9aad189e64aa531fef57573253
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/ShangScenes/ShangSceneOne.unity
+    guid: 98d9244baf4d14144b2032fe71603142
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/ShangScenes/ShangSceneFour.unity
+    guid: 6c06c7a854f1c4949aebc2f33a4a8394
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/ShangScenes/ShangSceneFive.unity
+    guid: e44240739faaff44281eb00f47abb37d
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/ShangRecallChallenges/ShangThirdRecallChallenges.unity
+    guid: 4843e22515d9eda4d90c5eb3368c4c5d
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/ShangRecallChallenges/ShangSecondRecallChallenges.unity
+    guid: 197ccfc093dfbfa44a77bb9ccc25aec7
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/ShangRecallChallenges/ShangQuizTime.unity
+    guid: 61471ef62a2bd17408b05bfae2ba4073
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/ShangRecallChallenges/ShangGameOver.unity
+    guid: 9d9d4282025dfde46ac0465b1714e6ca
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/ShangRecallChallenges/ShangFirstRecallChallenges.unity
+    guid: 40dad004b1522e64f898482581d7175b
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/ShangRecallChallenges/PapyrusArtifactScene.unity
+    guid: f2db58070d629754fa9027fe55688801
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/HuangHeScenes/HuangHeSceneTwo.unity
+    guid: 5ac6309983901e542911bfc6859f464f
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/HuangHeScenes/HuangHeSceneThree.unity
+    guid: 94bbaaeae8467544aa49e91b00f2d9b1
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/HuangHeScenes/HuangHeSceneOne.unity
+    guid: 1b51940304246e94cb56d344beba5cee
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/HuangHeScenes/HuangHeSceneFour.unity
+    guid: a2f26aff3ce87ee4f8ae623ae56dea0f
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/HuangHeScenes/HuangHeSceneFive.unity
+    guid: 68c95fbfc5fe20b4b9d8b945d3efb277
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/HuangHeRecallChallenges/HuangHeThirdRecallChallenges.unity
+    guid: ac769c823d8162744838d988de6a94cf
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/HuangHeRecallChallenges/HuangHeSecondRecallChallenges.unity
+    guid: bc4c9f52abe750f4b89de7f91b043997
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/HuangHeRecallChallenges/HuangHeQuizTime.unity
+    guid: dc17ca64f349a6647a97bd56bc9cf324
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/HuangHeRecallChallenges/HuangHeGameOver.unity
+    guid: 5b5e5db4d9ab7ab48b74645de5ea87ef
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/HuangHeRecallChallenges/HuangHeFirstRecallChallenges.unity
+    guid: 4bbb173f703f9b74b8c56e6c35e99cf5
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/HuangHeRecallChallenges/HuangHeArtifactScene.unity
+    guid: eb2fe2170d861094f957bb4cf3499691
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileCoordinateSelect.unity
+    guid: bbbe75bc893180a40bcbf2acdf2b496d
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileScenes/NileSceneTwo.unity
+    guid: 87414b8a310452540a058349da288e37
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileScenes/NileSceneThree.unity
+    guid: 3b8ebb133e662d54593e472cc47e486d
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileScenes/NileSceneOne.unity
+    guid: 93225a50e36dbc24f9c8129e574d47a8
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileScenes/NileSceneFour.unity
+    guid: 652d46525f0ff0f4390f9448f0f2431c
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileScenes/NileSceneFive.unity
+    guid: 765ebf1adf7f0284bb674adf0e93f79d
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileRecallChallenges/NileThirdRecallChallenges.unity
+    guid: 785996aaf35e38a418c5a466e557215f
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileRecallChallenges/NileSecondRecallChallenges.unity
+    guid: 876b0b4f7bccc1446b18d7ccd3c68f3f
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileRecallChallenges/NileQuizTime.unity
+    guid: bc067f6fe80a91342a1a981cfa369949
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileRecallChallenges/NileGameOver.unity
+    guid: d0f28d1eee7eab24680fde93bb4c9575
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileRecallChallenges/NileFirstRecallChallenges.unity
+    guid: d3f7d86fd93546a4c843669ec0937cf6
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/NileRecallChallenges/NileArtifactScene.unity
+    guid: a2648242c7d98e44db23c03169249eb0
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/KingdomRecallChallenges/KingdomThirdRecallChallenges.unity
+    guid: 61762b407354b2445bebad4c8d87cd10
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/KingdomRecallChallenges/KingdomSecondRecallChallenges.unity
+    guid: 4eb62c34c42a9004aa477b750405ef18
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/KingdomRecallChallenges/KingdomQuizTime.unity
+    guid: 080748e60a1f82344be835d19cf9184a
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/KingdomRecallChallenges/KingdomGameOver.unity
+    guid: a7c9c1bab0c96134c85a11dea8e2f77f
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/KingdomRecallChallenges/KingdomFirstRecallChallenges.unity
+    guid: 6871720e03dcd5d4aa63fb38e0835ddd
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/KingdomRecallChallenges/CongratsScene.unity
+    guid: 37a71ce4a3cb1954e806ea1dd59749c7
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/KingdomScenes/KingdomSceneTwo.unity
+    guid: 50b8cd9d73691584c93da210b134f403
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/KingdomScenes/KingdomSceneThree.unity
+    guid: e9faf771d4d19e646977ca715f74f144
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/KingdomScenes/KingdomSceneOne.unity
+    guid: a58bcb94ab937ae4d81398cef2e6e146
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/KingdomScenes/KingdomSceneFour.unity
+    guid: 9c75fa59a719d0b4986e08f8bcb0fc68
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/KingdomScenes/KingdomSceneFive.unity
+    guid: 5e0380f01269a1e43ae9f3ae94643bc7
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/CodexScene/China/ChinaArtifactsScene.unity
+    guid: a45ce85ea0643204d9d99e27d98defd2
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/CodexScene/China/ChinaCodexScene.unity
+    guid: 4570fbf8b349d964c8a999ca189b1bb1
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/CodexScene/China/ChinaAchievementsScene.unity
+    guid: 52d95658fb88fb445840b3b45226e3a1
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/CodexScene/China/CharacterScene/ShangCharacterScene.unity
+    guid: 650b804554540c843ad70f64fb587644
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/CodexScene/China/CharacterScene/HuangHeCharacterScene.unity
+    guid: f1de8692f12615b4c8877cca33af4e38
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/CodexScene/China/CharacterScene/ChinaCharacterCoordinate.unity
+    guid: f204b9ed109569240b2e1dc2d9338de3
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/CodexScene/China/StoriesScene/ShangStoryScene.unity
+    guid: 0ca6890fa8966304dba6d943ec3af25c
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/CodexScene/China/StoriesScene/HuangHeStoryScene.unity
+    guid: 745999e47bbf850418fe25369b1719db
+  - enabled: 1
+    path: Assets/Scenes/AncientChina/CodexScene/China/StoriesScene/ChinaStoryCoordinate.unity
+    guid: 6fc9f4bae9a7a02459c749243072cb0b
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/CodexScene/Egypt/EgyptCodexScene.unity
+    guid: c0051ee38dc3e1540a8ba520e638330d
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/CodexScene/Egypt/EgyptArtifactsScene.unity
+    guid: 4837a065d0675964ba8aa6c5f3273172
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/CodexScene/Egypt/EgyptAchievementsScene.unity
+    guid: 38ba5511c4fe02f4c897dde397fbb64f
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/CodexScene/Egypt/StoriesScene/NileStoryScene.unity
+    guid: ebe7efb962188c44f97f4387cbf048b3
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/CodexScene/Egypt/StoriesScene/KingdomStoryScene.unity
+    guid: af43c27ab6528ae488fd8d272c8e6296
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/CodexScene/Egypt/StoriesScene/EgyptStoryCoordinate.unity
+    guid: 724115b2f66c113439bf3be73236d83f
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/CodexScene/Egypt/CharacterScene/NileCharacterScene.unity
+    guid: f6e4fa46db2c4bc4daaeff173df4fa84
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/CodexScene/Egypt/CharacterScene/KingdomCharacterScene.unity
+    guid: 173ae7cdad30dd24fb7766f72c8bc45d
+  - enabled: 1
+    path: Assets/Scenes/AncientEgypt/CodexScene/Egypt/CharacterScene/EgyptCharacterCoordinate.unity
+    guid: 5485b83a926247744ac9c96cb3cabfe2
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/CodexScene/Indus/StoriesScene/SiningStoryScene.unity
+    guid: e937e3671cda8344f8ca112bc627f493
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/CodexScene/Indus/StoriesScene/IndusStoryCoordinate.unity
+    guid: 7e22ac1968ea4c74d9c8252b6249959e
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/CodexScene/Indus/StoriesScene/HarappaStoryScene.unity
+    guid: 31615e3172d623a40996cce07afd4a29
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/CodexScene/Indus/IndusCodexScene.unity
+    guid: d4616a271300e0246a815c9fc5baaf5f
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/CodexScene/Indus/IndusArtifactsScene.unity
+    guid: 9e4aff1f7b45764459b5be58ee71f535
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/CodexScene/Indus/IndusAchievementsScene.unity
+    guid: da69c0676af7ffe4bbf796be8d6f4667
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/CodexScene/Indus/CharacterScene/SiningCharacterScene.unity
+    guid: 74a414c235285444f8a0edc5e1ab4de5
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/CodexScene/Indus/CharacterScene/IndusCharacterCoordinate.unity
+    guid: 9d6b69fcedcbd2b4bb3c56325d2a4b89
+  - enabled: 1
+    path: Assets/Scenes/IndusValley/CodexScene/Indus/CharacterScene/HarappaCharacterScene.unity
+    guid: f7dab476d65f428459c63a676e8df7bc
+  m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+    guid: {fileID: 0}
+    path: {fileID: 0}
+  m_UseUCBPForAssetBundles: 0

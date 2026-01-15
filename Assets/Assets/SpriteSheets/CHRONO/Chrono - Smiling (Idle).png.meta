@@ -1,0 +1,1053 @@
+fileFormatVersion: 2
+guid: 175c82d417b2f1546b05454cebf47d8c
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 785237196185595446
+    second: Chrono - Idle_0
+  - first:
+      213: 1081096304256496742
+    second: Chrono - Idle_1
+  - first:
+      213: 515492069562592621
+    second: Chrono - Idle_2
+  - first:
+      213: 9004406244471556827
+    second: Chrono - Idle_3
+  - first:
+      213: -4065856923469979194
+    second: Chrono - Idle_4
+  - first:
+      213: -5314140468293994127
+    second: Chrono - Idle_5
+  - first:
+      213: 4213096783359326864
+    second: Chrono - Idle_6
+  - first:
+      213: 329467429266222799
+    second: Chrono - Idle_7
+  - first:
+      213: 2217147188405270489
+    second: Chrono - Idle_8
+  - first:
+      213: 6609881225073964807
+    second: Chrono - Idle_9
+  - first:
+      213: 7291631885475948584
+    second: Chrono - Idle_10
+  - first:
+      213: 1854575201348552755
+    second: Chrono - Idle_11
+  - first:
+      213: 1335657364670103393
+    second: Chrono - Idle_12
+  - first:
+      213: 3952237039384337655
+    second: Chrono - Idle_13
+  - first:
+      213: 6931230816668810213
+    second: Chrono - Idle_14
+  - first:
+      213: -6380805949301378210
+    second: Chrono - Idle_15
+  - first:
+      213: -2848510007296785707
+    second: Chrono - Idle_16
+  - first:
+      213: -8711220333414069708
+    second: Chrono - Idle_17
+  - first:
+      213: 3436223206799003420
+    second: Chrono - Idle_18
+  - first:
+      213: -2448516348203686118
+    second: Chrono - Idle_19
+  - first:
+      213: -6431018293476716504
+    second: Chrono - Idle_20
+  - first:
+      213: 5286415537611915804
+    second: Chrono - Idle_21
+  - first:
+      213: 8272194355307099633
+    second: Chrono - Idle_22
+  - first:
+      213: 8324177538466726589
+    second: Chrono - Idle_23
+  - first:
+      213: -763809276964000059
+    second: Chrono - Idle_24
+  - first:
+      213: 1866867781575170960
+    second: Chrono - Idle_25
+  - first:
+      213: 7142105406115295602
+    second: Chrono - Idle_26
+  - first:
+      213: -5368286433997362138
+    second: Chrono - Idle_27
+  - first:
+      213: 1228218041428302140
+    second: Chrono - Idle_28
+  - first:
+      213: -1119416446553296377
+    second: Chrono - Idle_29
+  - first:
+      213: -6957354624733858959
+    second: Chrono - Idle_30
+  - first:
+      213: -2085347159919703807
+    second: Chrono - Idle_31
+  - first:
+      213: 5399549027277891422
+    second: Chrono - Idle_32
+  - first:
+      213: -6631286243495822638
+    second: Chrono - Idle_33
+  - first:
+      213: 4588820359949790020
+    second: Chrono - Idle_34
+  - first:
+      213: -2495798172640857983
+    second: Chrono - Idle_35
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 1.6
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Chrono - Idle_0
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 5238
+        width: 557
+        height: 784
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63ee01fc119b5ea00800000000000000
+      internalID: 785237196185595446
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_1
+      rect:
+        serializedVersion: 2
+        x: 1243
+        y: 5238
+        width: 558
+        height: 783
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 664323f5c53d00f00800000000000000
+      internalID: 1081096304256496742
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_2
+      rect:
+        serializedVersion: 2
+        x: 2265
+        y: 5238
+        width: 564
+        height: 780
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6d2fca5e45672700800000000000000
+      internalID: 515492069562592621
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_3
+      rect:
+        serializedVersion: 2
+        x: 3305
+        y: 5238
+        width: 551
+        height: 792
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bda490f95c316fc70800000000000000
+      internalID: 9004406244471556827
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_4
+      rect:
+        serializedVersion: 2
+        x: 4323
+        y: 5238
+        width: 548
+        height: 797
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c162018bac2397c0800000000000000
+      internalID: -4065856923469979194
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_5
+      rect:
+        serializedVersion: 2
+        x: 5341
+        y: 5238
+        width: 547
+        height: 792
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 179fecc46616046b0800000000000000
+      internalID: -5314140468293994127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_6
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 4214
+        width: 547
+        height: 791
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 09a3978d33de77a30800000000000000
+      internalID: 4213096783359326864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_7
+      rect:
+        serializedVersion: 2
+        x: 1244
+        y: 4214
+        width: 547
+        height: 791
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fce697e91e0829400800000000000000
+      internalID: 329467429266222799
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_8
+      rect:
+        serializedVersion: 2
+        x: 2268
+        y: 4214
+        width: 547
+        height: 791
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d7f6a3fe93e4ce10800000000000000
+      internalID: 2217147188405270489
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_9
+      rect:
+        serializedVersion: 2
+        x: 3292
+        y: 4214
+        width: 547
+        height: 791
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 707be0c14f30bbb50800000000000000
+      internalID: 6609881225073964807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_10
+      rect:
+        serializedVersion: 2
+        x: 4316
+        y: 4214
+        width: 547
+        height: 791
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 828a4be2194113560800000000000000
+      internalID: 7291631885475948584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_11
+      rect:
+        serializedVersion: 2
+        x: 5340
+        y: 4214
+        width: 547
+        height: 792
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33801a5d156ccb910800000000000000
+      internalID: 1854575201348552755
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_12
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 3190
+        width: 547
+        height: 792
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16fbbcaeb45398210800000000000000
+      internalID: 1335657364670103393
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_13
+      rect:
+        serializedVersion: 2
+        x: 1246
+        y: 3190
+        width: 548
+        height: 791
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7fc15a0c5aa29d630800000000000000
+      internalID: 3952237039384337655
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_14
+      rect:
+        serializedVersion: 2
+        x: 2274
+        y: 3190
+        width: 551
+        height: 787
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ebf8cb54bda03060800000000000000
+      internalID: 6931230816668810213
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_15
+      rect:
+        serializedVersion: 2
+        x: 3302
+        y: 3190
+        width: 551
+        height: 791
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e53313bcbc2d277a0800000000000000
+      internalID: -6380805949301378210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_16
+      rect:
+        serializedVersion: 2
+        x: 4322
+        y: 3190
+        width: 548
+        height: 797
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d20eeb8d3f0878d0800000000000000
+      internalID: -2848510007296785707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_17
+      rect:
+        serializedVersion: 2
+        x: 5339
+        y: 3190
+        width: 548
+        height: 794
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43ac1b2c2478b1780800000000000000
+      internalID: -8711220333414069708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_18
+      rect:
+        serializedVersion: 2
+        x: 217
+        y: 2166
+        width: 548
+        height: 791
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1f453afccaefaf20800000000000000
+      internalID: 3436223206799003420
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_19
+      rect:
+        serializedVersion: 2
+        x: 1243
+        y: 2166
+        width: 546
+        height: 791
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a172596aa5f150ed0800000000000000
+      internalID: -2448516348203686118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_20
+      rect:
+        serializedVersion: 2
+        x: 2267
+        y: 2166
+        width: 546
+        height: 791
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82018416fee60c6a0800000000000000
+      internalID: -6431018293476716504
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_21
+      rect:
+        serializedVersion: 2
+        x: 3291
+        y: 2166
+        width: 546
+        height: 791
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c12c67e3cee1d5940800000000000000
+      internalID: 5286415537611915804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_22
+      rect:
+        serializedVersion: 2
+        x: 4315
+        y: 2166
+        width: 546
+        height: 791
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f5321d20fcbcc270800000000000000
+      internalID: 8272194355307099633
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_23
+      rect:
+        serializedVersion: 2
+        x: 5339
+        y: 2166
+        width: 548
+        height: 791
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db2489b2e5b658370800000000000000
+      internalID: 8324177538466726589
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_24
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 1142
+        width: 549
+        height: 791
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5cea96a62876665f0800000000000000
+      internalID: -763809276964000059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_25
+      rect:
+        serializedVersion: 2
+        x: 1251
+        y: 1142
+        width: 550
+        height: 792
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 09bd8633b5278e910800000000000000
+      internalID: 1866867781575170960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_26
+      rect:
+        serializedVersion: 2
+        x: 2274
+        y: 1142
+        width: 549
+        height: 795
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27136efb60bdd1360800000000000000
+      internalID: 7142105406115295602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_27
+      rect:
+        serializedVersion: 2
+        x: 3294
+        y: 1142
+        width: 548
+        height: 794
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62ce9014ee30085b0800000000000000
+      internalID: -5368286433997362138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_28
+      rect:
+        serializedVersion: 2
+        x: 4315
+        y: 1142
+        width: 548
+        height: 793
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c395f022dc18b0110800000000000000
+      internalID: 1228218041428302140
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_29
+      rect:
+        serializedVersion: 2
+        x: 5339
+        y: 1142
+        width: 548
+        height: 793
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 702f57b3ca80770f0800000000000000
+      internalID: -1119416446553296377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_30
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 118
+        width: 548
+        height: 793
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 173315894d2827f90800000000000000
+      internalID: -6957354624733858959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_31
+      rect:
+        serializedVersion: 2
+        x: 1243
+        y: 118
+        width: 548
+        height: 793
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 109cd938ecb5f03e0800000000000000
+      internalID: -2085347159919703807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_32
+      rect:
+        serializedVersion: 2
+        x: 2267
+        y: 118
+        width: 548
+        height: 792
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5764367b3d0fea40800000000000000
+      internalID: 5399549027277891422
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_33
+      rect:
+        serializedVersion: 2
+        x: 3296
+        y: 118
+        width: 549
+        height: 791
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2da3f7cab40f8f3a0800000000000000
+      internalID: -6631286243495822638
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_34
+      rect:
+        serializedVersion: 2
+        x: 4325
+        y: 118
+        width: 549
+        height: 792
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44b23e40ec3ceaf30800000000000000
+      internalID: 4588820359949790020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chrono - Idle_35
+      rect:
+        serializedVersion: 2
+        x: 5350
+        y: 118
+        width: 548
+        height: 795
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1803ca809c42d5dd0800000000000000
+      internalID: -2495798172640857983
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 67dd954e2263d6a469fbab8a5485f778
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Chrono - Idle_0: 785237196185595446
+      Chrono - Idle_1: 1081096304256496742
+      Chrono - Idle_10: 7291631885475948584
+      Chrono - Idle_11: 1854575201348552755
+      Chrono - Idle_12: 1335657364670103393
+      Chrono - Idle_13: 3952237039384337655
+      Chrono - Idle_14: 6931230816668810213
+      Chrono - Idle_15: -6380805949301378210
+      Chrono - Idle_16: -2848510007296785707
+      Chrono - Idle_17: -8711220333414069708
+      Chrono - Idle_18: 3436223206799003420
+      Chrono - Idle_19: -2448516348203686118
+      Chrono - Idle_2: 515492069562592621
+      Chrono - Idle_20: -6431018293476716504
+      Chrono - Idle_21: 5286415537611915804
+      Chrono - Idle_22: 8272194355307099633
+      Chrono - Idle_23: 8324177538466726589
+      Chrono - Idle_24: -763809276964000059
+      Chrono - Idle_25: 1866867781575170960
+      Chrono - Idle_26: 7142105406115295602
+      Chrono - Idle_27: -5368286433997362138
+      Chrono - Idle_28: 1228218041428302140
+      Chrono - Idle_29: -1119416446553296377
+      Chrono - Idle_3: 9004406244471556827
+      Chrono - Idle_30: -6957354624733858959
+      Chrono - Idle_31: -2085347159919703807
+      Chrono - Idle_32: 5399549027277891422
+      Chrono - Idle_33: -6631286243495822638
+      Chrono - Idle_34: 4588820359949790020
+      Chrono - Idle_35: -2495798172640857983
+      Chrono - Idle_4: -4065856923469979194
+      Chrono - Idle_5: -5314140468293994127
+      Chrono - Idle_6: 4213096783359326864
+      Chrono - Idle_7: 329467429266222799
+      Chrono - Idle_8: 2217147188405270489
+      Chrono - Idle_9: 6609881225073964807
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,546 @@
+fileFormatVersion: 2
+guid: edb2711da20dafc49ae1f537ee3e3b11
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2454329138656706797
+    second: SCENE AND DIALOGUE_0
+  - first:
+      213: -8957389267256335679
+    second: SCENE AND DIALOGUE_1
+  - first:
+      213: 9150387182883731372
+    second: SCENE AND DIALOGUE_2
+  - first:
+      213: -8801954894022833879
+    second: SCENE AND DIALOGUE_3
+  - first:
+      213: 126383582287988596
+    second: SCENE AND DIALOGUE_4
+  - first:
+      213: 4705305863247306588
+    second: SCENE AND DIALOGUE_5
+  - first:
+      213: -3812602459874907155
+    second: SCENE AND DIALOGUE_6
+  - first:
+      213: -6462183615395163514
+    second: SCENE AND DIALOGUE_7
+  - first:
+      213: 7650581717042689357
+    second: SCENE AND DIALOGUE_8
+  - first:
+      213: -4696064734290252264
+    second: SCENE AND DIALOGUE_9
+  - first:
+      213: 4850090360903397541
+    second: SCENE AND DIALOGUE_10
+  - first:
+      213: 7176659454955606605
+    second: SCENE AND DIALOGUE_11
+  - first:
+      213: 8172599741570666265
+    second: SCENE AND DIALOGUE_12
+  - first:
+      213: 9070931797165120745
+    second: SCENE AND DIALOGUE_13
+  - first:
+      213: 7178041710063306791
+    second: SCENE AND DIALOGUE_14
+  - first:
+      213: -1066206981438205368
+    second: SCENE AND DIALOGUE_15
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: SCENE AND DIALOGUE_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 65
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de0068719578f0220800000000000000
+      internalID: 2454329138656706797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SCENE AND DIALOGUE_1
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 0
+        width: 65
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c22a427be5f0b380800000000000000
+      internalID: -8957389267256335679
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SCENE AND DIALOGUE_2
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 0
+        width: 61
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca7721979a4bcfe70800000000000000
+      internalID: 9150387182883731372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SCENE AND DIALOGUE_3
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 1
+        width: 74
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 92902cc98ac29d580800000000000000
+      internalID: -8801954894022833879
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SCENE AND DIALOGUE_4
+      rect:
+        serializedVersion: 2
+        x: 298
+        y: 0
+        width: 61
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 47787bfc23101c100800000000000000
+      internalID: 126383582287988596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SCENE AND DIALOGUE_5
+      rect:
+        serializedVersion: 2
+        x: 385
+        y: 1
+        width: 81
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5f1b6ab0ca9c4140800000000000000
+      internalID: 4705305863247306588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SCENE AND DIALOGUE_6
+      rect:
+        serializedVersion: 2
+        x: 471
+        y: 1
+        width: 74
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: deb2065434ae61bc0800000000000000
+      internalID: -3812602459874907155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SCENE AND DIALOGUE_7
+      rect:
+        serializedVersion: 2
+        x: 556
+        y: 0
+        width: 72
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 682950b6d36b156a0800000000000000
+      internalID: -6462183615395163514
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SCENE AND DIALOGUE_8
+      rect:
+        serializedVersion: 2
+        x: 663
+        y: 0
+        width: 73
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d457d6189835c2a60800000000000000
+      internalID: 7650581717042689357
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SCENE AND DIALOGUE_9
+      rect:
+        serializedVersion: 2
+        x: 745
+        y: 1
+        width: 27
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81ee366410a34deb0800000000000000
+      internalID: -4696064734290252264
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SCENE AND DIALOGUE_10
+      rect:
+        serializedVersion: 2
+        x: 777
+        y: 1
+        width: 81
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5a071328c7bfe4340800000000000000
+      internalID: 4850090360903397541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SCENE AND DIALOGUE_11
+      rect:
+        serializedVersion: 2
+        x: 862
+        y: 0
+        width: 59
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d42d39e20cd989360800000000000000
+      internalID: 7176659454955606605
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SCENE AND DIALOGUE_12
+      rect:
+        serializedVersion: 2
+        x: 925
+        y: 0
+        width: 75
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91fc4c72a28ea6170800000000000000
+      internalID: 8172599741570666265
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SCENE AND DIALOGUE_13
+      rect:
+        serializedVersion: 2
+        x: 1007
+        y: 0
+        width: 70
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ec92dfd86c62ed70800000000000000
+      internalID: 9070931797165120745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SCENE AND DIALOGUE_14
+      rect:
+        serializedVersion: 2
+        x: 1086
+        y: 0
+        width: 71
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 728c24787e68d9360800000000000000
+      internalID: 7178041710063306791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SCENE AND DIALOGUE_15
+      rect:
+        serializedVersion: 2
+        x: 1168
+        y: 0
+        width: 60
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 842955e36621431f0800000000000000
+      internalID: -1066206981438205368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      SCENE AND DIALOGUE_0: 2454329138656706797
+      SCENE AND DIALOGUE_1: -8957389267256335679
+      SCENE AND DIALOGUE_10: 4850090360903397541
+      SCENE AND DIALOGUE_11: 7176659454955606605
+      SCENE AND DIALOGUE_12: 8172599741570666265
+      SCENE AND DIALOGUE_13: 9070931797165120745
+      SCENE AND DIALOGUE_14: 7178041710063306791
+      SCENE AND DIALOGUE_15: -1066206981438205368
+      SCENE AND DIALOGUE_2: 9150387182883731372
+      SCENE AND DIALOGUE_3: -8801954894022833879
+      SCENE AND DIALOGUE_4: 126383582287988596
+      SCENE AND DIALOGUE_5: 4705305863247306588
+      SCENE AND DIALOGUE_6: -3812602459874907155
+      SCENE AND DIALOGUE_7: -6462183615395163514
+      SCENE AND DIALOGUE_8: 7650581717042689357
+      SCENE AND DIALOGUE_9: -4696064734290252264
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
